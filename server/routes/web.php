@@ -31,8 +31,11 @@ if (substr($uri, -1) !== '/') {
     $uri .= '/';
 }
 
-// Adjust URI if needed (if using a subdirectory)
-$uri =  str_replace('pharmacollege/server', '', $uri);
+// Determine if the application is running on localhost
+if ($_SERVER['HTTP_HOST'] === 'localhost') {
+    // Adjust URI if needed (only on localhost)
+    $uri = str_replace('pharma-college-project/server', '', $uri);
+}
 
 // Set the header for JSON responses, except for HTML pages
 if ($uri !== '/') {
