@@ -1,0 +1,2 @@
+<label for="envelope-<?= $data_value ?>"><?= formatLabelName($data_value) ?></label>
+<input required type="text" name="envelope-<?= $data_value ?>" id="envelope-<?= $data_value ?>" class="flex-fill w-100 btn btn-light" <?= ($finish_status && $UserLevel == "Student") ? '' : 'onclick="SelectEnvelopeContent(\'' . $data_value . '\')" ' ?> value="<?= $answer_input ?>" readonly>

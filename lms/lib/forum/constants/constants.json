@@ -1,0 +1,46 @@
+{
+    "sideBarLinks": [{
+            "link_title": "Topics",
+            "link_icon": "fa-home",
+            "link_url": "./community"
+        },
+        {
+            "link_title": "Knowledge Base",
+            "link_icon": "fa-book",
+            "link_url": "./community-knowledge-base"
+        },
+        {
+            "link_title": "My Posts",
+            "link_icon": "fa-signs-post",
+            "link_url": "./community-my-post"
+        },
+        {
+            "link_title": "Forum Rules",
+            "link_icon": "fa-scale-balanced",
+            "link_url": "#forumrules"
+        },
+        {
+            "link_title": "Badges",
+            "link_icon": "fa-ribbon",
+            "link_url": "#badges"
+        }
+
+    ],
+    "categoryList": [{
+            "tag_name": "Winpharma",
+            "bg_color": "info"
+        },
+        {
+            "tag_name": "Pharma Hunter",
+            "bg_color": "primary"
+        },
+        {
+            "tag_name": "Payments",
+            "bg_color": "success"
+        },
+        {
+            "tag_name": "Ceylon Pharmacy",
+            "bg_color": "warning"
+        }
+    ]
+}

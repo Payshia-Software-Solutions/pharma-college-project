@@ -1,0 +1,68 @@
+{
+    "name": "LMS - Ceylon Pharma College",
+    "short_name": "Ceylon Pharma College",
+    "description": "#1 Pharmacy Course in Sri Lanka",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#333",
+    "icons": [{
+            "src": "./assets/images/logo-round.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "./assets/images/logo-round.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        },
+        {
+            "src": "./assets/images/logo-round.png",
+            "type": "image/png",
+            "sizes": "512x512"
+        }
+    ],
+    "screenshots": [{
+            "src": "./assets/images/screenshots/sc-6.jpg",
+            "sizes": "192x192",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Dashboard"
+        }, {
+            "src": "./assets/images/screenshots/sc-1.jpg",
+            "sizes": "512x512",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "User Profile"
+        },
+        {
+            "src": "./assets/images/screenshots/sc-2.jpg",
+            "sizes": "192x192",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Study Pack"
+        },
+        {
+            "src": "./assets/images/screenshots/sc-3.jpg",
+            "sizes": "192x192",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Quiz"
+        },
+        {
+            "src": "./assets/images/screenshots/sc-4.jpg",
+            "sizes": "192x192",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Pharma Hunter"
+        },
+        {
+            "src": "./assets/images/screenshots/sc-5.jpg",
+            "sizes": "192x192",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Olie"
+        }
+
+    ]
+}
