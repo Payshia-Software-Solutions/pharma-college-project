@@ -1,5 +1,9 @@
-on: push
 name: 🚀 Deploy website on push
+on:
+  push:
+    branches:
+      - main  # Trigger deployment on push to the main branch
+      
 jobs:
   web-deploy:
     name: 🎉 Deploy
