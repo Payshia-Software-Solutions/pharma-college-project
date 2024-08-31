@@ -1,4 +1,11 @@
 <?php
+ini_set('memory_limit', '256M');
+
+// Report all PHP errors
+error_reporting(E_ALL);
+
+// Display errors in the browser (for development)
+ini_set('display_errors', 1);
 // routes/web.php
 
 // Include route files
@@ -11,7 +18,6 @@ $courseAssignmentSubmissionRoutes = require './routes/courseAssignmentSubmission
 $hpSaveAnswerRoutes = require './routes/hpSaveAnswerRoutes.php';
 $reportRoutes = require './routes/reportRoutes.php';
 $courseRoutes = require './routes/courseRoutes.php';
-
 
 // Combine all routes
 $routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes, $eCertificateRoutes, $courseAssignmentRoutes, $courseAssignmentSubmissionRoutes, $hpSaveAnswerRoutes, $reportRoutes, $courseRoutes);
@@ -37,6 +43,9 @@ if ($_SERVER['HTTP_HOST'] === 'localhost') {
     $uri = str_replace('pharma-college-project/server', '', $uri);
 }
 
+// Adjust URI if needed (if using a subdirectory)
+$uri = '/' . $uri;
+
 // Set the header for JSON responses, except for HTML pages
 if ($uri !== '/') {
     header('Content-Type: application/json');
@@ -44,7 +53,7 @@ if ($uri !== '/') {
 
 // Debugging
 error_log("Method: $method");
-// echo ("URI: $uri");
+error_log("URI: $uri");
 
 // Route matching
 foreach ($routes as $route => $handler) {
