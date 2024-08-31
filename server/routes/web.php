@@ -41,10 +41,12 @@ if (substr($uri, -1) !== '/') {
 if ($_SERVER['HTTP_HOST'] === 'localhost') {
     // Adjust URI if needed (only on localhost)
     $uri = str_replace('pharma-college-project/server', '', $uri);
+} else {
+    // Adjust URI if needed (if using a subdirectory)
+    $uri = '/' . $uri;
 }
 
-// Adjust URI if needed (if using a subdirectory)
-$uri = '/' . $uri;
+
 
 // Set the header for JSON responses, except for HTML pages
 if ($uri !== '/') {
@@ -61,8 +63,8 @@ foreach ($routes as $route => $handler) {
 
     // Convert route URI to regex
     $routeRegex = str_replace(
-        ['{id}', '{username}', '{assignment_id}', '{course_code}'],  // Replace placeholders
-        ['(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)'], // Allow alphanumeric, hyphens, underscores for username
+        ['{id}', '{username}', '{assignment_id}', '{course_code}', '{offset}', '{limit}'],  // Replace placeholders
+        ['(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)'], // Allow alphanumeric, hyphens, underscores for username
         $routeUri
     );
     $routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";

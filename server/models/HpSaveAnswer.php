@@ -10,31 +10,22 @@ class HpSaveAnswer
     }
 
     // Generator to fetch all answers in batches to avoid memory exhaustion
-    public function getAllAnswers($batchSize = 1000)
+    // public function getAllAnswers()
+    // {
+    //     $stmt = $this->pdo->query("SELECT * FROM hp_save_answer");
+    //     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // }
+
+    public function getAllAnswers($offset = 0, $limit = 100)
     {
-        $offset = 0;
-
-        while (true) {
-            // Prepare the query with LIMIT for batch processing
-            $stmt = $this->pdo->prepare("SELECT * FROM hp_save_answer LIMIT :offset, :batchSize");
-            $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
-            $stmt->bindValue(':batchSize', $batchSize, PDO::PARAM_INT);
-            $stmt->execute();
-
-            // Fetch the current batch
-            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            if (count($results) === 0) {
-                break; // Exit the loop if no more results
-            }
-
-            foreach ($results as $row) {
-                yield $row; // Yield each row individually
-            }
-
-            $offset += $batchSize;
-        }
+        $stmt = $this->pdo->prepare("SELECT * FROM hp_save_answer LIMIT :offset, :limit");
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
 
     public function getAnswerById($id)
     {

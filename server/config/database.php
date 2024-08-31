@@ -1,9 +1,9 @@
 <?php
 // config/database.php
-$host = 'localhost';
+$host = '109.70.148.53';
 $db   = 'pharmaco_pharmacollege';
-$user = 'root';
-$pass = '';
+$user = 'pharmaco_admin';
+$pass = 'pharmaadmin';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";

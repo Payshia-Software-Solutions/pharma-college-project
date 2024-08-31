@@ -11,9 +11,9 @@ class HpSaveAnswerController
         $this->model = new HpSaveAnswer($pdo);
     }
 
-    public function getAllAnswers()
+    public function getAllAnswers($offset, $limit)
     {
-        $answers = $this->model->getAllAnswers();
+        $answers = $this->model->getAllAnswers($offset, $limit);
         echo json_encode($answers);
     }
 
