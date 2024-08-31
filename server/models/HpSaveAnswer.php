@@ -25,13 +25,18 @@ class HpSaveAnswer
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-
     public function getAnswerById($id)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM hp_save_answer WHERE id = :id");
         $stmt->execute(['id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getAnswerByUsername($index_number)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM hp_save_answer WHERE index_number = :index_number");
+        $stmt->execute(['index_number' => $index_number]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function createAnswer($data)
