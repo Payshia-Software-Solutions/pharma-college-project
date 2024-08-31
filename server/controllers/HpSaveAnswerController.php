@@ -23,6 +23,12 @@ class HpSaveAnswerController
         echo json_encode($answer);
     }
 
+    public function getAnswerByUsername($index_number)
+    {
+        $answer = $this->model->getAnswerByUsername($index_number);
+        echo json_encode($answer);
+    }
+
     public function createAnswer()
     {
         $data = json_decode(file_get_contents('php://input'), true);
