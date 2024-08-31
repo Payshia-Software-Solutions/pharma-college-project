@@ -31,6 +31,7 @@ if (substr($uri, -1) !== '/') {
     $uri .= '/';
 }
 
+// Webserver is bypass this
 // Determine if the application is running on localhost
 if ($_SERVER['HTTP_HOST'] === 'localhost') {
     // Adjust URI if needed (only on localhost)
