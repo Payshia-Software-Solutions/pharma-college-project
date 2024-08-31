@@ -1,0 +1,65 @@
+<?php
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
+
+require_once '../../include/configuration.php';
+include '../../php_handler/function_handler.php';
+include '../../php_handler/course_functions.php';
+include '../../php_handler/win-pharma-functions.php';
+include '../../php_handler/old-hunter.php';
+include '../../lib/quiz/php_method/quiz_methods.php';
+include '../../lib/d-pad/php_methods/d-pad-methods.php';
+
+// Include Classes
+include_once './classes/Database.php';
+include_once './classes/Assignments.php';
+include_once './classes/AssignmentSubmissions.php';
+// Create a new Database object with the path to the configuration file
+$config_file = '../../include/env.txt';
+$database = new Database($config_file);
+$db = $database->getConnection();
+
+$Assignments = new Assignments($database);
+$AssignmentSubmissions = new AssignmentSubmissions($database);
+
+
+
+$loggedUser = $_POST['LoggedUser'];
+$courseCode = $_POST['defaultCourseCode'];
+
+$batchCode = $courseCode;
+$winPharmaLevels = GetLevels($link, $batchCode);
+$getSubmissionLevelCount = GetSubmissionLevelCount($loggedUser, $batchCode);
+$winPharmaLevelCount = count($winPharmaLevels);
+if ($winPharmaLevelCount > 0) {
+    $winPharmaPercentage = ($getSubmissionLevelCount / $winPharmaLevelCount) * 100;
+} else {
+    $winPharmaPercentage = 0;
+}
+
+// Payments
+$studentBalanceArray = GetStudentBalance($loggedUser);
+$studentBalance = $studentBalanceArray['studentBalance'];
+
+
+
+
+
+include './components/hi-user.php';
+include './components/image-slider.php';
+include './components/payment-status.php';
+include './components/default-course.php';
+include './components/banner.php'; ?>
+<div id="grade_values"></div>
+<?php
+// include './components/grade-values.php';
+include './components/common-modules.php';
+?>
+<div class="border-bottom my-3"></div>
+<?php
+include './components/play-modules.php';
+?>
+<div class="border-bottom my-3"></div>
+<?php
+include './components/other-modules.php';
+?>

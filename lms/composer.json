@@ -1,0 +1,22 @@
+{
+    "require": {
+        "php": "^8.2",
+        "phpmailer/phpmailer": "^6.8",
+        "twbs/bootstrap": "5.3.2",
+        "axllent/jquery": "^3.7",
+        "mpdf/mpdf": "^8.2",
+        "firebase/php-jwt": "^6.0",
+        "mike42/escpos-php": "^2.2",
+        "myclabs/deep-copy": "^1.10",
+        "lcobucci/jwt": "^4.0",
+        "nesbot/carbon": "^3.6",
+        "vlucas/phpdotenv": "^5.6",
+        "guzzlehttp/guzzle": "^7.9"
+    },
+    "config": {
+        "allow-plugins": {
+            "kylekatarnls/update-helper": true
+        }
+    }
+
+}

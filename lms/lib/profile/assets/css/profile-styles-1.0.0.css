@@ -1,0 +1,600 @@
+/* Profile Cover */
+
+.profile-cover {
+    /* Add your cover image URL here */
+    background-size: cover;
+    background-position: center;
+    height: 250px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 85px;
+    border-radius: 10px;
+}
+
+.profile-picture {
+    position: absolute;
+    bottom: -60px;
+    /* Adjust this value to control the overlap */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    z-index: 1;
+    /* Ensure the picture appears above the cover */
+}
+
+.profile-name {
+    font-size: 2.2rem;
+    color: #000;
+    font-weight: 600;
+}
+
+
+/* Recent Activities */
+
+
+/* Style for the recent activities section */
+
+
+/* Style for the activity list */
+
+.recent-activities ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+
+/* Style for individual activity items */
+
+.recent-activities li {
+    margin-bottom: 10px;
+    border-left: 3px solid #007bff;
+    /* Add a left border for visual separation */
+    padding-left: 10px;
+}
+
+
+/* Style for activity date */
+
+.activity-date {
+    color: #888;
+    font-size: 14px;
+    margin-right: 10px;
+}
+
+
+/* Style for activity description */
+
+.activity-description {
+    font-size: 16px;
+}
+
+
+/* End of Recent Activities */
+
+.game-results .card {
+    border-radius: 15px;
+    border: 0px;
+}
+
+
+/* Style for the game results section */
+
+.game-results {
+    margin-top: 20px;
+}
+
+
+/* Style for the card deck */
+
+
+/* Style for the card deck */
+
+
+/* Style for the card deck */
+
+.card-deck {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 20px;
+    padding: 20px;
+}
+
+
+/* Style for individual cards */
+
+.game-results .card {
+    flex: 0 0 auto;
+    width: 200px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+
+/* Remove right margin from the last card to prevent unnecessary spacing */
+
+.card:last-child {
+    margin-right: 0;
+}
+
+
+/* Style for card images */
+
+.card-img-top {
+    width: 50%;
+    margin: auto;
+    /* Adjust height as needed */
+    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+
+/* Style for card titles */
+
+.card-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+
+/* Style for card text */
+
+.card-text {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+    padding: 0 20px;
+}
+
+
+/* Hover effect for cards */
+
+.card:hover {
+    transform: translateY(-5px);
+    /* Add a slight lift on hover */
+    transition: transform 0.3s ease;
+}
+
+
+/* Other styles */
+
+
+/* Style for the container */
+
+.text-end {
+    text-align: right;
+}
+
+
+/* Style for the buttons */
+
+.btn-edit-profile,
+.btn-logout {
+    /* margin-left: 10px; */
+    /* Add some space between buttons */
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+
+/* Style for the Edit Profile button */
+
+.btn-edit-profile {
+    background-color: #007bff;
+    /* Blue color */
+    border-color: #007bff;
+}
+
+
+/* Hover effect for Edit Profile button */
+
+.btn-edit-profile:hover {
+    background-color: #0056b3;
+    /* Darker blue on hover */
+    border-color: #0056b3;
+}
+
+
+/* Style for the Logout button */
+
+.btn-logout {
+    background-color: #dc3545;
+    /* Red color */
+    border-color: #dc3545;
+}
+
+
+/* Hover effect for Logout button */
+
+.btn-logout:hover {
+    background-color: #c82333;
+    /* Darker red on hover */
+    border-color: #c82333;
+}
+
+h3 {
+    font-size: 20px;
+    /* Adjust font size as needed */
+    font-weight: bold;
+    /* Make the text bold */
+    color: #333;
+    /* Set the text color */
+    position: relative;
+    /* Enable positioning for pseudo-elements */
+    padding-bottom: 10px;
+    /* Add padding below the title */
+}
+
+h3::after {
+    content: '';
+    /* Add content for the pseudo-element */
+    position: absolute;
+    /* Position the pseudo-element */
+    bottom: 0;
+    /* Position at the bottom of the title */
+    left: 0;
+    /* Start from the left */
+    width: 50%;
+    /* Set the width of the underline */
+    height: 2px;
+    /* Set the height of the underline */
+    background-color: #007bff;
+    /* Set the color of the underline */
+    transition: width 0.3s ease;
+    /* Add transition for hover effect */
+}
+
+h3:hover::after {
+    width: 100%;
+    /* Expand the underline on hover */
+}
+
+h3:first-letter {
+    font-size: 110%;
+    /* Increase the font size of the first letter */
+    color: #007bff;
+    /* Change the color of the first letter */
+}
+
+
+/* Post */
+
+.post-heading {
+    font-size: 28px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.post-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    display: inline-block;
+    padding-bottom: 5px;
+}
+
+.post {
+    background-color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+}
+
+.post-content {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+.like-button {
+    font-size: 14px;
+    font-weight: bold;
+    color: #007bff;
+    background-color: transparent;
+    border: 2px solid #007bff;
+    border-radius: 20px;
+    padding: 8px 20px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.like-button:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.react-counter {
+    font-size: 16px;
+    color: #333;
+    margin-left: 10px;
+}
+
+.post-images {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.post-images img,
+.post-images .image-container img {
+    width: calc(33.33% - 10px);
+    margin-right: 10px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.post-images .image-container img {
+    width: 100%;
+}
+
+.image-container {
+    position: relative;
+    width: calc(33.33% - 5px);
+    /* Adjust container width */
+}
+
+.image-overlay {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    width: 100%;
+    top: 0;
+    height: 100%;
+    z-index: 2;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-overlay.active {
+    display: flex;
+}
+
+.image-container:hover .image-overlay {
+    background-color: rgba(0, 0, 0, 0.8);
+    /* Show image-overlay on hover */
+}
+
+
+/* Hide additional images initially */
+
+.post-images img:nth-child(n+4) {
+    display: none;
+}
+
+
+/* Show additional images on hover */
+
+.post-images:hover img:nth-child(n+4) {
+    display: block;
+}
+
+.payment-history {
+    margin: 20px 0 20px 0;
+}
+
+.section-title {
+    color: #333;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.payment-item {
+    display: flex;
+    align-items: center;
+}
+
+.payment-date {
+    flex: 1;
+}
+
+.payment-amount {
+    color: #009688;
+    font-weight: bold;
+}
+
+.enrollments {
+    margin-top: 20px;
+}
+
+.section-title {
+    color: #333;
+    /* font-size: 24px; */
+    margin-bottom: 15px;
+}
+
+.enrollment-list {
+    list-style: none;
+    padding: 0;
+}
+
+.enrollment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+}
+
+.course-title {
+    font-weight: bold;
+}
+
+.course-status {
+    color: #666;
+}
+
+.enrollment-item:last-child {
+    border-bottom: none;
+}
+
+.biography {
+    margin-top: 20px;
+}
+
+.biography-content {
+    /* background-color: #f9f9f9; */
+    padding: 15px;
+    border-radius: 5px;
+    /* border: 1px solid #ddd; */
+    line-height: 1.6;
+}
+
+.ads-space-square {
+    margin-top: 20px;
+}
+
+.ads-space-square img {
+    width: 100%;
+}
+
+.user-details {
+    margin-top: 20px;
+}
+
+.details-list {
+    border: 0px;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.detail-label {
+    font-weight: bold;
+}
+
+.detail-value {
+    color: #666;
+}
+
+
+/* Hide all wizard content except the first one */
+
+.wizard-content {
+    display: none;
+}
+
+
+/* Show the first wizard content */
+
+.wizard-content:first-child {
+    display: block;
+}
+
+
+/* Additional styles for active navigation button */
+
+.navigation-button.active {
+    background-color: #0056b3;
+    color: #fff;
+}
+
+
+/* Some general styling for the form wizard container */
+
+.wizard {
+    margin: 0 auto;
+}
+
+
+/* Increase the size of input fields */
+
+.form-control {
+    width: 100%;
+    padding: 12px;
+    margin: 0 0 5px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 16px;
+    /* Adjust font size as needed */
+}
+
+.wizard-navigation {
+    margin-bottom: 25px;
+}
+
+.wizard-navigation {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.navigation-button {
+    width: calc(25% - 10px);
+    padding: 15px;
+    /* margin: 5px; */
+    border: 3px solid #cbccc6;
+    background-color: #fbfcf5;
+    color: #000;
+    font-size: 16px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.navigation-button:hover {
+    background-color: #c0c2b4;
+}
+
+.navigation-button p {
+    margin-bottom: 0px;
+}
+
+.navigation-button i {
+    font-size: 35px;
+    margin-bottom: 5px;
+}
+
+
+/* Ensure proper spacing for small screens */
+
+@media (max-width: 768px) {
+
+    /* .wizard-navigation {
+        flex-direction: column;
+    }
+
+    .navigation-button {
+        width: 100%;
+        max-width: none;
+    } */
+    .navigation-button h4,
+    .navigation-button p {
+        display: none;
+    }
+
+    .navigation-button i {
+        font-size: 25px;
+        margin-bottom: 0px;
+    }
+}
+
+.next-button {
+    padding: 10px 20px;
+}

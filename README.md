@@ -10,4 +10,4 @@ This project is licensed under the License This project is licensed under the MI
 
 <h2>💖Like my work?</h2>
 
-Contact For any questions or support please contact the development team at: Email: support@payshia.com Phone: +94 123 456 789
+Contact For any questions or support please contact the development team at: Email: support@payshia.com Phone: +94 77 0 481 363
