@@ -1,0 +1,17 @@
+<?php
+// routes/hpSaveAnswerRoutes.php
+
+require_once './controllers/HpSaveAnswerController.php';
+
+// Instantiate the controller
+$pdo = $GLOBALS['pdo'];
+$hpSaveAnswerController = new HpSaveAnswerController($pdo);
+
+// Define routes for hp_save_answer
+return [
+    'GET /hp-answers/' => [$hpSaveAnswerController, 'getAllAnswers'],
+    'GET /hp-answers/{id}/' => [$hpSaveAnswerController, 'getAnswer'],
+    'POST /hp-answers/' => [$hpSaveAnswerController, 'createAnswer'],
+    'PUT /hp-answers/{id}/' => [$hpSaveAnswerController, 'updateAnswer'],
+    'DELETE /hp-answers/{id}/' => [$hpSaveAnswerController, 'deleteAnswer'],
+];
