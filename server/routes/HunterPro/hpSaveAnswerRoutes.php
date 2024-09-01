@@ -11,6 +11,7 @@ $hpSaveAnswerController = new HpSaveAnswerController($pdo);
 return [
     'GET /hp-answers/{offset}/{limit}/' => [$hpSaveAnswerController, 'getAllAnswers'],
     'GET /hp-answers/username/{username}/' => [$hpSaveAnswerController, 'getAnswerByUsername'],
+    'GET /hp-saved-answers-counts/' => [$hpSaveAnswerController, 'getHunterSavedAnswers'],
     'GET /hp-answers/{id}/' => [$hpSaveAnswerController, 'getAnswer'],
     'POST /hp-answers/' => [$hpSaveAnswerController, 'createAnswer'],
     'PUT /hp-answers/{id}/' => [$hpSaveAnswerController, 'updateAnswer'],
