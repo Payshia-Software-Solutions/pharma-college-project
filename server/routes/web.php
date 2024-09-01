@@ -9,17 +9,17 @@ ini_set('display_errors', 1);
 // routes/web.php
 
 // Include route files
-$userRoutes = require './routes/userRoutes.php';
-$assignmentRoutes = require './routes/assignmentRoutes.php';
-$appointmentRoutes = require './routes/appointmentRoutes.php';
-$eCertificateRoutes = require './routes/eCertificateRoutes.php';
-$courseAssignmentRoutes = require './routes/courseAssignmentRoutes.php';
-$courseAssignmentSubmissionRoutes = require './routes/courseAssignmentSubmissionRoutes.php';
-$reportRoutes = require './routes/reportRoutes.php';
-$courseRoutes = require './routes/courseRoutes.php';
-$studentCourseRoutes = require './routes/studentCourseRoutes.php';
-$userFullDetailsRoutes = require './routes/userFullDetailsRoutes.php';
-$companyRoutes = require './routes/companyRoutes.php';
+$assignmentRoutes = require './routes/OtherRoutes/assignmentRoutes.php';
+$appointmentRoutes = require './routes/OtherRoutes/appointmentRoutes.php';
+$eCertificateRoutes = require './routes/OtherRoutes/eCertificateRoutes.php';
+$courseAssignmentRoutes = require './routes/OtherRoutes/courseAssignmentRoutes.php';
+$courseAssignmentSubmissionRoutes = require './routes/OtherRoutes/courseAssignmentSubmissionRoutes.php';
+$reportRoutes = require './routes/OtherRoutes/reportRoutes.php';
+$courseRoutes = require './routes/OtherRoutes/courseRoutes.php';
+$studentCourseRoutes = require './routes/OtherRoutes/studentCourseRoutes.php';
+$userRoutes = require './routes/UserRoutes/userRoutes.php';
+$userFullDetailsRoutes = require './routes/UserRoutes/userFullDetailsRoutes.php';
+$companyRoutes = require './routes/OtherRoutes/companyRoutes.php';
 $hpSaveAnswerRoutes = require './routes/HunterPro/hpSaveAnswerRoutes.php';
 $hpCourseMedicineRoutes = require './routes/HunterPro/hpCourseMedicineRoutes.php';
 $hpMedicinesRoutes = require './routes/HunterPro/hpMedicinesRoutes.php';
@@ -68,8 +68,8 @@ foreach ($routes as $route => $handler) {
 
     // Convert route URI to regex
     $routeRegex = str_replace(
-        ['{id}', '{username}', '{assignment_id}', '{course_code}', '{offset}', '{limit}'],  // Replace placeholders
-        ['(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)'], // Allow alphanumeric, hyphens, underscores for username
+        ['{id}', '{username}', '{assignment_id}', '{course_code}', '{offset}', '{limit}'],
+        ['(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)'],
         $routeUri
     );
     $routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
