@@ -19,6 +19,7 @@ $hpSaveAnswerRoutes = require './routes/hpSaveAnswerRoutes.php';
 $reportRoutes = require './routes/reportRoutes.php';
 $courseRoutes = require './routes/courseRoutes.php';
 $studentCourseRoutes = require './routes/studentCourseRoutes.php';
+$userFullDetailsRoutes = require './routes/userFullDetailsRoutes.php';
 
 // Combine all routes
 $routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes, $eCertificateRoutes, $courseAssignmentRoutes, $courseAssignmentSubmissionRoutes, $hpSaveAnswerRoutes, $reportRoutes, $courseRoutes, $studentCourseRoutes);
