@@ -1,17 +1,17 @@
 <?php
-// routes/appointmentRoutes.php
+// routes/studentCourseRoutes.php
 
 require_once './controllers/StudentCourseController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];
-$appointmentController = new AppointmentController($pdo);
+$studentCourseController = new StudentCourseController($pdo);
 
-// Define appointment routes
+// Define student course routes
 return [
-    'GET /studentEnrollments' => [$studentCourseController, 'getCourses'],
-    'POST /studentEnrollments' => [$studentCourseController, 'createCourse'],
-    'GET /studentEnrollments/{id}' => [$studentCourseController, 'getCourse'],
-    'PUT /studentEnrollments/{id}' => [$studentCourseController, 'updateCourse'],
-    'DELETE /studentEnrollments/{id}' => [$studentCourseController, 'deleteCourse']
+    'GET /studentEnrollments/' => [$studentCourseController, 'getAllEnrollments'],
+    'GET /studentEnrollments/{id}/' => [$studentCourseController, 'getEnrollmentById'],
+    'POST /studentEnrollments/' => [$studentCourseController, 'createEnrollment'],
+    'PUT /studentEnrollments/{id}/' => [$studentCourseController, 'updateEnrollment'],
+    'DELETE /studentEnrollments/{id}/' => [$studentCourseController, 'deleteEnrollment']
 ];

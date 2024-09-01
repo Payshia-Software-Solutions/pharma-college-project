@@ -1,5 +1,6 @@
 <?php
-class StudentCourseModel
+
+class StudentCourse
 {
     private $pdo;
 
@@ -8,51 +9,43 @@ class StudentCourseModel
         $this->pdo = $pdo;
     }
 
-    // Get all student courses
-    public function getAll()
+    public function getAllEnrollments()
     {
-        $stmt = $this->pdo->query("SELECT id, course_code, student_id, enrollment_key, created_at FROM student_course");
+        $stmt = $this->pdo->query("SELECT * FROM student_course");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    // Get a specific student course by ID
-    public function getById($id)
+    public function getEnrollmentById($id)
     {
-        $stmt = $this->pdo->prepare("SELECT id, course_code, student_id, enrollment_key, created_at FROM student_course WHERE id = :id");
-        $stmt->execute([':id' => $id]);
+        $stmt = $this->pdo->prepare("SELECT * FROM student_course WHERE id = :id");
+        $stmt->execute(['id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Create a new student course
-    public function create($course_code, $student_id, $enrollment_key)
+    public function createEnrollment($data)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO student_course (course_code, student_id, enrollment_key, created_at) VALUES (:course_code, :student_id, :enrollment_key, NOW())");
-        $stmt->execute([
-            ':course_code' => $course_code,
-            ':student_id' => $student_id,
-            ':enrollment_key' => $enrollment_key
-        ]);
-        return $this->pdo->lastInsertId();
+        $sql = "INSERT INTO student_course (course_code, student_id, enrollment_key, created_at) 
+                VALUES (:course_code, :student_id, :enrollment_key, :created_at)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($data);
     }
 
-    // Update an existing student course
-    public function update($id, $course_code, $student_id, $enrollment_key)
+    public function updateEnrollment($id, $data)
     {
-        $stmt = $this->pdo->prepare("UPDATE student_course SET course_code = :course_code, student_id = :student_id, enrollment_key = :enrollment_key WHERE id = :id");
-        $stmt->execute([
-            ':id' => $id,
-            ':course_code' => $course_code,
-            ':student_id' => $student_id,
-            ':enrollment_key' => $enrollment_key
-        ]);
-        return $stmt->rowCount();
+        $data['id'] = $id;
+        $sql = "UPDATE student_course SET 
+                    course_code = :course_code, 
+                    student_id = :student_id, 
+                    enrollment_key = :enrollment_key, 
+                    created_at = :created_at
+                WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($data);
     }
 
-    // Delete a student course by ID
-    public function delete($id)
+    public function deleteEnrollment($id)
     {
         $stmt = $this->pdo->prepare("DELETE FROM student_course WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-        return $stmt->rowCount();
+        $stmt->execute(['id' => $id]);
     }
 }
