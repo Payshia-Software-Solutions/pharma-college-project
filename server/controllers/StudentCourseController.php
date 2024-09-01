@@ -16,6 +16,12 @@ class StudentCourseController
         echo json_encode($enrollments);
     }
 
+    public function getAllEnrollmentsByCourse($course_code)
+    {
+        $enrollments = $this->model->getAllEnrollmentsByCourse($course_code);
+        echo json_encode($enrollments);
+    }
+
     public function getEnrollmentById($id)
     {
         $enrollment = $this->model->getEnrollmentById($id);
