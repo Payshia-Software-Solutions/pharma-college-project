@@ -39,6 +39,29 @@ class HpSaveAnswer
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function HunterSavedAnswers()
+    {
+        $sql = "SELECT 
+                    `index_number`, 
+                    SUM(CASE WHEN `answer_status` LIKE 'Correct' THEN 1 ELSE 0 END) AS `correct_count`, 
+                    SUM(CASE WHEN `answer_status` LIKE 'Wrong' THEN 1 ELSE 0 END) AS `incorrect_count`, 
+                    SUM(CASE WHEN `answer_status` LIKE 'Correct' AND `score_type` LIKE 'Jem' THEN  1 ELSE 0 END) AS `gem_count`, 
+                    SUM(CASE WHEN `answer_status` LIKE 'Correct' AND `score_type` LIKE 'Coin' THEN 1 ELSE 0 END) AS `coin_count` 
+                FROM 
+                    `hp_save_answer` 
+                GROUP BY 
+                    `index_number`";
+
+        $stmt = $this->pdo->query($sql);
+        $ArrayResult = array(); // Initialize the array
+        if ($stmt->rowCount() > 0) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $ArrayResult[$row['index_number']] = $row;
+            }
+        }
+        return $ArrayResult;
+    }
+
     public function createAnswer($data)
     {
         $sql = "INSERT INTO hp_save_answer (index_number, category_id, medicine_id, rack_id, dosage_id, drug_type, answer_status, created_at, score, score_type, attempts) 

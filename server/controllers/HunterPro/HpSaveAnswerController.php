@@ -17,6 +17,12 @@ class HpSaveAnswerController
         echo json_encode($answers);
     }
 
+    public function getHunterSavedAnswers()
+    {
+        $answers = $this->model->HunterSavedAnswers();
+        echo json_encode($answers);
+    }
+
     public function getAnswer($id)
     {
         $answer = $this->model->getAnswerById($id);
