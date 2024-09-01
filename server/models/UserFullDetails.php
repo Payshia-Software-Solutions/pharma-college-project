@@ -22,6 +22,13 @@ class UserFullDetails
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getUserByUserName($username)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM user_full_details WHERE username = :username");
+        $stmt->execute(['username' => $username]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function createUser($data)
     {
         $sql = "INSERT INTO user_full_details (student_id, username, civil_status, first_name, last_name, gender, address_line_1, address_line_2, city, district, postal_code, telephone_1, telephone_2, nic, e_mail, birth_day, updated_by, updated_at, full_name, name_with_initials, name_on_certificate) 

@@ -27,6 +27,17 @@ class UserFullDetailsController
         }
     }
 
+    public function getUserByUserName($username)
+    {
+        $user = $this->model->getUserByUserName($username);
+        if ($user) {
+            echo json_encode($user);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'User not found']);
+        }
+    }
+
     public function createUser()
     {
         $data = json_decode(file_get_contents("php://input"), true);
