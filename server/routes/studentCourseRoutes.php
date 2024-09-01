@@ -10,6 +10,7 @@ $studentCourseController = new StudentCourseController($pdo);
 // Define student course routes
 return [
     'GET /studentEnrollments/' => [$studentCourseController, 'getAllEnrollments'],
+    'GET /studentEnrollments/course/{course_code}' => [$studentCourseController, 'getAllEnrollmentsByCourse'],
     'GET /studentEnrollments/{id}/' => [$studentCourseController, 'getEnrollmentById'],
     'POST /studentEnrollments/' => [$studentCourseController, 'createEnrollment'],
     'PUT /studentEnrollments/{id}/' => [$studentCourseController, 'updateEnrollment'],
