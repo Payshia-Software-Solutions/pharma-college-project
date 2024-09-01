@@ -22,7 +22,7 @@ $studentCourseRoutes = require './routes/studentCourseRoutes.php';
 $userFullDetailsRoutes = require './routes/userFullDetailsRoutes.php';
 
 // Combine all routes
-$routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes, $eCertificateRoutes, $courseAssignmentRoutes, $courseAssignmentSubmissionRoutes, $hpSaveAnswerRoutes, $reportRoutes, $courseRoutes, $studentCourseRoutes);
+$routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes, $eCertificateRoutes, $courseAssignmentRoutes, $courseAssignmentSubmissionRoutes, $hpSaveAnswerRoutes, $reportRoutes, $courseRoutes, $studentCourseRoutes, $userFullDetailsRoutes);
 
 // Define the home route with trailing slash
 $routes['GET /'] = function () {
