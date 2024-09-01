@@ -22,6 +22,13 @@ class HpCourseMedicine
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getRecordByCourseCode($course_code)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM hp_course_medicine WHERE CourseCode = :course_code");
+        $stmt->execute(['course_code' => $course_code]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function createRecord($data)
     {
         $sql = "INSERT INTO hp_course_medicine (CourseCode, MediID, status) 
