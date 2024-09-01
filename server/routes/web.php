@@ -15,15 +15,17 @@ $appointmentRoutes = require './routes/appointmentRoutes.php';
 $eCertificateRoutes = require './routes/eCertificateRoutes.php';
 $courseAssignmentRoutes = require './routes/courseAssignmentRoutes.php';
 $courseAssignmentSubmissionRoutes = require './routes/courseAssignmentSubmissionRoutes.php';
-$hpSaveAnswerRoutes = require './routes/hpSaveAnswerRoutes.php';
 $reportRoutes = require './routes/reportRoutes.php';
 $courseRoutes = require './routes/courseRoutes.php';
 $studentCourseRoutes = require './routes/studentCourseRoutes.php';
 $userFullDetailsRoutes = require './routes/userFullDetailsRoutes.php';
 $companyRoutes = require './routes/companyRoutes.php';
+$hpSaveAnswerRoutes = require './routes/HunterPro/hpSaveAnswerRoutes.php';
+$hpCourseMedicineRoutes = require './routes/HunterPro/hpCourseMedicineRoutes.php';
+$hpMedicinesRoutes = require './routes/HunterPro/hpMedicinesRoutes.php';
 
 // Combine all routes
-$routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes, $eCertificateRoutes, $courseAssignmentRoutes, $courseAssignmentSubmissionRoutes, $hpSaveAnswerRoutes, $reportRoutes, $courseRoutes, $studentCourseRoutes, $userFullDetailsRoutes, $companyRoutes);
+$routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes, $eCertificateRoutes, $courseAssignmentRoutes, $courseAssignmentSubmissionRoutes, $hpSaveAnswerRoutes, $reportRoutes, $courseRoutes, $studentCourseRoutes, $userFullDetailsRoutes, $companyRoutes, $hpCourseMedicineRoutes, $hpMedicinesRoutes);
 
 // Define the home route with trailing slash
 $routes['GET /'] = function () {

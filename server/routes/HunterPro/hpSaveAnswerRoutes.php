@@ -1,7 +1,7 @@
 <?php
 // routes/hpSaveAnswerRoutes.php
 
-require_once './controllers/HpSaveAnswerController.php';
+require_once './controllers/HunterPro/HpSaveAnswerController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];
