@@ -1,6 +1,6 @@
 <?php
 
-require_once './models/HpSaveAnswer.php';
+require_once './models/HunterPro/HpSaveAnswer.php';
 
 class HpSaveAnswerController
 {
