@@ -1,75 +1,50 @@
 <?php
-require_once './models/StudentCourse.php';
 
+require_once './models/StudentCourse.php';
 class StudentCourseController
 {
     private $model;
 
     public function __construct($pdo)
     {
-        $this->model = new StudentCourseModel($pdo);
+        $this->model = new StudentCourse($pdo);
     }
 
-    // Handle GET /student_course
-    public function getCourses()
+    public function getAllEnrollments()
     {
-        $courses = $this->model->getAll();
-        echo json_encode($courses);
+        $enrollments = $this->model->getAllEnrollments();
+        echo json_encode($enrollments);
     }
 
-    // Handle GET /student_course/{id}
-    public function getCourse($id)
+    public function getEnrollmentById($id)
     {
-        $course = $this->model->getById($id);
-        if ($course) {
-            echo json_encode($course);
+        $enrollment = $this->model->getEnrollmentById($id);
+        if ($enrollment) {
+            echo json_encode($enrollment);
         } else {
             http_response_code(404);
-            echo json_encode(['error' => 'Course not found']);
+            echo json_encode(['error' => 'Enrollment not found']);
         }
     }
 
-    // Handle POST /student_course
-    public function createCourse()
+    public function createEnrollment()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
-        if (isset($data['course_code'], $data['student_id'], $data['enrollment_key'])) {
-            $id = $this->model->create($data['course_code'], $data['student_id'], $data['enrollment_key']);
-            http_response_code(201);
-            echo json_encode(['id' => $id]);
-        } else {
-            http_response_code(400);
-            echo json_encode(['error' => 'Invalid input']);
-        }
+        $data = json_decode(file_get_contents("php://input"), true);
+        $this->model->createEnrollment($data);
+        http_response_code(201);
+        echo json_encode(['message' => 'Enrollment created successfully']);
     }
 
-    // Handle PUT /student_course/{id}
-    public function updateCourse($id)
+    public function updateEnrollment($id)
     {
-        $data = json_decode(file_get_contents('php://input'), true);
-        if (isset($data['course_code'], $data['student_id'], $data['enrollment_key'])) {
-            $rows = $this->model->update($id, $data['course_code'], $data['student_id'], $data['enrollment_key']);
-            if ($rows > 0) {
-                echo json_encode(['message' => 'Course updated']);
-            } else {
-                http_response_code(404);
-                echo json_encode(['error' => 'Course not found']);
-            }
-        } else {
-            http_response_code(400);
-            echo json_encode(['error' => 'Invalid input']);
-        }
+        $data = json_decode(file_get_contents("php://input"), true);
+        $this->model->updateEnrollment($id, $data);
+        echo json_encode(['message' => 'Enrollment updated successfully']);
     }
 
-    // Handle DELETE /student_course/{id}
-    public function deleteCourse($id)
+    public function deleteEnrollment($id)
     {
-        $rows = $this->model->delete($id);
-        if ($rows > 0) {
-            echo json_encode(['message' => 'Course deleted']);
-        } else {
-            http_response_code(404);
-            echo json_encode(['error' => 'Course not found']);
-        }
+        $this->model->deleteEnrollment($id);
+        echo json_encode(['message' => 'Enrollment deleted successfully']);
     }
 }
