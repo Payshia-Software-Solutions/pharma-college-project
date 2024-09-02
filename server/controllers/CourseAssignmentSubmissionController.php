@@ -18,6 +18,12 @@ class CourseAssignmentSubmissionController
         echo json_encode($submissions);
     }
 
+    public function getSubmissionsByCourse($course_code)
+    {
+        $submissions = $this->model->getSubmissionsByCourse($course_code);
+        echo json_encode($submissions);
+    }
+
     public function getSubmission($id)
     {
         $submission = $this->model->getSubmissionById($id);
