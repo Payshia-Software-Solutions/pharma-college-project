@@ -10,6 +10,7 @@ $courseAssignmentController = new CourseAssignmentController($pdo);
 // Define course assignment routes
 return [
     'GET /assignments/' => [$courseAssignmentController, 'getAssignments'],
+    'GET /assignments/course/{course_code}' => [$courseAssignmentController, 'getAssignmentsByCourse'],
     'GET /assignments/{id}/' => [$courseAssignmentController, 'getAssignment'],
     'POST /assignments/' => [$courseAssignmentController, 'createAssignment'],
     'PUT /assignments/{id}/' => [$courseAssignmentController, 'updateAssignment'],

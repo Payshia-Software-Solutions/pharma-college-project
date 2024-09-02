@@ -16,6 +16,24 @@ class CourseAssignmentSubmission
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getSubmissionsByCourse($course_code)
+    {
+        $stmt = $this->pdo->prepare('SELECT id, assignment_id, course_code, created_by, created_at, is_active, updated_at, file_list, grade, grade_status FROM course_assignments_submissions WHERE course_code = :course_code');
+        $stmt->bindParam(':course_code', $course_code, PDO::PARAM_STR);  // Use PDO::PARAM_STR for string values
+        $stmt->execute();
+
+        $submissions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Create an indexed array based on created_by and assignment_id
+        $indexedSubmissions = [];
+        foreach ($submissions as $submission) {
+            $key = $submission['created_by'] . '_' . $submission['assignment_id'];
+            $indexedSubmissions[$key] = $submission;
+        }
+
+        return $indexedSubmissions;
+    }
+
     public function getSubmissionsByUser($username)
     {
         $stmt = $this->pdo->prepare('SELECT id, assignment_id, course_code, created_by, created_at, is_active, updated_at, file_list, grade, grade_status FROM course_assignments_submissions WHERE created_by = ?');

@@ -11,13 +11,13 @@ class StudentCourse
 
     public function getAllEnrollments()
     {
-        $stmt = $this->pdo->query("SELECT * FROM student_course");
+        $stmt = $this->pdo->query("SELECT * FROM student_course ORDER BY `id` DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getAllEnrollmentsByCourse($course_code)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM student_course WHERE course_code = :course_code");
+        $stmt = $this->pdo->prepare("SELECT * FROM student_course WHERE course_code = :course_code ORDER BY `id` DESC");
         $stmt->execute(['course_code' => $course_code]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
