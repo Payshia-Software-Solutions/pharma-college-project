@@ -16,6 +16,14 @@ class CourseAssignment
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getAssignmentsByCourse($course_code)
+    {
+        $stmt = $this->pdo->prepare("SELECT id, type, assignment_name, due_date, created_at, created_by, active_status, file_path, course_code FROM course_assignments WHERE course_code = :course_code");
+        $stmt->bindParam(':course_code', $course_code, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getAssignmentById($id)
     {
         $stmt = $this->pdo->prepare("SELECT id, type, assignment_name, due_date, created_at, created_by, active_status, file_path, course_code FROM course_assignments WHERE id = :id");
