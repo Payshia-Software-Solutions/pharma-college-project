@@ -11,7 +11,7 @@ class UserFullDetails
 
     public function getAllUsers()
     {
-        $stmt = $this->pdo->query("SELECT * FROM user_full_details");
+        $stmt = $this->pdo->query("SELECT * FROM user_full_details ORDER BY `id` DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
