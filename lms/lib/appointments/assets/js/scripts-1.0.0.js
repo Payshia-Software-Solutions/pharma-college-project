@@ -86,3 +86,70 @@ function GetStared() {
   }
   fetch_data();
 }
+
+function GetAppointment() {
+  $("#root").html(InnerLoader);
+
+  function fetch_data() {
+    $.ajax({
+      url: "lib/appointments/views/appointment-details.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        CourseCode: CourseCode,
+        company_id: company_id,
+      },
+      success: function (data) {
+        $("#root").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
+
+function submitAppointment() {
+  var form = document.getElementById("appointmentForm");
+
+  if (form.checkValidity()) {
+    var formData = new FormData(form);
+
+    $.ajax({
+      url: "lib/appointments/views/appointment-description.php",
+      method: "POST",
+      data: formData,
+      contentType: false,
+      processData: false,
+      success: function (data) {
+        document.getElementById("responseContainer").innerHTML = data;
+      },
+      error: function (xhr, status, error) {
+        showNotification("An error occurred: " + error, "error", "Ops!");
+      },
+    });
+  } else {
+    form.reportValidity();
+    showNotification("Please fill out all required fields.", "error", "Ops!");
+  }
+}
+
+function SucceedMessage() {
+  $("#root").html(InnerLoader);
+
+  function fetch_data() {
+    $.ajax({
+      url: "lib/appointments/views/succeedmassage.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        CourseCode: CourseCode,
+        company_id: company_id,
+      },
+      success: function (data) {
+        $("#root").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
