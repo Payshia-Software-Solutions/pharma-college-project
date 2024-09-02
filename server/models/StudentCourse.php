@@ -11,7 +11,7 @@ class StudentCourse
 
     public function getAllEnrollments()
     {
-        $stmt = $this->pdo->query("SELECT * FROM student_course");
+        $stmt = $this->pdo->query("SELECT * FROM student_course ORDER BY `id` DESC");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
