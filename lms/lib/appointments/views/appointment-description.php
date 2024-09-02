@@ -19,29 +19,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="container-fluid mt-5">
     <div class="row">
-        <div class="col-6">
-            <div class="card mb-3">
+        <!-- Left Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Date & Time</h5>
+                </div>
                 <div class="card-body">
-                    <div class="card-title">Date and Time</div>
-                    <p><?= $date ?></p>
+                    <p><strong>Date:</strong> <?= htmlspecialchars($date) ?></p>
+                    <p><strong>Time:</strong> <?= htmlspecialchars($time) ?></p>
                 </div>
             </div>
         </div>
 
-        <div class="col-6">
-            <div class="card mb-3">
+        <!-- Right Card -->
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Details</h5>
+                </div>
                 <div class="card-body">
-                    <div class="card-title">Details</div>
-                    <p><strong>Selected Option:</strong><?= $selection ?></p>
-                    <p><strong>Description Option:</strong><?= nl2br($description) ?></p>
+                    <p><strong>Selected Option:</strong> <?= htmlspecialchars($selection) ?></p>
+                    <p><strong>Description:</strong> <?= nl2br(htmlspecialchars($description)) ?></p>
                 </div>
             </div>
         </div>
     </div>
+    <div class="text-start mt-3">
+        <?php if ($bookingStatus === 0): ?>
+            <button class="btn btn-primary" disabled>Book Now</button>
+        <?php else: ?>
+            <button class="btn btn-primary" onclick="SucceedMessage()">Book Now</button>
+        <?php endif; ?>
+        <button class="btn btn-secondary ms-2" onclick="GetAppointment()">Back</button>
+    </div>
 </div>
-
-<?php if ($bookingStatus === 0) : ?>
-    <button class="btn btn-primary ms-2" disabled>Get another Time</button>
-<?php else : ?>
-    <button class="btn btn-secondary ml-4" style="margin-left: 1rem;" onclick="Getappointment()">Back</button>
-<?php endif ?>
