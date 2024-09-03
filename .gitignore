@@ -4,4 +4,4 @@
 /admin
 /client
 
-/server/config/database.php
+server/config/database.php
