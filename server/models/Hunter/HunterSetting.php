@@ -1,48 +1,124 @@
-<?php
+# HunterSettings API Documentation
 
-class HunterSetting
-{
-    private $pdo;
+## Overview
+The `HunterSettings` API provides CRUD operations for managing settings within the system. This documentation outlines the available endpoints, request parameters, response structures, and error codes.
 
-    public function __construct($pdo)
+## Base URL
+https://api.yourdomain.com/hunter-settings
+
+## Endpoints
+
+### 1. Get All Settings
+- **Endpoint:** `GET /hunter-settings/`
+- **Description:** Retrieves a list of all settings.
+- **Response:**
+  - **Status Code:** `200 OK`
+  - **Body:** 
+    ```json
+    [
+        {
+            "setting_name": "setting1",
+            "value": "value1"
+        },
+        {
+            "setting_name": "setting2",
+            "value": "value2"
+        }
+    ]
+    ```
+
+### 2. Get Setting by Name
+- **Endpoint:** `GET /hunter-settings/{setting_name}/`
+- **Description:** Retrieves a specific setting by its name.
+- **Path Parameters:**
+  - `setting_name` (string): The name of the setting to retrieve.
+- **Response:**
+  - **Status Code:** `200 OK`
+  - **Body:** 
+    ```json
     {
-        $this->pdo = $pdo;
+        "setting_name": "setting1",
+        "value": "value1"
     }
-
-    public function getAllRecords()
+    ```
+  - **Status Code:** `404 Not Found` (If the setting does not exist)
+  - **Body:** 
+    ```json
     {
-        $stmt = $this->pdo->query("SELECT * FROM huner_setting");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        "error": "Record not found"
     }
+    ```
 
-    public function getRecordByName($setting_name)
+### 3. Create a New Setting
+- **Endpoint:** `POST /hunter-settings/`
+- **Description:** Creates a new setting.
+- **Request Body:**
+  - **Content-Type:** `application/json`
+  - **Body:** 
+    ```json
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM huner_setting WHERE setting_name = :setting_name");
-        $stmt->execute(['setting_name' => $setting_name]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        "setting_name": "new_setting",
+        "value": "new_value"
     }
+    ```
+- **Response:**
+  - **Status Code:** `201 Created`
+  - **Body:** 
+    ```json
+    {
+        "message": "Record created successfully"
+    }
+    ```
 
-    public function createRecord($data)
+### 4. Update a Setting
+- **Endpoint:** `PUT /hunter-settings/{setting_name}/`
+- **Description:** Updates an existing setting.
+- **Path Parameters:**
+  - `setting_name` (string): The name of the setting to update.
+- **Request Body:**
+  - **Content-Type:** `application/json`
+  - **Body:** 
+    ```json
     {
-        $sql = "INSERT INTO huner_setting (setting_name, value) 
-                VALUES (:setting_name, :value)";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($data);
+        "value": "updated_value"
     }
+    ```
+- **Response:**
+  - **Status Code:** `200 OK`
+  - **Body:** 
+    ```json
+    {
+        "message": "Record updated successfully"
+    }
+    ```
 
-    public function updateRecord($setting_name, $data)
+### 5. Delete a Setting
+- **Endpoint:** `DELETE /hunter-settings/{setting_name}/`
+- **Description:** Deletes a specific setting by its name.
+- **Path Parameters:**
+  - `setting_name` (string): The name of the setting to delete.
+- **Response:**
+  - **Status Code:** `200 OK`
+  - **Body:** 
+    ```json
     {
-        $data['setting_name'] = $setting_name;
-        $sql = "UPDATE huner_setting SET 
-                    value = :value
-                WHERE setting_name = :setting_name";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($data);
+        "message": "Record deleted successfully"
     }
+    ```
 
-    public function deleteRecord($setting_name)
-    {
-        $stmt = $this->pdo->prepare("DELETE FROM huner_setting WHERE setting_name = :setting_name");
-        $stmt->execute(['setting_name' => $setting_name]);
-    }
-}
+## Error Codes
+
+- **400 Bad Request:** The request was invalid or cannot be served.
+- **404 Not Found:** The requested resource could not be found.
+- **500 Internal Server Error:** An error occurred on the server.
+
+## Example Requests
+
+### cURL Example for Creating a Setting
+```bash
+curl -X POST https://api.yourdomain.com/hunter-settings \
+-H "Content-Type: application/json" \
+-d '{
+  "setting_name": "new_setting",
+  "value": "new_value"
+}'
