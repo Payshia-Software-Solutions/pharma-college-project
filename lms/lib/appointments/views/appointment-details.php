@@ -1,3 +1,11 @@
+<?php
+$appointmentCategories = [
+  1=>[1=>'Couse Details'],
+  2=>[2=>'Games']];
+     
+ ?>
+
+
 <div class="row mt-2 mb-5">
   <div class="col-12 mt-3">
     <div class="card mt-5 border-0">
@@ -37,16 +45,9 @@
           <div class="col-md-12">
             <label for="selectionBox">Select an Option:</label>
             <select id="selectionBox" class="form-control mb-2" name="selectionBox" required>
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3">Option 3</option>
-              <option value="option4">Option 4</option>
-              <option value="option5">Option 5</option>
-              <option value="option6">Option 6</option>
-              <option value="option7">Option 7</option>
-              <option value="option8">Option 8</option>
-              <option value="option9">Option 9</option>
-              <option value="option10">Option 10</option>
+              <?php  foreach($appointmentCategories as  $key =>$selectedArray):?>
+              <option value="<?= $key ?>"><?= $selectedArray[$key] ?></option>
+              <?php endforeach  ?>
             </select>
           </div>
         </div>
