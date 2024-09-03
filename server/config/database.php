@@ -1,9 +1,9 @@
 <?php
 // config/database.php
-$host = '109.70.148.53';
+$host = 'localhost';
 $db   = 'pharmaco_pharmacollege';
-$user = 'pharmaco_admin';
-$pass = 'pharmaadmin';
+$user = 'root';
+$pass = '';
 $charset = 'utf8mb4';
 
 $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
@@ -18,14 +18,3 @@ try {
 } catch (\PDOException $e) {
     throw new \PDOException($e->getMessage(), (int)$e->getCode());
 }
-
-
-// Connect to Webserver
-// Test
-
-// $host = '109.70.148.53';
-// $db   = 'pharmaco_pharmacollege';
-// $user = 'pharmaco_admin';
-// $pass = 'pharmaadmin';
-// $charset = 'utf8mb4';
-// $dsn = "mysql:host=$host;port=3306;dbname=$db;charset=$charset";

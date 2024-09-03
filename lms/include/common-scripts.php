@@ -15,7 +15,7 @@
     });
 </script>
 <script src="./assets/js/main.js"></script>
-<script src="./vendor/jquery/jquery-3.7.1.min.js"></script>
+<script src="./vendor/axllent/jquery/jquery.min.js"></script>
 <script src="./node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
 <script src="./vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
 <script src="./vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
