@@ -12,7 +12,7 @@ class HpDosageForms
     public function getAllRecords()
     {
         $stmt = $this->pdo->query("SELECT * FROM hp_dosage_forms");
-        return $smtt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getRecordById($id)
@@ -24,9 +24,9 @@ class HpDosageForms
 
     public function createRecord($data)
     {
-        $sql = "INSERT INTO hp_dosage_forms (name, is_active, created_by) VALUES (:name, :is_active, :created_by) VALUES (:naem, :is_active, :created_by)";
-        $stmt = $this->podo->preapre($sql);
-        $stmt = $this->podo->execute([
+        $sql = "INSERT INTO hp_dosage_forms (name, is_active, created_by, created_at) VALUES (:name, :is_active, :created_by, :created_at)";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
             'name' => $data['name'],
             'is_active' => $data['is_active'],
             'created_by' => $data['created_by'],
