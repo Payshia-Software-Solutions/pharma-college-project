@@ -4,7 +4,8 @@
 The `HunterSettings` API provides CRUD operations for managing settings within the system. This documentation outlines the available endpoints, request parameters, response structures, and error codes.
 
 ## Base URL
-https://api.yourdomain.com/hunter-settings
+
+`https://api.pharmacollege.lk/`
 
 ## Endpoints
 

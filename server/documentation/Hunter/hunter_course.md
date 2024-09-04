@@ -6,7 +6,7 @@ The HunterCourse API provides CRUD operations for managing courses within the sy
 
 ## Base URL
 
-`https://api.pharmacollege.lk/hunter-course`
+`https://api.pharmacollege.lk/`
 
 ## Endpoints
 
