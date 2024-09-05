@@ -24,11 +24,11 @@ include './include/site-data.php';
     <link rel="stylesheet" href="./lib/appointments/assets/css/styles-1.0.css">
 </head>
 
-<body>
+<body class="p-0">
     <!-- Pre Loader Content -->
     <?php include './include/pre-loader.php' ?>
     <!-- End of  Pre Loader Content -->
-    <div class="container">
+    <div class="">
 
         <!-- Footer -->
         <?php include './include/nav-menu.php' ?>
