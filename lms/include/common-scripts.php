@@ -9,11 +9,11 @@
 
 </div> -->
 
-<script>
+<!-- <script>
 document.getElementById('open-pwa-button').addEventListener('click', (e) => {
     window.location.href = window.location.origin;
 });
-</script>
+</script> -->
 <script src="./assets/js/main.js"></script>
 <script src="./vendor/components/jquery/jquery.js"></script>
 <script src="./node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
