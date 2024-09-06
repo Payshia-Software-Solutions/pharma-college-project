@@ -51,7 +51,7 @@ class StudentCourse
         // Now, get the enrollment details using the student ID
         $stmt = $this->pdo->prepare("SELECT * FROM student_course WHERE student_id = :student_id");
         $stmt->execute(['student_id' => $student_id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
 
