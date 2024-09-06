@@ -1,25 +1,25 @@
 <?php
-$server = "localhost";
-$username = "root";
-$password = "";
-$database = "uni_erp";
-$database_error = "";
+// $server = "localhost";
+// $username = "root";
+// $password = "";
+// $database = "uni_erp";
+// $database_error = "";
 
 /* Attempt to connect to MySQL database */
-$ad_conn = mysqli_connect($server, $username, $password, $database);
+// $ad_conn = mysqli_connect($server, $username, $password, $database);
 
 // Check connection
 
-if ($ad_conn === false) {
-    die("ERROR: Could not connect. " . mysqli_connect_error());
-} else {
-    $database_error = "Connected to the Server";
-}
+// if ($ad_conn === false) {
+//     die("ERROR: Could not connect. " . mysqli_connect_error());
+// } else {
+//     $database_error = "Connected to the Server";
+// }
 
 
 $server = "localhost";
 $username = "root";
-$password = "";
+$password = "root";
 $database = "pharmaco_pharmacollege";
 $database_error = "";
 
@@ -43,22 +43,22 @@ $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 
 // Establish LMS Connection
-$server = "localhost";
-$username = "root";
-$password = "";
-$database = "pharmaco_posinspirelk";
-$database_error = "";
+// $server = "localhost";
+// $username = "root";
+// $password = "";
+// $database = "pharmaco_posinspirelk";
+// $database_error = "";
 
 /* Attempt to connect to MySQL database */
-$pos_link = mysqli_connect($server, $username, $password, $database);
+// $pos_link = mysqli_connect($server, $username, $password, $database);
 
 // Check connection
 
-if ($pos_link === false) {
-    die("ERROR: Could not connect. " . mysqli_connect_error());
-} else {
-    $database_error = "Connected to the Server";
-}
+// if ($pos_link === false) {
+//     die("ERROR: Could not connect. " . mysqli_connect_error());
+// } else {
+//     $database_error = "Connected to the Server";
+// }
 
 mysqli_set_charset($link, "utf8");
 date_default_timezone_set("Asia/Colombo");
