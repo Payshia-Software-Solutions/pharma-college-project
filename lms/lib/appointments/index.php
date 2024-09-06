@@ -125,7 +125,7 @@ $doctors = [
     </div>
 
     <!-- Doctor Cards (Scrollable Content) -->
-    <div class="container mt-5 pt-5" style="height: calc(100vh - 100px); overflow-y: auto;">
+    <div class="container mt-5 pb-5 pt-5" style="height: calc(100vh - 100px); overflow-y: auto;">
         <div class="row g-3 mt-3">
             <?php foreach ($doctors as $doctor): ?>
             <div class="col-12 col-md-6 col-lg-4 col-xl-3">
@@ -158,4 +158,6 @@ $doctors = [
         style="top: 75%; right: 30px; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; border-radius: 50%; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);">
         <i class="bi bi-plus-lg text-white" style="font-size: 24px;"></i>
     </a>
+
+
 </div>
