@@ -29,6 +29,32 @@ class StudentCourse
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getStudentIdByUsername($username)
+    {
+        $stmt = $this->pdo->prepare("SELECT userid FROM users WHERE username = :username");
+        $stmt->execute(['username' => $username]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? $result['userid'] : null;
+    }
+
+
+    public function getEnrollmentByUsername($username)
+    {
+        // First, get the student ID using the username
+        $student_id = $this->getStudentIdByUsername($username);
+
+        if ($student_id === null) {
+            return null; // or handle the case where the student ID is not found
+        }
+
+        // Now, get the enrollment details using the student ID
+        $stmt = $this->pdo->prepare("SELECT * FROM student_course WHERE student_id = :student_id");
+        $stmt->execute(['student_id' => $student_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
     public function createEnrollment($data)
     {
         $sql = "INSERT INTO student_course (course_code, student_id, enrollment_key, created_at) 
@@ -49,6 +75,8 @@ class StudentCourse
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($data);
     }
+
+
 
     public function deleteEnrollment($id)
     {
