@@ -36,6 +36,7 @@ class ECertificateController
         if ($certificate) {
             echo json_encode($certificate);
         } else {
+            // Error
             echo json_encode(["error" => "No data found for " . $username . " the given course (" . $course_code . ") and user."]);
         }
     }
