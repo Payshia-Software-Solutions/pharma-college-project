@@ -13,5 +13,7 @@ return [
     'GET /certificates/{id}/' => [$eCertificateController, 'getCertificate'],
     'POST /certificates/' => [$eCertificateController, 'createCertificate'],
     'PUT /certificates/{id}/' => [$eCertificateController, 'updateCertificate'],
-    'DELETE /certificates/{id}/' => [$eCertificateController, 'deleteCertificate']
+    'DELETE /certificates/{id}/' => [$eCertificateController, 'deleteCertificate'],
+    'GET /certificates/get-completion/{course_code}/{username}/' => [$eCertificateController, 'getCourseCompletion'],
+    'GET /certificates/get-completion/{course_code}/{username}/{title}/' => [$eCertificateController, 'getCourseCompletionByTitle'],
 ];

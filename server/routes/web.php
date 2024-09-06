@@ -28,11 +28,25 @@ $hpDosageFormsRoutes = require './routes/HunterPro/hpDosageFormsRoutes.php';
 $hpDrugTypesRoutes = require './routes/HunterPro/hpDrugTypesRoutes.php';
 
 // Combine all routes
-$routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes,
-                       $eCertificateRoutes, $courseAssignmentRoutes, $courseAssignmentSubmissionRoutes,
-                       $hpSaveAnswerRoutes, $reportRoutes, $courseRoutes, $studentCourseRoutes,
-                        $userFullDetailsRoutes, $companyRoutes, $hpCourseMedicineRoutes, 
-                        $hpMedicinesRoutes, $hpCategoriesRoutes, $hpDosageFormsRoutes, $hpDrugTypesRoutes);
+$routes = array_merge(
+    $userRoutes,
+    $assignmentRoutes,
+    $appointmentRoutes,
+    $eCertificateRoutes,
+    $courseAssignmentRoutes,
+    $courseAssignmentSubmissionRoutes,
+    $hpSaveAnswerRoutes,
+    $reportRoutes,
+    $courseRoutes,
+    $studentCourseRoutes,
+    $userFullDetailsRoutes,
+    $companyRoutes,
+    $hpCourseMedicineRoutes,
+    $hpMedicinesRoutes,
+    $hpCategoriesRoutes,
+    $hpDosageFormsRoutes,
+    $hpDrugTypesRoutes
+);
 
 // Define the home route with trailing slash
 $routes['GET /'] = function () {
@@ -75,8 +89,8 @@ foreach ($routes as $route => $handler) {
 
     // Convert route URI to regex
     $routeRegex = str_replace(
-        ['{id}', '{username}', '{assignment_id}', '{course_code}', '{offset}', '{limit}'],
-        ['(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)'],
+        ['{id}', '{username}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{title}'],
+        ['(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)'],
         $routeUri
     );
     $routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
