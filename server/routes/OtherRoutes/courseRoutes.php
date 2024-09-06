@@ -15,5 +15,6 @@ return [
     'GET /courses/courseCode/{course_code}/' => [$courseController, 'getCourseByCourseCode'],
     'POST /courses/' => [$courseController, 'createCourse'],
     'PUT /courses/{id}/' => [$courseController, 'updateCourse'],
-    'DELETE /courses/{id}/' => [$courseController, 'deleteCourse']
+    'DELETE /courses/{id}/' => [$courseController, 'deleteCourse'],
+    // 'GET /get-enrollment/{course_code}/{username}' => [$courseController, 'getAllCourses'],
 ];
