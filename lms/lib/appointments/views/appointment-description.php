@@ -1,14 +1,25 @@
 <?php
+// Initialize variables
+$date = $time = $selection = $description = null;
+
 // Check if the request method is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['date3'], $_POST['time3'], $_POST['selectionBox'], $_POST['description3'])) {
-        $date = htmlspecialchars($_POST['date3']);
+    if (isset($_POST['appointmentDate'], $_POST['time3'], $_POST['selectionBox'], $_POST['description3'])) {
+        $date = htmlspecialchars($_POST['appointmentDate']);
         $time = htmlspecialchars($_POST['time3']);
         $selection = htmlspecialchars($_POST['selectionBox']);
         $description = htmlspecialchars($_POST['description3']);
+        
         // Define the variable to control button state
         $bookingStatus = 1; // 1 = available, 0 = not available
-        // Generate HTML content to return
+        
+        // Convert the data to JSON format
+        $formData = json_encode([
+            'date' => $date,
+            'time' => $time,
+            'selection' => $selection,
+            'description' => $description
+        ]);
     } else {
         echo '<p class="alert alert-danger">Error: Missing form data.</p>';
     }
@@ -46,10 +57,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
     <div class="text-start mt-3">
-        <?php if ($bookingStatus === 0): ?>
+        <?php if (isset($bookingStatus) && $bookingStatus === 0): ?>
             <button class="btn btn-primary" disabled>Book Now</button>
         <?php else: ?>
-            <button class="btn btn-primary" onclick="SucceedMessage()">Book Now</button>
+            <!-- Pass the JSON-encoded data to the SucceedMessage function -->
+            <button class="btn btn-primary" onclick='SucceedMessage(<?= json_encode($formData) ?>)'>Book Now</button>
         <?php endif; ?>
         <button class="btn btn-secondary ms-2" onclick="GetAppointment()">Back</button>
     </div>

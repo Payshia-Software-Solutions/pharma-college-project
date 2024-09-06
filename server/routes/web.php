@@ -26,6 +26,9 @@ $hpMedicinesRoutes = require './routes/HunterPro/hpMedicinesRoutes.php';
 $hpCategoriesRoutes = require './routes/HunterPro/hpCategoriesRoutes.php';
 $hpDosageFormsRoutes = require './routes/HunterPro/hpDosageFormsRoutes.php';
 $hpDrugTypesRoutes = require './routes/HunterPro/hpDrugTypesRoutes.php';
+$hpRacksRoutes = require './routes/HunterPro/hpRacksRoutes.php';
+$appointmentCategoryRoutes = require './routes/OtherRoutes/appointmentCategoryRoutes.php';
+
 
 // Combine all routes
 $routes = array_merge(
@@ -45,8 +48,11 @@ $routes = array_merge(
     $hpMedicinesRoutes,
     $hpCategoriesRoutes,
     $hpDosageFormsRoutes,
-    $hpDrugTypesRoutes
+    $hpDrugTypesRoutes,
+    $hpRacksRoutes,
+    $appointmentCategoryRoutes
 );
+
 
 // Define the home route with trailing slash
 $routes['GET /'] = function () {
