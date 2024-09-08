@@ -38,6 +38,17 @@ class ChatController
         }
     }
 
+    public function getAllRecentChats($username)
+    {
+        $chat = $this->model->getAllRecentChats($username);
+        if ($chat) {
+            echo json_encode($chat);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Chat not found']);
+        }
+    }
+
     public function createChat()
     {
         $data = json_decode(file_get_contents("php://input"), true);
