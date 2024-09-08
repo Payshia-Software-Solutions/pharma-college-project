@@ -17,6 +17,13 @@ class Message
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getLastMessage($chat_id)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM `lc_messages` WHERE `chat_id` = ? ORDER BY `id` DESC LIMIT 1");
+        $stmt->execute([$chat_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function getMessageById($id)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM `lc_messages` WHERE `id` = ?");

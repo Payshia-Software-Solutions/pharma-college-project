@@ -38,6 +38,17 @@ class MessageController
         }
     }
 
+    public function getLastMessage($chat_id)
+    {
+        $chat = $this->model->getLastMessage($chat_id);
+        if ($chat) {
+            echo json_encode($chat);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Chat not found']);
+        }
+    }
+
 
     public function createMessage()
     {
