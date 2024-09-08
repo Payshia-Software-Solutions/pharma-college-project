@@ -24,7 +24,6 @@ class Chat
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-
     public function getChatByUser($username)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM `lc_chats` WHERE `created_by` = ?");
