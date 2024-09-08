@@ -54,8 +54,10 @@ class Chat
             ON c.id = lm.chat_id            
             WHERE 
                 `created_by` = ?
+            ORDER BY 
+                lm.created_at DESC;
         ";
-
+        // Order
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$username]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
