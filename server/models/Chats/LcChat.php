@@ -1,0 +1,47 @@
+<?php
+// models/Chat.php
+
+class Chat
+{
+    private $pdo;
+
+    public function __construct($pdo)
+    {
+        $this->pdo = $pdo;
+    }
+
+    public function getAllChats()
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM `lc_chats`");
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getChatById($id)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM `lc_chats` WHERE `id` = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function createChat($data)
+    {
+        $stmt = $this->pdo->prepare("INSERT INTO `lc_chats` (`name`) VALUES (?)");
+        $stmt->execute([$data['name']]);
+
+        // Return the last inserted ID
+        return $this->pdo->lastInsertId();
+    }
+
+    public function updateChat($id, $data)
+    {
+        $stmt = $this->pdo->prepare("UPDATE `lc_chats` SET `name` = ? WHERE `id` = ?");
+        $stmt->execute([$data['name'], $id]);
+    }
+
+    public function deleteChat($id)
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM `lc_chats` WHERE `id` = ?");
+        $stmt->execute([$id]);
+    }
+}

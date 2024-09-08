@@ -28,6 +28,10 @@ $hpDosageFormsRoutes = require './routes/HunterPro/hpDosageFormsRoutes.php';
 $hpDrugTypesRoutes = require './routes/HunterPro/hpDrugTypesRoutes.php';
 $hpRacksRoutes = require './routes/HunterPro/hpRacksRoutes.php';
 $appointmentCategoryRoutes = require './routes/OtherRoutes/appointmentCategoryRoutes.php';
+$chatRoutes = require './routes/Chats/chatRoutes.php';
+$chatRoutes = require './routes/Chats/chatRoutes.php';
+$attachmentRoutes = require './routes/Chats/attachmentRoutes.php';
+$messageRoutes = require './routes/Chats/messageRoutes.php';
 
 
 // Combine all routes
@@ -50,7 +54,10 @@ $routes = array_merge(
     $hpDosageFormsRoutes,
     $hpDrugTypesRoutes,
     $hpRacksRoutes,
-    $appointmentCategoryRoutes
+    $appointmentCategoryRoutes,
+    $chatRoutes,
+    $attachmentRoutes,
+    $messageRoutes
 );
 
 
