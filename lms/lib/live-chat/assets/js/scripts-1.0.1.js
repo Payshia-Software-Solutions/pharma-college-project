@@ -120,13 +120,21 @@ function sendMessage(chatId, sender_id) {
 
   if (chatId != 0) {
     axios
-      .post(API_URL + "/messages/", {
-        chat_id: chatId,
-        sender_id: sender_id, // Set this to the current user ID
-        message_text: messageText,
-        message_type: "text",
-        message_status: "sent",
-      })
+      .post(
+        API_URL + "/messages/",
+        {
+          chat_id: chatId,
+          sender_id: sender_id, // Set this to the current user ID
+          message_text: messageText,
+          message_type: "text",
+          message_status: "sent",
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
 
       .then((response) => {
         alert(response);
