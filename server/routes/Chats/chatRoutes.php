@@ -11,6 +11,7 @@ $chatController = new ChatController($pdo);
 return [
     'GET /chats/' => [$chatController, 'getChats'],
     'GET /chats/{id}/' => [$chatController, 'getChat'],
+    'GET /chats/user/{username}/' => [$chatController, 'getChatByUser'],
     'POST /chats/' => [$chatController, 'createChat'],
     'PUT /chats/{id}/' => [$chatController, 'updateChat'],
     'DELETE /chats/{id}/' => [$chatController, 'deleteChat']

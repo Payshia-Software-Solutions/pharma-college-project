@@ -11,7 +11,7 @@ $recentChats = [];
 
 try {
     // Make a GET request to fetch chat data
-    $response = $client->request('GET', 'https://api.pharmacollege.lk/chats/');
+    $response = $client->request('GET', 'https://api.pharmacollege.lk/chats/user/' . $senderId);
 
     // Decode the response
     $apiChats = $response->toArray();
