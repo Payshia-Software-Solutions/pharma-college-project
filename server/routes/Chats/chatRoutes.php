@@ -10,6 +10,7 @@ $chatController = new ChatController($pdo);
 // Define chat routes
 return [
     'GET /chats/' => [$chatController, 'getChats'],
+    'GET /get-recent-chats/{username}/' => [$chatController, 'getAllRecentChats'],
     'GET /chats/{id}/' => [$chatController, 'getChat'],
     'GET /chats/user/{username}/' => [$chatController, 'getChatByUser'],
     'POST /chats/' => [$chatController, 'createChat'],

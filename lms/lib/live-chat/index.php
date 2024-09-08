@@ -12,8 +12,6 @@ $recentChats = [];
 try {
     // Make a GET request to fetch chat data
     $response = $client->request('GET', 'https://api.pharmacollege.lk/chats/user/' . $senderId);
-
-    // Decode the response
     $apiChats = $response->toArray();
 } catch (\Exception $e) {
     // Handle any errors that might occur during the request
