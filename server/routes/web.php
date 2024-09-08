@@ -1,4 +1,10 @@
 <?php
+// Set CORS headers for every response
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+
+
 ini_set('memory_limit', '256M');
 
 // Report all PHP errors
@@ -91,10 +97,6 @@ if ($_SERVER['HTTP_HOST'] === 'localhost') {
 if ($uri !== '/') {
     header('Content-Type: application/json');
 }
-// Set CORS headers for all responses
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 // Debugging
 error_log("Method: $method");
