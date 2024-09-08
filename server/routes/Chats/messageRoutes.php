@@ -12,7 +12,7 @@ return [
     'GET /messages/' => [$messageController, 'getMessages'],
     'GET /messages/{id}/' => [$messageController, 'getMessage'],
     'GET /messages/chat/{id}/' => [$messageController, 'getMessageByChatId'],
-    'GET /messages/get-last/{chat_id}/' => [$messageController, 'getLastMessage'],
+    'GET /messages/get-last/{id}/' => [$messageController, 'getLastMessage'],
 
     'POST /messages/' => [$messageController, 'createMessage'],
     'PUT /messages/{id}/' => [$messageController, 'updateMessage'],
