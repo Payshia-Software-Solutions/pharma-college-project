@@ -26,7 +26,7 @@ class Chat
 
     public function createChat($data)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO `lc_chats` (`name`) VALUES (?)");
+        $stmt = $this->pdo->prepare("INSERT INTO `lc_chats` (`name`, `created_by`) VALUES (?)");
         $stmt->execute([$data['name']]);
 
         // Return the last inserted ID
@@ -35,8 +35,8 @@ class Chat
 
     public function updateChat($id, $data)
     {
-        $stmt = $this->pdo->prepare("UPDATE `lc_chats` SET `name` = ? WHERE `id` = ?");
-        $stmt->execute([$data['name'], $id]);
+        $stmt = $this->pdo->prepare("UPDATE `lc_chats` SET `name` = ?, `created_by` = ? WHERE `id` = ?");
+        $stmt->execute([$data['name'], $data['created_by'], $id]);
     }
 
     public function deleteChat($id)

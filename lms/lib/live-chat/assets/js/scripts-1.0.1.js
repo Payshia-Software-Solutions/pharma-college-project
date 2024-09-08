@@ -137,7 +137,6 @@ function sendMessage(chatId, sender_id) {
       )
 
       .then((response) => {
-        alert(response);
         // Add message to chat window
         const chatWindow = document.querySelector(".chat-window");
         const messageElement = document.createElement("div");
@@ -160,11 +159,12 @@ function sendMessage(chatId, sender_id) {
     axios
       .post(API_URL + "/chats/", {
         name: TopicText,
+        created_by: sender_id,
       })
 
       .then((response) => {
         const return_chat_id = response.data.return_chat_id;
-        alert(return_chat_id);
+        // alert(return_chat_id);
         axios
           .post(API_URL + "/messages/", {
             chat_id: return_chat_id,
