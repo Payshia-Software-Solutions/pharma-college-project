@@ -35,7 +35,7 @@ class Message
 
     public function getMessageByChatId($chat_id)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM `lc_messages` WHERE `chat_id` = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM `lc_messages` WHERE `chat_id` = ? ORDER BY `id` ASC");
         $stmt->execute([$chat_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
