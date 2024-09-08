@@ -26,8 +26,8 @@ class Chat
 
     public function createChat($data)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO `lc_chats` (`name`, `created_by`) VALUES (?)");
-        $stmt->execute([$data['name']]);
+        $stmt = $this->pdo->prepare("INSERT INTO `lc_chats` (`name`, `created_by`) VALUES (?, ?)");
+        $stmt->execute([$data['name'], $data['created_by']]);
 
         // Return the last inserted ID
         return $this->pdo->lastInsertId();
