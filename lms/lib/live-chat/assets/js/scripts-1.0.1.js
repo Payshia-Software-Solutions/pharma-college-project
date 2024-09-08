@@ -108,27 +108,6 @@ function createNewChat() {
 // Api
 
 const API_URL = "https://api.pharmacollege.lk/";
-// Fetch all chats
-
-function openChat(chatId) {
-  axios
-    .get(API_URL + `/api/messages/?chat_id=${chatId}`)
-    .then((response) => {
-      const messages = response.data;
-      // Populate chat window
-      const chatWindow = document.querySelector(".chat-window");
-      chatWindow.innerHTML = "";
-      messages.forEach((message) => {
-        const messageElement = document.createElement("div");
-        messageElement.className = `message ${
-          message.sender_id === currentUserId ? "sent" : "received"
-        }`;
-        messageElement.innerHTML = `<p>${message.message_text}</p>`;
-        chatWindow.appendChild(messageElement);
-      });
-    })
-    .catch((error) => console.error("Error fetching messages:", error));
-}
 
 function sendMessage(chatId, sender_id) {
   const messageInput = document.querySelector("#messageInput");
@@ -150,6 +129,7 @@ function sendMessage(chatId, sender_id) {
       })
 
       .then((response) => {
+        alert(response);
         // Add message to chat window
         const chatWindow = document.querySelector(".chat-window");
         const messageElement = document.createElement("div");
@@ -176,7 +156,7 @@ function sendMessage(chatId, sender_id) {
 
       .then((response) => {
         const return_chat_id = response.data.return_chat_id;
-        console.log(return_chat_id);
+        alert(return_chat_id);
         axios
           .post(API_URL + "/messages/", {
             chat_id: return_chat_id,
