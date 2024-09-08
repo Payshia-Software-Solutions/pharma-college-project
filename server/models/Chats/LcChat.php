@@ -29,7 +29,7 @@ class Chat
     {
         $stmt = $this->pdo->prepare("SELECT * FROM `lc_chats` WHERE `created_by` = ?");
         $stmt->execute([$username]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function createChat($data)
