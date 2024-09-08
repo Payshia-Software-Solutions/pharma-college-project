@@ -157,22 +157,38 @@ function sendMessage(chatId, sender_id) {
     }
 
     axios
-      .post(API_URL + "/chats/", {
-        name: TopicText,
-        created_by: sender_id,
-      })
+      .post(
+        API_URL + "/chats/",
+        {
+          name: TopicText,
+          created_by: sender_id,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
 
       .then((response) => {
         const return_chat_id = response.data.return_chat_id;
         // alert(return_chat_id);
         axios
-          .post(API_URL + "/messages/", {
-            chat_id: return_chat_id,
-            sender_id: sender_id, // Set this to the current user ID
-            message_text: messageText,
-            message_type: "text",
-            message_status: "sent",
-          })
+          .post(
+            API_URL + "/messages/",
+            {
+              chat_id: return_chat_id,
+              sender_id: sender_id, // Set this to the current user ID
+              message_text: messageText,
+              message_type: "text",
+              message_status: "sent",
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          )
 
           .then((response) => {
             // Add message to chat window
