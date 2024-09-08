@@ -1,6 +1,8 @@
 <?php
 require_once '../../vendor/autoload.php';
 
+$senderId = $_POST['LoggedUser'];
+
 use Symfony\Component\HttpClient\HttpClient;
 
 $client = HttpClient::create();
