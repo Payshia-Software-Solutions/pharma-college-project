@@ -24,6 +24,14 @@ class Chat
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+
+    public function getChatByUser($username)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM `lc_chats` WHERE `created_by` = ?");
+        $stmt->execute([$username]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function createChat($data)
     {
         $stmt = $this->pdo->prepare("INSERT INTO `lc_chats` (`name`, `created_by`) VALUES (?, ?)");
