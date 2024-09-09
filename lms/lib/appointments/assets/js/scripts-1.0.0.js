@@ -149,13 +149,13 @@ function submitAppointment() {
 // }
 
 
- 
+
 
 function SucceedMessage(formData) {
   var data1 = JSON.parse(formData);
   console.log(data1.date);
   console.log(data1.time);
- 
+
   // Fetch all appointments to get the current count
   fetch('http://localhost/pharma-college-project/server/appointments/')
     .then(response => response.json())
@@ -192,14 +192,14 @@ function SucceedMessage(formData) {
         },
         body: jsonData,
       })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(responseData => {
-        $("#root").html(InnerLoader);
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(responseData => {
+          $("#root").html(InnerLoader);
 
           function fetch_data() {
             $.ajax({
@@ -217,19 +217,40 @@ function SucceedMessage(formData) {
             });
           }
           fetch_data();
-      })
-      .catch(error => {
-        document.getElementById("responseContainer").innerHTML = '<p class="alert alert-danger">Failed to create appointment: ' + error.message + '</p>';
-      });
+        })
+        .catch(error => {
+          document.getElementById("responseContainer").innerHTML = '<p class="alert alert-danger">Failed to create appointment: ' + error.message + '</p>';
+        });
     })
     .catch(error => {
       document.getElementById("responseContainer").innerHTML = '<p class="alert alert-danger">Failed to fetch appointments: ' + error.message + '</p>';
     });
 }
 
- 
+function selectCategory() {
+  OpenPopup()
+  document.getElementById('pop-content').innerHTML = InnerLoader
+
+  function fetch_data() {
+    showOverlay()
+    $.ajax({
+      url: 'lib/appointments/views/category.php',
+      method: 'POST',
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        company_id: company_id,
+      },
+      success: function (data) {
+        $('#pop-content').html(data)
+        hideOverlay()
+      }
+    })
+  }
+
+  fetch_data()
+}
 
 
 
 
- 
