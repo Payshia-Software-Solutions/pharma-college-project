@@ -194,7 +194,7 @@
                 </div>
                 <div class="mt-5">
                     <div class="col-12 text-center">
-                        <button class="next-btn">Next</button>
+                        <button onclick="getoBookingPage()" class="next-btn">Next</button>
                     </div>
                 </div>
 

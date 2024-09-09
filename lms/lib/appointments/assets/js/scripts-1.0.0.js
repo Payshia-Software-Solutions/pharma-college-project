@@ -252,5 +252,24 @@ function selectCategory() {
 }
 
 
+function getoBookingPage() {
+  $("#root").html(InnerLoader);
+
+  function fetch_data() {
+    $.ajax({
+      url: "lib/appointments/views/bookingPage.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+      },
+      success: function (data) {
+        $("#root").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
+
 
 
