@@ -144,7 +144,7 @@
 
 <div class="container-fluid">
     <!-- back btn section -->
-    <div class="row row-one">
+    <div class="row row-one" onclick="goToAppointments()">
         <div class="col-12 p-4 d-flex justify-content-start">
             <button onclick="" class="back-btn"><i class="fa-solid fa-less-than"></i></button>
         </div>

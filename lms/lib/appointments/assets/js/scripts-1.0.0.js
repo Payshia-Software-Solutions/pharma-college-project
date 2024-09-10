@@ -270,6 +270,24 @@ function getoBookingPage() {
   }
   fetch_data();
 }
+function goToAppointments() {
+  $("#root").html(InnerLoader);
+
+  function fetch_data() {
+    $.ajax({
+      url: "lib/appointments/index.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+      },
+      success: function (data) {
+        $("#root").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
 
 
 
