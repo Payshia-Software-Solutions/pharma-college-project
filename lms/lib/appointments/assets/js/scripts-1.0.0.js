@@ -315,12 +315,10 @@ var selectedCategory = '';
 
 // Function to handle category selection
 function clickCategory(categoryTitle) {
-  alert("test")
   // Save the selected category
   selectedCategory = categoryTitle;
-  alert(selectedCategory);
   // Close the popup
-  hideOverlay()
+  ClosePopUP()
 
   // Update the category button text to show the selected category
   var categoryButton = document.querySelector('.category-btn');

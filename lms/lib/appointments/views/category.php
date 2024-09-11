@@ -54,7 +54,7 @@ $categories = [
     <div class="row">
         <?php foreach ($categories as $category) : ?>
         <div class="col-6">
-            <div class="category-card" onclick="clickCategory()">
+            <div class="category-card" onclick="clickCategory('<?= $category['title']; ?>')">
                 <img class="img-fluid m-3" src="<?= $category['image']; ?>" alt="<?= $category['title']; ?> Image">
                 <h5 class="text-center cat-text"><?= $category['title']; ?></h5>
                 <h5 class="text-center sub-text"><?= $category['subtext']; ?></h5>
