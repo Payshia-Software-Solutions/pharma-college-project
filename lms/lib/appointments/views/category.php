@@ -15,9 +15,20 @@ $categories = [
     height: 153px;
     background-color: #eeeeee;
     border-radius: 3px;
-    /* box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.15); */
     margin-bottom: 30px;
+    cursor: pointer;
+    /* Change cursor to pointer on hover */
+    transition: background-color 0.3s, transform 0.3s;
+    /* Smooth transition */
 }
+
+.category-card:hover {
+    background-color: #dcdcdc;
+    /* Lighter background on hover */
+    transform: scale(1.05);
+    /* Slight zoom effect */
+}
+
 
 .cat-text {
     font-family: 'Lexend Deca', sans-serif;
@@ -43,7 +54,7 @@ $categories = [
     <div class="row">
         <?php foreach ($categories as $category) : ?>
         <div class="col-6">
-            <div class="category-card">
+            <div class="category-card" onclick="clickCategory()">
                 <img class="img-fluid m-3" src="<?= $category['image']; ?>" alt="<?= $category['title']; ?> Image">
                 <h5 class="text-center cat-text"><?= $category['title']; ?></h5>
                 <h5 class="text-center sub-text"><?= $category['subtext']; ?></h5>

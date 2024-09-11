@@ -290,4 +290,44 @@ function goToAppointments() {
 }
 
 
+function GotoBookingConfirmPage() {
+  $("#root").html(InnerLoader);
 
+  function fetch_data() {
+    $.ajax({
+      url: "lib/appointments/views/bookingConfirmPage.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+      },
+      success: function (data) {
+        $("#root").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
+
+
+// Variable to store the selected category
+var selectedCategory = '';
+
+// Function to handle category selection
+function clickCategory(categoryTitle) {
+  alert("test")
+  // Save the selected category
+  selectedCategory = categoryTitle;
+  alert(selectedCategory);
+  // Close the popup
+  hideOverlay()
+
+  // Update the category button text to show the selected category
+  var categoryButton = document.querySelector('.category-btn');
+  if (categoryButton) {
+    categoryButton.textContent = selectedCategory;
+  }
+
+  // Optional: You can perform additional actions here
+  console.log('Selected Category:', selectedCategory);
+}

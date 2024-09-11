@@ -188,7 +188,8 @@ $doctors = [
                         <span class="available-time"><?= $doctor['availability']; ?></span>
                     </div>
                     <div class="col d-flex justify-content-end">
-                        <button class="book-btn">Book Now</button>
+                        <button class="book-btn" onclick="GotoBookingConfirmPage()">Book
+                            Now</button>
                     </div>
                 </div>
                 <!-- row two end  -->
