@@ -110,6 +110,7 @@
 }
 
 .time {
+    cursor: pointer;
     width: 76px;
     height: 28px;
     border: 1px solid #CBCBCB;
@@ -183,10 +184,10 @@
 
                         <div class="rwo mt-4">
                             <div class="col d-flex justify-content-between">
-                                <span class="time active-time">09:00 AM</span>
-                                <span class="time">09:00 AM</span>
-                                <span class="time">09:00 AM</span>
-                                <span class="time">09:00 AM</span>
+                                <span class="time" onclick="selectTime(this)">09:00 AM</span>
+                                <span class="time" onclick="selectTime(this)">10:00 AM</span>
+                                <span class="time" onclick="selectTime(this)">11:00 AM</span>
+                                <span class="time" onclick="selectTime(this)">12:00 PM</span>
                             </div>
                             <div class="col"></div>
                         </div>

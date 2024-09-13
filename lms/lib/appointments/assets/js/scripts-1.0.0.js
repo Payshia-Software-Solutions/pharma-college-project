@@ -329,3 +329,13 @@ function clickCategory(categoryTitle) {
   // Optional: You can perform additional actions here
   console.log('Selected Category:', selectedCategory);
 }
+
+function selectTime(element) {
+  // Remove the 'active-time' class from all time slots
+  document.querySelectorAll('.time').forEach(function (timeSlot) {
+    timeSlot.classList.remove('active-time');
+  });
+
+  // Add the 'active-time' class to the clicked time slot
+  element.classList.add('active-time');
+}
