@@ -1,12 +1,16 @@
 <?php
-$categories = [
-['title' => 'Category One', 'subtext' => 'Sub Text 1', 'image' => './assets/images/category-img.png'],
-['title' => 'Category Two', 'subtext' => 'Sub Text 2', 'image' => './assets/images/category-img.png'],
-['title' => 'Category Three', 'subtext' => 'Sub Text 3', 'image' => './assets/images/category-img.png'],
-['title' => 'Category Four', 'subtext' => 'Sub Text 4', 'image' => './assets/images/category-img.png'],
-['title' => 'Category Five', 'subtext' => 'Sub Text 5', 'image' => './assets/images/category-img.png'],
-['title' => 'Category Six', 'subtext' => 'Sub Text 6', 'image' => './assets/images/category-img.png'],
-];
+
+require '../../../vendor/autoload.php';
+
+use Symfony\Component\HttpClient\HttpClient;
+
+$client = HttpClient::create();
+
+$response = $client->request('GET', 'http://localhost:8000/appointment-category/');
+
+// Get the response body as an array (if it's JSON)
+$categories = $response->toArray();
+//print_r($categories);
 ?>
 
 <style>
@@ -54,10 +58,10 @@ $categories = [
     <div class="row">
         <?php foreach ($categories as $category) : ?>
         <div class="col-6">
-            <div class="category-card" onclick="clickCategory('<?= $category['title']; ?>')">
-                <img class="img-fluid m-3" src="<?= $category['image']; ?>" alt="<?= $category['title']; ?> Image">
-                <h5 class="text-center cat-text"><?= $category['title']; ?></h5>
-                <h5 class="text-center sub-text"><?= $category['subtext']; ?></h5>
+            <div class="category-card" onclick="clickCategory('<?= $category['category_name']; ?>')">
+                <img class="img-fluid m-3" src="./assets/images/category-img.png" alt="image">
+                <h5 class="text-center cat-text"><?= $category['category_name']; ?></h5>
+                <!-- <h5 class="text-center sub-text"><?= $category['subtext']; ?></h5> -->
             </div>
         </div>
         <?php endforeach; ?>
