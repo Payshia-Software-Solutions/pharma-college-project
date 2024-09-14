@@ -117,6 +117,7 @@ function sendMessage(chatId, sender_id) {
     showNotification("Message cannot be empty!", "error", "Oops!");
     return; // Stop execution if the message is empty
   }
+  sendMessageAndClearCache(sender_id);
 
   if (chatId != 0) {
     axios
@@ -232,4 +233,28 @@ function sendImage() {
       chatWindow.appendChild(messageElement);
     })
     .catch((error) => console.error("Error sending image:", error));
+}
+
+function sendMessageAndClearCache(senderId) {
+  // Send the message (you might already have this function)
+
+  // Clear the cache
+  fetch("lib/live-chat/endpoints/clear-cache.php", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: new URLSearchParams({
+      senderId: senderId,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        console.log("Cache cleared successfully.");
+      } else {
+        console.error("Error clearing cache:", data.message);
+      }
+    })
+    .catch((error) => console.error("Error:", error));
 }
