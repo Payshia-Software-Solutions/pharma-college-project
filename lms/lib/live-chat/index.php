@@ -4,28 +4,41 @@ require_once '../../vendor/autoload.php';
 $senderId = $_POST['LoggedUser'];
 
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 $client = HttpClient::create();
+$cache = new FilesystemAdapter(); // Using filesystem cache
+$cacheKey = 'recent_chats_' . $senderId;
 $recentChats = [];
 
-
 try {
-    // Make a GET request to fetch chat data
-    $response = $client->request('GET', 'https://api.pharmacollege.lk/get-recent-chats/' . $senderId);
-    $recentChats = $response->toArray();
-} catch (\Exception $e) {
-    // Handle any errors that might occur during the request
-    echo 'Error: ' . $e->getMessage();
-    exit;
-}
+    // Attempt to fetch from cache
+    $cachedData = $cache->getItem($cacheKey);
 
+    if (!$cachedData->isHit()) {
+        // Make a GET request to fetch chat data
+        $response = $client->request('GET', 'https://api.pharmacollege.lk/get-recent-chats/' . $senderId);
+        $recentChats = $response->toArray();
+
+        // Save the response to cache for 10 minutes
+        $cachedData->set($recentChats);
+        $cachedData->expiresAfter(300); // Cache expires after 5 minutes
+        $cache->save($cachedData);
+    } else {
+        // Use cached data
+        $recentChats = $cachedData->get();
+    }
+} catch (\Exception $e) {
+    // // Handle any errors that might occur during the request
+    // echo 'Error: ' . $e->getMessage();
+    // exit;
+}
 
 ?>
 <div class="bg-success p-3">
     <h1 class="text-white mb-0">Live Chat</h1>
     <p class="text-white mb-0">Chat with us live for instant support and real-time assistance!</p>
 </div>
-
 
 <div class="container-fluid">
     <div class="row">
@@ -48,9 +61,7 @@ try {
                         <?= $chat['last_message']; ?>
                     </p>
                 </div>
-
             </div>
-
         <?php endforeach; ?>
     </div>
 </div>

@@ -282,3 +282,7 @@
 .chat-input input[type="file"] {
     display: none;
 }
+
+.floating-button {
+    display: none !important;
+}

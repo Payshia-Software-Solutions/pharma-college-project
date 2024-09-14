@@ -12,7 +12,30 @@ class Chat
 
     public function getAllChats()
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM `lc_chats`");
+        $sql = "
+        SELECT 
+            c.id AS chat_id,
+            c.name AS user_name,
+            COALESCE(lm.message_text, 'No messages yet') AS last_message,
+            COALESCE(DATE_FORMAT(lm.created_at, '%h:%i %p'), 'N/A') AS last_message_time,
+            false AS online_status, 
+            0 AS unread_count 
+        FROM 
+            lc_chats c
+        LEFT JOIN 
+            (SELECT chat_id, message_text, created_at 
+             FROM lc_messages 
+             WHERE (chat_id, id) IN 
+                   (SELECT chat_id, MAX(id) 
+                    FROM lc_messages 
+                    GROUP BY chat_id)
+            ) lm
+        ON c.id = lm.chat_id            
+        ORDER BY 
+            lm.created_at DESC;
+    ";
+        // Order
+        $stmt = $this->pdo->prepare($sql);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
