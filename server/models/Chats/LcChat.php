@@ -19,7 +19,8 @@ class Chat
             COALESCE(lm.message_text, 'No messages yet') AS last_message,
             COALESCE(DATE_FORMAT(lm.created_at, '%h:%i %p'), 'N/A') AS last_message_time,
             false AS online_status, 
-            0 AS unread_count 
+            0 AS unread_count,
+            created_by
         FROM 
             lc_chats c
         LEFT JOIN 
@@ -63,7 +64,8 @@ class Chat
                 COALESCE(lm.message_text, 'No messages yet') AS last_message,
                 COALESCE(DATE_FORMAT(lm.created_at, '%h:%i %p'), 'N/A') AS last_message_time,
                 false AS online_status, 
-                0 AS unread_count 
+                0 AS unread_count,
+                created_by
             FROM 
                 lc_chats c
             LEFT JOIN 
