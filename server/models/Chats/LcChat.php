@@ -20,7 +20,7 @@ class Chat
             COALESCE(DATE_FORMAT(lm.created_at, '%h:%i %p'), 'N/A') AS last_message_time,
             false AS online_status, 
             0 AS unread_count,
-            created_by
+            c.created_by
         FROM 
             lc_chats c
         LEFT JOIN 
@@ -65,7 +65,7 @@ class Chat
                 COALESCE(DATE_FORMAT(lm.created_at, '%h:%i %p'), 'N/A') AS last_message_time,
                 false AS online_status, 
                 0 AS unread_count,
-                created_by
+                c.created_by
             FROM 
                 lc_chats c
             LEFT JOIN 
