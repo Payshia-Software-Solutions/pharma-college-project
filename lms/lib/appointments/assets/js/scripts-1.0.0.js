@@ -252,7 +252,8 @@ function selectCategory() {
 }
 
 
-function getoBookingPage() {
+function getoBookingPage(category, reason, date, time) {
+
   $("#root").html(InnerLoader);
 
   function fetch_data() {
@@ -262,6 +263,10 @@ function getoBookingPage() {
       data: {
         LoggedUser: LoggedUser,
         UserLevel: UserLevel,
+        category: category,
+        reason: reason,
+        date: date,
+        time: time,
       },
       success: function (data) {
         $("#root").html(data);
@@ -315,9 +320,7 @@ var selectedCategory = '';
 
 // Function to handle category selection
 function clickCategory(categoryTitle) {
-  // Save the selected category
   selectedCategory = categoryTitle;
-  // Close the popup
   ClosePopUP()
 
   // Update the category button text to show the selected category
@@ -338,4 +341,24 @@ function selectTime(element) {
 
   // Add the 'active-time' class to the clicked time slot
   element.classList.add('active-time');
+}
+
+function validateDetailsPage() {
+
+  let reason = document.getElementById('reason-input').value;
+  let date = document.getElementById('date-input').value;
+  let selectedTime = document.querySelector('.time.active-time');
+  if (selectedCategory == '') {
+    alert('Please select a category')
+    return false;
+  }
+
+  if (!reason || !date || !selectedTime) {
+    alert('Please fill in all fields');
+    return false;
+  }
+
+
+  getoBookingPage(selectedCategory, reason, date, selectedTime.innerText);
+
 }

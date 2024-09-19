@@ -168,12 +168,13 @@
                         <button onclick="selectCategory()" class="btn btn-light category-btn">Category</button>
                     </div>
                     <div class="col-12 text-center mt-3">
-                        <input class="reason-input text-center" type="text" placeholder="Type Your Reason Here..." />
+                        <input class="reason-input text-center" type="text" placeholder="Type Your Reason Here..."
+                            id="reason-input" />
                     </div>
                 </div>
                 <div class="mt-5">
                     <div class="col-12 text-center">
-                        <input class="date-input" type="date">
+                        <input class="date-input" type="date" id="date-input">
 
                     </div>
                 </div>
@@ -195,7 +196,7 @@
                 </div>
                 <div class="mt-5">
                     <div class="col-12 text-center">
-                        <button onclick="getoBookingPage()" class="next-btn">Next</button>
+                        <button type="submit" onclick="validateDetailsPage()" class="next-btn">Next</button>
                     </div>
                 </div>
 
