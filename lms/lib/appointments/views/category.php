@@ -10,7 +10,7 @@ $response = $client->request('GET', 'http://localhost:8000/appointment-category/
 
 // Get the response body as an array (if it's JSON)
 $categories = $response->toArray();
-//print_r($categories);
+// print_r($categories);
 ?>
 
 <style>
@@ -58,13 +58,15 @@ $categories = $response->toArray();
     <div class="row">
         <?php foreach ($categories as $category) : ?>
         <div class="col-6">
-            <div class="category-card" onclick="clickCategory('<?= $category['category_name']; ?>')">
+            <div class="category-card"
+                onclick="clickCategory('<?= $category['category_name']; ?>', <?= $category['id']; ?>)">
                 <img class="img-fluid m-3" src="./assets/images/category-img.png" alt="image">
                 <h5 class="text-center cat-text"><?= $category['category_name']; ?></h5>
                 <!-- <h5 class="text-center sub-text"><?= $category['subtext']; ?></h5> -->
             </div>
         </div>
         <?php endforeach; ?>
+
     </div>
 </div>
 <div class="fix-bottom"></div>

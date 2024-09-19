@@ -24,16 +24,23 @@ class LectureAvailable
 public function getAvailableLecturesWithUserNames()
 {
     $sql = "
-           SELECT la.id, la.is_available, la.lecture_id, 
-           CONCAT(u.fname, ' ', u.lname) AS full_name
-           FROM lecture_available la
-           JOIN users u ON la.lecture_id = u.id
-           WHERE la.is_available = 1
-         ";
+    SELECT la.id, la.is_available, la.lecture_id, 
+       CONCAT(ufd.first_name, ' ', ufd.last_name) AS full_name,
+       CONCAT(
+           COALESCE(ufd.address_line_1, ''), ', ',
+           COALESCE(ufd.address_line_2, ''), ', ',
+           COALESCE(ufd.city, '')
+       ) AS full_address
+FROM lecture_available la
+JOIN user_full_details ufd ON la.lecture_id = ufd.id
+WHERE la.is_available = 1;
+";
 
     $stmt = $this->pdo->query($sql);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch all available lectures with user names
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $results; // Fetch all available lectures with user names
 }
+
 
 
     public function getLectureById($id)

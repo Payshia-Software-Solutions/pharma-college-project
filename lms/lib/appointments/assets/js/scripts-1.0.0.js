@@ -295,9 +295,14 @@ function goToAppointments() {
 }
 
 
-function GotoBookingConfirmPage() {
-  $("#root").html(InnerLoader);
+function GotoBookingConfirmPage(lecture_id) {
 
+  const date = document.getElementById("appointmentDate").textContent;
+  const time = document.getElementById("appointmentTime").textContent;
+  const reason = document.getElementById("appointmentReason").textContent;
+  const category = document.getElementById("appointmentCategory").textContent;
+
+  $("#root").html(InnerLoader);
   function fetch_data() {
     $.ajax({
       url: "lib/appointments/views/bookingConfirmPage.php",
@@ -305,6 +310,11 @@ function GotoBookingConfirmPage() {
       data: {
         LoggedUser: LoggedUser,
         UserLevel: UserLevel,
+        lecture_id: lecture_id,
+        date: date,
+        time: time,
+        reason: reason,
+        category: category
       },
       success: function (data) {
         $("#root").html(data);
@@ -317,10 +327,12 @@ function GotoBookingConfirmPage() {
 
 // Variable to store the selected category
 var selectedCategory = '';
+var selectedCategoryID = '';
 
 // Function to handle category selection
-function clickCategory(categoryTitle) {
+function clickCategory(categoryTitle, categoryID) {
   selectedCategory = categoryTitle;
+  selectedCategoryID = categoryID;
   ClosePopUP()
 
   // Update the category button text to show the selected category
@@ -329,9 +341,8 @@ function clickCategory(categoryTitle) {
     categoryButton.textContent = selectedCategory;
   }
 
-  // Optional: You can perform additional actions here
-  console.log('Selected Category:', selectedCategory);
 }
+
 
 function selectTime(element) {
   // Remove the 'active-time' class from all time slots
@@ -359,6 +370,47 @@ function validateDetailsPage() {
   }
 
 
-  getoBookingPage(selectedCategory, reason, date, selectedTime.innerText);
+  getoBookingPage(selectedCategoryID, reason, date, selectedTime.innerText);
 
 }
+
+
+function submitAppointment() {
+  const LectueId = document.getElementById("LectueId").textContent;
+  const LoggedUser = document.getElementById("LoggedUser").textContent;
+  const date = document.getElementById("appointmentDate").textContent;
+  const time = document.getElementById("appointmentTime").textContent;
+  const reason = document.getElementById("appointmentReason").textContent;
+  const category = document.getElementById("appointmentCategory").textContent;
+
+
+  $.ajax({
+    url: "lib/appointments/api/appointmentSubmit.php",
+    method: "POST",
+    data: {
+      LectueId: LectueId,
+      LoggedUser: LoggedUser,
+      date: date,
+      time: time,
+      reason: reason,
+      category: category
+    },
+    success: function (data) {
+      var response = JSON.parse(data);
+      if (response.status === "success") {
+        var result = response.message;
+        showNotification(result, "success", "Done!");
+        OpenIndex();
+      } else {
+        var result = response.message;
+        showNotification(result, "error", "Done!");
+      }
+
+    },
+    error: function (xhr, status, error) {
+      console.error("AJAX error: ", status, error);
+      alert("There was an error processing your request.");
+    }
+  });
+}
+

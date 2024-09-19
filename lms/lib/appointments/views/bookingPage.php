@@ -8,42 +8,16 @@ $client = HttpClient::create();
 
 $response = $client->request('GET', 'http://localhost:8000/availablelectures/');
 
-
 $lectures = $response->toArray();
-print_r($lectures);
+
+$appointmentDate = $_POST['date'];
+$category = $_POST['category'];
+$reason = $_POST['reason'];
+$time = $_POST['time'];
+
 ?>
 
-<?php
-$doctors = [
-    [
-        'name' => 'Dr. John Doe',
-        'specialist' => 'Tooth Dentist',
-        'experience' => '5 years of experience',
-        'availability' => '09:00 AM Tomorrow',
-        'status_percentage' => '74%',
-        'stories' => '78 Stories',
-        'image' => './assets/images/doctor.png'
-    ],
-    [
-        'name' => 'Dr. Jane Smith',
-        'specialist' => 'Heart Specialist',
-        'experience' => '10 years of experience',
-        'availability' => '02:00 PM Tomorrow',
-        'status_percentage' => '85%',
-        'stories' => '60 Stories',
-        'image' => './assets/images/doctor.png'
-    ],
-    [
-        'name' => 'Dr. Alan Brown',
-        'specialist' => 'General Physician',
-        'experience' => '8 years of experience',
-        'availability' => '11:00 AM Tomorrow',
-        'status_percentage' => '90%',
-        'stories' => '95 Stories',
-        'image' => './assets/images/doctor.png'
-    ]
-];
-?>
+
 
 
 <style>
@@ -156,20 +130,31 @@ $doctors = [
     <!-- image section -->
     <div class="row row-two">
         <div class="col-12 p-0">
+
+
+            <div hidden class="data-container">
+                <span id="appointmentDate"><?= $appointmentDate; ?></span>
+                <span id="appointmentCategory"><?= $category; ?></span>
+                <span id="appointmentReason"><?= $reason; ?></span>
+                <span id="appointmentTime"><?= $time; ?></span>
+
+            </div>
+
             <!-- card start -->
-            <?php foreach ($doctors as $doctor): ?>
+            <?php foreach ($lectures as $lecture): ?>
             <div class="col mb-3 card p-3 mx-auto">
 
                 <!-- row one Start -->
                 <div class="row">
                     <div class="col-4">
-                        <img class="img-fluid doc-img" src="<?= $doctor['image']; ?>" alt="Doctor Image">
+                        <img class="img-fluid doc-img" src="./assets/images/doctor.png" alt="Doctor Image">
                     </div>
                     <div class="col">
                         <div class="row">
 
                             <div class="col-9">
-                                <h2 class="doc-name pb-0 mb-0"><?= $doctor['name']; ?></h2>
+                                <h2 class="doc-name pb-0 mb-0"><?= $lecture['full_name']; ?></h2>
+                                <span hidden id="address"><?= $lecture['full_address']; ?></span>
                                 <span class="specialist mt-0 pt-0">Lecture</span>
                                 <p class="experience">7 Years of experience</p>
 
@@ -200,10 +185,10 @@ $doctors = [
                 <div class="row mt-4 d-flex justify-content-between">
                     <div class="col">
                         <h6 class="available">Available</h6>
-                        <span class="available-time"><?= $doctor['availability']; ?></span>
+                        <span class="available-time">10.00 AM Tomorrow</span>
                     </div>
                     <div class="col d-flex justify-content-end">
-                        <button class="book-btn" onclick="GotoBookingConfirmPage()">Book
+                        <button class="book-btn" onclick="GotoBookingConfirmPage(<?= $lecture['lecture_id']; ?>)">Book
                             Now</button>
                     </div>
                 </div>

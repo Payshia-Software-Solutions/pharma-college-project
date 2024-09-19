@@ -1,3 +1,27 @@
+<?php
+
+require '../../../vendor/autoload.php';
+
+use Symfony\Component\HttpClient\HttpClient;
+
+$client = HttpClient::create();
+
+$lectueId = $_POST['lecture_id'];
+$LoggedUser = $_POST['LoggedUser'];
+$date = $_POST['date'];
+$time = $_POST['time'];
+$reason = $_POST['reason'];
+$category = $_POST['category'];
+
+$response = $client->request('GET', 'http://localhost:8000/userFullDetails/' . $lectueId);
+
+$lectures = $response->toArray();
+$name = $lectures['first_name'] . " " . $lectures['last_name'];
+$address = $lectures['address_line_1'] . ", " . $lectures['address_line_2'] . ", " . $lectures['city'];
+
+?>
+
+
 <style>
 .back-btn {
     background-color: transparent;
@@ -244,7 +268,7 @@ body {
     height: 20px;
 }
 </style>
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <div class="container-fluid">
     <!-- back btn section -->
     <div class="row row-one mb-3" onclick="goToAppointments()">
@@ -258,6 +282,16 @@ body {
         <div class="col-12 p-0">
             <!-- card start -->
 
+            <div hidden class="data-container">
+                <span id="LectueId"><?= $lectueId; ?></span>
+                <span id="LoggedUser"><?= $LoggedUser; ?></span>
+                <span id="appointmentDate"><?= $date; ?></span>
+                <span id="appointmentCategory"><?= $category; ?></span>
+                <span id="appointmentReason"><?= $reason; ?></span>
+                <span id="appointmentTime"><?= $time; ?></span>
+
+            </div>
+
             <div class="col mb-3 card p-1 mx-auto">
 
                 <div class="sub-card mt-3 mx-auto p-2 d-flex justify-content-between">
@@ -269,10 +303,12 @@ body {
                             <div class="col d-flex justify-content-start">
                                 <div class="row">
 
-                                    <h6 class="doc-name mt-2 mb-0 pb-0">Dr. Shurti Kedia</h6>
+                                    <h6 class="doc-name mt-2 mb-0 pb-0">
+                                        <?php echo $name; ?>
+                                    </h6>
 
 
-                                    <p class="adress pb-0 mb-0">Upasana Dental Clinic stn. road</p>
+                                    <p class="adress pb-0 mb-0"><?php echo $address; ?></p>
 
                                     <div class="start-container">
                                         <span class="fa fa-star checked"></span>
@@ -306,7 +342,7 @@ body {
 
             <!-- card end -->
             <div class="text-center">
-                <button class="confirm-btn mt-2" data-bs-toggle="modal" data-bs-target="#exampleModal">Confirm
+                <button onclick="submitAppointment()" class="confirm-btn mt-2">Confirm
                     Appointment</button>
             </div>
         </div>
@@ -327,7 +363,7 @@ body {
                     You booked an appointment with <strong>Dr. Pediatrician Purpieson</strong> on February 21, at
                     02:00 PM
                 </p>
-                <button type="button" data-bs-dismiss="modal" class="done-btn">Done</button>
+                <button onclick="closeModal" type="button" data-bs-dismiss="modal" class="done-btn">Done</button>
             </div>
 
         </div>

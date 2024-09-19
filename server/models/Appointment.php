@@ -25,21 +25,23 @@ class Appointment
     }
 
     public function createAppointment($data)
-    {
-        $stmt = $this->pdo->prepare("INSERT INTO `appointments` (`appointment_id`, `student_number`, `booking_date`, `booked_time`, `reason`, `category`, `created_at`, `status`, `comment`, `is_active`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([
-            $data['appointment_id'],
-            $data['student_number'],
-            $data['booking_date'],
-            $data['booked_time'],
-            $data['reason'],
-            $data['category'],
-            $data['created_at'],
-            $data['status'],
-            $data['comment'],
-            $data['is_active']
-        ]);
-    }
+{
+    $stmt = $this->pdo->prepare("INSERT INTO `appointments` (`appointment_id`, `student_number`, `booking_date`, `booked_time`, `reason`, `category`, `created_at`, `status`, `comment`, `is_active`, `instructor_id`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->execute([
+        $data['appointment_id'],
+        $data['student_number'],
+        $data['booking_date'],
+        $data['booked_time'],
+        $data['reason'],
+        $data['category'],
+        $data['created_at'],
+        $data['status'],
+        $data['comment'],
+        $data['is_active'],
+        $data['instructor_id']  
+    ]);
+}
+
 
     public function updateAppointment($id, $data)
     {
