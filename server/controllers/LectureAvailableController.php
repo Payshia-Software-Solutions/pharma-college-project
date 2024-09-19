@@ -1,13 +1,16 @@
 <?php
 require_once './models/LectureAvailable.php';
+require_once './models/User.php';
 
 class LectureAvailableController
 {
     private $model;
+    private $userModel;
 
     public function __construct($pdo)
     {
         $this->model = new LectureAvailable($pdo);
+        $this->userModel = new User($pdo);
     }
 
     public function getAllLectures()
@@ -17,10 +20,12 @@ class LectureAvailableController
     }
 
     public function getAvailableLectures()
-{
-    $availableLectures = $this->model->getAvailableLectures(); // Call the model's method to get available lectures
-    echo json_encode($availableLectures); // Return the result as JSON
-}
+    {
+        $availableLectures = $this->model->getAvailableLecturesWithUserNames();
+        
+        echo json_encode($availableLectures); // Return the result as JSON
+    }
+    
 
 
     public function getLectureById($id)

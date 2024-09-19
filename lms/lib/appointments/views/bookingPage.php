@@ -1,4 +1,19 @@
 <?php
+
+require '../../../vendor/autoload.php';
+
+use Symfony\Component\HttpClient\HttpClient;
+
+$client = HttpClient::create();
+
+$response = $client->request('GET', 'http://localhost:8000/availablelectures/');
+
+
+$lectures = $response->toArray();
+print_r($lectures);
+?>
+
+<?php
 $doctors = [
     [
         'name' => 'Dr. John Doe',
@@ -155,20 +170,20 @@ $doctors = [
 
                             <div class="col-9">
                                 <h2 class="doc-name pb-0 mb-0"><?= $doctor['name']; ?></h2>
-                                <span class="specialist mt-0 pt-0"><?= $doctor['specialist']; ?></span>
-                                <p class="experience"><?= $doctor['experience']; ?></p>
+                                <span class="specialist mt-0 pt-0">Lecture</span>
+                                <p class="experience">7 Years of experience</p>
 
                                 <div class="row">
                                     <div class="col-3 d-flex justify-content-start">
                                         <div class="status-container">
                                             <div class="status-dot"></div>
-                                            <div class="status-text"><?= $doctor['status_percentage']; ?></div>
+                                            <div class="status-text">90%</div>
                                         </div>
                                     </div>
                                     <div class="col d-flex justify-content-start">
                                         <div class="status-container">
                                             <div class="status-dot"></div>
-                                            <div class="status-text"><?= $doctor['stories']; ?></div>
+                                            <div class="status-text">95 Stories</div>
                                         </div>
                                     </div>
                                 </div>
