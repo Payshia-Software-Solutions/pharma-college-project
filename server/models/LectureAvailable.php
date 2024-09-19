@@ -15,6 +15,13 @@ class LectureAvailable
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getAvailableLectures()
+{
+    $stmt = $this->pdo->query("SELECT * FROM lecture_available WHERE is_available = 1");
+    return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch all available lectures
+}
+
+
     public function getLectureById($id)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM lecture_available WHERE id = :id");

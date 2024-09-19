@@ -37,7 +37,7 @@ $hunterMedicineRoutes = require './routes/Hunter/hunterMedicineRoutes.php';
 $hunterRacksRoutes = require './routes/Hunter/hunterRacksRoutes.php';
 $hunterSaveAnswerRoutes = require './routes/Hunter/hunterSaveAnswerRoutes.php';
 $hunterStoreRoutes = require './routes/Hunter/hunterStoreRoutes.php';
-$lectureRoutes = require './routes/lectureRoutes.php';
+$lectureRoutes = require './routes/OtherRoutes/lectureRoutes.php';
 
 
 // Combine all routes

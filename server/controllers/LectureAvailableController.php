@@ -16,6 +16,13 @@ class LectureAvailableController
         echo json_encode($lectures);
     }
 
+    public function getAvailableLectures()
+{
+    $availableLectures = $this->model->getAvailableLectures(); // Call the model's method to get available lectures
+    echo json_encode($availableLectures); // Return the result as JSON
+}
+
+
     public function getLectureById($id)
     {
         $lecture = $this->model->getLectureById($id);
