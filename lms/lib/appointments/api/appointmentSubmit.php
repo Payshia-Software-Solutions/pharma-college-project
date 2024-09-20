@@ -14,6 +14,7 @@ $time = $_POST['time'];  // This is in '09:00 AM' format
 $reason = $_POST['reason'];
 $category = $_POST['category'];
 
+
 // Convert the time to 24-hour format
 $timeObject = DateTime::createFromFormat('h:i A', $time);
 $timeIn24HourFormat = $timeObject->format('H:i:s');

@@ -13,6 +13,7 @@ $time = $_POST['time'];
 $reason = $_POST['reason'];
 $category = $_POST['category'];
 
+
 $response = $client->request('GET', 'http://localhost:8000/userFullDetails/' . $lectueId);
 
 $lectures = $response->toArray();
@@ -284,7 +285,7 @@ body {
 
             <div hidden class="data-container">
                 <span id="LectueId"><?= $lectueId; ?></span>
-                <span id="LoggedUser"><?= $LoggedUser; ?></span>
+                <span id="loggedUser"><?= $LoggedUser; ?></span>
                 <span id="appointmentDate"><?= $date; ?></span>
                 <span id="appointmentCategory"><?= $category; ?></span>
                 <span id="appointmentReason"><?= $reason; ?></span>

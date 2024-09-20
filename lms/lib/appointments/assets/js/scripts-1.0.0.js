@@ -377,12 +377,11 @@ function validateDetailsPage() {
 
 function submitAppointment() {
   const LectueId = document.getElementById("LectueId").textContent;
-  const LoggedUser = document.getElementById("LoggedUser").textContent;
+  const LoggedUser = document.getElementById("loggedUser").textContent;
   const date = document.getElementById("appointmentDate").textContent;
   const time = document.getElementById("appointmentTime").textContent;
   const reason = document.getElementById("appointmentReason").textContent;
   const category = document.getElementById("appointmentCategory").textContent;
-
 
   $.ajax({
     url: "lib/appointments/api/appointmentSubmit.php",
