@@ -20,7 +20,7 @@ if ($UserLevel == "Admin") {
     $response = $client->request('GET', 'http://localhost:8000/care-instructions-pre/role/Student');
 }
 $answers = $response->toArray();
-
+$answersCount = count($answers);
 
 
 // $UserLevel = "Student";
@@ -115,8 +115,8 @@ $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $cover
                         <label>Choice Instruction</label>
                         <select id="instructionSelect" class="form-control">
                             <?php
-                                if (!empty($instructions)) {
-                                    foreach ($instructions as $selectedArray) {
+                                if (!empty($answers)) {
+                                    foreach ($answers as $selectedArray) {
                                 ?>
                             <option value="<?= $selectedArray['id'] ?>"><?= $selectedArray['id'] ?> -
                                 <?= $selectedArray['instruction'] ?></option>
@@ -141,19 +141,30 @@ $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $cover
                             </thead>
                             <tbody>
                                 <?php
-                                if (!empty($answers)) {
-                                    foreach ($answers as $selectedArray) {
-                                    ?>
+                                if (!empty($userAnswers) && $UserLevel == "Student") {
+                                    foreach ($userAnswers as $selectedArray) {
+                                ?>
                                 <tr>
                                     <td><?= $selectedArray['id'] ?></td>
-                                    <td><?= $selectedArray['instruction'] ?></td>
+                                    <td><?= $instructions[$selectedArray['Instruction']]['instruction'] ?></td>
                                 </tr>
                                 <?php
                                     }
                                 }
                                 ?>
 
-
+                                <?php
+                                if (!empty($correctAnswer) && $UserLevel != "Student") {
+                                    foreach ($correctAnswer as $selectedArray) {
+                                ?>
+                                <tr>
+                                    <td><?= $selectedArray['content'] ?></td>
+                                    <td><?= $instructions[$selectedArray['content']]['instruction'] ?></td>
+                                </tr>
+                                <?php
+                                    }
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
