@@ -2,8 +2,26 @@
 require_once '../../include/configuration.php';
 include '../../php_handler/function_handler.php';
 
+require '../../vendor/autoload.php';
+
+use Symfony\Component\HttpClient\HttpClient;
+
+$client = HttpClient::create();
+
+
+
+
 $loggedUser = $_POST['LoggedUser'];
 $UserLevel = $_POST['UserLevel'];
+
+if ($UserLevel == "Admin") {
+    $response = $client->request('GET', 'http://localhost:8000/care-instructions-pre/role/Admin');
+}else{
+    $response = $client->request('GET', 'http://localhost:8000/care-instructions-pre/role/Student');
+}
+$answers = $response->toArray();
+
+
 
 // $UserLevel = "Student";
 $coverID = $_POST['coverID'];
@@ -123,30 +141,19 @@ $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $cover
                             </thead>
                             <tbody>
                                 <?php
-                                if (!empty($userAnswers) && $UserLevel == "Student") {
-                                    foreach ($userAnswers as $selectedArray) {
-                                ?>
+                                if (!empty($answers)) {
+                                    foreach ($answers as $selectedArray) {
+                                    ?>
                                 <tr>
                                     <td><?= $selectedArray['id'] ?></td>
-                                    <td><?= $instructions[$selectedArray['Instruction']]['instruction'] ?></td>
+                                    <td><?= $selectedArray['instruction'] ?></td>
                                 </tr>
                                 <?php
                                     }
                                 }
                                 ?>
 
-                                <?php
-                                if (!empty($correctAnswer) && $UserLevel != "Student") {
-                                    foreach ($correctAnswer as $selectedArray) {
-                                ?>
-                                <tr>
-                                    <td><?= $selectedArray['content'] ?></td>
-                                    <td><?= $instructions[$selectedArray['content']]['instruction'] ?></td>
-                                </tr>
-                                <?php
-                                    }
-                                }
-                                ?>
+
                             </tbody>
                         </table>
                     </div>
