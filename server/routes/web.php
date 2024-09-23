@@ -95,7 +95,7 @@ foreach ($routes as $route => $handler) {
 
 // Convert route URI to regex
 $routeRegex = str_replace(
-    ['{id}', '{username}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}'],
+    ['{id}', '{username}','{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}'],
     ['(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)'],
     $routeUri
 );

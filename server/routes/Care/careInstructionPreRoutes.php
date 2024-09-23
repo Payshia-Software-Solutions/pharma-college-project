@@ -13,5 +13,6 @@ return [
     'POST /care-instructions-pre' => [$careInstructionPreController, 'createCareInstruction'],
     'GET /care-instructions-pre/{id}' => [$careInstructionPreController, 'getCareInstruction'],
     'PUT /care-instructions-pre/{id}' => [$careInstructionPreController, 'updateCareInstruction'],
-    'DELETE /care-instructions-pre/{id}' => [$careInstructionPreController, 'deleteCareInstruction']
+    'DELETE /care-instructions-pre/{id}' => [$careInstructionPreController, 'deleteCareInstruction'],
+    'GET /care-instructions-pre/role/{role}' => [$careInstructionPreController, 'getInstructionsByRole'],
 ];
