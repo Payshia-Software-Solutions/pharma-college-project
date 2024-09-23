@@ -54,7 +54,7 @@ class CareInstruction
     {
     // Perform a JOIN to fetch only data from care_instruction_pre including created_at
     $stmt = $this->pdo->query("
-        SELECT cip.id AS pre_id, cip.instruction AS pre_instruction, cip.created_by AS pre_created_by, cip.created_at AS pre_created_at
+        SELECT cip.id AS id, cip.instruction AS instruction, cip.created_by AS pre_created_by, cip.created_at AS pre_created_at
         FROM care_instruction ci
         LEFT JOIN care_instruction_pre cip
         ON ci.content = cip.id

@@ -14,7 +14,7 @@ $client = HttpClient::create();
 $loggedUser = $_POST['LoggedUser'];
 $UserLevel = $_POST['UserLevel'];
 
-if ($UserLevel == "Admin") {
+if ($UserLevel == "Student") {
     $response = $client->request('GET', 'http://localhost:8000/care-instructions-pre/role/Admin');
 }else{
     $response = $client->request('GET', 'http://localhost:8000/care-instructions-pre/role/Student');
