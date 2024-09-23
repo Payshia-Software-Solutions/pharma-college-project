@@ -49,4 +49,17 @@ class CareInstruction
         $stmt = $this->pdo->prepare("DELETE FROM care_instruction WHERE id = ?");
         return $stmt->execute([$id]);
     }
+
+    public function getAllCareInstructionsWithPre()
+    {
+    // Perform a JOIN to fetch only data from care_instruction_pre including created_at
+    $stmt = $this->pdo->query("
+        SELECT cip.id AS pre_id, cip.instruction AS pre_instruction, cip.created_by AS pre_created_by, cip.created_at AS pre_created_at
+        FROM care_instruction ci
+        LEFT JOIN care_instruction_pre cip
+        ON ci.content = cip.id
+    ");
+        
+        return $stmt->fetchAll();
+    }
 }

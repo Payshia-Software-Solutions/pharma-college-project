@@ -55,7 +55,7 @@ class CareInstructionPreController
         } elseif ($role === 'Student') {
             // Student role: get all care_instruction_pre and 5 random care_instruction
             $instructionsPre = $this->model->getAllCareInstructions();
-            $instructionsCare = $this->CareInstructionModel->getAllCareInstructions(5);
+            $instructionsCare = $this->CareInstructionModel->getAllCareInstructionsWithPre(5);
 
             // Combine and shuffle
             $instructions = array_merge($instructionsPre, $instructionsCare);
