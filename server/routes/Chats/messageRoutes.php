@@ -13,7 +13,6 @@ return [
     'GET /messages/{id}/' => [$messageController, 'getMessage'],
     'GET /messages/chat/{id}/' => [$messageController, 'getMessageByChatId'],
     'GET /messages/get-last/{id}/' => [$messageController, 'getLastMessage'],
-
     'POST /messages/' => [$messageController, 'createMessage'],
     'PUT /messages/{id}/' => [$messageController, 'updateMessage'],
     'DELETE /messages/{id}/' => [$messageController, 'deleteMessage']
