@@ -56,6 +56,7 @@ $chatRoutes = require './routes/Chats/chatRoutes.php';
 $attachmentRoutes = require './routes/Chats/attachmentRoutes.php';
 $messageRoutes = require './routes/Chats/messageRoutes.php';
 $communityPostCategoryRoutes = require './routes/Community/communityPostCategoryRoutes.php';
+$communityPostRoutes = require './routes/Community/communityPostRoutes.php';
 
 
 
@@ -70,7 +71,8 @@ $routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes,
                         $hunterDrugGroupRoutes, $hunterMedicineRoutes, $hunterRacksRoutes,
                         $hunterSaveAnswerRoutes, $hunterStoreRoutes, $lectureRoutes,
                          $careInstructionRoutes, $careInstructionPreRoutes, $chatRoutes,
-                         $attachmentRoutes, $messageRoutes, $communityPostCategoryRoutes);
+                         $attachmentRoutes, $messageRoutes, $communityPostCategoryRoutes,
+                         $communityPostRoutes);
 
 
 // Define the home route with trailing slash
