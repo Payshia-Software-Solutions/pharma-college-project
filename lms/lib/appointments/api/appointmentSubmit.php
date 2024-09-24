@@ -2,6 +2,11 @@
 
 require '../../../vendor/autoload.php';
 
+//for use env file data
+use Dotenv\Dotenv;
+$dotenv = Dotenv::createImmutable(__DIR__ . '../../../../', '.env.test');
+$dotenv->load();
+
 use Symfony\Component\HttpClient\HttpClient;
 
 $client = HttpClient::create();
@@ -20,7 +25,7 @@ $timeObject = DateTime::createFromFormat('h:i A', $time);
 $timeIn24HourFormat = $timeObject->format('H:i:s');
 
 // Make the GET request to fetch existing appointments
-$response = $client->request('GET', 'http://localhost:8000/appointments/');
+$response = $client->request('GET', $_ENV["SERVER_URL"] .'/appointments/');
 $appointments = $response->toArray();
 
 // Get the current length of the appointments array and create a new ID
@@ -44,7 +49,7 @@ $newAppointmentData = [
 ];
 
 // Send the POST request to create a new appointment
-$postResponse = $client->request('POST', 'http://localhost:8000/appointments/', [
+$postResponse = $client->request('POST', $_ENV["SERVER_URL"] .'/appointments/', [
     'json' => $newAppointmentData
 ]);
 

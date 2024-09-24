@@ -4,9 +4,14 @@ require '../../../vendor/autoload.php';
 
 use Symfony\Component\HttpClient\HttpClient;
 
+//for use env file data
+use Dotenv\Dotenv;
+$dotenv = Dotenv::createImmutable(__DIR__ . '../../../../', '.env.test');
+$dotenv->load();
+
 $client = HttpClient::create();
 
-$response = $client->request('GET', 'http://localhost:8000/appointment-category/');
+$response = $client->request('GET', $_ENV["SERVER_URL"] .'/appointment-category/');
 
 // Get the response body as an array (if it's JSON)
 $categories = $response->toArray();
