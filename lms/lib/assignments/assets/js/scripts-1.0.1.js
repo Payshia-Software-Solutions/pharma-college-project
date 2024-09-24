@@ -140,7 +140,7 @@ function SaveSubmission(assignmentId) {
             ViewAssignment(assignmentId);
           } else {
             var result = response.message;
-            showNotification(result, "success", "Done!");
+            showNotification(result, "error", "Done!");
           }
           hideOverlay();
         },

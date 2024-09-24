@@ -149,13 +149,13 @@ function submitAppointment() {
 // }
 
 
- 
+
 
 function SucceedMessage(formData) {
   var data1 = JSON.parse(formData);
   console.log(data1.date);
   console.log(data1.time);
- 
+
   // Fetch all appointments to get the current count
   fetch('http://localhost/pharma-college-project/server/appointments/')
     .then(response => response.json())
@@ -192,14 +192,14 @@ function SucceedMessage(formData) {
         },
         body: jsonData,
       })
-      .then(response => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        return response.json();
-      })
-      .then(responseData => {
-        $("#root").html(InnerLoader);
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(responseData => {
+          $("#root").html(InnerLoader);
 
           function fetch_data() {
             $.ajax({
@@ -217,19 +217,199 @@ function SucceedMessage(formData) {
             });
           }
           fetch_data();
-      })
-      .catch(error => {
-        document.getElementById("responseContainer").innerHTML = '<p class="alert alert-danger">Failed to create appointment: ' + error.message + '</p>';
-      });
+        })
+        .catch(error => {
+          document.getElementById("responseContainer").innerHTML = '<p class="alert alert-danger">Failed to create appointment: ' + error.message + '</p>';
+        });
     })
     .catch(error => {
       document.getElementById("responseContainer").innerHTML = '<p class="alert alert-danger">Failed to fetch appointments: ' + error.message + '</p>';
     });
 }
 
- 
+function selectCategory() {
+  OpenPopup()
+  document.getElementById('pop-content').innerHTML = InnerLoader
+
+  function fetch_data() {
+    showOverlay()
+    $.ajax({
+      url: 'lib/appointments/views/category.php',
+      method: 'POST',
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        company_id: company_id,
+      },
+      success: function (data) {
+        $('#pop-content').html(data)
+        hideOverlay()
+      }
+    })
+  }
+
+  fetch_data()
+}
 
 
+function getoBookingPage(category, reason, date, time) {
+
+  $("#root").html(InnerLoader);
+
+  function fetch_data() {
+    $.ajax({
+      url: "lib/appointments/views/bookingPage.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        category: category,
+        reason: reason,
+        date: date,
+        time: time,
+      },
+      success: function (data) {
+        $("#root").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
+function goToAppointments() {
+  $("#root").html(InnerLoader);
+
+  function fetch_data() {
+    $.ajax({
+      url: "lib/appointments/index.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+      },
+      success: function (data) {
+        $("#root").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
 
 
- 
+function GotoBookingConfirmPage(lecture_id) {
+
+  const date = document.getElementById("appointmentDate").textContent;
+  const time = document.getElementById("appointmentTime").textContent;
+  const reason = document.getElementById("appointmentReason").textContent;
+  const category = document.getElementById("appointmentCategory").textContent;
+
+  $("#root").html(InnerLoader);
+  function fetch_data() {
+    $.ajax({
+      url: "lib/appointments/views/bookingConfirmPage.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        lecture_id: lecture_id,
+        date: date,
+        time: time,
+        reason: reason,
+        category: category
+      },
+      success: function (data) {
+        $("#root").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
+
+
+// Variable to store the selected category
+var selectedCategory = '';
+var selectedCategoryID = '';
+
+// Function to handle category selection
+function clickCategory(categoryTitle, categoryID) {
+  selectedCategory = categoryTitle;
+  selectedCategoryID = categoryID;
+  ClosePopUP()
+
+  // Update the category button text to show the selected category
+  var categoryButton = document.querySelector('.category-btn');
+  if (categoryButton) {
+    categoryButton.textContent = selectedCategory;
+  }
+
+}
+
+
+function selectTime(element) {
+  // Remove the 'active-time' class from all time slots
+  document.querySelectorAll('.time').forEach(function (timeSlot) {
+    timeSlot.classList.remove('active-time');
+  });
+
+  // Add the 'active-time' class to the clicked time slot
+  element.classList.add('active-time');
+}
+
+function validateDetailsPage() {
+
+  let reason = document.getElementById('reason-input').value;
+  let date = document.getElementById('date-input').value;
+  let selectedTime = document.querySelector('.time.active-time');
+  if (selectedCategory == '') {
+    alert('Please select a category')
+    return false;
+  }
+
+  if (!reason || !date || !selectedTime) {
+    alert('Please fill in all fields');
+    return false;
+  }
+
+
+  getoBookingPage(selectedCategoryID, reason, date, selectedTime.innerText);
+
+}
+
+
+function submitAppointment() {
+  const LectueId = document.getElementById("LectueId").textContent;
+  const LoggedUser = document.getElementById("loggedUser").textContent;
+  const date = document.getElementById("appointmentDate").textContent;
+  const time = document.getElementById("appointmentTime").textContent;
+  const reason = document.getElementById("appointmentReason").textContent;
+  const category = document.getElementById("appointmentCategory").textContent;
+
+  $.ajax({
+    url: "lib/appointments/api/appointmentSubmit.php",
+    method: "POST",
+    data: {
+      LectueId: LectueId,
+      LoggedUser: LoggedUser,
+      date: date,
+      time: time,
+      reason: reason,
+      category: category
+    },
+    success: function (data) {
+      var response = JSON.parse(data);
+      if (response.status === "success") {
+        var result = response.message;
+        showNotification(result, "success", "Done!");
+        OpenIndex();
+      } else {
+        var result = response.message;
+        showNotification(result, "error", "Done!");
+      }
+
+    },
+    error: function (xhr, status, error) {
+      console.error("AJAX error: ", status, error);
+      alert("There was an error processing your request.");
+    }
+  });
+}
+

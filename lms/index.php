@@ -27,42 +27,42 @@ $pageId = 1;
     include './include/site-data.php'; ?>
     <!-- Dark Mode Toggle Script -->
     <script>
-        function toggleDarkMode() {
-            const htmlElement = document.documentElement;
-            const currentTheme = htmlElement.getAttribute("data-bs-theme");
-            toggleBackgrounds()
+    function toggleDarkMode() {
+        const htmlElement = document.documentElement;
+        const currentTheme = htmlElement.getAttribute("data-bs-theme");
+        toggleBackgrounds()
 
-            if (currentTheme === "dark") {
-                htmlElement.setAttribute("data-bs-theme", "light");
-            } else {
-                htmlElement.setAttribute("data-bs-theme", "dark");
-            }
+        if (currentTheme === "dark") {
+            htmlElement.setAttribute("data-bs-theme", "light");
+        } else {
+            htmlElement.setAttribute("data-bs-theme", "dark");
         }
+    }
 
-        function toggleBackgrounds() {
-            // Toggle background for the navigation element
-            const navbar = document.getElementById('navbar');
-            toggleBackground(navbar);
+    function toggleBackgrounds() {
+        // Toggle background for the navigation element
+        const navbar = document.getElementById('navbar');
+        toggleBackground(navbar);
 
-            // Toggle background for the bottom menu element
-            const bottomMenu = document.getElementById('bottomMenu');
-            toggleBackground(bottomMenu);
+        // Toggle background for the bottom menu element
+        const bottomMenu = document.getElementById('bottomMenu');
+        toggleBackground(bottomMenu);
 
-            const credits = document.getElementById('credits');
-            toggleBackground(credits);
+        const credits = document.getElementById('credits');
+        toggleBackground(credits);
+    }
+
+    function toggleBackground(element) {
+        // Check if 'bg-light' class is present, then toggle to 'bg-dark'
+        if (element.classList.contains('bg-light')) {
+            element.classList.remove('bg-light');
+            element.classList.add('bg-dark');
+        } else {
+            // Otherwise, toggle to 'bg-light'
+            element.classList.remove('bg-dark');
+            element.classList.add('bg-light');
         }
-
-        function toggleBackground(element) {
-            // Check if 'bg-light' class is present, then toggle to 'bg-dark'
-            if (element.classList.contains('bg-light')) {
-                element.classList.remove('bg-light');
-                element.classList.add('bg-dark');
-            } else {
-                // Otherwise, toggle to 'bg-light'
-                element.classList.remove('bg-dark');
-                element.classList.add('bg-light');
-            }
-        }
+    }
     </script>
     <!-- Pre Loader Content -->
     <?php include './include/pre-loader.php' ?>

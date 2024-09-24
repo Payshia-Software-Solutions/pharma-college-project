@@ -4,7 +4,8 @@
 The `AppointmentCategory` API provides CRUD operations for managing appointment categories within the system. This documentation outlines the available endpoints, request parameters, response structures, and error codes.
 
 ## Base URL
-https://api.pharmacollege.lk/appointment-category
+
+`https://api.pharmacollege.lk/`
 
 
 ## Endpoints

@@ -13,18 +13,7 @@ $enrolledCourseCode = GetDefaultCourseValue($session_user_name);
 $config = require './include/setting.php';
 $serverUrl = $config['server_url'];
 
-require_once './vendor/autoload.php';
 
-use GuzzleHttp\Client;
-
-$client = new Client();
-$response = $client->request('GET', $serverUrl . '/assignments', [
-    'headers' => [
-        'Accept'        => 'application/json',
-    ]
-]);
-
-$data = json_decode($response->getBody(), true); // Decode JSON response
 
 ?>
 
