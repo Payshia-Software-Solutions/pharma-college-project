@@ -30,6 +30,26 @@ class ECertificateController
         echo json_encode($certificate);
     }
 
+    public function getCourseCompletionByTitle($course_code, $username, $title)
+    {
+        $certificate = $this->model->getCourseCompletionByTitle($course_code, $username, $title);
+        if ($certificate) {
+            echo json_encode($certificate);
+        } else {
+            // Error
+            echo json_encode(["error" => "No data found for " . $username . " the given course (" . $course_code . ") and user."]);
+        }
+    }
+    public function getCourseCompletion($course_code, $username)
+    {
+        $certificate = $this->model->getCourseCompletion($course_code, $username);
+        if ($certificate) {
+            echo json_encode($certificate);
+        } else {
+            echo json_encode(["error" => "No data found for " . $username . " the given course (" . $course_code . ") and user."]);
+        }
+    }
+
     public function createCertificate()
     {
         $data = json_decode(file_get_contents('php://input'), true);

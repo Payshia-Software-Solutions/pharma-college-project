@@ -17,6 +17,20 @@ class ECertificate
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getCourseCompletion($course_code, $username)
+    {
+        $stmt = $this->pdo->prepare("SELECT `id`, `index_number`, `course_code`, `title_id`, `result`, `created_at`, `created_by` FROM `certificate_user_result` WHERE `course_code` = ? AND `index_number` = ? ");
+        $stmt->execute([$course_code, $username]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getCourseCompletionByTitle($course_code, $username, $title)
+    {
+        $stmt = $this->pdo->prepare("SELECT `id`, `index_number`, `course_code`, `title_id`, `result`, `created_at`, `created_by` FROM `certificate_user_result` WHERE `course_code` = ? AND `index_number` = ? AND `title_id` LIKE ?");
+        $stmt->execute([$course_code, $username, $title]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getCertificateById($id)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM `e-certificate` WHERE `id` = ?");

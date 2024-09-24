@@ -19,6 +19,10 @@
     .text-label {
         font-weight: 500;
     }
+
+    .floating-button {
+        display: none !important;
+    }
 </style>
 <div class="row">
     <div class="col-12 col-md-6 offset-md-3">
@@ -26,7 +30,7 @@
             <div class="card-body">
                 <div class="row mb-2 mt-4">
                     <div class="col-12 text-center">
-                        <img src="https://lms.pharmacollege.lk/images/logo-new.png" class="w-25 pb-2 border-bottom mb-2 border-2" alt="logo" class="logo">
+                        <img src="https://lms.pharmacollege.lk/assets/images/logo.png" class="w-25 pb-2 border-bottom mb-2 border-2" alt="logo" class="logo">
                         <h3 class="text-center ">Login</h3>
                     </div>
                 </div>

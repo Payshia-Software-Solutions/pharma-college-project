@@ -1,4 +1,15 @@
 <?php
+// Set CORS headers for every response
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+// Handle OPTIONS requests (preflight)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit();
+}
+
+
 ini_set('memory_limit', '256M');
 
 // Report all PHP errors
@@ -40,6 +51,11 @@ $hunterStoreRoutes = require './routes/Hunter/hunterStoreRoutes.php';
 $lectureRoutes = require './routes/OtherRoutes/lectureRoutes.php';
 $careInstructionRoutes = require './routes/Care/careInstructionRoutes.php';
 $careInstructionPreRoutes = require './routes/Care/careInstructionPreRoutes.php';
+$chatRoutes = require './routes/Chats/chatRoutes.php';
+$chatRoutes = require './routes/Chats/chatRoutes.php';
+$attachmentRoutes = require './routes/Chats/attachmentRoutes.php';
+$messageRoutes = require './routes/Chats/messageRoutes.php';
+
 
 
 // Combine all routes
@@ -52,7 +68,11 @@ $routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes,
                         $hunterCategoryRoutes, $hunterCourseRoutes, $hunterDosageRoutes, 
                         $hunterDrugGroupRoutes, $hunterMedicineRoutes, $hunterRacksRoutes,
                         $hunterSaveAnswerRoutes, $hunterStoreRoutes, $lectureRoutes,
-                         $careInstructionRoutes, $careInstructionPreRoutes);
+                         $careInstructionRoutes, $careInstructionPreRoutes, 
+    $chatRoutes,
+    $attachmentRoutes,
+    $messageRoutes);
+
 
 // Define the home route with trailing slash
 $routes['GET /'] = function () {
@@ -100,7 +120,6 @@ $routeRegex = str_replace(
     $routeUri
 );
 $routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
-
 
     error_log("Checking route: $routeRegex");
 
