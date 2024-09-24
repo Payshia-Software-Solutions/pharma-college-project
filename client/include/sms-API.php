@@ -1,0 +1,65 @@
+<?php
+function SentSMS($mobile, $senderId = 'Pharma C.', $message)
+{
+    $MSISDN = $mobile;
+    $SRC = $senderId;
+    $MESSAGE = (urldecode($message));
+    $AUTH = "2218|Ysh7ZLYM83rxJc4Reztir1OYD31UppbEmewtbK9p";  //Replace your Access Token
+
+    $msgdata = array("recipient" => $MSISDN, "sender_id" => $SRC, "message" => $MESSAGE);
+
+    $curl = curl_init();
+
+    //IF you are running in locally and if you don't have https/SSL. then uncomment bellow two lines
+    curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+    curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
+
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => "https://sms.send.lk/api/v3/sms/send",
+        CURLOPT_CUSTOMREQUEST => "POST",
+        CURLOPT_POSTFIELDS => json_encode($msgdata),
+        CURLOPT_HTTPHEADER => array(
+            "accept: application/json",
+            "authorization: Bearer $AUTH",
+            "cache-control: no-cache",
+            "content-type: application/x-www-form-urlencoded",
+        ),
+    ));
+
+    $response = curl_exec($curl);
+    $err = curl_error($curl);
+
+    curl_close($curl);
+
+    if ($err) {
+        $error = array('status' => 'error', 'message' => $err);
+    } else {
+        $responseArray = json_decode($response, true);
+
+        if (is_array($responseArray) && isset($responseArray['status'])) {
+            // Check if the status is success
+            if ($responseArray['status'] === "success") {
+                // Access data inside the 'data' key
+                if (isset($responseArray['data']) && is_array($responseArray['data'])) {
+                    // Handle the success case, for example, logging or processing
+                    $error = array(
+                        'status' => 'success',
+                        'message' => $responseArray['message'],
+                        'details' => $responseArray['data']
+                    );
+                } else {
+                    // If 'data' is not set or is not an array
+                    $error = array('status' => 'error', 'message' => 'Data field missing in response');
+                }
+            } else {
+                // Handle the non-success case
+                $error = array('status' => 'error', 'message' => $responseArray['message']);
+            }
+        } else {
+            // Handle the invalid JSON or missing 'status' key
+            $error = array('status' => 'error', 'message' => 'Invalid response from API');
+        }
+    }
+
+    return json_encode($error);
+}

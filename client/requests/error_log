@@ -1,0 +1,3 @@
+[20-Dec-2023 05:16:20 Europe/London] PHP Warning:  require(/home/pharmaco/public_html/include/../vendor/autoload.php): failed to open stream: No such file or directory in /home/pharmaco/public_html/include/email-API.php on line 9
+[20-Dec-2023 05:16:20 Europe/London] PHP Warning:  require(/home/pharmaco/public_html/include/../vendor/autoload.php): failed to open stream: No such file or directory in /home/pharmaco/public_html/include/email-API.php on line 9
+[20-Dec-2023 05:16:20 Europe/London] PHP Fatal error:  require(): Failed opening required '/home/pharmaco/public_html/include/../vendor/autoload.php' (include_path='.:/opt/alt/php74/usr/share/pear') in /home/pharmaco/public_html/include/email-API.php on line 9
