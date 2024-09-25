@@ -9,7 +9,7 @@ $client = HttpClient::create();
 
 //for use env file data
 use Dotenv\Dotenv;
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../../', '.env.test');
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
 
 $LoggedUser = $_POST['LoggedUser']; 

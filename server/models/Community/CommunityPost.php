@@ -59,21 +59,26 @@ class CommunityPost
 
     // Get the total number of posts in each category
     public function getCategoryPostCount()
-    {
-        $sql = "SELECT cpc.category_name, COUNT(cp.id) AS post_count 
-                FROM community_post_categories cpc
-                LEFT JOIN community_post cp ON cpc.id = cp.category
-                GROUP BY cpc.category_name";
-        $stmt = $this->pdo->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-        // $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+{
+    $sql = "SELECT cpc.category_name, cpc.bg_color, COUNT(cp.id) AS post_count 
+            FROM community_post_categories cpc
+            LEFT JOIN community_post cp ON cpc.id = cp.category
+            GROUP BY cpc.category_name, cpc.bg_color";
+    
+    $stmt = $this->pdo->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Restructure the result to match the format { "category_name": 5 }
-        // $categoryPostCounts = [];
-        // foreach ($results as $row) {
-        //     $categoryPostCounts[$row['category_name']] = (int) $row['post_count'];
-        // }
+    // Restructure the result to match the format { "category_name": {"post_count": 5, "bg_color": "#color"} }
+    // $categoryPostCounts = [];
+    // foreach ($results as $row) {
+    //     $categoryPostCounts[$row['category_name']] = [
+    //         'post_count' => (int) $row['post_count'],
+    //         'bg_color' => $row['bg_color']
+    //     ];
+    // }
 
-        return $categoryPostCounts;
-    }
+    // return $categoryPostCounts;
+}
+
 }

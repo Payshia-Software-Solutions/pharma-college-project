@@ -4,6 +4,7 @@ ini_set('display_errors', 1);
 
 require_once '../../include/configuration.php';
 require_once '../../php_handler/function_handler.php';
+require '../../vendor/autoload.php';
 
 // Include Classes
 include_once './classes/Database.php';
@@ -13,15 +14,15 @@ include_once './classes/Topics.php';
 
 //for use env file data
 use Dotenv\Dotenv;
-$dotenv = Dotenv::createImmutable(__DIR__ . '../../../../', '.env.test');
+$dotenv = Dotenv::createImmutable(__DIR__ . '../../../');
 $dotenv->load();
 
 use Symfony\Component\HttpClient\HttpClient;
-
 $client = HttpClient::create();
 
+$response = $client->request('GET', $_ENV["SERVER_URL"] .'/community-post/topics-count/');
+$postDetailList = $response->toArray();
 
-$response = $client->request('GET', $_ENV["SERVER_URL"] .'/appointments/');
 
 // Create a new Database object with the path to the configuration file
 $config_file = '../../include/env.txt';
@@ -67,7 +68,8 @@ $userLevel = $_POST['UserLevel'];
 
     <div class="col-12 col-md-9">
         <div class="row g-3">
-            <?php foreach ($categoryList as $tagId => $selectArray) : ?>
+
+            <?php foreach ($postDetailList as $selectArray) : ?>
             <div class="col-6 col-md-4 d-flex">
                 <div class="card rounded-1 clickable knowledge-card flex-fill">
                     <div class="card-body">
@@ -76,7 +78,7 @@ $userLevel = $_POST['UserLevel'];
                             <span class="rectangle"></span>
                             <?= htmlspecialchars($selectArray['category_name']) ?>
                         </h4>
-                        <p class="mb-0 text-muted"><?= rand(1, 100) ?> Topics</p>
+                        <p class="mb-0 text-muted"><?= $selectArray['post_count'] ?> Topics</p>
                     </div>
                 </div>
             </div>
