@@ -55,4 +55,5 @@ class CommunityPostCategory
         $stmt = $this->pdo->prepare("DELETE FROM community_post_categories WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
-}
+
+    }

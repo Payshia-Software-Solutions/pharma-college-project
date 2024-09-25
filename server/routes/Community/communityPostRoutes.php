@@ -9,6 +9,7 @@ $communityPostController = new CommunityPostController($pdo);
 return [
     'GET /community-post/' => [$communityPostController, 'getAllRecords'],
     'GET /community-post/{id}/' => [$communityPostController, 'getRecordById'],
+    'GET /community-post/topics-count/' => [$communityPostController, 'getCategoryPostCount'],
     'POST /community-post/' => [$communityPostController, 'createRecord'],
     'PUT /community-post/{id}/' => [$communityPostController, 'updateRecord'],
     'DELETE /community-post/{id}/' => [$communityPostController, 'deleteRecord']

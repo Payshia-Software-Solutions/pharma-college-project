@@ -47,4 +47,10 @@ class CommunityPostController
         $this->model->deleteRecord($id);
         echo json_encode(['message' => 'Record deleted successfully']);
     }
+
+    public function getCategoryPostCount()
+    {
+        $categoryPostCounts = $this->model->getCategoryPostCount();
+        echo json_encode($categoryPostCounts);
+    }
 }

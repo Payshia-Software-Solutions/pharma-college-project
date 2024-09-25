@@ -56,4 +56,23 @@ class CommunityPost
         $stmt = $this->pdo->prepare("DELETE FROM community_post WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
+
+    // Get the total number of posts in each category
+    public function getCategoryPostCount()
+    {
+        $sql = "SELECT cpc.category_name, COUNT(cp.id) AS post_count 
+                FROM community_post_categories cpc
+                LEFT JOIN community_post cp ON cpc.id = cp.category
+                GROUP BY cpc.category_name";
+        $stmt = $this->pdo->query($sql);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Restructure the result to match the format { "category_name": 5 }
+        $categoryPostCounts = [];
+        foreach ($results as $row) {
+            $categoryPostCounts[$row['category_name']] = (int) $row['post_count'];
+        }
+
+        return $categoryPostCounts;
+    }
 }
