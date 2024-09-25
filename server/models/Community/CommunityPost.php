@@ -65,13 +65,14 @@ class CommunityPost
                 LEFT JOIN community_post cp ON cpc.id = cp.category
                 GROUP BY cpc.category_name";
         $stmt = $this->pdo->query($sql);
-        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         // Restructure the result to match the format { "category_name": 5 }
-        $categoryPostCounts = [];
-        foreach ($results as $row) {
-            $categoryPostCounts[$row['category_name']] = (int) $row['post_count'];
-        }
+        // $categoryPostCounts = [];
+        // foreach ($results as $row) {
+        //     $categoryPostCounts[$row['category_name']] = (int) $row['post_count'];
+        // }
 
         return $categoryPostCounts;
     }

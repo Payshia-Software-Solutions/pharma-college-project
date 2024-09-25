@@ -6,7 +6,7 @@ use Symfony\Component\HttpClient\HttpClient;
 
 //for use env file data
 use Dotenv\Dotenv;
-$dotenv = Dotenv::createImmutable(__DIR__ . '../../../../', '.env.test');
+$dotenv = Dotenv::createImmutable(__DIR__ . '../../../../');
 $dotenv->load();
 
 $client = HttpClient::create();

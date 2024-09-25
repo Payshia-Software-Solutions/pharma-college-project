@@ -4,7 +4,7 @@ require '../../../vendor/autoload.php';
 
 //for use env file data
 use Dotenv\Dotenv;
-$dotenv = Dotenv::createImmutable(__DIR__ . '../../../../', '.env.test');
+$dotenv = Dotenv::createImmutable(__DIR__ . '../../../../');
 $dotenv->load();
 
 use Symfony\Component\HttpClient\HttpClient;

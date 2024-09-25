@@ -10,6 +10,19 @@ include_once './classes/Database.php';
 include_once './classes/Categories.php';
 include_once './classes/Topics.php';
 
+
+//for use env file data
+use Dotenv\Dotenv;
+$dotenv = Dotenv::createImmutable(__DIR__ . '../../../../', '.env.test');
+$dotenv->load();
+
+use Symfony\Component\HttpClient\HttpClient;
+
+$client = HttpClient::create();
+
+
+$response = $client->request('GET', $_ENV["SERVER_URL"] .'/appointments/');
+
 // Create a new Database object with the path to the configuration file
 $config_file = '../../include/env.txt';
 $database = new Database($config_file);
