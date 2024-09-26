@@ -13,7 +13,31 @@ function NewThread(postId = 0) {
                 company_id: company_id,
                 postId: postId
             },
-            success: function(data) {
+            success: function (data) {
+                $('#pop-content').html(data)
+                hideOverlay()
+            }
+        })
+    }
+
+    fetch_data()
+}
+function NewAdminThread(postId = 0) {
+    OpenPopup()
+    document.getElementById('pop-content').innerHTML = InnerLoader
+
+    function fetch_data() {
+        showOverlay()
+        $.ajax({
+            url: 'lib/forum/components/newAdminTopic.php',
+            method: 'POST',
+            data: {
+                LoggedUser: LoggedUser,
+                UserLevel: UserLevel,
+                company_id: company_id,
+                postId: postId
+            },
+            success: function (data) {
                 $('#pop-content').html(data)
                 hideOverlay()
             }
@@ -44,7 +68,7 @@ function SaveTopic(postId = 0) {
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(data) {
+                success: function (data) {
                     var response = JSON.parse(data)
                     if (response.status === 'success') {
                         var result = response.message
@@ -90,7 +114,7 @@ function SavePostReply(postId) {
                 postId: postId,
                 replyContent: replyContent
             },
-            success: function(data) {
+            success: function (data) {
                 var response = JSON.parse(data)
                 if (response.status === 'success') {
                     var result = response.message
@@ -129,7 +153,7 @@ function ChangePostStatus(postId, updateStatus) {
                 postId: postId,
                 updateStatus: updateStatus
             },
-            success: function(data) {
+            success: function (data) {
                 var response = JSON.parse(data)
                 if (response.status === 'success') {
                     var result = response.message

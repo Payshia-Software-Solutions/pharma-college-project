@@ -91,6 +91,13 @@ $userLevel = $_POST['UserLevel'];
                             <div class="col-md-6 offset-md-3">
                                 <input type="text" name="search-topic" id="search-topic"
                                     class="form-control rounded-0 p-3" placeholder="Search Topics">
+                                <?php if($userLevel == 'Admin') { ?>
+                                <div class="col-12 mb-2 mt-3">
+                                    <button onclick="NewAdminThread()" class="btn btn-primary btn-lg rounded-5 w-100">
+                                        Add
+                                        New thread <i class="fa-solid fa-plus"></i></button>
+                                </div>
+                                <?php } ?>
                             </div>
                         </div>
                     </div>

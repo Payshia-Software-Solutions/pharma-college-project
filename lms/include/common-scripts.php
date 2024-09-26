@@ -27,3 +27,5 @@ document.getElementById('open-pwa-button').addEventListener('click', (e) => {
     integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
     crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="./vendor/summernote/summernote/dist/summernote.js"></script>
+<script src="https://cdn.tiny.cloud/1/zov6oixuwjxcoleammunkvb3fm95tbgzg2kbzgcjj8f30pxf/tinymce/7/tinymce.min.js"
+    referrerpolicy="origin"></script>
