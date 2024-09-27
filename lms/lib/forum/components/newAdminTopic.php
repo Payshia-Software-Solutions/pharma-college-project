@@ -44,9 +44,9 @@ $postCategoryList = $response->toArray();
                         });
                         </script>
 
-                        <form method="post">
-                            <textarea id="newThreadContent" placeholder="What do you think about this?"></textarea>
-                        </form>
+
+                        <textarea id="newThreadContent" placeholder="What do you think about this?"></textarea>
+
 
                     </div>
                 </div>

@@ -109,6 +109,9 @@ function SaveAdminTopic(postId = 0) {
         formData.append('courseCode', CourseCode)
         formData.append('userLevel', UserLevel)
         formData.append('topicContent', topicContent)
+        formData.append('postId', postId)
+        // console.log(formData);
+        // return false;
         function fetch_data() {
             $.ajax({
                 url: 'lib/forum/controllers/save-admin-topic.php',

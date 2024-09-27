@@ -2,39 +2,57 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-require_once '../../../include/configuration.php';
-require_once '../../../php_handler/function_handler.php';
+require '../../../vendor/autoload.php';
 
-// Include Classes
-include_once '../classes/Database.php';
-include_once '../classes/Topics.php';
+use Dotenv\Dotenv;
+use Symfony\Component\HttpClient\HttpClient;
 
-// Create a new Database object with the path to the configuration file
-$config_file = '../../../include/env.txt';
-$database = new Database($config_file);
-$db = $database->getConnection();
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../../'); 
+$dotenv->load();
 
-$Topics = new Topics($database);
+$client = HttpClient::create();
 
-$newDataset = [
-    'title' => $_POST['topic_title'],
-    'user_account' => $_POST['loggedUser'],
-    'submitted_time' => date("Y-m-d H:i:s"),
-    'type' => 1,
-    'category' =>  $_POST['topic_category'],
-    'content' =>  $_POST['topicContent'],
-    'current_status' => 1,
-    'is_active' => 1
-];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $postId = $_POST['postId'];
+    $postData = [
+        'title' => $_POST['topic_title'],
+        'user_account' => $_POST['loggedUser'] ,
+        'submitted_time' => date("Y-m-d H:i:s"),
+        'type' => 1,
+        'category' => $_POST['topic_category'],
+        'content' => $_POST['topicContent'],
+        'current_status' => 1,
+        'is_active' => 1,
+        'views' => 0
+    ];
 
 
-if (strip_tags($_POST['topicContent']) != "") {
-    if ($Topics->add($newDataset)) {
-        $error = array('status' => 'success', 'message' => 'Topic created successfully.');
-    } else {
-        $error = array('status' => 'error', 'message' => 'Failed to Save Topic.' . $Topics->getLastError());
+    $responseMsg = 'created';
+
+    try {
+        if ($postId == 0) {
+            // Send POST request
+            $postResponse = $client->request('POST', $_ENV["SERVER_URL"] . '/community-knowledgebase/', [
+                'json' => $postData
+            ]);
+        } else {
+            // Send PUT request
+            $postResponse = $client->request('PUT', $_ENV["SERVER_URL"] . '/community-knowledgebase/' . $postId, [
+                'json' => $postData
+            ]);
+            $responseMsg = 'updated';
+        }
+
+        if ($postResponse->getStatusCode() == 201) {
+            $error = ['status' => 'success', 'message' => 'Topic ' . $responseMsg . ' successfully.'];
+        } else {
+            $error = ['status' => 'error', 'message' => 'Failed to save topic.'];
+        }
+    } catch (\Exception $e) {
+        $error = ['status' => 'error', 'message' => 'Exception: ' . $e->getMessage()];
     }
+
+    echo json_encode($error);
 } else {
-    $error = array('status' => 'error', 'message' => 'Please add content');
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
 }
-echo json_encode($error);
