@@ -19,7 +19,7 @@ $postCategoryList = $response->toArray();
 ?>
 <div class="row">
     <div class="col-12">
-        <form action="post" id="topic-form">
+        <form action="post" id="admin-topic-form">
             <div class="row g-2">
                 <div class="col-12 col-md-8">
                     <label for="title">Title</label>
@@ -29,8 +29,8 @@ $postCategoryList = $response->toArray();
                 <div class="col-12 col-md-4">
                     <label for="Category">Category</label>
                     <select class="form-control" name="topic_category" id="topic_category" required>
-                        <?php foreach ($postCategoryList as $key => $selectedArray) : ?>
-                        <option value="<?= $key ?>"><?= $selectedArray['category_name'] ?></option>
+                        <?php foreach ($postCategoryList as $selectedArray) : ?>
+                        <option value="<?= $selectedArray['id'] ?>"><?= $selectedArray['category_name'] ?></option>
                         <?php endforeach ?>
                     </select>
                 </div>
@@ -38,13 +38,14 @@ $postCategoryList = $response->toArray();
                     <label for="Content">Content</label>
                     <div class="card border-0">
                         <script>
+                        tinymce.remove();
                         tinymce.init({
-                            selector: '#mytextarea'
+                            selector: '#newThreadContent'
                         });
                         </script>
 
                         <form method="post">
-                            <textarea id="mytextarea">Hello, World!</textarea>
+                            <textarea id="newThreadContent" placeholder="What do you think about this?"></textarea>
                         </form>
 
                     </div>
@@ -52,7 +53,7 @@ $postCategoryList = $response->toArray();
                 <div class="col-12 text-end mt-2">
                     <button type="button" onclick="ClosePopUP()" class="btn btn-light btn-sm"><i
                             class="fa-solid fa-xmark"></i> Close</button>
-                    <button type="button" onclick="SaveTopic()" class="btn btn-dark btn-sm"><i
+                    <button type="button" onclick="SaveAdminTopic()" class="btn btn-dark btn-sm"><i
                             class="fa-solid fa-floppy-disk"></i> Save Topic</button>
                 </div>
             </div>
