@@ -1,5 +1,5 @@
 <?php
-require_once './controllers/CommunityKnowledgebaseController.php';
+require_once './controllers/community/CommunityKnowledgebaseController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];
