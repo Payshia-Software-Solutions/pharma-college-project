@@ -126,7 +126,8 @@ $userLevel = $_POST['UserLevel'];
                         <div class="d-flex justify-content-end">
                             <button onclick="ClickDeleteAdminTopic(<?= $topic['id'] ?>)"
                                 class="btn btn-danger btn-sm px-2 ">Delete</button>
-                            <button class="btn btn-secondary btn-sm px-4">Edit</button>
+                            <button onclick="EditAdminTopic(<?= $topic['id'] ?>)"
+                                class="btn btn-secondary btn-sm px-4">Edit</button>
                         </div>
                         <?php } ?>
                         <div class="border-bottom my-3"></div>

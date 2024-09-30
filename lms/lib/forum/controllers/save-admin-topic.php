@@ -43,7 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $responseMsg = 'updated';
         }
 
-        if ($postResponse->getStatusCode() == 201) {
+        if ($postResponse->getStatusCode() == 201 || $postResponse->getStatusCode() == 200) {
             $error = ['status' => 'success', 'message' => 'Topic ' . $responseMsg . ' successfully.'];
         } else {
             $error = ['status' => 'error', 'message' => 'Failed to save topic.'];
