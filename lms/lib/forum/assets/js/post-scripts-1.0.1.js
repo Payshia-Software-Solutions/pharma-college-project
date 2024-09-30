@@ -150,6 +150,48 @@ function SaveAdminTopic(postId = 0) {
 
 }
 
+function ClickDeleteAdminTopic(postId) {
+
+    showDeleteNotification().then((result) => {
+        if (result.isConfirmed) {
+            DeleteAdminTopic(postId);
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            console.log('Deletion cancelled');
+        }
+    });
+}
+function DeleteAdminTopic(postId) {
+    document.getElementById('pop-content').innerHTML = '';
+    document.getElementById('pop-content').innerHTML = InnerLoader;
+
+    showOverlay();
+
+    $.ajax({
+        url: 'lib/forum/controllers/delete-admin-topic.php',
+        method: 'POST',
+        data: {
+            postId: postId
+        },
+        success: function (data) {
+            var response = JSON.parse(data);
+            if (response.status === 'success') {
+                var result = response.message;
+                showNotification(result, 'success', 'Done!');
+                OpenIndex();
+                ClosePopUP();
+            } else {
+                var result = response.message;
+                showNotification(result, 'error', 'Oops!');
+            }
+            hideOverlay();
+        },
+        error: function (xhr, status, error) {
+            showNotification('Something went wrong. Please try again.', 'error', 'Error');
+            hideOverlay();
+        }
+    });
+}
+
 function SavePostReply(postId) {
     var replyContent = $('#summernote').summernote('code');
     // Get form data

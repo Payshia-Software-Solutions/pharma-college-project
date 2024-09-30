@@ -21,7 +21,9 @@ use Symfony\Component\HttpClient\HttpClient;
 $client = HttpClient::create();
 
 $response = $client->request('GET', $_ENV["SERVER_URL"] .'/community-post/topics-count/');
+$response2 = $client->request('GET', $_ENV["SERVER_URL"] .'community-knowledgebase/');
 $postDetailList = $response->toArray();
+$adminPostList = $response2->toArray();
 
 
 // Create a new Database object with the path to the configuration file
@@ -106,19 +108,27 @@ $userLevel = $_POST['UserLevel'];
 
             <div class="col-12">
                 <div class="row g-2">
-                    <?php foreach ($knowledgeTopics as $topic) : ?>
+                    <?php foreach ($adminPostList as $topic) : ?>
                     <div class="col-md-10">
                         <h5 class="mb-0"><a href="#" target="_blank"
-                                class="text-decoration-none text-dark"><?= $topic ?></a></h5>
-                        <p class="text-muted mb-0"
-                            style="--bg-color: <?= htmlspecialchars($selectArray['bg_color']) ?>;"><span
-                                class="rectangle"></span> Websites and PHP</p>
+                                class="text-decoration-none text-dark"><?= htmlspecialchars($topic['title']) ?></a></h5>
+                        <p class="text-muted mb-0" style="--bg-color: <?= htmlspecialchars($topic['bg_color']) ?>;">
+                            <span class="rectangle"></span> <?= htmlspecialchars($topic['category_name']) ?>
+                        </p>
 
                     </div>
                     <div class="col-md-2">
-                        <p class="text-muted mb-0 text-end">2 Days Ago</p>
+                        <p class="text-muted mb-0 text-end"><?= $topic['days_ago'] ?></p>
+
                     </div>
                     <div class="col-12">
+                        <?php if($userLevel == 'Admin') { ?>
+                        <div class="d-flex justify-content-end">
+                            <button onclick="ClickDeleteAdminTopic(<?= $topic['id'] ?>)"
+                                class="btn btn-danger btn-sm px-2 ">Delete</button>
+                            <button class="btn btn-secondary btn-sm px-4">Edit</button>
+                        </div>
+                        <?php } ?>
                         <div class="border-bottom my-3"></div>
                     </div>
                     <?php endforeach ?>
