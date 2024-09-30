@@ -25,9 +25,9 @@ $userLevel = $_POST['UserLevel'];
     <div class="col-12 col-md-9">
         <div class="row g-3">
             <div class="col-12 mb-2">
-                <button onclick="NewThread()" class="btn btn-primary btn-lg rounded-5 w-100"> Add New thread <i class="fa-solid fa-plus"></i></button>
+                <button onclick="NewThread()" class="btn btn-primary btn-lg rounded-5 w-100"> Add New thread <i
+                        class="fa-solid fa-plus"></i></button>
             </div>
-
             <div class="col-12">
                 <div class="row g-3" id="content"></div>
                 <div class="text-center bg-light p-3" id="loading">Loading...</div>

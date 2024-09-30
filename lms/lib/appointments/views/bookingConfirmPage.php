@@ -2,6 +2,11 @@
 
 require '../../../vendor/autoload.php';
 
+//for use env file data
+use Dotenv\Dotenv;
+$dotenv = Dotenv::createImmutable(__DIR__ . '../../../../');
+$dotenv->load();
+
 use Symfony\Component\HttpClient\HttpClient;
 
 $client = HttpClient::create();
@@ -14,7 +19,7 @@ $reason = $_POST['reason'];
 $category = $_POST['category'];
 
 
-$response = $client->request('GET', 'http://localhost:8000/userFullDetails/' . $lectueId);
+$response = $client->request('GET', $_ENV["SERVER_URL"] .'/userFullDetails/' . $lectueId);
 
 $lectures = $response->toArray();
 $name = $lectures['first_name'] . " " . $lectures['last_name'];

@@ -4,20 +4,22 @@ include '../../php_handler/function_handler.php';
 
 require '../../vendor/autoload.php';
 
+// for call server endpoint
 use Symfony\Component\HttpClient\HttpClient;
-
 $client = HttpClient::create();
 
-
-
+//for use env file data
+use Dotenv\Dotenv;
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv->load();
 
 $loggedUser = $_POST['LoggedUser'];
 $UserLevel = $_POST['UserLevel'];
 
 if ($UserLevel == "Admin") {
-    $response = $client->request('GET', 'http://localhost:8000/care-instructions-pre/role/Admin');
+    $response = $client->request('GET', $_ENV["SERVER_URL"] . '/care-instructions-pre/role/Admin');
 }else{
-    $response = $client->request('GET', 'http://localhost:8000/care-instructions-pre/role/Student');
+    $response = $client->request('GET', $_ENV["SERVER_URL"] . '/care-instructions-pre/role/Student');
 }
 $answers = $response->toArray();
 $answersCount = count($answers);

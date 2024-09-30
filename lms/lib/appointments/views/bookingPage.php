@@ -4,9 +4,14 @@ require '../../../vendor/autoload.php';
 
 use Symfony\Component\HttpClient\HttpClient;
 
+//for use env file data
+use Dotenv\Dotenv;
+$dotenv = Dotenv::createImmutable(__DIR__ . '../../../../');
+$dotenv->load();
+
 $client = HttpClient::create();
 
-$response = $client->request('GET', 'http://localhost:8000/availablelectures/');
+$response = $client->request('GET', $_ENV["SERVER_URL"] .'/availablelectures/');
 
 $lectures = $response->toArray();
 

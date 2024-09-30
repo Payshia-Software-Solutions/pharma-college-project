@@ -7,9 +7,14 @@ use Symfony\Component\HttpClient\HttpClient;
 
 $client = HttpClient::create();
 
+//for use env file data
+use Dotenv\Dotenv;
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv->load();
+
 $LoggedUser = $_POST['LoggedUser']; 
 // Making a GET request
-$response = $client->request('GET', 'http://localhost:8000/appointments/'.$LoggedUser);
+$response = $client->request('GET', $_ENV["SERVER_URL"] .'/appointments/'.$LoggedUser);
 
 // Get the response body as an array (if it's JSON)
 $appointments = $response->toArray();

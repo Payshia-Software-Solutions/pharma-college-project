@@ -1,7 +1,7 @@
 <?php
 $server = "localhost";
 $username = "root";
-$password = "";
+$password = "root";
 $database = "payshia_erp";
 $database_error = "";
 

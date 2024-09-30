@@ -16,7 +16,8 @@
         "components/jquery": "^3.7",
         "components/font-awesome": "^6.5",
         "summernote/summernote": "^0.8.8",
-        "symfony/cache": "^7.1"
+        "symfony/cache": "^7.1",
+        "symfony/http-client": "^7.1"
 
     },
     "config": {

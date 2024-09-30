@@ -11,6 +11,19 @@ function showNotification(result, type, title) {
 }
 
 
+function showDeleteNotification() {
+    return Swal.fire({
+        title: 'Are you sure you want to delete this?',
+        text: 'This action cannot be undone!',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Confirm',
+        cancelButtonText: 'Cancel',
+        showCloseButton: true,
+    });
+}
+
+
 function SetDefaultCourse(forceChange) {
     document.getElementById('pop-content').innerHTML = InnerLoader
 
@@ -25,7 +38,7 @@ function SetDefaultCourse(forceChange) {
                 company_id: company_id,
                 defaultCourseCode: defaultCourseCode
             },
-            success: function(data) {
+            success: function (data) {
                 $('#pop-content').html(data)
                 hideOverlay()
                 OpenPopup()
@@ -51,7 +64,7 @@ function SaveDefaultCourse(setCourse) {
                 company_id: company_id,
                 setCourse: setCourse
             },
-            success: function(data) {
+            success: function (data) {
                 var response = JSON.parse(data)
                 var result = response.message
                 if (response.status === 'success') {
