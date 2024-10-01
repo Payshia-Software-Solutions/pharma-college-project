@@ -52,7 +52,7 @@ $SubPage = false;
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 
     <script src="./assets/js/scripts.js"></script>
-    <script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="./vendor/twbs/bootstrap/dist/css/bootstrap.min.css"></script>
 </body>
 
 </html>

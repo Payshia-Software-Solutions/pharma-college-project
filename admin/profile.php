@@ -50,7 +50,7 @@ $SubPage = false;
 
     <script src="./assets/js/scripts-1.0.js"></script>
     <script src="./assets/js/profile-1.0.js"></script>
-    <script src="./vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="./vendor/twbs/bootstrap/dist/css/bootstrap.min.css"></script>
 
 
     <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.js"></script>
