@@ -1,5 +1,5 @@
 <?php
-require_once './controllers/CommunityPostReplyController.php';
+require_once './controllers/Community/CommunityPostReplyController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];

@@ -1,5 +1,5 @@
 <?php
-require_once './models/CommunityPostReply.php';
+require_once './models/Community/CommunityPostReply.php';
 
 class CommunityPostReplyController
 {
