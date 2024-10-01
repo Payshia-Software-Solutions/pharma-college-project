@@ -1,0 +1,15 @@
+<?php
+require_once './controllers/CommunityPostReplyController.php';
+
+// Instantiate the controller
+$pdo = $GLOBALS['pdo'];
+$communityPostReplyController = new CommunityPostReplyController($pdo);
+
+// Define routes
+return [
+    'GET /community-post-reply/' => [$communityPostReplyController, 'getAllRecords'],
+    'GET /community-post-reply/{id}/' => [$communityPostReplyController, 'getRecordById'],
+    'POST /community-post-reply/' => [$communityPostReplyController, 'createRecord'],
+    'PUT /community-post-reply/{id}/' => [$communityPostReplyController, 'updateRecord'],
+    'DELETE /community-post-reply/{id}/' => [$communityPostReplyController, 'deleteRecord']
+];
