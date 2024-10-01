@@ -47,4 +47,10 @@ class CommunityPostReplyController
         $this->model->deleteRecord($id);
         echo json_encode(['message' => 'Record deleted successfully']);
     }
+
+    public function getReplyStatistics()
+    {
+        $statistics = $this->model->getReplyStatistics();
+        echo json_encode($statistics);
+    }
 }
