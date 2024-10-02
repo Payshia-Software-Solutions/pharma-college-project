@@ -33,7 +33,7 @@ $answersTotal = count($answersCount);
         <div class="col-md-3">
             <div class="card item-card">
                 <div class="overlay-box">
-                    <i class="fa-solid fa-users icon-card"></i>
+                    <i class="fa-solid fa-comments icon-card"></i>
                 </div>
                 <div class="card-body">
                     <p>Total Topics</p>
@@ -44,7 +44,7 @@ $answersTotal = count($answersCount);
         <div class="col-md-3">
             <div class="card item-card">
                 <div class="overlay-box">
-                    <i class="fa-solid fa-user-shield icon-card"></i>
+                    <i class="fa-solid fa-square-poll-vertical icon-card"></i>
                 </div>
                 <div class="card-body">
                     <p>Total Answers</p>
