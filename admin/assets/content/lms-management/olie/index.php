@@ -79,6 +79,7 @@ $answersTotal = count($answersCount);
                                                 <td><?= $answer['student_name'] ?></td>
                                                 <td class="text-center"><?= $answer['reply_count'] ?></td>
                                                 <td class="text-center"><?= $answer['reply_post_count'] ?></td>
+                                                <td class="text-center"><?= $answer['total_ratings'] ?></td>
 
                                             </tr>
                                             <?php } ?>
