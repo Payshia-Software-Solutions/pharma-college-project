@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Community Post Reply API provides CRUD operations for managing replies to community posts. This documentation outlines the available endpoints, request parameters, response structures, and error codes.
+The Community Post Reply API provides CRUD operations for managing replies to community posts, including the ability to manage ratings for each reply. This documentation outlines the available endpoints, request parameters, response structures, and error codes.
 
 ## Base URL
 
@@ -27,6 +27,7 @@ The Community Post Reply API provides CRUD operations for managing replies to co
         "created_at": "2024-09-30T12:34:56Z",
         "likes": 5,
         "dislikes": 0,
+        "ratings": 4,
         "is_active": 1
       },
       {
@@ -37,6 +38,7 @@ The Community Post Reply API provides CRUD operations for managing replies to co
         "created_at": "2024-10-01T10:00:00Z",
         "likes": 3,
         "dislikes": 1,
+        "ratings": 5,
         "is_active": 1
       }
     ]
@@ -60,6 +62,7 @@ The Community Post Reply API provides CRUD operations for managing replies to co
       "created_at": "2024-09-30T12:34:56Z",
       "likes": 5,
       "dislikes": 0,
+      "ratings": 4,
       "is_active": 1
     }
     ```
@@ -85,6 +88,7 @@ The Community Post Reply API provides CRUD operations for managing replies to co
       "created_by": "user3",
       "likes": 0,
       "dislikes": 0,
+      "ratings": 5,
       "is_active": 1
     }
     ```
@@ -111,6 +115,7 @@ The Community Post Reply API provides CRUD operations for managing replies to co
       "reply_content": "This is an updated reply",
       "likes": 10,
       "dislikes": 2,
+      "ratings": 4,
       "is_active": 1
     }
     ```
@@ -138,6 +143,30 @@ The Community Post Reply API provides CRUD operations for managing replies to co
     }
     ```
 
+### 6. Get Reply Statistics
+
+- **Endpoint:** `GET /community-post-reply/statistics/`
+- **Description:** Retrieves statistics about replies, including the number of replies and the number of posts replied to by each student.
+- **Response:**
+  - **Status Code:** `200 OK`
+  - **Body:**
+    ```json
+    [
+      {
+        "student_name": "user1",
+        "reply_count": 10,
+        "reply_post_count": 5,
+        "ratings": 4
+      },
+      {
+        "student_name": "user2",
+        "reply_count": 8,
+        "reply_post_count": 4,
+        "ratings": 5
+      }
+    ]
+    ```
+
 ## Error Codes
 
 - **400 Bad Request:** The request was invalid or cannot be served.
@@ -157,6 +186,7 @@ curl -X POST https://api.pharmacollege.lk/community-post-reply \
   "created_by": "user3",
   "likes": 0,
   "dislikes": 0,
+  "ratings": 5,
   "is_active": 1
 }'
 ```

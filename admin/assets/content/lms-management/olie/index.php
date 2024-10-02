@@ -68,16 +68,17 @@ $answersTotal = count($answersCount);
                                         <thead>
                                             <tr>
                                                 <th>Student Name</th>
-                                                <th>Total Answers</th>
-                                                <th>Total Questions</th>
+                                                <th class="text-center">Total Answers</th>
+                                                <th class="text-center">Total Questions</th>
+                                                <th class="text-center">Total Ratings</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach ($answersCount as $answer) { ?>
                                             <tr>
                                                 <td><?= $answer['student_name'] ?></td>
-                                                <td><?= $answer['reply_count'] ?></td>
-                                                <td><?= $answer['reply_post_count'] ?></td>
+                                                <td class="text-center"><?= $answer['reply_count'] ?></td>
+                                                <td class="text-center"><?= $answer['reply_post_count'] ?></td>
 
                                             </tr>
                                             <?php } ?>

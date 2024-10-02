@@ -23,66 +23,66 @@ class CommunityPostReply
     }
 
     public function createRecord($data)
-    {
-        // Set the current timestamp if 'created_at' is not provided in $data
-        if (!isset($data['created_at'])) {
-            $data['created_at'] = date('Y-m-d H:i:s');
-        }
-    
-        $sql = "INSERT INTO community_post_reply (post_id, reply_content, created_by, created_at, likes, dislikes, is_active) 
-                VALUES (:post_id, :reply_content, :created_by, :created_at, :likes, :dislikes, :is_active)";
-        
-        $stmt = $this->pdo->prepare($sql);
-        
-        // Bind the data to the query
-        $stmt->execute([
-            ':post_id' => $data['post_id'],
-            ':reply_content' => $data['reply_content'],
-            ':created_by' => $data['created_by'],
-            ':created_at' => $data['created_at'],  // now it will have a value
-            ':likes' => $data['likes'],
-            ':dislikes' => $data['dislikes'],
-            ':is_active' => $data['is_active']
-        ]);
+{
+    // Set the current timestamp if 'created_at' is not provided in $data
+    if (!isset($data['created_at'])) {
+        $data['created_at'] = date('Y-m-d H:i:s');
     }
+
+    $sql = "INSERT INTO community_post_reply (post_id, reply_content, created_by, created_at, likes, dislikes, is_active, ratings) 
+            VALUES (:post_id, :reply_content, :created_by, :created_at, :likes, :dislikes, :is_active, :ratings)";
+    
+    $stmt = $this->pdo->prepare($sql);
+    
+    // Bind the data to the query
+    $stmt->execute([
+        ':post_id' => $data['post_id'],
+        ':reply_content' => $data['reply_content'],
+        ':created_by' => $data['created_by'],
+        ':created_at' => $data['created_at'],
+        ':likes' => $data['likes'],
+        ':dislikes' => $data['dislikes'],
+        ':is_active' => $data['is_active'],
+        ':ratings' => $data['ratings']
+    ]);
+}
+
     
 
-    public function updateRecord($id, $data)
+public function updateRecord($id, $data)
 {
-    // Ensure the 'created_at' field is provided or set it to its current value in the database
     if (!isset($data['created_at'])) {
-        // Fetch the current 'created_at' value from the database if it's not provided
         $currentRecord = $this->getRecordById($id);
         $data['created_at'] = $currentRecord['created_at'];
     }
 
-    // Add the ID to the data array for binding
     $data['id'] = $id;
 
-    // Prepare the SQL update query
     $sql = "UPDATE community_post_reply SET 
                 post_id = :post_id, 
                 reply_content = :reply_content, 
                 created_by = :created_by,
-                created_at = :created_at,   -- This field is retained or fetched
+                created_at = :created_at, 
                 likes = :likes,
                 dislikes = :dislikes,
-                is_active = :is_active
+                is_active = :is_active,
+                ratings = :ratings  
             WHERE id = :id";
 
-    // Prepare the statement and execute
     $stmt = $this->pdo->prepare($sql);
     $stmt->execute([
         ':post_id' => $data['post_id'],
         ':reply_content' => $data['reply_content'],
         ':created_by' => $data['created_by'],
-        ':created_at' => $data['created_at'], // Fetched or provided 'created_at'
+        ':created_at' => $data['created_at'],
         ':likes' => $data['likes'],
         ':dislikes' => $data['dislikes'],
         ':is_active' => $data['is_active'],
+        ':ratings' => $data['ratings'], 
         ':id' => $data['id']
     ]);
 }
+
 
 
     public function deleteRecord($id)
@@ -92,20 +92,22 @@ class CommunityPostReply
     }
 
     public function getReplyStatistics()
-    {
-        $sql = "SELECT 
-                    created_by AS student_name, 
-                    COUNT(*) AS reply_count, 
-                    COUNT(DISTINCT post_id) AS reply_post_count
-                FROM 
-                    community_post_reply
-                GROUP BY 
-                    created_by
-                ORDER BY 
-                    reply_post_count DESC";  // Order by reply_post_count from largest to smallest
+{
+    $sql = "SELECT 
+                created_by AS student_name, 
+                COUNT(*) AS reply_count, 
+                COUNT(DISTINCT post_id) AS reply_post_count,
+                SUM(ratings) AS total_ratings   -- Sum of ratings
+            FROM 
+                community_post_reply
+            GROUP BY 
+                created_by
+            ORDER BY 
+                reply_post_count DESC"; 
 
-        $stmt = $this->pdo->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    $stmt = $this->pdo->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
 }
