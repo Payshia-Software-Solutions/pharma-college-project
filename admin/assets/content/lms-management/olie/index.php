@@ -18,8 +18,8 @@ $answersTotal = count($answersCount);
 ?>
 
 <!-- these not work on common scripts -->
-<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+<!-- <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css"> -->
 
 
 
@@ -96,15 +96,12 @@ $answersTotal = count($answersCount);
 </div>
 
 <script>
-$(document).ready(function() {
-    $('#answer-table').DataTable({
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf'
-            // 'colvis'
-        ],
-
-    });
+$('#answer-table').DataTable({
+    dom: 'Bfrtip',
+    buttons: [
+        'copy', 'csv', 'excel', 'pdf'
+        // 'colvis'
+    ],
 
 });
 </script>

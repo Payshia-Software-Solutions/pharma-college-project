@@ -80,7 +80,7 @@
 </style>
 
 <link rel="stylesheet" href="./node_modules/sweetalert2/dist/sweetalert2.min.css">
-<link rel="stylesheet" href="./node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css" />
+<link rel="stylesheet" href="./assets/datatables/dataTables.bootstrap5.min.css" />
 <link rel="stylesheet" href="./assets/css/select2.css">
 
 <!-- Chart.js -->

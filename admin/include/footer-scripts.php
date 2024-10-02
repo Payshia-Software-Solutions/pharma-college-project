@@ -3,16 +3,16 @@
 <script src="./assets/js/scripts-1.1.js"></script>
 
 <!-- Data Tables -->
-<script src="./node_modules/datatables.net-dt/js/dataTables.dataTables.js"></script>
-<script src="./node_modules/datatables.net-dt/js/dataTables.dataTables.min.js"></script>
-<script src="./node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css"></script>
-<script src="./node_modules/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
-<script src="./node_modules/jszip/dist/jszip.min.js"></script>
-<script src="./node_modules/pdfmake/build/pdfmake.min.js"></script>
-<script src="./node_modules/pdfmake/build/vfs_fonts.js"></script>
-<script src="./node_modules/datatables.net-buttons/js/buttons.html5.min.mjs"></script>
-<script src="./node_modules/datatables.net-buttons/js/buttons.print.min.js"></script>
-<script src="./node_modules/datatables.net-buttons/js/buttons.colVis.min.js"></script>
+<script src="./assets/datatables/DataTables-1.13.8/js/jquery.dataTables.js"></script>
+<script src="./assets/datatables/DataTables-1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="./assets/datatables/DataTables-1.13.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="./assets/datatables/Buttons-2.4.2/js/dataTables.buttons.min.js"></script>
+<script src="./assets/datatables/JSZip-3.10.1/jszip.min.js"></script>
+<script src="./assets/datatables/pdfmake-0.2.7/pdfmake.min.js"></script>
+<script src="./assets/datatables/pdfmake-0.2.7/vfs_fonts.js"></script>
+<script src="./assets/datatables/Buttons-2.4.2/js/buttons.html5.min.js"></script>
+<script src="./assets/datatables/Buttons-2.4.2/js/buttons.print.min.js"></script>
+<script src="./assets/datatables/Buttons-2.4.2/js/buttons.colVis.min.js"></script>
 <script src="./node_modules/sweetalert2/dist/sweetalert2.min.js"></script>
 <script src="./node_modules/select2/dist/js/select2.min.js"></script>
 
