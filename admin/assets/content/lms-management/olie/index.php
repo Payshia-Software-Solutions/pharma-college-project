@@ -1,8 +1,29 @@
 <?php
+require_once '../../../../vendor/autoload.php';
 
-$LoggedUser = $_POST['LoggedUser'];
+use Symfony\Component\HttpClient\HttpClient;
+
+$loggedUser = $_POST['LoggedUser'];
+
+$dotenv = Dotenv\Dotenv::createImmutable('../../../../');
+$dotenv->load();
+
+$client = HttpClient::create();
+$response = $client->request('GET', $_ENV["SERVER_URL"] .'/community-post-reply/statistics/');
+$response2 = $client->request('GET', $_ENV["SERVER_URL"] .'/community-post/');
+$answersCount = $response->toArray();
+$communityPostTotal = count($response2->toArray());
+$answersTotal = count($answersCount);
 
 ?>
+
+<!-- these not work on common scripts -->
+<script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/jquery.dataTables.min.css">
+
+
+
+
 
 
 <div id="submission-list">
@@ -16,7 +37,7 @@ $LoggedUser = $_POST['LoggedUser'];
                 </div>
                 <div class="card-body">
                     <p>Total Topics</p>
-                    <h1>565</h1>
+                    <h1><?= $communityPostTotal ?></h1>
                 </div>
             </div>
         </div>
@@ -27,7 +48,7 @@ $LoggedUser = $_POST['LoggedUser'];
                 </div>
                 <div class="card-body">
                     <p>Total Answers</p>
-                    <h1>55</h1>
+                    <h1><?= $answersTotal ?></h1>
                 </div>
             </div>
         </div>
@@ -52,14 +73,14 @@ $LoggedUser = $_POST['LoggedUser'];
                                             </tr>
                                         </thead>
                                         <tbody>
-
+                                            <?php foreach ($answersCount as $answer) { ?>
                                             <tr>
-                                                <td>gdfg</td>
-                                                <td>fgdfg</td>
-                                                <td>fgdfgfd</td>
+                                                <td><?= $answer['student_name'] ?></td>
+                                                <td><?= $answer['reply_count'] ?></td>
+                                                <td><?= $answer['reply_post_count'] ?></td>
 
                                             </tr>
-
+                                            <?php } ?>
                                         </tbody>
                                     </table>
                                 </div>

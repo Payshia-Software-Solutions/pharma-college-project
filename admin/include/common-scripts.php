@@ -106,3 +106,4 @@
 
 <link href='./node_modules/select2/dist/css/select2.min.css' rel='stylesheet'>
 <script src="./node_modules/jsprintmanager/JSPrintManager.js"></script>
+<script src='./node_modules/jquery/dist/jquery.min.js'></script>
