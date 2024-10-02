@@ -1,5 +1,5 @@
 <?php
-require_once './models/community/CommunityKnowledgebase.php';
+require_once './models/Community/CommunityKnowledgebase.php';
 
 class CommunityKnowledgebaseController
 {
