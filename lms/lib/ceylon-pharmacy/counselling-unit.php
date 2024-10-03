@@ -108,7 +108,7 @@ $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $cover
                         <h4>Instruction List</h4>
                     </div>
 
-                    <?php if (empty($userAnswers) || $UserLevel != "Student") { ?>
+                    <?php if (!empty($userAnswers)) { ?>
                     <div class="col-12 mb-2">
                         <div class="alert alert-warning"><b><?= $instructionsCount ?> Instruction</b>(s) must be given!
                         </div>

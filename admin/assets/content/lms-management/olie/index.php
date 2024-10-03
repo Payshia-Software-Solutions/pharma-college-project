@@ -61,7 +61,7 @@ $answersTotal = count($answersCount);
 
                 <div class="row g-2">
                     <div class="col-md-12">
-                        <div class="card">
+                        <div class="card bg-dark">
                             <div class="card-body">
                                 <div class="table-responsive">
                                     <table class="table table-hovered table-striped" id="answer-table">
