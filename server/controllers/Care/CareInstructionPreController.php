@@ -73,6 +73,15 @@ class CareInstructionPreController
     
         echo json_encode($instructions);
     }
+
+    public function getCorrectInstructions()
+    {
+        $result = $this->CareInstructionModel->getAllCorrectAndWrongInstructions(5);
+        $instructionsPre = $result['instructionsPre']; // Correct answers from care_instruction
+        $uniqueInstructions = $this->removeDuplicateInstructionsById($instructionsPre);
+
+        echo json_encode($uniqueInstructions);
+    } 
     
     private function removeDuplicateInstructionsById($instructions)
     {

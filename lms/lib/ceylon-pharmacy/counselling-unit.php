@@ -16,6 +16,11 @@ $dotenv->load();
 $loggedUser = $_POST['LoggedUser'];
 $UserLevel = $_POST['UserLevel'];
 
+// get correct answers
+$correctInstructionsResponse = $client->request('GET', $_ENV["SERVER_URL"] . '/care-instructions-correct/');
+$correctInstructionsList = $correctInstructionsResponse->toArray();
+$correctInstructionsListCount = count($correctInstructionsList);
+
 if ($UserLevel == "Admin") {
     $response = $client->request('GET', $_ENV["SERVER_URL"] . '/care-instructions-pre/role/Admin');
 }else{
@@ -49,8 +54,9 @@ $correctAnswer =  GetCorrectInstructions($link, $prescriptionID, $coverID);
 $instructionsCount = count($correctAnswer);
 
 $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $coverID);
+
 ?>
-<input type="hidden" name="instructionsCount" id="instructionsCount" value="<?= $instructionsCount ?>">
+<input type="hidden" name="instructionsCount" id="instructionsCount" value="<?= $correctInstructionsListCount ?>">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
@@ -110,7 +116,9 @@ $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $cover
 
                     <?php if (!empty($userAnswers)) { ?>
                     <div class="col-12 mb-2">
-                        <div class="alert alert-warning"><b><?= $instructionsCount ?> Instruction</b>(s) must be given!
+                        <div class="alert alert-warning"><b><?= $correctInstructionsListCount ?> Instruction</b>(s) must
+                            be
+                            given!
                         </div>
                     </div>
                     <div class="col-9">
@@ -156,12 +164,12 @@ $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $cover
                                 ?>
 
                                 <?php
-                                if (!empty($correctAnswer) && $UserLevel != "Student") {
-                                    foreach ($correctAnswer as $selectedArray) {
+                                if (!empty($correctInstructionsList) && $UserLevel != "Student") {
+                                    foreach ($correctInstructionsList as $selectedArray) {
                                 ?>
                                 <tr>
-                                    <td><?= $selectedArray['content'] ?></td>
-                                    <td><?= $instructions[$selectedArray['content']]['instruction'] ?></td>
+                                    <td><?= $selectedArray['id'] ?></td>
+                                    <td><?= $selectedArray['instruction'] ?></td>
                                 </tr>
                                 <?php
                                     }
