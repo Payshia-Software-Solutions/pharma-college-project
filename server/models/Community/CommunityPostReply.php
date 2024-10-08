@@ -23,67 +23,60 @@ class CommunityPostReply
     }
 
     public function createRecord($data)
-{
-    // Set the current timestamp if 'created_at' is not provided in $data
-    if (!isset($data['created_at'])) {
-        $data['created_at'] = date('Y-m-d H:i:s');
+    {
+        // Set the current timestamp if 'created_at' is not provided in $data
+        if (!isset($data['created_at'])) {
+            $data['created_at'] = date('Y-m-d H:i:s');
+        }
+
+        $sql = "INSERT INTO community_post_reply (post_id, reply_content, created_by, created_at, likes, dislikes, is_active) 
+                VALUES (:post_id, :reply_content, :created_by, :created_at, :likes, :dislikes, :is_active)";
+        
+        $stmt = $this->pdo->prepare($sql);
+        
+        // Bind the data to the query
+        $stmt->execute([
+            ':post_id' => $data['post_id'],
+            ':reply_content' => $data['reply_content'],
+            ':created_by' => $data['created_by'],
+            ':created_at' => $data['created_at'],
+            ':likes' => $data['likes'],
+            ':dislikes' => $data['dislikes'],
+            ':is_active' => $data['is_active']
+        ]);
     }
 
-    $sql = "INSERT INTO community_post_reply (post_id, reply_content, created_by, created_at, likes, dislikes, is_active, ratings) 
-            VALUES (:post_id, :reply_content, :created_by, :created_at, :likes, :dislikes, :is_active, :ratings)";
-    
-    $stmt = $this->pdo->prepare($sql);
-    
-    // Bind the data to the query
-    $stmt->execute([
-        ':post_id' => $data['post_id'],
-        ':reply_content' => $data['reply_content'],
-        ':created_by' => $data['created_by'],
-        ':created_at' => $data['created_at'],
-        ':likes' => $data['likes'],
-        ':dislikes' => $data['dislikes'],
-        ':is_active' => $data['is_active'],
-        ':ratings' => $data['ratings']
-    ]);
-}
+    public function updateRecord($id, $data)
+    {
+        if (!isset($data['created_at'])) {
+            $currentRecord = $this->getRecordById($id);
+            $data['created_at'] = $currentRecord['created_at'];
+        }
 
-    
+        $data['id'] = $id;
 
-public function updateRecord($id, $data)
-{
-    if (!isset($data['created_at'])) {
-        $currentRecord = $this->getRecordById($id);
-        $data['created_at'] = $currentRecord['created_at'];
+        $sql = "UPDATE community_post_reply SET 
+                    post_id = :post_id, 
+                    reply_content = :reply_content, 
+                    created_by = :created_by,
+                    created_at = :created_at, 
+                    likes = :likes,
+                    dislikes = :dislikes,
+                    is_active = :is_active
+                WHERE id = :id";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':post_id' => $data['post_id'],
+            ':reply_content' => $data['reply_content'],
+            ':created_by' => $data['created_by'],
+            ':created_at' => $data['created_at'],
+            ':likes' => $data['likes'],
+            ':dislikes' => $data['dislikes'],
+            ':is_active' => $data['is_active'],
+            ':id' => $data['id']
+        ]);
     }
-
-    $data['id'] = $id;
-
-    $sql = "UPDATE community_post_reply SET 
-                post_id = :post_id, 
-                reply_content = :reply_content, 
-                created_by = :created_by,
-                created_at = :created_at, 
-                likes = :likes,
-                dislikes = :dislikes,
-                is_active = :is_active,
-                ratings = :ratings  
-            WHERE id = :id";
-
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([
-        ':post_id' => $data['post_id'],
-        ':reply_content' => $data['reply_content'],
-        ':created_by' => $data['created_by'],
-        ':created_at' => $data['created_at'],
-        ':likes' => $data['likes'],
-        ':dislikes' => $data['dislikes'],
-        ':is_active' => $data['is_active'],
-        ':ratings' => $data['ratings'], 
-        ':id' => $data['id']
-    ]);
-}
-
-
 
     public function deleteRecord($id)
     {
@@ -92,22 +85,19 @@ public function updateRecord($id, $data)
     }
 
     public function getReplyStatistics()
-{
-    $sql = "SELECT 
-                created_by AS student_name, 
-                COUNT(*) AS reply_count, 
-                COUNT(DISTINCT post_id) AS reply_post_count,
-                SUM(ratings) AS total_ratings   -- Sum of ratings
-            FROM 
-                community_post_reply
-            GROUP BY 
-                created_by
-            ORDER BY 
-                reply_post_count DESC"; 
+    {
+        $sql = "SELECT 
+                    created_by AS student_name, 
+                    COUNT(*) AS reply_count, 
+                    COUNT(DISTINCT post_id) AS reply_post_count
+                FROM 
+                    community_post_reply
+                GROUP BY 
+                    created_by
+                ORDER BY 
+                    reply_post_count DESC"; 
 
-    $stmt = $this->pdo->query($sql);
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
-
-
+        $stmt = $this->pdo->query($sql);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
