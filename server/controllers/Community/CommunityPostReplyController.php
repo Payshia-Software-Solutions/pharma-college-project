@@ -53,4 +53,10 @@ class CommunityPostReplyController
         $statistics = $this->model->getReplyStatistics();
         echo json_encode($statistics);
     }
+
+    public function getRecordsByPostId($postId, $loggedUser)
+    {
+        $records = $this->model->getRecordsByPostId($postId, $loggedUser);
+        echo json_encode($records);
+    }
 }

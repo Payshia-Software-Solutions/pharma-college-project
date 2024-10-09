@@ -12,5 +12,6 @@ return [
     'POST /community-post-reply/' => [$communityPostReplyController, 'createRecord'],
     'PUT /community-post-reply/{id}/' => [$communityPostReplyController, 'updateRecord'],
     'DELETE /community-post-reply/{id}/' => [$communityPostReplyController, 'deleteRecord'],
-    'GET /community-post-reply/statistics' => [$communityPostReplyController, 'getReplyStatistics']
+    'GET /community-post-reply/statistics' => [$communityPostReplyController, 'getReplyStatistics'],
+    'GET /community-post-reply/{post_id}/{created_by}/' => [$communityPostReplyController, 'getRecordsByPostId']
 ];
