@@ -7,11 +7,14 @@ require __DIR__ . '/../../../vendor/autoload.php';
 
 use Carbon\Carbon;
 
+
 // Include Classes
 include_once './classes/Database.php';
 include_once './classes/Topics.php';
 include_once './classes/Categories.php';
 include_once './classes/Replies.php';
+
+$LoggedUser = $_POST['LoggedUser'];
 
 // Create a new Database object with the path to the configuration file
 $config_file = '../../include/env.txt';
@@ -33,6 +36,42 @@ $replyList = $Replies->fetchAllByPost($postId);
     $submittedTime = Carbon::createFromTimestamp($timestamp); // Convert the timestamp to a Carbon instance
     $timeAgo = $submittedTime->diffForHumans(); // Get the difference from now in a human-readable format
 ?>
+<style>
+.star-rating {
+    display: flex;
+    justify-content: flex-start;
+    /* Align stars to the left */
+    direction: rtl;
+    /* Change the direction to right-to-left to handle the hover correctly */
+}
+
+.star-rating .fa-star {
+    font-size: 20px;
+    cursor: pointer;
+    color: lightgray;
+    /* Default star color */
+    direction: ltr;
+    /* Reset direction for the stars themselves */
+}
+
+.star-rating .fa-star.checked {
+    color: gold;
+    /* Color checked stars */
+}
+
+/* Color the hovered star and all previous stars (to the left) */
+.star-rating .fa-star:hover,
+.star-rating .fa-star:hover~.fa-star {
+    color: lightgray;
+    /* Reset the stars to the right of the hovered star */
+}
+
+.star-rating .fa-star:hover,
+.star-rating .fa-star:hover~.fa-star {
+    color: gold;
+    /* Highlight hovered star and previous stars */
+}
+</style>
 <div class="col-12">
     <div class="card rounded-4 shadow border-0">
         <div class="card-body p-4">
@@ -50,8 +89,14 @@ $replyList = $Replies->fetchAllByPost($postId);
                     <!-- rating section -->
                     <div class="col-12">
                         <div class="rating">
-                            <div data-coreui-toggle="rating" data-coreui-tooltips="Very bad, Bad, Meh, Good, Very good"
-                                data-coreui-value="3"></div>
+                            <div class="star-rating" data-reply-id="<?= $selectedArray['id'] ?>"
+                                data-user-rating="<?= $userRating ?>">
+                                <!-- Create 5 stars, applying the user's rating if available -->
+                                <?php for ($i = 1; $i <= 5; $i++) : ?>
+                                <span class="fa fa-star <?= ($i <= $userRating) ? 'checked' : '' ?>"
+                                    data-rating="<?= 6 - $i ?>"></span>
+                                <?php endfor; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -60,3 +105,58 @@ $replyList = $Replies->fetchAllByPost($postId);
     </div>
 </div>
 <?php endforeach ?>
+
+<script>
+$(document).ready(function() {
+    const starRatings = document.querySelectorAll(".star-rating");
+
+    starRatings.forEach(function(starRating) {
+        const replyId = starRating.getAttribute("data-reply-id");
+        const LoggedUser = '<?= $LoggedUser ?>';
+
+        // Add event listener for each star in the rating
+        const stars = starRating.querySelectorAll(".fa-star");
+        stars.forEach(function(star) {
+            star.addEventListener("click", function(e) {
+                showOverlay();
+                const rating = e.target.getAttribute("data-rating");
+                // Use fetch to send a request to a PHP script that handles the rating update via HttpClient
+                fetch('./lib/forum/controllers/update-rating.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            reply_id: replyId,
+                            user_id: LoggedUser,
+                            ratings: rating,
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.message === 'Record updated successfully') {
+                            highlightStars(starRating, rating);
+                        }
+                        hideOverlay();
+                    })
+                    .catch(error => console.error('Error:', error));
+
+            });
+        });
+
+        // Set the initial rating
+        function highlightStars(starRating, rating) {
+            const stars = starRating.querySelectorAll(".fa-star");
+            stars.forEach(function(star, index) {
+                if (index < rating) {
+                    star.classList.add("checked");
+                } else {
+                    star.classList.remove("checked");
+                }
+            });
+        }
+
+        highlightStars(starRating, starRating.getAttribute('data-user-rating'));
+    });
+});
+</script>
