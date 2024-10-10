@@ -1,5 +1,7 @@
 <?php
 
+use Carbon\Carbon;
+
 class CommunityPostReply
 {
     private $pdo;
@@ -101,29 +103,39 @@ class CommunityPostReply
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getRecordsByPostId($postId, $loggedUser)
-{
-    $sql = "
-        SELECT 
-            r.*,
-            COALESCE(ra.ratings, 0) AS user_rating
-        FROM 
-            community_post_reply r
-        LEFT JOIN 
-            community_post_reply_ratings ra 
-            ON r.id = ra.reply_id 
-            AND ra.created_by = :loggedUser
-        WHERE 
-            r.post_id = :post_id
-    ";
 
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute([
-        'post_id' => $postId,
-        'loggedUser' => $loggedUser
-    ]);
+    public function getRecordsByPostId($postId, $loggedUser)
+    {
+        $sql = "
+            SELECT 
+                r.*,
+                COALESCE(ra.ratings, 0) AS user_rating
+            FROM 
+                community_post_reply r
+            LEFT JOIN 
+                community_post_reply_ratings ra 
+                ON r.id = ra.reply_id 
+                AND ra.created_by = :loggedUser
+            WHERE 
+                r.post_id = :post_id
+        ";
     
-    return $stmt->fetchAll(PDO::FETCH_ASSOC);
-}
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            'post_id' => $postId,
+            'loggedUser' => $loggedUser
+        ]);
+    
+        $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+        // Add relative time (e.g., "x days ago") to each record
+        foreach ($records as &$record) {
+            $submittedTime = Carbon::parse($record['created_at']);
+            $record['time_ago'] = $submittedTime->diffForHumans();
+        }
+    
+        return $records;
+    }
+    
 
 }

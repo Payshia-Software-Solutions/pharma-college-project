@@ -7,6 +7,22 @@ require __DIR__ . '/../../../vendor/autoload.php';
 
 use Carbon\Carbon;
 
+//for use env file data
+use Dotenv\Dotenv;
+$dotenv = Dotenv::createImmutable(__DIR__ . '../../../../');
+$dotenv->load();
+
+
+use Symfony\Component\HttpClient\HttpClient;
+
+$client = HttpClient::create();
+
+
+$LoggedUser = $_POST['LoggedUser'];
+
+// get reply from server
+$response = $client->request('GET', $_ENV["SERVER_URL"] .'/community-post-reply/' . $postId . '/' . $LoggedUser);
+$replyList = $response->toArray();
 
 // Include Classes
 include_once './classes/Database.php';
@@ -14,7 +30,7 @@ include_once './classes/Topics.php';
 include_once './classes/Categories.php';
 include_once './classes/Replies.php';
 
-$LoggedUser = $_POST['LoggedUser'];
+
 
 // Create a new Database object with the path to the configuration file
 $config_file = '../../include/env.txt';
@@ -25,17 +41,8 @@ $Categories = new Categories($database);
 $Replies = new Replies($database);
 
 $CategoriesList = $Categories->fetchAll();
-$replyList = $Replies->fetchAllByPost($postId);
 ?>
 
-<?php foreach ($replyList as $key => $selectedArray) :
-
-    $submitted_time = $selectedArray['created_at'];
-    $carbonInstance = Carbon::parse($submitted_time); // Parse the datetime string to a Carbon instance
-    $timestamp = $carbonInstance->timestamp; // Get the Unix timestamp
-    $submittedTime = Carbon::createFromTimestamp($timestamp); // Convert the timestamp to a Carbon instance
-    $timeAgo = $submittedTime->diffForHumans(); // Get the difference from now in a human-readable format
-?>
 <style>
 .star-rating {
     display: flex;
@@ -72,14 +79,14 @@ $replyList = $Replies->fetchAllByPost($postId);
     /* Highlight hovered star and previous stars */
 }
 </style>
+<?php foreach ($replyList as $selectedArray) :?>
 <div class="col-12">
     <div class="card rounded-4 shadow border-0">
         <div class="card-body p-4">
-
             <div class="row g-2">
                 <div class="col-12 col-md-8">
                     <h5 class="mb-0"><?= $selectedArray['created_by'] ?></h5>
-                    <p class="mb-0 text-muted"><?= $timeAgo ?></p>
+                    <p class="mb-0 text-muted"><?= $selectedArray['time_ago'] ?></p>
                 </div>
                 <div class="col-12"><?= $selectedArray['reply_content'] ?>
                 </div>
