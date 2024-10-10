@@ -109,7 +109,9 @@ class CommunityPostReply
         $sql = "
             SELECT 
                 r.*,
-                COALESCE(ra.ratings, 0) AS user_rating
+                COALESCE(ra.ratings, 0) AS user_rating,
+                (SELECT COUNT(*) FROM community_post_reply_ratings ra_count 
+                 WHERE ra_count.reply_id = r.id) AS rating_count
             FROM 
                 community_post_reply r
             LEFT JOIN 
@@ -136,6 +138,7 @@ class CommunityPostReply
     
         return $records;
     }
+    
     
 
 }
