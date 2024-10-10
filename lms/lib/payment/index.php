@@ -69,6 +69,37 @@ $dueBalance = $studentBalanceArray['studentBalance'];
         </div>
 
         <div class="border-bottom my-4"></div>
+        <h4 class="fw-bold border-bottom pb-2 mb-3">Payment Status</h4>
+        <div class="card shadow border-0 rounded-3">
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Payment Date</th>
+                            <th scope="col">Reason</th>
+                            <th scope="col">Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>2024-01-01</td>
+                            <td>Course Fee</td>
+                            <td>N/A</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">3</th>
+                            <td>2024-01-01</td>
+                            <td>Course Fee</td>
+                            <td>N/A</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="border-bottom my-4"></div>
         <h4 class="fw-bold border-bottom pb-2 mb-3">Your Enrollments</h4>
         <div class="row g-3">
             <?php if (!empty($enrollmentList)) : ?>
