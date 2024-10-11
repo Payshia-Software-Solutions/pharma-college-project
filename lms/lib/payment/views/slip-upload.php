@@ -19,14 +19,16 @@
         <div class="col-12">
             <div class="mb-3">
                 <label for="extraNote" class="form-label">Extra Note</label>
-                <textarea class="form-control" name="extraNote" id="extraNote"></textarea>
+                <textarea class="form-control" name="extraNote" id="extraNote"
+                    placeholder="Enter Extra Note"></textarea>
             </div>
 
         </div>
         <div class="col-6">
             <div class="mb-3">
                 <label for="referenceNumber" class="form-label">Reference Number</label>
-                <input type="text" class="form-control" id="referenceNumber" required>
+                <input type="text" class="form-control" id="referenceNumber" required
+                    placeholder="Enter Reference Number">
             </div>
 
         </div>

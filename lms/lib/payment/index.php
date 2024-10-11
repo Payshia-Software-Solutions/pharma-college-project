@@ -79,6 +79,7 @@ $dueBalance = $studentBalanceArray['studentBalance'];
                             <th scope="col">Payment Date</th>
                             <th scope="col">Reason</th>
                             <th scope="col">Description</th>
+                            <th scope="col">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -87,12 +88,14 @@ $dueBalance = $studentBalanceArray['studentBalance'];
                             <td>2024-01-01</td>
                             <td>Course Fee</td>
                             <td>N/A</td>
+                            <td class="badge bg-secondary mt-1 text-uppercase text-light px-3">Pending</td>
                         </tr>
                         <tr>
                             <th scope="row">3</th>
                             <td>2024-01-01</td>
                             <td>Course Fee</td>
                             <td>N/A</td>
+                            <td class="badge bg-success mt-1 text-uppercase text-light px-3">Proved</td>
                         </tr>
                     </tbody>
                 </table>
