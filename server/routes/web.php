@@ -60,8 +60,12 @@ $communityPostRoutes = require './routes/Community/communityPostRoutes.php';
 $communityPostReplyRoutes = require './routes/Community/communityPostReplyRoutes.php';
 $communityPostReplyRatingsRoutes = require './routes/Community/communityPostReplyRatingsRoutes.php';
 $communityKnowledgebaseRoutes = require './routes/Community/communityKnowledgebaseRoutes.php';
+$paymentReasonRoutes = require './routes/Payment/paymentReasonRoutes.php';
+$paymentRequestRoutes = require './routes/Payment/paymentRequestRoutes.php';
 
-
+// if (!is_array($paymentRequestRoutes)) {
+//     throw new Exception("paymentRequestRoutes is not an array");
+// }
 
 // Combine all routes
 $routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes,
@@ -76,7 +80,7 @@ $routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes,
                          $careInstructionRoutes, $careInstructionPreRoutes, $chatRoutes,
                          $attachmentRoutes, $messageRoutes, $communityPostCategoryRoutes,
                          $communityPostRoutes, $communityKnowledgebaseRoutes, $communityPostReplyRoutes,
-                         $communityPostReplyRatingsRoutes);
+                         $communityPostReplyRatingsRoutes, $paymentReasonRoutes, $paymentRequestRoutes);
 
 
 // Define the home route with trailing slash
