@@ -28,37 +28,51 @@ class PaymentRequestController
     }
 
     public function createRecord()
-    {
-        $data = json_decode(file_get_contents("php://input"), true);
-        
-        // Handle file upload
-        if (isset($_FILES['image'])) {
-            $imagePath = './uploads/images/Payments' . basename($_FILES['image']['name']);
-            move_uploaded_file($_FILES['image']['tmp_name'], $imagePath);
-        } else {
-            http_response_code(400);
-            echo json_encode(['error' => 'Image is required']);
+{
+    // Collect POST data
+    $data = $_POST;
+
+    // Handle file upload
+    if (isset($_FILES['image'])) {
+        $imagePath = './uploads/images/Payments/' . basename($_FILES['image']['name']);
+        if (!move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to upload image']);
             return;
         }
-
-        $this->model->createRecord($data, $imagePath);
-        http_response_code(201);
-        echo json_encode(['message' => 'Record created successfully']);
+    } else {
+        http_response_code(400);
+        echo json_encode(['error' => 'Image is required']);
+        return;
     }
 
-    public function updateRecord($id)
-    {
-        $data = json_decode(file_get_contents("php://input"), true);
+    // Pass data and image path to the model
+    $this->model->createRecord($data, $imagePath);
+    http_response_code(201);
+    echo json_encode(['message' => 'Record created successfully']);
+}
 
-        $imagePath = null;
-        if (isset($_FILES['image'])) {
-            $imagePath = './uploads/images/Payments' . basename($_FILES['image']['name']);
-            move_uploaded_file($_FILES['image']['tmp_name'], $imagePath);
+
+public function updateRecord($id)
+{
+    $data = $_POST;
+
+    $imagePath = null;
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $imagePath = './uploads/images/Payments/' . basename($_FILES['image']['name']);
+        if (!move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to upload image']);
+            return;
         }
-
-        $this->model->updateRecord($id, $data, $imagePath);
-        echo json_encode(['message' => 'Record updated successfully']);
     }
+
+    // Pass the data and image path to the model for updating
+    $this->model->updateRecord($id, $data, $imagePath);
+    http_response_code(200);
+    echo json_encode(['message' => 'Record updated successfully']);
+}
+
 
     public function deleteRecord($id)
     {

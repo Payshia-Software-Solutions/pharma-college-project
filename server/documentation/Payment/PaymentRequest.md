@@ -2,7 +2,7 @@
 
 ## Overview
 
-The Payment Request API provides CRUD operations for managing payment requests within the system. This includes uploading and storing images associated with each payment request. Uploaded images are stored on the server, and their URLs are saved in the database.
+The Payment Request API provides CRUD operations for managing payment requests within the system. Each payment request can have an associated image file, which is uploaded and stored on the server. The URL of the uploaded image is saved in the database.
 
 ## Base URL
 
@@ -24,7 +24,7 @@ The Payment Request API provides CRUD operations for managing payment requests w
         "created_by": "user1",
         "created_at": "2024-10-12T08:00:00Z",
         "course_id": "C12345",
-        "image": "https://api.pharmacollege.lk/images/payment_requests/image1.jpg",
+        "image": "https://api.pharmacollege.lk/uploads/images/Payments/image1.jpg",
         "reason": 1,
         "extra_note": "This is a test note",
         "status": 0,
@@ -48,7 +48,7 @@ The Payment Request API provides CRUD operations for managing payment requests w
       "created_by": "user1",
       "created_at": "2024-10-12T08:00:00Z",
       "course_id": "C12345",
-      "image": "https://api.pharmacollege.lk/images/payment_requests/image1.jpg",
+      "image": "https://api.pharmacollege.lk/uploads/images/Payments/image1.jpg",
       "reason": 1,
       "extra_note": "This is a test note",
       "status": 0,
@@ -75,7 +75,6 @@ The Payment Request API provides CRUD operations for managing payment requests w
     - `image`: (file) The image file to be uploaded.
     - `reason`: (int) The reason for the request.
     - `extra_note`: (string) Additional notes.
-    - `status`: (tinyint) The status of the request.
     - `reference_number`: (string) The reference number.
 - **Response:**
   - **Status Code:** `201 Created`
@@ -90,6 +89,8 @@ The Payment Request API provides CRUD operations for managing payment requests w
 
 - **Endpoint:** `PUT /payment-request/{id}/`
 - **Description:** Updates an existing payment request and optionally updates the associated image.
+- **Path Parameters:**
+  - `id` (integer): The ID of the payment request to update.
 - **Request Body:**
   - **Content-Type:** `multipart/form-data`
   - **Body:**
@@ -118,3 +119,17 @@ The Payment Request API provides CRUD operations for managing payment requests w
       "message": "Record deleted successfully"
     }
     ```
+
+## Example Usage
+
+### Creating a New Payment Request
+
+```bash
+curl -X POST https://api.pharmacollege.lk/payment-request/ \
+  -F "created_by=user1" \
+  -F "course_id=C12345" \
+  -F "image=@/path/to/image.jpg" \
+  -F "reason=1" \
+  -F "extra_note=This is a test note" \
+  -F "reference_number=REF12345"
+```
