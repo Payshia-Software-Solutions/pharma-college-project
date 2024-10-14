@@ -1,3 +1,22 @@
+<?php
+
+require '../../../vendor/autoload.php';
+
+use Dotenv\Dotenv;
+use Symfony\Component\HttpClient\HttpClient;
+
+//for use env file data
+$dotenv = Dotenv::createImmutable(__DIR__ . '../../../../');
+$dotenv->load();
+
+$client = HttpClient::create();
+
+// Make the GET request to fetch payement reasons
+$response = $client->request('GET', $_ENV["SERVER_URL"] .'/payment-reason/');
+$paymentReasons = $response->toArray();
+
+?>
+
 <form>
     <div class="row">
         <div class="mb-3 col-6">
@@ -9,13 +28,13 @@
         <div class="mb-3 col-6">
             <label for="exampleInputPassword1" class="form-label">Reason For Payment</label>
             <select class="form-select" aria-label="Default select example">
-                <option value="1">Course Fee</option>
-                <option value="2">Admission Fee</option>
-                <option value="3">Web Portal Fee</option>
+                <?php foreach ($paymentReasons as $reason ): ?>
+                <option value="<?=$reason['id']?>"><?=$reason['reason']?></option>
+                <?php endforeach; ?>
             </select>
         </div>
     </div>
-    <div class="row">
+    <div class=" row">
         <div class="col-12">
             <div class="mb-3">
                 <label for="extraNote" class="form-label">Extra Note</label>

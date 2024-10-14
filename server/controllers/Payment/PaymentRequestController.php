@@ -57,6 +57,20 @@ public function updateRecord($id)
 {
     $data = $_POST;
 
+    // Check if 'created_by' is present and valid
+    if (!isset($data['created_by']) || empty($data['created_by'])) {
+        http_response_code(400);
+        echo json_encode(['error' => 'The created_by field is required.']);
+        return;
+    }
+
+    // Check if 'created_at' is present in the form data
+    if (!isset($data['created_at']) || empty($data['created_at'])) {
+        http_response_code(400);
+        echo json_encode(['error' => 'The created_at field is required.']);
+        return;
+    }
+
     $imagePath = null;
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $imagePath = './uploads/images/Payments/' . basename($_FILES['image']['name']);
@@ -72,6 +86,7 @@ public function updateRecord($id)
     http_response_code(200);
     echo json_encode(['message' => 'Record updated successfully']);
 }
+
 
 
     public function deleteRecord($id)
