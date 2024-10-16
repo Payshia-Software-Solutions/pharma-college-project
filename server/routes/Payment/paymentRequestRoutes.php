@@ -9,6 +9,7 @@ $paymentRequestController = new PaymentRequestController($pdo);
 return [
     'GET /payment-request/' => [$paymentRequestController, 'getAllRecords'],
     'GET /payment-request/{id}/' => [$paymentRequestController, 'getRecordById'],
+    'GET /payment-request/{created_by}/' => [$paymentRequestController, 'getRecordByUserName'],
     'POST /payment-request/' => [$paymentRequestController, 'createRecord'],
     'PUT /payment-request/{id}/' => [$paymentRequestController, 'updateRecord'],
     'DELETE /payment-request/{id}/' => [$paymentRequestController, 'deleteRecord']

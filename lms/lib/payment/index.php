@@ -70,37 +70,8 @@ $dueBalance = $studentBalanceArray['studentBalance'];
 
         <div class="border-bottom my-4"></div>
         <h4 class="fw-bold border-bottom pb-2 mb-3">Payment Status</h4>
-        <div class="card shadow border-0 rounded-3">
-            <div class="card-body">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Payment Date</th>
-                            <th scope="col">Reason</th>
-                            <th scope="col">Description</th>
-                            <th scope="col">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>2024-01-01</td>
-                            <td>Course Fee</td>
-                            <td>N/A</td>
-                            <td class="badge bg-secondary mt-1 text-uppercase text-light px-3">Pending</td>
-                        </tr>
-                        <tr>
-                            <th scope="row">3</th>
-                            <td>2024-01-01</td>
-                            <td>Course Fee</td>
-                            <td>N/A</td>
-                            <td class="badge bg-success mt-1 text-uppercase text-light px-3">Proved</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+        <!-- add payment status table -->
+        <?php include './components/payment-status.php'; ?>
 
         <div class="border-bottom my-4"></div>
         <h4 class="fw-bold border-bottom pb-2 mb-3">Your Enrollments</h4>
@@ -173,7 +144,8 @@ $dueBalance = $studentBalanceArray['studentBalance'];
             <?php endif ?>
         </div>
     </div>
-    <div class="col-md-4">
+
+    <div class=" col-md-4">
         <h4 class="fw-bold border-bottom pb-2 mb-3">Payment History</h4>
         <div class="row g-2">
             <?php foreach ($studentPaymentRecords as $selectedArray) :

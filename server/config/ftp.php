@@ -3,8 +3,8 @@
 // FTP configuration settings
 return [
     'ftp_server'   => 'ftp.pharmacollege.lk', // Replace with your FTP server address
-    'ftp_username' => 'server@pharmacollege.lk',  // Replace with your FTP username
-    'ftp_password' => 'I6Fr}l)S3e!e',  // Replace with your FTP password
+    'ftp_username' => 'ftp_content@pharmacollege.lk',  // Replace with your FTP username
+    'ftp_password' => 'Yi&!VjAAJKd7',  // Replace with your FTP password
     'ftp_port'     => 21 // FTP port
 ];
 

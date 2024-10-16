@@ -24,7 +24,7 @@ class PaymentRequest
 
     public function createRecord($data, $imagePath)
     {
-        // Check for required fields and throw an exception if any are missing
+        // Check for required fields
         $requiredFields = ['created_by', 'created_at', 'course_id', 'reason', 'extra_note', 'reference_number'];
         foreach ($requiredFields as $field) {
             if (!isset($data[$field])) {
@@ -59,6 +59,8 @@ class PaymentRequest
             'reference_number' => $data['reference_number']
         ]);
     }
+    
+    
     
     
 
@@ -111,4 +113,17 @@ class PaymentRequest
         $stmt = $this->pdo->prepare("DELETE FROM payment_request WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
+    function getRecordByUserName($created_by)
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT pr.*, prn.reason
+            FROM payment_request pr
+            JOIN payment_reasons prn ON pr.reason = prn.id
+            WHERE pr.created_by = :created_by
+        ");
+        
+        $stmt->execute(['created_by' => $created_by]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+    
 }

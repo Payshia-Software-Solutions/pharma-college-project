@@ -28,29 +28,35 @@ class PaymentRequestController
     }
 
     public function createRecord()
-{
-    // Collect POST data
-    $data = $_POST;
+    {
+           // Collect POST data
+          $data = $_POST;
+          $files = $_FILES;
 
-    // Handle file upload
-    if (isset($_FILES['image'])) {
-        $imagePath = './uploads/images/Payments/' . basename($_FILES['image']['name']);
-        if (!move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {
-            http_response_code(500);
-            echo json_encode(['error' => 'Failed to upload image']);
+         // Log received data for debugging
+        error_log("POST Data: " . print_r($data, true));
+        error_log("Files: " . print_r($files, true));
+                  
+        // Handle file upload
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $imagePath = './uploads/images/Payments/' . basename($_FILES['image']['name']);
+            if (!move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {
+                http_response_code(500);
+                echo json_encode(['error' => 'Failed to upload image']);
+                return;
+            }
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'Image is required']);
             return;
         }
-    } else {
-        http_response_code(400);
-        echo json_encode(['error' => 'Image is required']);
-        return;
+    
+        // Pass data and image path to the model
+        $this->model->createRecord($data, $imagePath);
+        http_response_code(201);
+        echo json_encode(['message' => 'Record created successfully']);
     }
-
-    // Pass data and image path to the model
-    $this->model->createRecord($data, $imagePath);
-    http_response_code(201);
-    echo json_encode(['message' => 'Record created successfully']);
-}
+    
 
 
 public function updateRecord($id)
@@ -94,4 +100,11 @@ public function updateRecord($id)
         $this->model->deleteRecord($id);
         echo json_encode(['message' => 'Record deleted successfully']);
     }
+
+    function getRecordByUserName($created_by)
+    {
+        $records = $this->model->getRecordByUserName($created_by);
+        echo json_encode($records);
+    }
+
 }

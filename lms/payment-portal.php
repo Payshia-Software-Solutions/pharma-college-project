@@ -58,6 +58,7 @@ include './include/site-data.php';
 
     <!-- Custom Scripts -->
     <script src="./lib/payment/assets/js/scripts-1.0.0.js"></script>
+    <script src="./lib/payment/assets/js/slip-upload.js"></script>
     <!-- End of Custom Scripts -->
 </body>
 
