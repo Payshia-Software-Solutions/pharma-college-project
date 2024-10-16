@@ -116,11 +116,11 @@ class PaymentRequest
     function getRecordByUserName($created_by)
     {
         $stmt = $this->pdo->prepare("
-            SELECT pr.*, prn.reason
-            FROM payment_request pr
-            JOIN payment_reasons prn ON pr.reason = prn.id
-            WHERE pr.created_by = :created_by
-        ");
+        SELECT pr.*, prn.reason, DATE(pr.created_at) AS created_at
+        FROM payment_request pr
+        JOIN payment_reasons prn ON pr.reason = prn.id
+        WHERE pr.created_by = :created_by
+    ");
         
         $stmt->execute(['created_by' => $created_by]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
