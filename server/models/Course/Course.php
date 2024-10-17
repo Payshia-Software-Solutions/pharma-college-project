@@ -13,7 +13,7 @@ class Course
 
     public function getAllRecords()
     {
-        $stmt = $this->pdo->query("SELECT * FROM course WHERE display = 1");
+        $stmt = $this->pdo->query("SELECT * FROM course");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

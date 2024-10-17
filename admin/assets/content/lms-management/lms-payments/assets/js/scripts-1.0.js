@@ -30,3 +30,23 @@ function OpenIndex() {
     }
     fetch_data();
 }
+function GetCoursePayments(courseCode) {
+    function fetch_data() {
+        document.getElementById("index-content").innerHTML = InnerLoader;
+        $.ajax({
+            url: "./assets/content/lms-management/lms-payments/views/course-payments.php",
+            method: "POST",
+            data: {
+                LoggedUser: LoggedUser,
+                UserLevel: UserLevel,
+                company_id: company_id,
+                courseCode: courseCode,
+            },
+            success: function (data) {
+                $("#index-content").html(data);
+                GetMailBox();
+            },
+        });
+    }
+    fetch_data();
+}
