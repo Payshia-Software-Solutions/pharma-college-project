@@ -26,7 +26,6 @@ $eCertificateRoutes = require './routes/OtherRoutes/eCertificateRoutes.php';
 $courseAssignmentRoutes = require './routes/OtherRoutes/courseAssignmentRoutes.php';
 $courseAssignmentSubmissionRoutes = require './routes/OtherRoutes/courseAssignmentSubmissionRoutes.php';
 $reportRoutes = require './routes/OtherRoutes/reportRoutes.php';
-$courseRoutes = require './routes/OtherRoutes/courseRoutes.php';
 $studentCourseRoutes = require './routes/OtherRoutes/studentCourseRoutes.php';
 $userRoutes = require './routes/UserRoutes/userRoutes.php';
 $userFullDetailsRoutes = require './routes/UserRoutes/userFullDetailsRoutes.php';
@@ -62,6 +61,7 @@ $communityPostReplyRatingsRoutes = require './routes/Community/communityPostRepl
 $communityKnowledgebaseRoutes = require './routes/Community/communityKnowledgebaseRoutes.php';
 $paymentReasonRoutes = require './routes/Payment/paymentReasonRoutes.php';
 $paymentRequestRoutes = require './routes/Payment/paymentRequestRoutes.php';
+$courseRoutes = require './routes/Course/courseRoutes.php';
 
 // if (!is_array($paymentRequestRoutes)) {
 //     throw new Exception("paymentRequestRoutes is not an array");
@@ -80,7 +80,8 @@ $routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes,
                          $careInstructionRoutes, $careInstructionPreRoutes, $chatRoutes,
                          $attachmentRoutes, $messageRoutes, $communityPostCategoryRoutes,
                          $communityPostRoutes, $communityKnowledgebaseRoutes, $communityPostReplyRoutes,
-                         $communityPostReplyRatingsRoutes, $paymentReasonRoutes, $paymentRequestRoutes);
+                         $communityPostReplyRatingsRoutes, $paymentReasonRoutes, $paymentRequestRoutes,
+                         $courseRoutes);
 
 
 // Define the home route with trailing slash
