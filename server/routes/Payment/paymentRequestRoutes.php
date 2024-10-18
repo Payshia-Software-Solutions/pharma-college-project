@@ -10,7 +10,7 @@ return [
     'GET /payment-request/' => [$paymentRequestController, 'getAllRecords'],
     'GET /payment-request/getById/{id}/' => [$paymentRequestController, 'getRecordById'],
     'GET /payment-request/getByUserName/{created_by}/' => [$paymentRequestController, 'getRecordByUserName'],
-    'GET /payment-request/statics/' => [$paymentRequestController, 'getStatistics'],
+    'GET /payment-request/statistics/' => [$paymentRequestController, 'getStatistics'],
     'POST /payment-request/' => [$paymentRequestController, 'createRecord'],
     'PUT /payment-request/{id}/' => [$paymentRequestController, 'updateRecord'],
     'DELETE /payment-request/{id}/' => [$paymentRequestController, 'deleteRecord']
