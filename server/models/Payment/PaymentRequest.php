@@ -125,5 +125,35 @@ class PaymentRequest
         $stmt->execute(['created_by' => $created_by]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getStatistics()
+{
+    // Fetch the payment statuses from the payment_request table
+    $sql = "SELECT status FROM payment_request";
+    $stmt = $this->pdo->query($sql);
+    $payments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Initialize counters
+    $totalCount = count($payments);  // Total records count
+    $pendingCount = 0;
+    $approvedCount = 0;
+
+    // Loop through each payment and count based on status
+    foreach ($payments as $payment) {
+        if ($payment['status'] == 0) {
+            $pendingCount++;
+        } elseif ($payment['status'] == 1) {
+            $approvedCount++;
+        }
+    }
+
+    // Return the counts as an array (you can send it as JSON later)
+    return [
+        'totalCount' => $totalCount,
+        'pendingCount' => $pendingCount,
+        'approvedCount' => $approvedCount
+    ];
+}
+
     
 }

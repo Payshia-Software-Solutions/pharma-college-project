@@ -5,7 +5,7 @@
                 <i class="fa-solid fa-file-contract icon-card"></i>
             </div>
             <div class="card-body">
-                <p>Completed</p>
+                <p>All Payments</p>
                 <h1>585</h1>
             </div>
         </div>
@@ -14,10 +14,10 @@
     <div class="col-md-3">
         <div class="card item-card shadow">
             <div class="overlay-box">
-                <i class="fa-solid fa-file-contract icon-card"></i>
+                <i class="fa-solid fa-hourglass-end icon-card"></i>
             </div>
             <div class="card-body">
-                <p>In-Progress</p>
+                <p>Pending Payments</p>
                 <h1>4553</h1>
             </div>
         </div>
@@ -26,25 +26,14 @@
     <div class="col-md-3">
         <div class="card item-card shadow">
             <div class="overlay-box">
-                <i class="fa-solid fa-file-contract icon-card"></i>
+                <i class="fa-solid fa-clipboard-check icon-card"></i>
             </div>
             <div class="card-body">
-                <p>Paid Count</p>
+                <p>Approved payments</p>
                 <h1>5869</h1>
             </div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="card item-card shadow">
-            <div class="overlay-box">
-                <i class="fa-solid fa-file-contract icon-card"></i>
-            </div>
-            <div class="card-body">
-                <p>Withdrawals</p>
-                <h1>2598</h1>
-            </div>
-        </div>
-    </div>
 
 </div>

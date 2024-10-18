@@ -12,7 +12,7 @@ $dotenv->load();
 $client = HttpClient::create();
 
 // Make the GET request to fetch payement reasons
-$response = $client->request('GET', $_ENV["SERVER_URL"] .'/payment-request/' . $loggedUser);
+$response = $client->request('GET', $_ENV["SERVER_URL"] .'/payment-request/getByUserName/' . $loggedUser);
 $paymentsHistory = $response->toArray();
 
 ?>

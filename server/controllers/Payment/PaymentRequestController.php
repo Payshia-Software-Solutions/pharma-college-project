@@ -107,4 +107,17 @@ public function updateRecord($id)
         echo json_encode($records);
     }
 
+    public function getStatistics()
+{
+    // Fetch the statistics from the model
+    $records = $this->model->getStatistics();
+
+    // Set the appropriate content type for JSON
+    header('Content-Type: application/json');
+
+    // Send the JSON response
+    echo json_encode($records);
+}
+
+
 }
