@@ -1,14 +1,14 @@
 <?php
 
 $LoggedUser = $_POST['LoggedUser'];
-$CourseCode = $_POST['CourseCode'];
+// $CourseCode = $_POST['CourseCode'];
 
 ?>
 
 <div class="row g-3">
     <div class="col-12">
         <h5 class="table-title mb-4">course - 2002 |
-            Winpharma Submissions</h5>
+            Winpharma Payments</h5>
         <div class="row g-2 mb-4">
             <div class="col-6 col-md-2">
                 <div class="card bg-black text-white clickable"
@@ -45,33 +45,30 @@ $CourseCode = $_POST['CourseCode'];
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Index Number</th>
-                                <th>Level</th>
+                                <th>Student Name</th>
+                                <th>Upload Date</th>
                                 <th>Action</th>
-                                <th>Time</th>
-                                <th>Grade</th>
+                                <th>Reason</th>
                                 <th>Status</th>
-                                <th>Checked By</th>
-                                <th>Updated at</th>
+                                <th>Reference Number</th>
                             </tr>
                         </thead>
                         <tbody>
 
                             <tr>
-                                <td>588</td>
-                                <td>55</td>
-                                <td>Level One</td>
+                                <td>01</td>
+                                <td>Dasun Kumara</td>
+                                <td>2024-10-15</td>
                                 <td class="text-center">
-                                    <button onclick="OpenSubmission('55'), 'status')" class="btn btn-primary btn-sm"
-                                        type="button"><i class="fa-solid fa-eye"></i>
+                                    <button onclick="OpenPaymentView()" class="btn btn-primary btn-sm" type="button"><i
+                                            class="fa-solid fa-eye"></i>
                                         View</button>
 
                                 </td>
-                                <td>2254</td>
-                                <td>55%</td>
-                                <td><span class="badge bg-danger">Failed</span>
+                                <td>Course Fee</td>
+                                <td><span class="badge bg-warning">Pending</span>
                                 </td>
-                                <td>Studnet</td>
+                                <td>Ref-4879663587</td>
                             </tr>
                         </tbody>
                     </table>
@@ -81,6 +78,10 @@ $CourseCode = $_POST['CourseCode'];
         </div>
     </div>
 </div>
+
+<button onclick="click01()" type="button" class="btn btn-outline-primary">
+    Button
+</button>
 
 
 <script>
