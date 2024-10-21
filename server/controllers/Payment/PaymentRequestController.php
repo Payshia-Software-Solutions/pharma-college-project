@@ -119,5 +119,11 @@ public function updateRecord($id)
     echo json_encode($records);
 }
 
+public function getByCourseCode($courseCode)
+{
+    $records = $this->model->getByCourseCode($courseCode);
+    echo json_encode($records);
+}
+
 
 }

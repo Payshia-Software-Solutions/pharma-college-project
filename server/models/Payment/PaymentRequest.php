@@ -155,5 +155,17 @@ class PaymentRequest
     ];
 }
 
+public function getByCourseCode($courseCode)
+{
+    $stmt = $this->pdo->prepare("
+        SELECT pr.*, prn.reason, DATE(pr.created_at) AS created_at
+        FROM payment_request pr
+        JOIN payment_reasons prn ON pr.reason = prn.id
+        WHERE pr.course_id = :courseCode
+    ");
+    
+    $stmt->execute(['courseCode' => $courseCode]);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
     
 }
