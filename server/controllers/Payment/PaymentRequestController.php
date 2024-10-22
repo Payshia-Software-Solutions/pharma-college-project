@@ -125,5 +125,11 @@ public function getByCourseCode($courseCode)
     echo json_encode($records);
 }
 
+public function getStatisticsByCourse($courseCode)
+{
+    $records = $this->model->getStatisticsByCourseCode($courseCode);
+    echo json_encode($records);
+}
+
 
 }
