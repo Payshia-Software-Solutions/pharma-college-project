@@ -10,7 +10,9 @@ $courseCode = $_POST['courseCode'];
 
 $client = HttpClient::create();
 $response = $client->request('GET', $_ENV["SERVER_URL"] .'/payment-request/getByCourseCode/' . $courseCode);
+$response2 = $client->request('GET', $_ENV["SERVER_URL"] .'/payment-request/statistics-by-course/' . $courseCode);
 $paymentRequests = $response->toArray();
+$statistics = $response2->toArray();
 
 ?>
 
@@ -20,23 +22,31 @@ $paymentRequests = $response->toArray();
             Winpharma Payments</h5>
         <div class="row g-2 mb-4">
             <div class="col-6 col-md-2">
-                <div class="card bg-black text-white clickable"
-                    onclick="GetWinpharmaSubmissions('default course', 'All')">
+                <div class="card bg-black text-white">
 
                     <div class="card-body">
                         <p class="mb-0 text-white">All</p>
-                        <h1>5785</h1>
+                        <h1><?=  $statistics["totalCount"] ?></h1>
                     </div>
                 </div>
             </div>
 
             <div class="col-6 col-md-2">
-                <div class="card bg-warning text-white clickable"
-                    onclick="GetWinpharmaSubmissions('default corese', 'Pending')">
+                <div class="card bg-warning text-white">
 
                     <div class="card-body">
                         <p class="mb-0 text-white">Pending</p>
-                        <h1>889</h1>
+                        <h1><?=  $statistics["pendingCount"] ?></h1>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-2">
+                <div class="card bg-success text-white">
+
+                    <div class="card-body">
+                        <p class="mb-0 text-white">Approved</p>
+                        <h1><?=  $statistics["approvedCount"] ?></h1>
                     </div>
                 </div>
             </div>
