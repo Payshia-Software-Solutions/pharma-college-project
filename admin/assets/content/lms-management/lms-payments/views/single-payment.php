@@ -32,33 +32,17 @@ $LoggedUser = $_POST['LoggedUser'];
 
         <div class="col-md-8">
 
-
-            <?php
-            $rootFolder = 'http://localhost/mobile.pharmacollege.lk';
-            $rootFolder = 'http://lms.pharmacollege.lk';
-
-            if ($file_extension == 'jpg' || $file_extension == 'jpeg' || $file_extension == 'png' || $file_extension == 'webp') { ?>
-
             <!-- Preview Submitted File -->
-            <img class="rounded-4 shadow-sm w-100" id="myImage" src="" alt="image 01">
-
-            <!-- Rotate Button -->
-            <button type="button" class="btn btn-primary rounded-2 mt-3 d-block" onclick="rotateImage()">Rotate
-                Image</button>
+            <img class="rounded-4 shadow-sm w-100" id="myImage" src="https://i.imghippo.com/files/y6gtF1729483242.jpg"
+                alt="image 01">
 
             <!-- Download Button -->
-            <a class="d-block" target="_blank" href="#">
-                <button class="btn btn-warning rounded-2 mt-3">Download </button>
+            <a class="d-block" target="_blank" href="https://i.imghippo.com/files/y6gtF1729483242.jpg">
+                <button class="btn btn-warning rounded-2 mt-3">Download</button>
             </a>
 
-            <?php
-            } else { ?>
-            <p>
-                <a target="_blank" href="">
-            </p>
-            <?php
-            }
-            ?>
+
+
         </div>
 
         <div class="col-md-4">
@@ -71,46 +55,25 @@ $LoggedUser = $_POST['LoggedUser'];
 
                     <div class="col-12">
                         <label>Current Grade Status: </label>
-                        <?php if ($submission["grade_status"] != "Pending") : ?>
-                        <div class="badge bg-primary rounded-2"><?= $submission["grade_status"] ?></div>
-                        <div class="badge bg-success rounded-2"><?= $submission["grade"] ?>%</div>
+                        <?php if (true) : ?>
+                        <div class="badge bg-primary rounded-2">test</div>
+                        <div class="badge bg-success rounded-2">10%</div>
                         <?php else : ?>
                         <div class="badge bg-danger rounded-2">Not Graded</div>
                         <?php endif ?>
                     </div>
 
-                    <div class="col-md-6">
-                        <label>Grade Status</label>
-                        <select onchange="ChangeGradeValue()" name="grade_status" id="grade_status"
-                            class="form-control form-control-sm" required>
-                            <option <?= ($submission["grade_status"] == "Completed") ? 'selected' : '' ?>
-                                value="Completed">Completed</option>
-                            <option <?= ($submission["grade_status"] == "Pending") ? '' : '' ?> value="Pending">Pending
-                            </option>
-                            <option <?= ($submission["grade_status"] == "Sp-Pending") ? 'selected' : '' ?>
-                                value="Sp-Pending">Sp-Pending</option>
-                            <option <?= ($submission["grade_status"] == "Try Again") ? 'selected' : '' ?>
-                                value="Try Again">Try Again</option>
-                            <option <?= ($submission["grade_status"] == "Re-Correction") ? 'selected' : '' ?>
-                                value="Re-Correction">Re-Correction</option>
-                        </select>
-                    </div>
 
                     <div class="col-md-6">
                         <label>Grade Value %</label>
                         <input name="grade" id="grade" type="number" class="form-control form-control-sm"
-                            placeholder="85%" required value="<?= $submission["grade"] ?>">
+                            placeholder="85%" required value="fffsdf">
                     </div>
 
                     <div class="col-md-12">
                         <label>Common Reason</label>
                         <select class="form-control" id="pre-reason" name="pre-reason">
                             <option value="">Select Common Reason</option>
-                            <?php if (!empty($reasonList)) : ?>
-                            <?php foreach ($reasonList as $reason) : ?>
-                            <option value="<?= $reason['reason'] ?>"><?= $reason['reason'] ?></option>
-                            <?php endforeach ?>
-                            <?php endif ?>
                         </select>
 
                     </div>
@@ -118,18 +81,17 @@ $LoggedUser = $_POST['LoggedUser'];
                     <div class="col-md-12">
                         <label>Reason</label>
                         <input name="reason" id="reason" type="text" class="form-control form-control-sm"
-                            placeholder="Reason" value="<?= $submission["reason"] ?>">
+                            placeholder="Reason" value="dfdfsdfsdf">
                     </div>
                     <div class="col-6 text-end mt-3 d-flex">
-                        <button onclick="ViewResource('<?= $resourceID ?>')" type="button"
-                            class="btn btn-success btn-lg w-100 flex-fill"><i class="fa-solid fa-eye"></i> View
+                        <button onclick="ViewResource()" type="button" class="btn btn-success btn-lg w-100 flex-fill"><i
+                                class="fa-solid fa-eye"></i> View
                             Resource</button>
                     </div>
 
                     <div class="col-6 text-end mt-3 d-flex">
                         <button type="button" class="btn btn-lg btn-dark rounded-2 text-white flex-fill w-100"
-                            onclick="SaveGrade('<?= $submissionId ?>', '<?= $defaultCourse ?>', '<?= $requestStatus ?>') "><i
-                                class="fa-solid fa-floppy-disk"></i> Save Grade</button>
+                            onclick="SaveGrade() "><i class="fa-solid fa-floppy-disk"></i> Save Grade</button>
                     </div>
 
                 </div>
@@ -141,37 +103,3 @@ $LoggedUser = $_POST['LoggedUser'];
         </div>
     </div>
 </div>
-
-
-<script>
-function ChangeGradeValue() {
-    const selectBox = document.getElementById('grade_status');
-    const gradeIdInput = document.getElementById('grade');
-    const selectedOption = selectBox.value;
-
-    if (selectedOption === 'Pending') {
-        gradeIdInput.value = '0';
-    } else if (selectedOption === 'Completed') {
-        gradeIdInput.value = '100';
-    } else if (selectedOption === 'Not Completed') {
-        gradeIdInput.value = '0';
-    } else if (selectedOption === 'Try Again') {
-        gradeIdInput.value = '-10';
-    } else if (selectedOption === 'Sp-Pending') {
-        gradeIdInput.value = '0';
-    } else if (selectedOption === 'Re-Correction') {
-        gradeIdInput.value = '0';
-    }
-}
-
-var angle = 0;
-var img = document.getElementById('myImage');
-
-function rotateImage() {
-    angle += 90;
-    img.style.transform = 'rotate(' + angle + 'deg)';
-}
-
-$('#grade_status').select2();
-$('#pre-reason').select2();
-</script>

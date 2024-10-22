@@ -1,7 +1,16 @@
 <?php
+require_once '../../../../../vendor/autoload.php';
 
-$LoggedUser = $_POST['LoggedUser'];
-// $CourseCode = $_POST['CourseCode'];
+use Symfony\Component\HttpClient\HttpClient;
+
+$dotenv = Dotenv\Dotenv::createImmutable('../../../../../');
+$dotenv->load();
+
+$courseCode = $_POST['courseCode'];
+
+$client = HttpClient::create();
+$response = $client->request('GET', $_ENV["SERVER_URL"] .'/payment-request/getByCourseCode/' . $courseCode);
+$paymentRequests = $response->toArray();
 
 ?>
 
@@ -38,7 +47,9 @@ $LoggedUser = $_POST['LoggedUser'];
         <div class="card shadow-lg">
             <div class="card-body">
 
-                <p class="mb-0 mt-2">No 55 submissions found.</p>
+                <?php if (!empty($paymentRequests)) : ?>
+
+                <p class="mb-0 mt-2">No <?= count($paymentRequests) ?> payments found.</p>
 
                 <div class="table-responsive">
                     <table class="table table-hovered table-striped" id="submission-table">
@@ -54,34 +65,40 @@ $LoggedUser = $_POST['LoggedUser'];
                             </tr>
                         </thead>
                         <tbody>
-
+                            <?php foreach($paymentRequests as $paymentRequest) : ?>
                             <tr>
-                                <td>01</td>
-                                <td>Dasun Kumara</td>
+                                <td><?= $paymentRequest['id'] ?></td>
+                                <td><?= $paymentRequest['created_by'] ?></td>
                                 <td>2024-10-15</td>
-                                <td class="text-center">
+                                <td>
                                     <button onclick="OpenPaymentView()" class="btn btn-primary btn-sm" type="button"><i
                                             class="fa-solid fa-eye"></i>
                                         View</button>
 
                                 </td>
-                                <td>Course Fee</td>
-                                <td><span class="badge bg-warning">Pending</span>
-                                </td>
-                                <td>Ref-4879663587</td>
+                                <td><?= $paymentRequest['reason'] ?></td>
+
+                                <?php if($paymentRequest['status'] == 1) : ?>
+                                <td><span class="badge bg-success">Approved</span></td>
+                                <?php else : ?>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <?php endif; ?>
+
+                                <td><?= $paymentRequest['reference_number'] ?></td>
                             </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
+
+                <?php else : ?>
+                <p class="mb-0 mt-2">No payments found.</p>
+                <?php endif; ?>
 
             </div>
         </div>
     </div>
 </div>
-
-<button onclick="click01()" type="button" class="btn btn-outline-primary">
-    Button
-</button>
 
 
 <script>
