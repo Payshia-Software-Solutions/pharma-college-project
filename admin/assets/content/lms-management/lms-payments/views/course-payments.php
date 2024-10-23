@@ -81,8 +81,8 @@ $statistics = $response2->toArray();
                                 <td><?= $paymentRequest['created_by'] ?></td>
                                 <td>2024-10-15</td>
                                 <td>
-                                    <button onclick="OpenPaymentView()" class="btn btn-primary btn-sm" type="button"><i
-                                            class="fa-solid fa-eye"></i>
+                                    <button onclick="OpenPaymentView(<?= $paymentRequest['id'] ?>)"
+                                        class="btn btn-primary btn-sm" type="button"><i class="fa-solid fa-eye"></i>
                                         View</button>
 
                                 </td>

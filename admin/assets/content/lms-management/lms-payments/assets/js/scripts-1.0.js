@@ -51,8 +51,7 @@ function GetCoursePayments(courseCode) {
     fetch_data();
 }
 
-function OpenPaymentView(submissionId = 0) {
-    var userTheme = $('#userTheme').val()
+function OpenPaymentView(paymentId) {
     OpenPopupRight()
     $('#loading-popup-right').html(InnerLoader)
 
@@ -63,8 +62,7 @@ function OpenPaymentView(submissionId = 0) {
             data: {
                 LoggedUser: LoggedUser,
                 UserLevel: UserLevel,
-                submissionId: submissionId,
-                userTheme: userTheme,
+                paymentId: paymentId,
             },
             success: function (data) {
                 $('#loading-popup-right').html(data)

@@ -1,13 +1,7 @@
 <?php
 
-// Get User Theme
-// $userThemeInput = isset($_POST['userTheme']) ? $_POST['userTheme'] : null;
-// $UserLevel = isset($_POST['UserLevel']) ? $_POST['UserLevel'] : 'Officer';
-// $userTheme = getUserTheme($userThemeInput);
-
-
-
 $LoggedUser = $_POST['LoggedUser'];
+$paymentId = $_POST['paymentId'];
 
 ?>
 
@@ -40,8 +34,6 @@ $LoggedUser = $_POST['LoggedUser'];
             <a class="d-block" target="_blank" href="https://i.imghippo.com/files/y6gtF1729483242.jpg">
                 <button class="btn btn-warning rounded-2 mt-3">Download</button>
             </a>
-
-
 
         </div>
 
