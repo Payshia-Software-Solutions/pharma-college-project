@@ -16,11 +16,23 @@ class PaymentRequest
     }
 
     public function getRecordById($id)
-    {
-        $stmt = $this->pdo->prepare("SELECT * FROM payment_request WHERE id = :id");
-        $stmt->execute(['id' => $id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+{
+    // Use a JOIN to get the reason from payment_reason table based on the reason id
+    $sql = "
+        SELECT pr.id, pr.created_by, pr.created_at, pr.course_id, pr.image, 
+               pr.extra_note, pr.status, pr.reference_number, prr.reason AS reason
+        FROM payment_request pr
+        JOIN payment_reasons prr ON pr.reason = prr.id
+        WHERE pr.id = :id
+    ";
+    
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute(['id' => $id]);
+
+    // Fetch the record, reason included from the payment_reason table
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
 
     public function createRecord($data, $imagePath)
     {

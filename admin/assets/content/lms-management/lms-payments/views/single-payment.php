@@ -1,7 +1,19 @@
 <?php
 
-$LoggedUser = $_POST['LoggedUser'];
+require_once '../../../../../vendor/autoload.php';
+use Symfony\Component\HttpClient\HttpClient;
+
 $paymentId = $_POST['paymentId'];
+
+$dotenv = Dotenv\Dotenv::createImmutable('../../../../../');
+$dotenv->load();
+
+$client = HttpClient::create();
+$response = $client->request('GET', $_ENV["SERVER_URL"] .'/payment-request/getById/' . $paymentId);
+$paymentDetails = $response->toArray();
+
+//only show date
+$uploadedDate = date('d-m-Y', strtotime($paymentDetails['created_at']));
 
 ?>
 
@@ -27,77 +39,79 @@ $paymentId = $_POST['paymentId'];
         <div class="col-md-8">
 
             <!-- Preview Submitted File -->
-            <img class="rounded-4 shadow-sm w-100" id="myImage" src="https://i.imghippo.com/files/y6gtF1729483242.jpg"
-                alt="image 01">
+            <img class="rounded-4 shadow-sm w-100" id="myImage"
+                src="<?= $_ENV["SERVER_URL"] . $paymentDetails['image'] ?>" alt="image 01">
 
             <!-- Download Button -->
-            <a class="d-block text-center mb-3" target="_blank" href="https://i.imghippo.com/files/y6gtF1729483242.jpg">
+            <a class="d-block text-center mb-3" target="_blank"
+                href="<?= $_ENV["SERVER_URL"] . $paymentDetails['image'] ?>">
                 <button class="btn btn-warning rounded-2 mt-3 w-50">Download Slip</button>
             </a>
 
         </div>
 
         <div class="col-md-4">
-            <h5 class="">Payment ID 588</h5>
+            <h5 class="">Payment ID <?= $paymentId ?></h5>
 
-            <form id="grade-form" method="post">
+            <form id="approvePaymentForm" enctype="multipart/form-data">
                 <!-- <h4 class="card-title border-bottom pb-2 mb-2">Grading</h4> -->
                 <div class="row g-2">
 
                     <div class="col-12">
                         <label>Current Payment Status: </label>
-                        <?php if (true) : ?>
+                        <?php if ($paymentDetails['status'] == 0) : ?>
                         <div class="badge bg-warning rounded-2">Pending</div>
-                        <!-- <div class="badge bg-success rounded-2">10%</div> -->
                         <?php else : ?>
-                        <div class="badge bg-danger rounded-2">Not Graded</div>
+                        <div class="badge bg-success rounded-2">Approved</div>
                         <?php endif ?>
                     </div>
 
                     <div class="col-12">
                         <label>Student Name</label>
-                        <input readonly type="text" value="Class Fee" name="student_name"
-                            class="form-control form-control-sm" placeholder="Dasun Kumara">
+                        <input readonly type="text" value="Class Fee" name="created_by"
+                            class="form-control form-control-sm" placeholder="<?= $paymentDetails['created_by'] ?>">
                     </div>
 
                     <div class="col-12">
                         <label>Reason</label>
                         <input readonly type="text" name="reason" class="form-control form-control-sm"
-                            placeholder="Course Fee">
+                            placeholder="<?= $paymentDetails['reason'] ?>">
                     </div>
 
                     <div class="col-12">
                         <label>Ref. No</label>
-                        <input readonly type="text" name="ref_no" class="form-control form-control-sm"
-                            placeholder="REf-25785787">
+                        <input readonly type="text" class="form-control form-control-sm"
+                            placeholder="<?= $paymentDetails['reference_number'] ?>">
                     </div>
                     <div class="col-12">
                         <label>Uploaded Date</label>
-                        <input readonly type="text" name="uploaded_date" class="form-control form-control-sm"
-                            placeholder="2024-10-12">
+                        <input readonly type="text" class="form-control form-control-sm"
+                            placeholder="<?= $uploadedDate ?>">
                     </div>
 
                     <div class="col-12">
                         <label>Extra Note</label>
-                        <textarea readonly type="text" name="extra_note" class="form-control form-control-sm">this is my first payment
-                        </textarea>
+                        <textarea readonly type="text" name="extra_note"
+                            class="form-control form-control-sm"><?= $paymentDetails['extra_note'] ?></textarea>
                     </div>
+
 
                     <div class="col-md-6">
                         <label>Payment Amount</label>
-                        <input name="grade" id="grade" type="number" class="form-control form-control-sm"
-                            placeholder="0.00" required value="">
+                        <input name="paid_amount" type="number" class="form-control form-control-sm" placeholder="0.00"
+                            required value="">
                     </div>
 
                     <div class="col-md-6">
                         <label>Discount</label>
-                        <input name="grade" id="grade" type="number" class="form-control form-control-sm"
+                        <input name="discount_amount" type="number" class="form-control form-control-sm"
                             placeholder="0.00" required value="">
                     </div>
 
                     <div class="col-12 text-end mt-3 d-flex">
                         <button type="button" class="btn btn-lg btn-dark rounded-2 text-white flex-fill w-100"
-                            onclick="SavePayment() "><i class="fa-solid fa-floppy-disk"></i> Save Payment</button>
+                            onclick="SavePayment(<?= $paymentId ?>)"><i class="fa-solid fa-floppy-disk"></i> Save
+                            Payment</button>
                     </div>
 
                 </div>

@@ -72,3 +72,44 @@ function OpenPaymentView(paymentId) {
     fetch_data()
 }
 
+
+function SavePayment(paymentId) {
+
+    var form = document.getElementById("approvePaymentForm");
+
+    if (form.checkValidity()) {
+
+        // OpenPopup()
+        // document.getElementById('loading-popup').innerHTML = InnerLoader
+        var formData = new FormData(form);
+
+        // formData.append("CourseCode", CourseCode);
+        formData.append("payment_request_id", paymentId);
+        $.ajax({
+            url: "./assets/content/lms-management/lms-payments/controllers/submit-payment.php",
+            method: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                // $('#loading-popup').html(data)
+                var response = JSON.parse(data);
+                if (response.status === "success") {
+                    var result = response.message;
+                    OpenAlert('success', 'Done!', result)
+                    ClosePopUP();
+                    OpenIndex();
+                } else {
+                    var result = response.message;
+                    showNotification(result, "error", "Done!");
+                }
+            }
+        });
+    } else {
+        form.reportValidity()
+        result = 'Please Filled out All * marked Fields.'
+        OpenAlert('error', 'Error!', result)
+        hideOverlay()
+    }
+}
+
