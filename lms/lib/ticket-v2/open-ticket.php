@@ -14,7 +14,6 @@ $client = HttpClient::create();
 $response = $client->request('GET', $_ENV["SERVER_URL"] . '/tickets/' . $ticketId);
 $ticketInfo = $response->toArray();
 
-
 $ticketStatus = $ticketInfo['is_active'];
 $attachments = explode(', ', $ticketInfo['attachments']);
 ?>
@@ -93,19 +92,13 @@ $attachments = explode(', ', $ticketInfo['attachments']);
                             <div class="bg-white rounded-3 p-2 mt-2 text-center">
                                 <label class="mb-0 text-muted border-bottom pb-1" for="">Rate Reply</label>
                                 <div class="rating text-center">
-
                                     <?php
-
                                     for ($i = 5; $i > 0; $i--) { ?>
 
                                         <input onclick="RateValue('<?= $ticketId ?>', '<?= $replyArray['ticket_id'] ?>', '<?= $i ?>')" type="radio" id="star<?= $i ?>-<?= $replyArray['ticket_id'] ?>" name="rating-<?= $replyArray['ticket_id'] ?>" value="<?= $i ?>" <?= ($rateValue == $i) ? 'checked' : '' ?> />
-
                                         <label for="star<?= $i ?>-<?= $replyArray['ticket_id'] ?>" title="<?= $i ?> stars" class="star">&#9733;</label>
                                     <?php
                                     } ?>
-
-
-
                                 </div>
                                 <p class="text-muted">Please rate this reply as you prefer! this will help to rate your instructor.</p>
                             </div>

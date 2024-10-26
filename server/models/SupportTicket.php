@@ -42,6 +42,15 @@ class SupportTicket
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Fetch a single ticket by User
+    public function getTicketReplies($ticket_id)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM `support_ticket` WHERE `parent_id` = ?");
+        $stmt->execute([$ticket_id]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
     // Create a new support ticket
     public function createTicket($data)
     {
