@@ -104,6 +104,7 @@ $reportTitle = "Student Report";
                         <th scope="col">Phone Number</th>
                         <th scope="col">Name with Initials</th>
                         <th scope="col">Name On Certificate</th>
+                        <th scope="col">Due Balance</th>
                         <th scope="col">Enrollments</th>
                     </tr>
                 </thead>
@@ -123,6 +124,8 @@ $reportTitle = "Student Report";
                             $telephone_1 = $selectedArray['telephone_1'];
                             $nameWithInitials = $selectedArray['name_with_initials'];
                             $nameOnCertificate = $selectedArray['name_on_certificate'];
+                            $paymentInfo = GetStudentBalance($indexNumber);
+
 
                             if (isset($cities[$city]['name_en'])) {
                                 $cityName = $cities[$city]['name_en'];
@@ -162,6 +165,7 @@ $reportTitle = "Student Report";
                                 <td class="border-bottom"><?= $telephone_1 ?></td>
                                 <td class="border-bottom"><?= $nameWithInitials ?></td>
                                 <td class="border-bottom"><?= $nameOnCertificate ?></td>
+                                <td class="border-bottom"><?= $paymentInfo['studentBalance']; ?></td>
                                 <td class="text-center border-bottom">
                                     <?php
                                     if (!empty($enrollmentArray)) {

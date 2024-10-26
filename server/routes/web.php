@@ -58,22 +58,51 @@ $messageRoutes = require './routes/Chats/messageRoutes.php';
 $communityPostCategoryRoutes = require './routes/Community/communityPostCategoryRoutes.php';
 $communityPostRoutes = require './routes/Community/communityPostRoutes.php';
 $communityKnowledgebaseRoutes = require './routes/Community/communityKnowledgebaseRoutes.php';
+$supportTicketRoutes = require './routes/TicketRoutes/supportTicketRoutes.php';
 
 
 
 // Combine all routes
-$routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes,
-                       $eCertificateRoutes, $courseAssignmentRoutes, $courseAssignmentSubmissionRoutes,
-                       $hpSaveAnswerRoutes, $reportRoutes, $courseRoutes, $studentCourseRoutes,
-                        $userFullDetailsRoutes, $companyRoutes, $hpCourseMedicineRoutes, 
-                        $hpMedicinesRoutes, $hpCategoriesRoutes, $hpDosageFormsRoutes, $hpDrugTypesRoutes,
-                        $hpRacksRoutes, $appointmentCategoryRoutes, $hunterSettingRoutes,
-                        $hunterCategoryRoutes, $hunterCourseRoutes, $hunterDosageRoutes, 
-                        $hunterDrugGroupRoutes, $hunterMedicineRoutes, $hunterRacksRoutes,
-                        $hunterSaveAnswerRoutes, $hunterStoreRoutes, $lectureRoutes,
-                         $careInstructionRoutes, $careInstructionPreRoutes, $chatRoutes,
-                         $attachmentRoutes, $messageRoutes, $communityPostCategoryRoutes,
-                         $communityPostRoutes, $communityKnowledgebaseRoutes);
+$routes = array_merge(
+    $userRoutes,
+    $assignmentRoutes,
+    $appointmentRoutes,
+    $eCertificateRoutes,
+    $courseAssignmentRoutes,
+    $courseAssignmentSubmissionRoutes,
+    $hpSaveAnswerRoutes,
+    $reportRoutes,
+    $courseRoutes,
+    $studentCourseRoutes,
+    $userFullDetailsRoutes,
+    $companyRoutes,
+    $hpCourseMedicineRoutes,
+    $hpMedicinesRoutes,
+    $hpCategoriesRoutes,
+    $hpDosageFormsRoutes,
+    $hpDrugTypesRoutes,
+    $hpRacksRoutes,
+    $appointmentCategoryRoutes,
+    $hunterSettingRoutes,
+    $hunterCategoryRoutes,
+    $hunterCourseRoutes,
+    $hunterDosageRoutes,
+    $hunterDrugGroupRoutes,
+    $hunterMedicineRoutes,
+    $hunterRacksRoutes,
+    $hunterSaveAnswerRoutes,
+    $hunterStoreRoutes,
+    $lectureRoutes,
+    $careInstructionRoutes,
+    $careInstructionPreRoutes,
+    $chatRoutes,
+    $attachmentRoutes,
+    $messageRoutes,
+    $communityPostCategoryRoutes,
+    $communityPostRoutes,
+    $communityKnowledgebaseRoutes,
+    $supportTicketRoutes
+);
 
 
 // Define the home route with trailing slash
@@ -115,13 +144,13 @@ error_log("URI: $uri");
 foreach ($routes as $route => $handler) {
     list($routeMethod, $routeUri) = explode(' ', $route, 2);
 
-// Convert route URI to regex
-$routeRegex = str_replace(
-    ['{id}', '{username}','{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}'],
-    ['(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)'],
-    $routeUri
-);
-$routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
+    // Convert route URI to regex
+    $routeRegex = str_replace(
+        ['{id}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}'],
+        ['(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)'],
+        $routeUri
+    );
+    $routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
 
     error_log("Checking route: $routeRegex");
 
