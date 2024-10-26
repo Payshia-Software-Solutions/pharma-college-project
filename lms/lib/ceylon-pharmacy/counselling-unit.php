@@ -6,19 +6,22 @@ require '../../vendor/autoload.php';
 
 // for call server endpoint
 use Symfony\Component\HttpClient\HttpClient;
+
 $client = HttpClient::create();
 
 //for use env file data
 use Dotenv\Dotenv;
+
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
 
 $loggedUser = $_POST['LoggedUser'];
 $UserLevel = $_POST['UserLevel'];
+$UserLevel = 'Student';
 
 if ($UserLevel == "Admin") {
     $response = $client->request('GET', $_ENV["SERVER_URL"] . '/care-instructions-pre/role/Admin');
-}else{
+} else {
     $response = $client->request('GET', $_ENV["SERVER_URL"] . '/care-instructions-pre/role/Student');
 }
 $answers = $response->toArray();
@@ -49,36 +52,38 @@ $correctAnswer =  GetCorrectInstructions($link, $prescriptionID, $coverID);
 $instructionsCount = count($correctAnswer);
 
 $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $coverID);
+$userAnswers = array();
+
 ?>
 <input type="hidden" name="instructionsCount" id="instructionsCount" value="<?= $instructionsCount ?>">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-.handwrite {
-    font-family: 'Indie Flower', cursive;
-    font-size: 20 px;
-}
+    .handwrite {
+        font-family: 'Indie Flower', cursive;
+        font-size: 20 px;
+    }
 
-.prescription-card {
-    background-color: #FFFEFE;
-    border: 15px solid #009E60;
-    border-radius: 0px !important;
-}
+    .prescription-card {
+        background-color: #FFFEFE;
+        border: 15px solid #009E60;
+        border-radius: 0px !important;
+    }
 
-.prescription-card .mini-text {
-    font-size: 10px;
-}
+    .prescription-card .mini-text {
+        font-size: 10px;
+    }
 
-.envelope-button-set {
-    position: fixed;
-    bottom: 88px;
-    left: 0;
-}
+    .envelope-button-set {
+        position: fixed;
+        bottom: 88px;
+        left: 0;
+    }
 
 
-#root {
-    padding-bottom: 20px;
-}
+    #root {
+        padding-bottom: 20px;
+    }
 </style>
 
 <div class="row">
@@ -108,32 +113,32 @@ $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $cover
                         <h4>Instruction List</h4>
                     </div>
 
-                    <?php if (empty($userAnswers) || $UserLevel != "Student") { ?>
-                    <div class="col-12 mb-2">
-                        <div class="alert alert-warning"><b><?= $instructionsCount ?> Instruction</b>(s) must be given!
+                    <?php if (empty($userAnswers)) { ?>
+                        <div class="col-12 mb-2">
+                            <div class="alert alert-warning"><b><?= $instructionsCount ?> Instruction</b>(s) must be given!
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-9">
-                        <label>Choice Instruction</label>
-                        <select id="instructionSelect" class="form-control">
-                            <?php
+                        <div class="col-9">
+                            <label>Choice Instruction</label>
+                            <select id="instructionSelect" class="form-control">
+                                <?php
                                 if (!empty($answers)) {
                                     foreach ($answers as $selectedArray) {
                                 ?>
-                            <option value="<?= $selectedArray['id'] ?>"><?= $selectedArray['id'] ?> -
-                                <?= $selectedArray['instruction'] ?></option>
-                            <?php
+                                        <option value="<?= $selectedArray['id'] ?>"><?= $selectedArray['id'] ?> -
+                                            <?= $selectedArray['instruction'] ?></option>
+                                <?php
                                     }
                                 }
                                 ?>
-                        </select>
-                    </div>
-                    <div class="col-3">
-                        <label>Action</label>
-                        <button class="btn btn-dark w-100 text-center"
-                            <?= ($UserLevel != "Student") ? 'onclick="addInstructionAdmin()"' : 'onclick="addInstruction()"' ?>><i
-                                class="fa-solid fa-plus player-icon"></i></button>
-                    </div>
+                            </select>
+                        </div>
+                        <div class="col-3">
+                            <label>Action</label>
+                            <button class="btn btn-dark w-100 text-center"
+                                <?= ($UserLevel != "Student") ? 'onclick="addInstructionAdmin()"' : 'onclick="addInstruction()"' ?>><i
+                                    class="fa-solid fa-plus player-icon"></i></button>
+                        </div>
                     <?php } ?>
                     <div class="col-12 mt-3">
                         <table id="instructionTable" class="table table-hover table-striped table-bordered">
@@ -146,10 +151,10 @@ $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $cover
                                 if (!empty($userAnswers) && $UserLevel == "Student") {
                                     foreach ($userAnswers as $selectedArray) {
                                 ?>
-                                <tr>
-                                    <td><?= $selectedArray['id'] ?></td>
-                                    <td><?= $instructions[$selectedArray['Instruction']]['instruction'] ?></td>
-                                </tr>
+                                        <tr>
+                                            <td><?= $selectedArray['id'] ?></td>
+                                            <td><?= $instructions[$selectedArray['Instruction']]['instruction'] ?></td>
+                                        </tr>
                                 <?php
                                     }
                                 }
@@ -159,10 +164,10 @@ $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $cover
                                 if (!empty($correctAnswer) && $UserLevel != "Student") {
                                     foreach ($correctAnswer as $selectedArray) {
                                 ?>
-                                <tr>
-                                    <td><?= $selectedArray['content'] ?></td>
-                                    <td><?= $instructions[$selectedArray['content']]['instruction'] ?></td>
-                                </tr>
+                                        <tr>
+                                            <td><?= $selectedArray['content'] ?></td>
+                                            <td><?= $instructions[$selectedArray['content']]['instruction'] ?></td>
+                                        </tr>
                                 <?php
                                     }
                                 }
@@ -172,22 +177,22 @@ $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $cover
                     </div>
 
                     <?php if (empty($userAnswers)) { ?>
-                    <div class="col-12 text-end">
-                        <button type="button"
-                            onclick="ValidateInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')"
-                            class="btn btn-success btn-sm d-none d-md-inline-block"><i
-                                class="fa-solid fa-floppy-disk player-icon"></i> Validate</button>
-                    </div>
+                        <div class="col-12 text-end">
+                            <button type="button"
+                                onclick="ValidateInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')"
+                                class="btn btn-success btn-sm d-none d-md-inline-block"><i
+                                    class="fa-solid fa-floppy-disk player-icon"></i> Validate</button>
+                        </div>
                     <?php }
 
                     if ($UserLevel != "Student") { ?>
-                    <div class="col-12 text-end mt-2">
-                        <button type="button" onclick="ClearInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')"
-                            class="btn btn-primary btn-sm"><i class="fa-solid fa-trash  player-icon"></i> Clear</button>
-                        <button type="button" onclick="SaveInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')"
-                            class="btn btn-dark btn-sm"><i class="fa-solid fa-floppy-disk player-icon"></i>
-                            Save</button>
-                    </div>
+                        <div class="col-12 text-end mt-2">
+                            <button type="button" onclick="ClearInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')"
+                                class="btn btn-primary btn-sm"><i class="fa-solid fa-trash  player-icon"></i> Clear</button>
+                            <button type="button" onclick="SaveInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')"
+                                class="btn btn-dark btn-sm"><i class="fa-solid fa-floppy-disk player-icon"></i>
+                                Save</button>
+                        </div>
                     <?php
                     }
                     ?>
@@ -218,54 +223,54 @@ $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $cover
 </div>
 
 <script>
-var correctAnswerIds = <?php echo json_encode(array_column($correctAnswer, 'content')); ?>;
+    var correctAnswerIds = <?php echo json_encode(array_column($correctAnswer, 'content')); ?>;
 
-var maxInstructionsCount = parseInt($('#instructionsCount').val(), 10);
+    var maxInstructionsCount = parseInt($('#instructionsCount').val(), 10);
 
-function addInstruction() {
-    var error_msg;
-    var selectedOption = $('#instructionSelect option:selected');
-    var selectedInstructionId = selectedOption.val();
-    var selectedInstructionText = selectedOption.text();
+    function addInstruction() {
+        var error_msg;
+        var selectedOption = $('#instructionSelect option:selected');
+        var selectedInstructionId = selectedOption.val();
+        var selectedInstructionText = selectedOption.text();
 
-    // Extract text after the hyphen
-    var textAfterHyphen = selectedInstructionText.split('-')[1].trim();
+        // Extract text after the hyphen
+        var textAfterHyphen = selectedInstructionText.split('-')[1].trim();
 
-    // Check if the instruction is not already added and the limit is not reached
-    if (
-        selectedInstructionId &&
-        textAfterHyphen &&
-        addedInstructions.indexOf(selectedInstructionId) === -1 &&
-        addedInstructions.length < maxInstructionsCount
-    ) {
-        // Check if the added instruction ID is in the correctAnswerIds array
-        var isCorrect = correctAnswerIds.indexOf(selectedInstructionId) !== -1;
+        // Check if the instruction is not already added and the limit is not reached
+        if (
+            selectedInstructionId &&
+            textAfterHyphen &&
+            addedInstructions.indexOf(selectedInstructionId) === -1 &&
+            addedInstructions.length < maxInstructionsCount
+        ) {
+            // Check if the added instruction ID is in the correctAnswerIds array
+            var isCorrect = correctAnswerIds.indexOf(selectedInstructionId) !== -1;
 
-        // Display an alert if the instruction is incorrect
-        if (!isCorrect) {
-            error_msg = 'Incorrect instruction selected.';
+            // Display an alert if the instruction is incorrect
+            if (!isCorrect) {
+                error_msg = 'Incorrect instruction selected.';
 
-            showNotification(error_msg, 'error', 'Oops!')
-            return; // Do not add the row if the instruction is incorrect
-        }
+                showNotification(error_msg, 'error', 'Oops!')
+                return; // Do not add the row if the instruction is incorrect
+            }
 
-        // Add the instruction ID to the list
-        addedInstructions.push(selectedInstructionId);
+            // Add the instruction ID to the list
+            addedInstructions.push(selectedInstructionId);
 
-        // Add a new row to the table with separate columns for ID and Instructions, highlighting if it's correct
-        var newRow = '<tr><td>' + selectedInstructionId + '</td><td style="color: green;">' + textAfterHyphen +
-            '</td></tr>';
-        $('#instructionTable tbody').append(newRow);
-    } else {
-        if (addedInstructions.length >= maxInstructionsCount) {
-            error_msg = 'Maximum instruction count reached.';
+            // Add a new row to the table with separate columns for ID and Instructions, highlighting if it's correct
+            var newRow = '<tr><td>' + selectedInstructionId + '</td><td style="color: green;">' + textAfterHyphen +
+                '</td></tr>';
+            $('#instructionTable tbody').append(newRow);
         } else {
-            error_msg = 'Instruction already added or not selected.';
+            if (addedInstructions.length >= maxInstructionsCount) {
+                error_msg = 'Maximum instruction count reached.';
+            } else {
+                error_msg = 'Instruction already added or not selected.';
+            }
+        }
+
+        if (error_msg) {
+            showNotification(error_msg, 'error', 'Oops!')
         }
     }
-
-    if (error_msg) {
-        showNotification(error_msg, 'error', 'Oops!')
-    }
-}
 </script>

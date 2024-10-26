@@ -1,7 +1,7 @@
 <?php
 require_once('./include/config.php');
 include './include/function-update.php';
-$pageTitle = "404";
+$pageTitle = "Account Center";
 $SubPageTitle = "";
 $SubPage = false;
 ?>
@@ -28,7 +28,7 @@ $SubPage = false;
                     <!-- Breadcrumb with Icons -->
                     <?php include './include/breadcrumb.php' ?>
                 </div>
-                <div id="index-content">404 Page Not Found</div>
+                <div id="index-content"></div>
 
             </main>
         </div>
@@ -44,6 +44,7 @@ $SubPage = false;
     <!-- Add Scripts -->
 
     <?php include './include/footer-scripts.php' ?>
+    <script src="./assets/content/lms-management/account-center/assets/scripts-1.0.js"></script>
 </body>
 
 </html>

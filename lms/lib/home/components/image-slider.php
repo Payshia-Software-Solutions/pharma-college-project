@@ -17,31 +17,31 @@
 <div id="carouselExampleCaptions" class="carousel slide mb-3 carousel-fade" data-bs-ride="carousel">
 
     <div class="carousel-inner rounded-2 rounded-md-4 shadow-sm">
-        <div class="carousel-item active" style="background-image: url('./lib/home/assets/images/slider/slider_5.jpg');" data-bs-interval="5000">
+        <div class="carousel-item active" style="background-image: url('./lib/home/assets/images/slider/cover5.jpg');" data-bs-interval="5000">
             <div class="carousel-caption d-none d-md-block">
                 <h3 class="mb-0">Pharma Achievers</h3>
                 <p>2023</p>
             </div>
         </div>
-        <div class="carousel-item" style="background-image: url('./lib/home/assets/images/slider/slider_4.jpg');" data-bs-interval="5000">
+        <div class="carousel-item" style="background-image: url('./lib/home/assets/images/slider/cover4.jpg');" data-bs-interval="5000">
             <div class="carousel-caption d-none d-md-block">
                 <h3 class="mb-0">Pharma Achievers</h3>
                 <p>2023</p>
             </div>
         </div>
-        <div class="carousel-item" style="background-image: url('./lib/home/assets/images/slider/slider_3.jpg');" data-bs-interval="5000">
+        <div class="carousel-item" style="background-image: url('./lib/home/assets/images/slider/cover2.jpg');" data-bs-interval="5000">
             <div class="carousel-caption d-none d-md-block">
                 <h3 class="mb-0">Pharma Achievers</h3>
                 <p>2023</p>
             </div>
         </div>
-        <div class="carousel-item" style="background-image: url('./lib/home/assets/images/slider/slider_2.jpg');" data-bs-interval="5000">
+        <div class="carousel-item" style="background-image: url('./lib/home/assets/images/slider/cover1.jpg');" data-bs-interval="5000">
             <div class="carousel-caption d-none d-md-block">
                 <h3 class="mb-0">Pharma Achievers</h3>
                 <p>2023</p>
             </div>
         </div>
-        <div class="carousel-item" style="background-image: url('./lib/home/assets/images/slider/slider_1.jpg');" data-bs-interval="5000">
+        <div class="carousel-item" style="background-image: url('./lib/home/assets/images/slider/cover3.jpg');" data-bs-interval="5000">
             <div class="carousel-caption d-none d-md-block">
                 <h3 class="mb-0">Pharma Achievers</h3>
                 <p>2023</p>

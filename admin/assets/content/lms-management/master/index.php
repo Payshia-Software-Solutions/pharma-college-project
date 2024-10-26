@@ -37,6 +37,16 @@ $studentCount = count($accountDetails);
     <div class="col-12">
         <h5 class="table-title">Control Center</h5>
     </div>
+    <div class="col-md-3 col-6 col-xxl-2">
+        <a href="./lms-account-center" rel="noopener noreferrer">
+            <div class="card clickable">
+                <div class="card-body text-center">
+                    <i class="fa-solid fa-users icon-card"></i>
+                    <h5 class="mb-0">Account Center</h5>
+                </div>
+            </div>
+        </a>
+    </div>
 
     <div class="col-md-3 col-6 col-xxl-2">
         <a href="#" rel="noopener noreferrer">
