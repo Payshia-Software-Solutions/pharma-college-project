@@ -10,6 +10,7 @@ $supportTicketController = new SupportTicketController($pdo);
 return [
     'GET /tickets/' => [$supportTicketController, 'getAllRecords'],
     'GET /tickets/{id}/' => [$supportTicketController, 'getRecordById'],
+    'GET /tickets/replies/{id}/' => [$supportTicketController, 'getTicketReplies'],
     'GET /tickets/username/{username}/' => [$supportTicketController, 'getRecordByUsername'],
     'GET /get-main-tickets/username/{username}/' => [$supportTicketController, 'getMainTicketsByUsername'],
     'POST /tickets/' => [$supportTicketController, 'createRecord'],
