@@ -1,7 +1,4 @@
 <?php
-
-?>
-<?php
 require_once '../../vendor/autoload.php';
 
 $senderId = $_POST['LoggedUser'];
@@ -19,7 +16,7 @@ $cache = new FilesystemAdapter(); // Using filesystem cache
 $cacheKey = 'recent_chats_' . $senderId;
 $recentChats = [];
 
-$response = $client->request('GET', $_ENV["SERVER_URL"] . '/tickets/username/' . $senderId);
+$response = $client->request('GET', $_ENV["SERVER_URL"] . '/get-main-tickets/username/' . $senderId);
 $recentChats = $response->toArray();
 ?>
 <!-- Main Page Title -->
@@ -30,14 +27,14 @@ $recentChats = $response->toArray();
 <div class="row g-2" style="margin-top: 80px;">
     <?php foreach ($recentChats as $ticketInfo) :
         $statusColors = [
-            'Closed' => 'success',
-            'Open' => 'warning',
+            'read' => 'success',
+            'unread' => 'warning',
         ];
-        $badgeColor = $statusColors[$ticketInfo['status']] ?? 'primary'; // Default to 'primary'
+        $badgeColor = $statusColors[$ticketInfo['read_status']] ?? 'primary'; // Default to 'primary'
     ?>
         <!-- Chat Item -->
         <div class="col-12">
-            <div class="card border-0 shadow rounded-3">
+            <div class="card border-0 shadow rounded-3 clickable chat-card" onclick="OpenTicket('<?= $ticketInfo['ticket_id'] ?>')">
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div class="left">
@@ -45,7 +42,7 @@ $recentChats = $response->toArray();
                             <p class="text-secondary mb-0">10mins Ago</p>
                         </div>
                         <div class="right">
-                            <div class="badge bg-<?= $badgeColor ?>"><?= $ticketInfo['status'] ?></div>
+                            <div class="badge bg-<?= $badgeColor ?>"><?= ucfirst($ticketInfo['read_status']) ?></div>
                         </div>
                     </div>
                 </div>

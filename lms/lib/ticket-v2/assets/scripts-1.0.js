@@ -83,3 +83,28 @@ function OpenNewChat() {
   }
   fetch_data();
 }
+
+function OpenTicket(ticketId) {
+  document.getElementById("pop-content").innerHTML = InnerLoader;
+
+  function fetch_data() {
+    showOverlay();
+    $.ajax({
+      url: "lib/ticket-v2/open-ticket.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        defaultCourseCode: defaultCourseCode,
+        company_id: company_id,
+        ticketId: ticketId,
+      },
+      success: function (data) {
+        $("#pop-content").html(data);
+        hideOverlay();
+        OpenPopup();
+      },
+    });
+  }
+  fetch_data();
+}

@@ -41,6 +41,18 @@ class SupportTicketController
         }
     }
 
+    // Get a single ticket record by ID
+    public function getMainTicketsByUsername($user_name)
+    {
+        $record = $this->model->getMainTicketsByUsername($user_name);
+        if ($record) {
+            echo json_encode($record);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Ticket not found']);
+        }
+    }
+
     // Create a new ticket record
     public function createRecord()
     {
