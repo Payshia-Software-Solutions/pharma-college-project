@@ -39,6 +39,12 @@ $password = "";
 $database = "pharmaco_pharmacollege";
 $database_error = "";
 
+// $server = '109.70.148.53';
+// $database   = 'pharmaco_pharmacollege';
+// $username = 'pharmaco_admin';
+// $password = 'pharmaadmin';
+$charset = 'utf8mb4';
+
 /* Attempt to connect to MySQL database */
 $lms_link = mysqli_connect($server, $username, $password, $database);
 

@@ -29,7 +29,7 @@ class SupportTicket
     // Fetch a single ticket by User
     public function getTicketByUsername($user_name)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM `support_ticket` WHERE `index_number` = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM `support_ticket` WHERE `index_number` = ? ORDER BY `ticket_id` DESC");
         $stmt->execute([$user_name]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -37,7 +37,7 @@ class SupportTicket
     // Fetch a single ticket by User
     public function getMainTicketsByUsername($user_name)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM `support_ticket` WHERE `index_number` = ? AND parent_id = 0");
+        $stmt = $this->pdo->prepare("SELECT * FROM `support_ticket` WHERE `index_number` = ? AND parent_id = 0 ORDER BY `ticket_id` DESC");
         $stmt->execute([$user_name]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
