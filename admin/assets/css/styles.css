@@ -429,9 +429,11 @@ input:read-only {
         margin-top: 15px;
         transform: translate(0%, 0%);
     }
+
     .profile-content {
         margin-top: 10px;
     }
+
     .class-card {
         transform: translate(0%, -5%);
     }
@@ -799,29 +801,36 @@ a {
     .login {
         padding: 0px;
     }
+
     .content-container {
         padding: 30px !important;
     }
+
     .login-container {
         border-radius: 0px;
         min-height: 100vh;
         width: 100%;
     }
+
     .side-bar-color {
         height: 50vh;
         border-radius: 0px;
     }
+
     .content-container h2 {
         font-size: 1.5rem;
         color: #34343a;
         font-weight: 700;
     }
+
     .side-bar-color .inner-content h2 {
         font-size: 1.5rem;
     }
+
     .sign-button {
         padding: 0px 30px;
     }
+
     .row.swapped .side-bar-color {
         border-radius: 0px !important;
     }
@@ -831,17 +840,21 @@ a {
     .content-container {
         padding: 50px !important;
     }
+
     .content-container h2 {
         font-size: 1.9rem;
         color: #34343a;
         font-weight: 700;
     }
+
     .side-bar-color .inner-content h2 {
         font-size: 1.8rem;
     }
+
     .sign-button {
         padding: 0px 30px;
     }
+
     .side-bar-color {
         padding: 10px !important;
     }
@@ -851,17 +864,21 @@ a {
     .content-container {
         padding: 80px !important;
     }
+
     .content-container h2 {
         font-size: 2.3rem;
         color: #34343a;
         font-weight: 700;
     }
+
     .side-bar-color .inner-content h2 {
         font-size: 2.3rem;
     }
+
     .sign-button {
         padding: 0px 30px;
     }
+
     .side-bar-color {
         padding: 10px !important;
     }
@@ -1009,6 +1026,7 @@ a {
         max-height: 100vh !important;
         max-width: 100% !important;
     }
+
     .loading-popup-content-right {
         width: 100% !important;
         height: 100% !important;
@@ -1025,9 +1043,11 @@ a {
         opacity: 0;
         transform: scale(0.7);
     }
+
     50% {
         transform: scale(1.1);
     }
+
     to {
         opacity: 1;
         transform: scale(1);
@@ -1040,10 +1060,12 @@ a {
         transform: translateX(100%) scale(1);
         /* Start from right outside the screen */
     }
+
     50% {
         transform: translateX(-5%) scale(1);
         /* Overshoot slightly to the left */
     }
+
     to {
         opacity: 1;
         transform: translateX(0) scale(1);
@@ -1099,4 +1121,13 @@ a {
 .paginate_button:focus {
     box-shadow: none !important;
     outline: none !important;
+}
+
+.ticket-body p {
+    margin-bottom: 0px;
+}
+
+.ticket-body img {
+    max-width: 80%;
+    height: auto;
 }

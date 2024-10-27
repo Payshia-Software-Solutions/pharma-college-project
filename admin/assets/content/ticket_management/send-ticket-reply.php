@@ -19,8 +19,7 @@ $ticketSubject = $ticketInfo['subject'];
 $ticketDepartment = $ticketInfo['department'];
 $relatedService = $ticketInfo['related_service'];
 $attachmentList = '';
-
-$toIndexNumber = 'Admin';
+$toIndexNumber = $ticketInfo['index_number'];
 $readStatus = 'unread';
 
 $saveResult = SaveTicket($replyId, $indexNumber, $ticketSubject, $ticketDepartment, $relatedService, $ticketText, $attachmentList, $isActive, $toIndexNumber, $readStatus, $parentId);

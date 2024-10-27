@@ -58,28 +58,57 @@ $ActiveStatus = 0;
 <div class="row mt-5">
     <div class="col-md-12">
         <div class="table-title font-weight-bold mb-4 mt-0">Tickets</div>
-        <div class="row">
-            <div class="col-12 mb-3 d-flex">
-                <div class="card flex-fill">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-4 offset-8">
-                                <label for="TicketAssignments">Filter By</label>
-                                <select onchange="GetMailBox(this.value)" class="form-control" name="TicketAssignments" id="TicketAssignments">
-                                    <option value="All">All Tickets</option>
-                                    <option value="MyTickets">Assign to Me</option>
-                                </select>
-                            </div>
-                        </div>
 
-                        <div class="table-responsive text-nowrap" id="ticketBox">
-
-                        </div>
-                    </div>
-                </div>
-
+        <div class="row g-2">
+            <div class="col-6">
+                <button class="btn btn-dark w-100 rounded-3" onclick="GetMailBox('Open')">
+                    <h1 class="mb-1 badge bg-white text-dark"><?= $ticketCount ?></h1>
+                    <h4 class="mb-0">Open</h4>
+                </button>
+            </div>
+            <div class="col-6">
+                <button class="btn btn-dark w-100 rounded-3" onclick="GetMailBox('MyTickets')">
+                    <h1 class="mb-1 badge bg-white text-dark">5</h1>
+                    <h4 class="mb-0">My Chats</h4>
+                </button>
             </div>
         </div>
-    </div>
+        <div class="row g-2 mt-2">
+            <div class="col-12">
+                <!-- Search Input Field -->
+                <div class="input-group mb-3">
+                    <input type="text" id="ticketSearch" class="form-control" placeholder="Search tickets" onkeyup="filterTickets()">
+                </div>
+            </div>
 
+        </div>
+        <div class="row mt-2">
+            <div class="col-12 mb-3">
+                <div id="ticketBox">
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
+
+<script>
+    function filterTickets() {
+        const searchInput = document.getElementById('ticketSearch').value.toLowerCase();
+        const tickets = document.querySelectorAll('.ticket-card');
+
+        tickets.forEach(ticket => {
+            const subject = ticket.getAttribute('data-subject');
+            const department = ticket.getAttribute('data-department');
+            const indexNumber = ticket.getAttribute('data-index');
+
+            if (subject.includes(searchInput) || department.includes(searchInput) || indexNumber.includes(searchInput)) {
+                ticket.style.display = 'flex';
+                ticket.classList.add('d-flex');
+            } else {
+                ticket.style.display = 'none';
+                ticket.classList.remove('d-flex');
+            }
+        });
+    }
+</script>

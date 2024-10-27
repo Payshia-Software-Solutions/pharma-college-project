@@ -22,7 +22,7 @@ $ticketId = $_POST['ticketId'];
     tinymce.remove()
     tinymce.init({
         selector: 'textarea#ticketReply',
-        height: 300,
+        height: 200,
         menubar: false,
         content_css: 'assets/css/custom_editor.css',
         plugins: 'fullscreen anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
