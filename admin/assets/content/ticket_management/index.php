@@ -12,6 +12,9 @@ $ticketList = GetTickets();
 $CourseBatches = getLmsBatches();
 $Locations = GetLocations($link);
 $accountDetails = GetAccounts($link);
+$ticketAssignments = GetTicketAssignmentsByUsername($LoggedUser);
+
+$openTickets = ticketsByStatus(1);
 
 $ticketCount = count($ticketList);
 $ActiveStatus = 0;
@@ -35,8 +38,8 @@ $ActiveStatus = 0;
                 <i class="fa-solid fa-check icon-card"></i>
             </div>
             <div class="card-body">
-                <p>Active</p>
-                <h1><?= $ticketCount ?></h1>
+                <p>Open</p>
+                <h1><?= count($openTickets) ?></h1>
             </div>
         </div>
     </div>
@@ -62,13 +65,13 @@ $ActiveStatus = 0;
         <div class="row g-2">
             <div class="col-6">
                 <button class="btn btn-dark w-100 rounded-3" onclick="GetMailBox('Open')">
-                    <h1 class="mb-1 badge bg-white text-dark"><?= $ticketCount ?></h1>
+                    <h1 class="mb-1 badge bg-white text-dark"><?= count($openTickets) ?></h1>
                     <h4 class="mb-0">Open</h4>
                 </button>
             </div>
             <div class="col-6">
                 <button class="btn btn-dark w-100 rounded-3" onclick="GetMailBox('MyTickets')">
-                    <h1 class="mb-1 badge bg-white text-dark">5</h1>
+                    <h1 class="mb-1 badge bg-white text-dark"><?= count($ticketAssignments) ?></h1>
                     <h4 class="mb-0">My Chats</h4>
                 </button>
             </div>

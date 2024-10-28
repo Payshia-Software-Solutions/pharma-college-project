@@ -37,8 +37,9 @@ $ActiveStatus = 0;
 
             if ($assignedUser == 'None' && $FilterKey == 'MyTickets') {
                 continue;
-            }
+            } else
 
+          
 
             if ($ticket['parent_id'] != 0) {
                 $ticketId = $ticket['parent_id'];
@@ -48,6 +49,13 @@ $ActiveStatus = 0;
             $stateCode = $ticket['is_active'];
             $stateArray = GetTicketStatus($stateCode);
             $ticketReplies = GetReplyByTicket($ticketId);
+
+            if ($FilterKey != "MyTickets") {
+                if ($stateCode == 1 && $FilterKey == "Open") {
+                } else {
+                    continue;
+                }
+            }
     ?>
             <div class="col-md-4 d-flex ticket-card" data-subject="<?= htmlspecialchars(strtolower($ticket['subject'])) ?>" data-department="<?= htmlspecialchars(strtolower($ticket['department'])) ?>" data-index="<?= htmlspecialchars(strtolower($ticket['index_number'])) ?>">
                 <div class="card flex-fill clickable" <?= ($stateCode == 1 || $assignedUser == $LoggedUser) ? "onclick=\"OpenTicket('$ticketId')\"" : '' ?>>

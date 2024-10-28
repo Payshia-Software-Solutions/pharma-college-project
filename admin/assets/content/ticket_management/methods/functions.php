@@ -156,6 +156,21 @@ function GetReplyByTicketASC($ticketId)
     return $ArrayResult;
 }
 
+function ticketsByStatus($stateCode)
+{
+    global $lms_link;
+
+    $ArrayResult = array();
+    $sql = "SELECT * FROM `support_ticket` WHERE `is_active` LIKE '$stateCode' ORDER BY `ticket_id` ASC";
+    $result = $lms_link->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ArrayResult[] = $row;
+        }
+    }
+    return $ArrayResult;
+}
+
 function UpdateTicketStatus($ticketId, $ticketStatus)
 {
     global $lms_pdo;
@@ -224,8 +239,16 @@ function UpdateTicketAssignment($ticketId, $assignUsername, $loggedUser)
 {
     global $lms_pdo;
     $current_time = date("Y-m-d H:i:s");
+    $ticketAssignmentArray = GetTicketAssignment($ticketId);
+
     try {
-        $stmt = $lms_pdo->prepare("INSERT INTO `ticket_assignment` (`user_name`, `ticket_id`, `created_by`, `created_at`) VALUES (:user_name, :ticket_id, :created_by, :created_at)");
+        if (count($ticketAssignmentArray) == 0) {
+            $stmt = $lms_pdo->prepare("INSERT INTO `ticket_assignment` (`user_name`, `ticket_id`, `created_by`, `created_at`) VALUES (:user_name, :ticket_id, :created_by, :created_at)");
+            $successText = "Created";
+        } else {
+            $stmt = $lms_pdo->prepare("UPDATE `ticket_assignment` SET `user_name` = :user_name, `ticket_id` = :ticket_id, `created_by` = :created_by, `created_at` = :created_at WHERE `ticket_id` = $ticketId");
+            $successText = "Updated";
+        }
 
         $stmt->bindParam(':user_name', $assignUsername);
         $stmt->bindParam(':ticket_id', $ticketId);
@@ -234,7 +257,7 @@ function UpdateTicketAssignment($ticketId, $assignUsername, $loggedUser)
 
         $stmt->execute();
 
-        return array('status' => 'success', 'message' => 'Ticket Assignment Updated successfully');
+        return array('status' => 'success', 'message' => 'Ticket Assignment ' . $successText . ' successfully');
     } catch (PDOException $e) {
         return array('status' => 'error', 'message' => 'Something went wrong: ' . $e->getMessage());
     }
@@ -247,6 +270,21 @@ function GetTicketAssignment($ticketId)
 
     $ArrayResult = array();
     $sql = "SELECT `id`, `user_name`, `ticket_id`, `created_by`, `created_at` FROM `ticket_assignment` WHERE `ticket_id` LIKE '$ticketId' ORDER BY `id` DESC";
+    $result = $lms_link->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ArrayResult[] = $row;
+        }
+    }
+    return $ArrayResult;
+}
+
+function GetTicketAssignmentsByUsername($assignUsername)
+{
+    global $lms_link;
+
+    $ArrayResult = array();
+    $sql = "SELECT `id`, `user_name`, `ticket_id`, `created_by`, `created_at` FROM `ticket_assignment` WHERE `user_name` LIKE '$assignUsername' ORDER BY `id` DESC";
     $result = $lms_link->query($sql);
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
