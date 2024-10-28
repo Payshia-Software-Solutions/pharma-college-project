@@ -50,16 +50,38 @@ class CareInstruction
         return $stmt->execute([$id]);
     }
 
-    public function getAllCareInstructionsWithPre()
+    public function getAllCorrectAndWrongInstructions($limit = 5)
     {
-    // Perform a JOIN to fetch only data from care_instruction_pre including created_at
-    $stmt = $this->pdo->query("
-        SELECT cip.id AS id, cip.instruction AS instruction, cip.created_by AS pre_created_by, cip.created_at AS pre_created_at
-        FROM care_instruction ci
-        LEFT JOIN care_instruction_pre cip
-        ON ci.content = cip.id
-    ");
+        // Fetch correct answers from care_instruction (which are linked to care_instruction_pre by content)
+        $stmtPre = $this->pdo->query("
+            SELECT cip.id AS id, cip.instruction AS instruction, cip.created_by AS pre_created_by, cip.created_at AS pre_created_at
+            FROM care_instruction ci
+            LEFT JOIN care_instruction_pre cip
+            ON ci.content = cip.id
+        ");
         
-        return $stmt->fetchAll();
+        $instructionsPre = $stmtPre->fetchAll();
+    
+        // Fetch 5 random wrong answers (those not listed in care_instruction)
+        $stmtWrong = $this->pdo->prepare("
+            SELECT cip.id AS id, cip.instruction AS instruction, cip.created_by AS pre_created_by, cip.created_at AS pre_created_at
+            FROM care_instruction_pre cip
+            WHERE cip.id NOT IN (
+                SELECT ci.content FROM care_instruction ci
+            )
+            ORDER BY RAND()
+            LIMIT :limit
+        ");
+        
+        $stmtWrong->bindValue(':limit', (int) $limit, PDO::PARAM_INT);
+        $stmtWrong->execute();
+        
+        $instructionsWrong = $stmtWrong->fetchAll();
+    
+        // Return the result combining both correct and wrong answers
+        return [
+            'instructionsPre' => $instructionsPre,
+            'instructionsWrong' => $instructionsWrong
+        ];
     }
 }

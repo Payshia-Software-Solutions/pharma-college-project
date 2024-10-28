@@ -44,6 +44,7 @@ $SubPage = false;
     <!-- Add Scripts -->
 
     <?php include './include/footer-scripts.php' ?>
+
 </body>
 
 </html>

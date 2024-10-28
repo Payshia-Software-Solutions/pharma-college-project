@@ -5,7 +5,7 @@ var company_id = document.getElementById('company_id').value
 var CourseCode = document.getElementById('defaultCourseCode').value
 var addedInstructions = [];
 
-$(document).ready(function() {
+$(document).ready(function () {
     OpenIndex()
 })
 
@@ -57,10 +57,35 @@ function OpenIndex() {
                 CourseCode: CourseCode,
                 company_id: company_id
             },
-            success: function(data) {
+            success: function (data) {
                 $('#root').html(data)
             }
         })
     }
+    fetch_data()
+}
+
+function openSlipUpload() {
+    OpenPopup()
+    document.getElementById('pop-content').innerHTML = InnerLoader
+
+    function fetch_data() {
+        showOverlay()
+        $.ajax({
+            url: 'lib/payment/views/slip-upload.php',
+            method: 'POST',
+            data: {
+                LoggedUser: LoggedUser,
+                UserLevel: UserLevel,
+                company_id: company_id,
+                CourseCode: CourseCode,
+            },
+            success: function (data) {
+                $('#pop-content').html(data)
+                hideOverlay()
+            }
+        })
+    }
+
     fetch_data()
 }

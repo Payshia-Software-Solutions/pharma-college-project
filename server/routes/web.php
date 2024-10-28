@@ -26,7 +26,6 @@ $eCertificateRoutes = require './routes/OtherRoutes/eCertificateRoutes.php';
 $courseAssignmentRoutes = require './routes/OtherRoutes/courseAssignmentRoutes.php';
 $courseAssignmentSubmissionRoutes = require './routes/OtherRoutes/courseAssignmentSubmissionRoutes.php';
 $reportRoutes = require './routes/OtherRoutes/reportRoutes.php';
-$courseRoutes = require './routes/OtherRoutes/courseRoutes.php';
 $studentCourseRoutes = require './routes/OtherRoutes/studentCourseRoutes.php';
 $userRoutes = require './routes/UserRoutes/userRoutes.php';
 $userFullDetailsRoutes = require './routes/UserRoutes/userFullDetailsRoutes.php';
@@ -57,52 +56,37 @@ $attachmentRoutes = require './routes/Chats/attachmentRoutes.php';
 $messageRoutes = require './routes/Chats/messageRoutes.php';
 $communityPostCategoryRoutes = require './routes/Community/communityPostCategoryRoutes.php';
 $communityPostRoutes = require './routes/Community/communityPostRoutes.php';
+$communityPostReplyRoutes = require './routes/Community/communityPostReplyRoutes.php';
+$communityPostReplyRatingsRoutes = require './routes/Community/communityPostReplyRatingsRoutes.php';
 $communityKnowledgebaseRoutes = require './routes/Community/communityKnowledgebaseRoutes.php';
+$paymentReasonRoutes = require './routes/Payment/paymentReasonRoutes.php';
+$paymentRequestRoutes = require './routes/Payment/paymentRequestRoutes.php';
+$courseRoutes = require './routes/Course/courseRoutes.php';
+$studentPaymentRoutes = require './routes/Student/studentPaymentRoutes.php';
 $supportTicketRoutes = require './routes/TicketRoutes/supportTicketRoutes.php';
 
 
+// if (!is_array($paymentRequestRoutes)) {
+//     throw new Exception("paymentRequestRoutes is not an array");
+// }
 
 // Combine all routes
-$routes = array_merge(
-    $userRoutes,
-    $assignmentRoutes,
-    $appointmentRoutes,
-    $eCertificateRoutes,
-    $courseAssignmentRoutes,
-    $courseAssignmentSubmissionRoutes,
-    $hpSaveAnswerRoutes,
-    $reportRoutes,
-    $courseRoutes,
-    $studentCourseRoutes,
-    $userFullDetailsRoutes,
-    $companyRoutes,
-    $hpCourseMedicineRoutes,
-    $hpMedicinesRoutes,
-    $hpCategoriesRoutes,
-    $hpDosageFormsRoutes,
-    $hpDrugTypesRoutes,
-    $hpRacksRoutes,
-    $appointmentCategoryRoutes,
-    $hunterSettingRoutes,
-    $hunterCategoryRoutes,
-    $hunterCourseRoutes,
-    $hunterDosageRoutes,
-    $hunterDrugGroupRoutes,
-    $hunterMedicineRoutes,
-    $hunterRacksRoutes,
-    $hunterSaveAnswerRoutes,
-    $hunterStoreRoutes,
-    $lectureRoutes,
-    $careInstructionRoutes,
-    $careInstructionPreRoutes,
-    $chatRoutes,
-    $attachmentRoutes,
-    $messageRoutes,
-    $communityPostCategoryRoutes,
-    $communityPostRoutes,
-    $communityKnowledgebaseRoutes,
-    $supportTicketRoutes
-);
+
+$routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes,
+                       $eCertificateRoutes, $courseAssignmentRoutes, $courseAssignmentSubmissionRoutes,
+                       $hpSaveAnswerRoutes, $reportRoutes, $courseRoutes, $studentCourseRoutes,
+                        $userFullDetailsRoutes, $companyRoutes, $hpCourseMedicineRoutes, 
+                        $hpMedicinesRoutes, $hpCategoriesRoutes, $hpDosageFormsRoutes, $hpDrugTypesRoutes,
+                        $hpRacksRoutes, $appointmentCategoryRoutes, $hunterSettingRoutes,
+                        $hunterCategoryRoutes, $hunterCourseRoutes, $hunterDosageRoutes, 
+                        $hunterDrugGroupRoutes, $hunterMedicineRoutes, $hunterRacksRoutes,
+                        $hunterSaveAnswerRoutes, $hunterStoreRoutes, $lectureRoutes,
+                         $careInstructionRoutes, $careInstructionPreRoutes, $chatRoutes,
+                         $attachmentRoutes, $messageRoutes, $communityPostCategoryRoutes,
+                         $communityPostRoutes, $communityKnowledgebaseRoutes, $communityPostReplyRoutes,
+                         $communityPostReplyRatingsRoutes, $paymentReasonRoutes, $paymentRequestRoutes,
+                         $courseRoutes, $studentPaymentRoutes, $supportTicketRoutes);
+
 
 
 // Define the home route with trailing slash
@@ -144,13 +128,19 @@ error_log("URI: $uri");
 foreach ($routes as $route => $handler) {
     list($routeMethod, $routeUri) = explode(' ', $route, 2);
 
-    // Convert route URI to regex
-    $routeRegex = str_replace(
-        ['{id}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{ticket_id}'],
-        ['(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)',  '(\d+)'],
-        $routeUri
-    );
-    $routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
+
+// Convert route URI to regex
+$routeRegex = str_replace(
+    ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}'],
+    ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)'],
+    $routeUri
+);
+
+
+
+
+$routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
+
 
     error_log("Checking route: $routeRegex");
 

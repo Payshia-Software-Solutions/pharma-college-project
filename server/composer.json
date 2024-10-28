@@ -1,5 +1,6 @@
 {
     "require": {
-        "chillerlan/php-qrcode": "^5.0"
+        "chillerlan/php-qrcode": "^5.0",
+        "nesbot/carbon": "^3.8"
     }
 }

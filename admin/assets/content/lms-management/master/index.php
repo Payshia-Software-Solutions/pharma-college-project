@@ -12,6 +12,12 @@ $CourseBatches = getLmsBatches();
 $studentCount = count($accountDetails);
 ?>
 
+<style>
+.card {
+    min-height: 112px;
+}
+</style>
+
 <div class="row mt-5">
 
     <div class="col-md-3">
@@ -58,7 +64,7 @@ $studentCount = count($accountDetails);
             </div>
         </a>
     </div>
-    <div class="col-md-3 col-6 col-xxl-2">
+    <div class="col-md-3 col-6 col-xxl-2 flex">
         <a href="./lms-winpharma-grading" rel="noopener noreferrer">
             <div class="card clickable">
                 <div class="card-body text-center">
@@ -97,6 +103,28 @@ $studentCount = count($accountDetails);
 
                     <i class="fa-solid fa-calendar-check icon-card"></i>
                     <h5 class="mb-0">Setup Appointments</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3 col-6 col-xxl-2">
+        <a href="./lms-olie" rel="noopener noreferrer">
+            <div class="card clickable">
+                <div class="card-body text-center">
+
+                    <i class="fa-solid fa-robot icon-card"></i>
+                    <h5 class="mb-0">Olie</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3 col-6 col-xxl-2">
+        <a href="./lms-payments" rel="noopener noreferrer">
+            <div class="card clickable">
+                <div class="card-body text-center">
+
+                    <i class="fa-solid fa-wallet icon-card"></i>
+                    <h5 class="mb-0">Payments</h5>
                 </div>
             </div>
         </a>

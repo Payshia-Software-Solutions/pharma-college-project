@@ -53,19 +53,48 @@ class CareInstructionPreController
             // Admin role: get all care_instruction_pre
             $instructions = $this->model->getAllCareInstructions();
         } elseif ($role === 'Student') {
-            // Student role: get all care_instruction_pre and 5 random care_instruction
-            $instructionsPre = $this->model->getAllCareInstructions();
-            $instructionsCare = $this->CareInstructionModel->getAllCareInstructionsWithPre(5);
-
+            // Student role: get all correct answers and 5 wrong answers
+            $result = $this->CareInstructionModel->getAllCorrectAndWrongInstructions(5);
+    
+            $instructionsPre = $result['instructionsPre']; // Correct answers from care_instruction
+            $instructionsWrong = $result['instructionsWrong']; // 5 wrong answers
+    
             // Combine and shuffle
-            $instructions = array_merge($instructionsPre, $instructionsCare);
+            $instructions = array_merge($instructionsPre, $instructionsWrong);
             shuffle($instructions);
+    
+            // Remove duplicates by 'id'
+            $instructions = $this->removeDuplicateInstructionsById($instructions);
         } else {
             // Invalid role
             echo json_encode(['error' => 'Invalid role']);
             return;
         }
-
+    
         echo json_encode($instructions);
+    }
+
+    public function getCorrectInstructions()
+    {
+        $result = $this->CareInstructionModel->getAllCorrectAndWrongInstructions(5);
+        $instructionsPre = $result['instructionsPre']; // Correct answers from care_instruction
+        $uniqueInstructions = $this->removeDuplicateInstructionsById($instructionsPre);
+
+        echo json_encode($uniqueInstructions);
+    } 
+    
+    private function removeDuplicateInstructionsById($instructions)
+    {
+        $uniqueInstructions = [];
+        $ids = [];
+    
+        foreach ($instructions as $instruction) {
+            if (!in_array($instruction['id'], $ids)) {
+                $uniqueInstructions[] = $instruction;
+                $ids[] = $instruction['id']; // Store 'id' to avoid duplicates
+            }
+        }
+    
+        return $uniqueInstructions;
     }
 }

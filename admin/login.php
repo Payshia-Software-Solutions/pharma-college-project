@@ -109,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Add CSS -->
-    <link rel="stylesheet" href="./vendor/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="./vendor/twbs/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="./assets/css/styles.css" />
 
     <!-- Add Icons -->
@@ -141,32 +141,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="col-12">
                                 <div class="input-container">
                                     <i class="fas fa-envelope icon"></i>
-                                    <input type="text" class="form-control icon-input input-field" name="username" id="username" placeholder="Email Address or User Name (Eg- OS02)">
+                                    <input type="text" class="form-control icon-input input-field" name="username"
+                                        id="username" placeholder="Email Address or User Name (Eg- OS02)">
                                 </div>
                             </div>
                             <div class="col-12 mt-3">
                                 <div class="input-container">
                                     <i class="fas fa-key icon"></i>
-                                    <input class="form-control icon-input input-field" type="password" id="password" name="password" placeholder="Password">
+                                    <input class="form-control icon-input input-field" type="password" id="password"
+                                        name="password" placeholder="Password">
                                 </div>
                             </div>
                         </div>
 
                         <div id="script-result" class="">
                             <?php if ($username_err != "") { ?>
-                                <div class="alert alert-warning mt-3">
-                                    <span style="color: #3c763d;"><?php echo $username_err; ?></span>
-                                </div>
+                            <div class="alert alert-warning mt-3">
+                                <span style="color: #3c763d;"><?php echo $username_err; ?></span>
+                            </div>
                             <?php } ?>
                             <?php if ($password_err != "") { ?>
-                                <div class="alert alert-warning mt-3">
-                                    <span style="color: #3c763d;"><?php echo $password_err; ?></span>
-                                </div>
+                            <div class="alert alert-warning mt-3">
+                                <span style="color: #3c763d;"><?php echo $password_err; ?></span>
+                            </div>
                             <?php } ?>
                             <?php if ($error != "") { ?>
-                                <div class="alert alert-warning mt-3">
-                                    <span style="color: #3c763d;"><?php echo $error; ?></span>
-                                </div>
+                            <div class="alert alert-warning mt-3">
+                                <span style="color: #3c763d;"><?php echo $error; ?></span>
+                            </div>
                             <?php } ?>
 
                         </div>
@@ -192,65 +194,65 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     </div>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const signUpBtn = document.querySelector('#signup-button'); // Select the SIGN UP button
-            const signInBtn = document.querySelector('#signin-button'); // Select the SIGN UP button
-            const row = document.querySelector('.row'); // Select the .row element
+    document.addEventListener('DOMContentLoaded', function() {
+        const signUpBtn = document.querySelector('#signup-button'); // Select the SIGN UP button
+        const signInBtn = document.querySelector('#signin-button'); // Select the SIGN UP button
+        const row = document.querySelector('.row'); // Select the .row element
 
-            signInBtn.addEventListener('click', function() {
-                // Toggle the columns' classes to trigger the animation
-                row.classList.toggle('swapped');
+        signInBtn.addEventListener('click', function() {
+            // Toggle the columns' classes to trigger the animation
+            row.classList.toggle('swapped');
 
-                // Toggle the d-none and d-block classes on the forms
-                const signupForm = document.querySelector('.signup-form');
-                const signinForm = document.querySelector('.signin-form');
-
-
-                const signupContent = document.querySelector('.signup-content');
-                const signinContent = document.querySelector('.signin-content');
-
-                signupForm.classList.toggle('d-block');
-                signupForm.classList.toggle('d-none');
-                signinForm.classList.toggle('d-block');
-                signinForm.classList.toggle('d-none');
-
-                signupContent.classList.toggle('d-block');
-                signupContent.classList.toggle('d-none');
-                signinContent.classList.toggle('d-block');
-                signinContent.classList.toggle('d-none');
-            });
-
-            signUpBtn.addEventListener('click', function() {
-                // Toggle the columns' classes to trigger the animation
-                row.classList.toggle('swapped');
-
-                // Toggle the d-none and d-block classes on the forms
-                const signupForm = document.querySelector('.signup-form');
-                const signinForm = document.querySelector('.signin-form');
+            // Toggle the d-none and d-block classes on the forms
+            const signupForm = document.querySelector('.signup-form');
+            const signinForm = document.querySelector('.signin-form');
 
 
-                const signupContent = document.querySelector('.signup-content');
-                const signinContent = document.querySelector('.signin-content');
+            const signupContent = document.querySelector('.signup-content');
+            const signinContent = document.querySelector('.signin-content');
 
-                signupForm.classList.toggle('d-block');
-                signupForm.classList.toggle('d-none');
-                signinForm.classList.toggle('d-block');
-                signinForm.classList.toggle('d-none');
+            signupForm.classList.toggle('d-block');
+            signupForm.classList.toggle('d-none');
+            signinForm.classList.toggle('d-block');
+            signinForm.classList.toggle('d-none');
 
-                signupContent.classList.toggle('d-block');
-                signupContent.classList.toggle('d-none');
-                signinContent.classList.toggle('d-block');
-                signinContent.classList.toggle('d-none');
-            });
+            signupContent.classList.toggle('d-block');
+            signupContent.classList.toggle('d-none');
+            signinContent.classList.toggle('d-block');
+            signinContent.classList.toggle('d-none');
         });
+
+        signUpBtn.addEventListener('click', function() {
+            // Toggle the columns' classes to trigger the animation
+            row.classList.toggle('swapped');
+
+            // Toggle the d-none and d-block classes on the forms
+            const signupForm = document.querySelector('.signup-form');
+            const signinForm = document.querySelector('.signin-form');
+
+
+            const signupContent = document.querySelector('.signup-content');
+            const signinContent = document.querySelector('.signin-content');
+
+            signupForm.classList.toggle('d-block');
+            signupForm.classList.toggle('d-none');
+            signinForm.classList.toggle('d-block');
+            signinForm.classList.toggle('d-none');
+
+            signupContent.classList.toggle('d-block');
+            signupContent.classList.toggle('d-none');
+            signinContent.classList.toggle('d-block');
+            signinContent.classList.toggle('d-none');
+        });
+    });
     </script>
 
     <script>
-        gapi.load('auth2', function() {
-            gapi.auth2.init({
-                client_id: '307650998045-68dm3671rt8em8h2f57ru0tnq7u4ed0v.apps.googleusercontent.com'
-            });
+    gapi.load('auth2', function() {
+        gapi.auth2.init({
+            client_id: '307650998045-68dm3671rt8em8h2f57ru0tnq7u4ed0v.apps.googleusercontent.com'
         });
+    });
     </script>
 
 </body>
