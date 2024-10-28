@@ -17,8 +17,12 @@ $paymentData = $_POST;
 $image = $_FILES['image'];
 $timeDate = date("Y-m-d H:i:s");
 
-// Make sure the image is uploaded correctly
+// Check if image is uploaded
 if ($image['error'] === UPLOAD_ERR_OK) {
+    // Get original file name and extension
+    $originalFileName = basename($image['name']);
+    $fileExtension = pathinfo($originalFileName, PATHINFO_EXTENSION);
+    
     // Make the POST request to send the payment data along with the image
     $response = $client->request('POST', $_ENV["SERVER_URL"] . '/payment-request/', [
         'headers' => [
@@ -31,7 +35,10 @@ if ($image['error'] === UPLOAD_ERR_OK) {
             'reason' => $paymentData['reason'],               // Send reason
             'extra_note' => $paymentData['extra_note'],      // Send extra_note
             'reference_number' => $paymentData['reference_number'], // Send reference_number
-            'image' => fopen($image['tmp_name'], 'r'),  // Directly stream the file resource
+            
+            // Include the original file name and the image file itself
+            'original_filename' => $originalFileName,       
+            'image' => fopen($image['tmp_name'], 'r'), 
         ]
     ]);
 } else {
@@ -46,5 +53,3 @@ if ($statusCode == 201) {
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Payment submission failed.']);
 }
-
-?>
