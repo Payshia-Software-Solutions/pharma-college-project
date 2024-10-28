@@ -1,5 +1,5 @@
 <?php
-require_once './models/community/CommunityPostReplyRatings.php';
+require_once './models/Community/CommunityPostReplyRatings.php';
 
 class CommunityPostReplyRatingsController
 {
@@ -50,27 +50,27 @@ class CommunityPostReplyRatingsController
     }
 
     public function updateRecord($reply_id)
-{
-    // Get the input data from the request body
-    $data = json_decode(file_get_contents("php://input"), true);
+    {
+        // Get the input data from the request body
+        $data = json_decode(file_get_contents("php://input"), true);
 
-    // Ensure 'created_at' and 'ratings' are provided
-    if (!isset($data['created_at']) || !isset($data['ratings'])) {
-        http_response_code(400);
-        echo json_encode(['error' => "Both 'created_at' and 'ratings' are required."]);
-        return;
-    }
+        // Ensure 'created_at' and 'ratings' are provided
+        if (!isset($data['created_at']) || !isset($data['ratings'])) {
+            http_response_code(400);
+            echo json_encode(['error' => "Both 'created_at' and 'ratings' are required."]);
+            return;
+        }
 
-    try {
-        // Call the update method from the model
-        $this->model->updateRecord($reply_id, $data);
-        http_response_code(200);
-        echo json_encode(['message' => 'Record updated successfully']);
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode(['error' => $e->getMessage()]);
+        try {
+            // Call the update method from the model
+            $this->model->updateRecord($reply_id, $data);
+            http_response_code(200);
+            echo json_encode(['message' => 'Record updated successfully']);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
     }
-}
 
 
     public function deleteRecord($reply_id)

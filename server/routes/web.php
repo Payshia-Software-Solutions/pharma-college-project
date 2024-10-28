@@ -72,20 +72,52 @@ $supportTicketRoutes = require './routes/TicketRoutes/supportTicketRoutes.php';
 
 // Combine all routes
 
-$routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes,
-                       $eCertificateRoutes, $courseAssignmentRoutes, $courseAssignmentSubmissionRoutes,
-                       $hpSaveAnswerRoutes, $reportRoutes, $courseRoutes, $studentCourseRoutes,
-                        $userFullDetailsRoutes, $companyRoutes, $hpCourseMedicineRoutes, 
-                        $hpMedicinesRoutes, $hpCategoriesRoutes, $hpDosageFormsRoutes, $hpDrugTypesRoutes,
-                        $hpRacksRoutes, $appointmentCategoryRoutes, $hunterSettingRoutes,
-                        $hunterCategoryRoutes, $hunterCourseRoutes, $hunterDosageRoutes, 
-                        $hunterDrugGroupRoutes, $hunterMedicineRoutes, $hunterRacksRoutes,
-                        $hunterSaveAnswerRoutes, $hunterStoreRoutes, $lectureRoutes,
-                         $careInstructionRoutes, $careInstructionPreRoutes, $chatRoutes,
-                         $attachmentRoutes, $messageRoutes, $communityPostCategoryRoutes,
-                         $communityPostRoutes, $communityKnowledgebaseRoutes, $communityPostReplyRoutes,
-                         $communityPostReplyRatingsRoutes, $paymentReasonRoutes, $paymentRequestRoutes,
-                         $courseRoutes, $studentPaymentRoutes, $supportTicketRoutes);
+$routes = array_merge(
+    $userRoutes,
+    $assignmentRoutes,
+    $appointmentRoutes,
+    $eCertificateRoutes,
+    $courseAssignmentRoutes,
+    $courseAssignmentSubmissionRoutes,
+    $hpSaveAnswerRoutes,
+    $reportRoutes,
+    $courseRoutes,
+    $studentCourseRoutes,
+    $userFullDetailsRoutes,
+    $companyRoutes,
+    $hpCourseMedicineRoutes,
+    $hpMedicinesRoutes,
+    $hpCategoriesRoutes,
+    $hpDosageFormsRoutes,
+    $hpDrugTypesRoutes,
+    $hpRacksRoutes,
+    $appointmentCategoryRoutes,
+    $hunterSettingRoutes,
+    $hunterCategoryRoutes,
+    $hunterCourseRoutes,
+    $hunterDosageRoutes,
+    $hunterDrugGroupRoutes,
+    $hunterMedicineRoutes,
+    $hunterRacksRoutes,
+    $hunterSaveAnswerRoutes,
+    $hunterStoreRoutes,
+    $lectureRoutes,
+    $careInstructionRoutes,
+    $careInstructionPreRoutes,
+    $chatRoutes,
+    $attachmentRoutes,
+    $messageRoutes,
+    $communityPostCategoryRoutes,
+    $communityPostRoutes,
+    $communityKnowledgebaseRoutes,
+    $communityPostReplyRoutes,
+    $communityPostReplyRatingsRoutes,
+    $paymentReasonRoutes,
+    $paymentRequestRoutes,
+    $courseRoutes,
+    $studentPaymentRoutes,
+    $supportTicketRoutes
+);
 
 
 
@@ -129,17 +161,17 @@ foreach ($routes as $route => $handler) {
     list($routeMethod, $routeUri) = explode(' ', $route, 2);
 
 
-// Convert route URI to regex
-$routeRegex = str_replace(
-    ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}'],
-    ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)'],
-    $routeUri
-);
+    // Convert route URI to regex
+    $routeRegex = str_replace(
+        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}'],
+        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)'],
+        $routeUri
+    );
 
 
 
 
-$routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
+    $routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
 
 
     error_log("Checking route: $routeRegex");
