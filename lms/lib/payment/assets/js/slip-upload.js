@@ -2,6 +2,9 @@ function submitSlip() {
     var form = document.getElementById("slipPaymentForm");
 
     if (form.checkValidity()) {
+        OpenPopup()
+        document.getElementById('pop-content').innerHTML = InnerLoader
+
         var formData = new FormData(form);
 
         formData.append("LoggedUser", LoggedUser);
@@ -18,11 +21,11 @@ function submitSlip() {
                 if (response.status === "success") {
                     var result = response.message;
                     showNotification(result, "success", "Done!");
-                    ClosePopUP();
-                    OpenIndex();
+                    ClosePopUP()
                 } else {
                     var result = response.message;
                     showNotification(result, "error", "Done!");
+                    ClosePopUP()
                 }
             }
         });

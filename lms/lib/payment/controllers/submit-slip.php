@@ -31,7 +31,7 @@ if ($image['error'] === UPLOAD_ERR_OK) {
             'reason' => $paymentData['reason'],               // Send reason
             'extra_note' => $paymentData['extra_note'],      // Send extra_note
             'reference_number' => $paymentData['reference_number'], // Send reference_number
-            'image' => fopen($image['tmp_name'], 'r'), // Directly stream the file resource
+            'image' => fopen($image['tmp_name'], 'r'),  // Directly stream the file resource
         ]
     ]);
 } else {

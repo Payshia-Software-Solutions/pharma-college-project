@@ -4,45 +4,89 @@ require_once './models/payment/PaymentRequest.php';
 class PaymentRequestController
 {
     private $model;
+    private $ftpConfig;
 
     public function __construct($pdo)
     {
         $this->model = new PaymentRequest($pdo);
+        $this->ftpConfig = include('./config/ftp.php');
     }
 
-    public function getAllRecords()
+    // Function to upload file via FTP with original filename
+    private function uploadFileToFtp($localFilePath, $originalFileName, $userName)
     {
-        $records = $this->model->getAllRecords();
-        echo json_encode($records);
-    }
+        $ftp_target_dir = '/content-provider/payments/payment-slips/' . $userName . '/';
 
-    public function getRecordById($id)
-    {
-        $record = $this->model->getRecordById($id);
-        if ($record) {
-            echo json_encode($record);
-        } else {
-            http_response_code(404);
-            echo json_encode(['error' => 'Record not found']);
+        // Connect to FTP server
+        $ftpCon = ftp_connect($this->ftpConfig['ftp_server'], $this->ftpConfig['ftp_port']);
+        if (!$ftpCon) {
+            throw new Exception("Failed to connect to FTP Server");
         }
+
+        // Login to FTP server
+        $login = ftp_login($ftpCon, $this->ftpConfig['ftp_username'], $this->ftpConfig['ftp_password']);
+        if (!$login) {
+            ftp_close($ftpCon);
+            throw new Exception("Failed to login to FTP Server");
+        }
+
+        // Set passive mode if needed
+        ftp_pasv($ftpCon, true);
+
+        // Recursively create directories if they don't exist
+        $pathParts = explode('/', trim($ftp_target_dir, '/'));
+        $currentDir = '';
+        foreach ($pathParts as $part) {
+            $currentDir .= '/' . $part;
+            if (!@ftp_chdir($ftpCon, $currentDir)) {
+                if (!ftp_mkdir($ftpCon, $currentDir)) {
+                    ftp_close($ftpCon);
+                    throw new Exception("Failed to create directory: $currentDir");
+                }
+            }
+        }
+
+        // Explicitly set a unique local path to rename the file temporarily
+        $tempLocalPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid() . '-' . $originalFileName;
+        if (!move_uploaded_file($localFilePath, $tempLocalPath)) {
+            throw new Exception("Failed to move uploaded file to temporary location.");
+        }
+
+        // Upload the file with the original filename
+        $remoteFilePath = $ftp_target_dir . $originalFileName;
+        if (!ftp_put($ftpCon, $remoteFilePath, $tempLocalPath, FTP_BINARY)) {
+            ftp_close($ftpCon);
+            throw new Exception("Failed to upload file to FTP Server");
+        }
+
+        // Remove the temporary file
+        unlink($tempLocalPath);
+
+        // Close FTP connection
+        ftp_close($ftpCon);
+
+        return $remoteFilePath;
     }
 
     public function createRecord()
     {
-           // Collect POST data
-          $data = $_POST;
-          $files = $_FILES;
+        // Collect POST data
+        $data = $_POST;
 
-         // Log received data for debugging
-        error_log("POST Data: " . print_r($data, true));
-        error_log("Files: " . print_r($files, true));
-                  
         // Handle file upload
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $imagePath = './uploads/images/Payments/' . basename($_FILES['image']['name']);
-            if (!move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {
+            // $localFilePath = $_FILES['image']['tmp_name'];
+            error_log(json_encode($_FILES));
+            $originalFileName = basename($_FILES['image']['name']); // Original name with extension
+            return;
+            
+
+            try {
+                // Upload to FTP server using the original file name (with extension)
+                $imagePath = $this->uploadFileToFtp($localFilePath, $originalFileName, $data['created_by']);
+            } catch (Exception $e) {
                 http_response_code(500);
-                echo json_encode(['error' => 'Failed to upload image']);
+                echo json_encode(['error' => $e->getMessage()]);
                 return;
             }
         } else {
@@ -50,50 +94,38 @@ class PaymentRequestController
             echo json_encode(['error' => 'Image is required']);
             return;
         }
-    
+
         // Pass data and image path to the model
         $this->model->createRecord($data, $imagePath);
         http_response_code(201);
         echo json_encode(['message' => 'Record created successfully']);
     }
-    
 
+    public function updateRecord($id)
+    {
+        $data = $_POST;
+        $imagePath = null;
 
-public function updateRecord($id)
-{
-    $data = $_POST;
+        // Handle file upload
+        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+            $localFilePath = $_FILES['image']['tmp_name'];
+            $originalFileName = $_FILES['image']['name']; // Original name with extension
 
-    // Check if 'created_by' is present and valid
-    if (!isset($data['created_by']) || empty($data['created_by'])) {
-        http_response_code(400);
-        echo json_encode(['error' => 'The created_by field is required.']);
-        return;
-    }
-
-    // Check if 'created_at' is present in the form data
-    if (!isset($data['created_at']) || empty($data['created_at'])) {
-        http_response_code(400);
-        echo json_encode(['error' => 'The created_at field is required.']);
-        return;
-    }
-
-    $imagePath = null;
-    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $imagePath = './uploads/images/Payments/' . basename($_FILES['image']['name']);
-        if (!move_uploaded_file($_FILES['image']['tmp_name'], $imagePath)) {
-            http_response_code(500);
-            echo json_encode(['error' => 'Failed to upload image']);
-            return;
+            try {
+                // Upload to FTP server using the original file name (with extension)
+                $imagePath = $this->uploadFileToFtp($localFilePath, $originalFileName, $data['created_by']);
+            } catch (Exception $e) {
+                http_response_code(500);
+                echo json_encode(['error' => $e->getMessage()]);
+                return;
+            }
         }
+
+        // Pass the data and image path to the model for updating
+        $this->model->updateRecord($id, $data, $imagePath);
+        http_response_code(200);
+        echo json_encode(['message' => 'Record updated successfully']);
     }
-
-    // Pass the data and image path to the model for updating
-    $this->model->updateRecord($id, $data, $imagePath);
-    http_response_code(200);
-    echo json_encode(['message' => 'Record updated successfully']);
-}
-
-
 
     public function deleteRecord($id)
     {
@@ -101,35 +133,33 @@ public function updateRecord($id)
         echo json_encode(['message' => 'Record deleted successfully']);
     }
 
-    function getRecordByUserName($created_by)
+    public function getRecordByUserName($created_by)
     {
         $records = $this->model->getRecordByUserName($created_by);
         echo json_encode($records);
     }
 
     public function getStatistics()
-{
-    // Fetch the statistics from the model
-    $records = $this->model->getStatistics();
+    {
+        // Fetch the statistics from the model
+        $records = $this->model->getStatistics();
 
-    // Set the appropriate content type for JSON
-    header('Content-Type: application/json');
+        // Set the appropriate content type for JSON
+        header('Content-Type: application/json');
 
-    // Send the JSON response
-    echo json_encode($records);
-}
+        // Send the JSON response
+        echo json_encode($records);
+    }
 
-public function getByCourseCode($courseCode)
-{
-    $records = $this->model->getByCourseCode($courseCode);
-    echo json_encode($records);
-}
+    public function getByCourseCode($courseCode)
+    {
+        $records = $this->model->getByCourseCode($courseCode);
+        echo json_encode($records);
+    }
 
-public function getStatisticsByCourse($courseCode)
-{
-    $records = $this->model->getStatisticsByCourseCode($courseCode);
-    echo json_encode($records);
-}
-
-
+    public function getStatisticsByCourse($courseCode)
+    {
+        $records = $this->model->getStatisticsByCourseCode($courseCode);
+        echo json_encode($records);
+    }
 }
