@@ -63,12 +63,15 @@ $paymentReasonRoutes = require './routes/Payment/paymentReasonRoutes.php';
 $paymentRequestRoutes = require './routes/Payment/paymentRequestRoutes.php';
 $courseRoutes = require './routes/Course/courseRoutes.php';
 $studentPaymentRoutes = require './routes/Student/studentPaymentRoutes.php';
+$supportTicketRoutes = require './routes/TicketRoutes/supportTicketRoutes.php';
+
 
 // if (!is_array($paymentRequestRoutes)) {
 //     throw new Exception("paymentRequestRoutes is not an array");
 // }
 
 // Combine all routes
+
 $routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes,
                        $eCertificateRoutes, $courseAssignmentRoutes, $courseAssignmentSubmissionRoutes,
                        $hpSaveAnswerRoutes, $reportRoutes, $courseRoutes, $studentCourseRoutes,
@@ -82,7 +85,8 @@ $routes = array_merge($userRoutes, $assignmentRoutes, $appointmentRoutes,
                          $attachmentRoutes, $messageRoutes, $communityPostCategoryRoutes,
                          $communityPostRoutes, $communityKnowledgebaseRoutes, $communityPostReplyRoutes,
                          $communityPostReplyRatingsRoutes, $paymentReasonRoutes, $paymentRequestRoutes,
-                         $courseRoutes, $studentPaymentRoutes);
+                         $courseRoutes, $studentPaymentRoutes, $supportTicketRoutes);
+
 
 
 // Define the home route with trailing slash
@@ -124,6 +128,7 @@ error_log("URI: $uri");
 foreach ($routes as $route => $handler) {
     list($routeMethod, $routeUri) = explode(' ', $route, 2);
 
+
 // Convert route URI to regex
 $routeRegex = str_replace(
     ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}'],
@@ -135,6 +140,7 @@ $routeRegex = str_replace(
 
 
 $routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
+
 
     error_log("Checking route: $routeRegex");
 

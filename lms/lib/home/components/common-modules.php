@@ -108,7 +108,7 @@
 
 
     <div class="col-6 col-md-4 mb-2 d-flex">
-        <div class="card game-card shadow flex-fill" onclick="redirectToURL('ticket')">
+        <div class="card game-card shadow flex-fill" onclick="redirectToURL('student-ticket')">
             <div class="card-body text-center">
                 <div class="row">
                     <div class="col-12">

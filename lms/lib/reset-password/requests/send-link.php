@@ -23,7 +23,7 @@ if ($studentPhone == $phoneNumber) {
     $otp =  generateOTP();
 
     // Create Reset URL
-    $url = "https://web.pharmacollege.lk/reset-password-return?token=$token&phoneNumber=$studentPhone&studentNumber=$studentNumber";
+    $url = "https://lms.pharmacollege.lk/reset-password-return?token=$token&phoneNumber=$studentPhone&studentNumber=$studentNumber";
 
     $messageText = 'Dear ' . $studentNumber . ',
     

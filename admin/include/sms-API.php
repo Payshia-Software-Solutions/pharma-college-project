@@ -4,7 +4,7 @@ function SentSMS($mobile, $senderId = 'Pharma C.', $message = "Waiting..!")
     $MSISDN = $mobile;
     $SRC = $senderId;
     $MESSAGE = (urldecode($message));
-    $AUTH = "172|ArgYLDuxabueuIWBcItBUkrwp2ZrNov5I3ujWKLY";  //Replace your Access Token
+    $AUTH = "2218|Ysh7ZLYM83rxJc4Reztir1OYD31UppbEmewtbK9p";  //Replace your Access Token
 
     $msgdata = array("recipient" => $MSISDN, "sender_id" => $SRC, "message" => $MESSAGE);
 
@@ -43,5 +43,5 @@ function SentSMS($mobile, $senderId = 'Pharma C.', $message = "Waiting..!")
         }
     }
 
-    return json_encode($error);
+    return $responseArray;
 }
