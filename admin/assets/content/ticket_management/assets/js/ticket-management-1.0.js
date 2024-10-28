@@ -31,7 +31,7 @@ function OpenIndex(studentBatch = 0) {
   fetch_data();
 }
 
-function GetMailBox(FilterKey = "All", studentBatch = 0) {
+function GetMailBox(FilterKey = "Open", studentBatch = 0) {
   function fetch_data() {
     $("#ticketBox").html(InnerLoader);
     $.ajax({
