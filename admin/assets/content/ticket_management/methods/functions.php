@@ -187,6 +187,9 @@ function GetTicketStatus($stateCode)
     } else if ($stateCode == 3) {
         $stateValue = 'Deleted';
         $bgColor = 'danger';
+    } else if ($stateCode == 4) {
+        $stateValue = 'Assigned';
+        $bgColor = 'success';
     }
 
     $resultArray = array(
