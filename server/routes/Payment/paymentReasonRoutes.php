@@ -1,5 +1,5 @@
 <?php
-require_once './controllers/payment/PaymentReasonController.php';
+require_once './controllers/Payment/PaymentReasonController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];
