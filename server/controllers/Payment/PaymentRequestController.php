@@ -1,5 +1,5 @@
 <?php
-require_once './models/payment/PaymentRequest.php';
+require_once './models/Payment/PaymentRequest.php';
 
 class PaymentRequestController
 {
@@ -79,7 +79,7 @@ class PaymentRequestController
             error_log(json_encode($_FILES));
             $originalFileName = basename($_FILES['image']['name']); // Original name with extension
             return;
-            
+
 
             try {
                 // Upload to FTP server using the original file name (with extension)
