@@ -20,7 +20,7 @@ class PaymentRequest
     // Use a JOIN to get the reason from payment_reason table based on the reason id
     $sql = "
         SELECT pr.id, pr.created_by, pr.created_at, pr.course_id, pr.image, 
-               pr.extra_note, pr.status, pr.reference_number, prr.reason AS reason
+               pr.extra_note, pr.status, pr.reference_number, pr.amount, prr.reason AS reason
         FROM payment_request pr
         JOIN payment_reasons prr ON pr.reason = prr.id
         WHERE pr.id = :id

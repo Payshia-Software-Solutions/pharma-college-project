@@ -51,7 +51,7 @@ function GetCoursePayments(courseCode) {
     fetch_data();
 }
 
-function OpenPaymentView(paymentId) {
+function OpenPaymentView(paymentId, courseCode) {
     OpenPopupRight()
     $('#loading-popup-right').html(InnerLoader)
 
@@ -63,6 +63,7 @@ function OpenPaymentView(paymentId) {
                 LoggedUser: LoggedUser,
                 UserLevel: UserLevel,
                 paymentId: paymentId,
+                courseCode: courseCode
             },
             success: function (data) {
                 $('#loading-popup-right').html(data)
@@ -73,9 +74,9 @@ function OpenPaymentView(paymentId) {
 }
 
 
-function SavePayment(paymentId) {
+function SavePayment(paymentId, courseCode) {
 
-    var form = document.getElementById("approvePaymentForm");
+    const form = document.getElementById("approvePaymentForm");
 
     if (form.checkValidity()) {
 
@@ -85,6 +86,8 @@ function SavePayment(paymentId) {
 
         // formData.append("CourseCode", CourseCode);
         formData.append("payment_request_id", paymentId);
+        formData.append("LoggedUser", LoggedUser);
+        formData.append("courseCode", courseCode);
         $.ajax({
             url: "./assets/content/lms-management/lms-payments/controllers/submit-payment.php",
             method: "POST",
@@ -94,6 +97,7 @@ function SavePayment(paymentId) {
             success: function (data) {
                 // $('#loading-popup').html(data)
                 var response = JSON.parse(data);
+                console.log(response)
                 if (response.status === "success") {
                     var result = response.message;
                     OpenAlert('success', 'Done!', result)
