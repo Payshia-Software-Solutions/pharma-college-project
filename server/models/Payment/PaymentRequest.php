@@ -74,9 +74,6 @@ class PaymentRequest
     }
     
     
-    
-    
-
 
     public function updateRecord($id, $data, $imagePath = null)
     {
@@ -121,7 +118,6 @@ class PaymentRequest
         ]);
     }
     
-
 
     public function deleteRecord($id)
     {

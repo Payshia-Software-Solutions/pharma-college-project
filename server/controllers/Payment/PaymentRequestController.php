@@ -12,6 +12,12 @@ class PaymentRequestController
         $this->ftpConfig = include('./config/ftp.php');
     }
 
+    public function getAllRecords()
+    {
+        $records = $this->model->getAllRecords();
+        echo json_encode($records);
+    }
+
     // Function to upload file via FTP with original filename
     private function uploadFileToFtp($localFilePath, $originalFileName, $userName)
     {
@@ -101,9 +107,6 @@ class PaymentRequestController
     echo json_encode(['message' => 'Record created successfully']);
 }
 
-    
-
-
 public function updateRecord($id)
 {
     $data = $_POST;
@@ -137,6 +140,11 @@ public function updateRecord($id)
         echo json_encode(['message' => 'Record deleted successfully']);
     }
 
+    public function getRecordById($created_by)
+    {
+        $records = $this->model->getRecordById($created_by);
+        echo json_encode($records);
+    }
     public function getRecordByUserName($created_by)
     {
         $records = $this->model->getRecordByUserName($created_by);
