@@ -1,5 +1,5 @@
 <?php
-require_once './controllers/Payment/PaymentRequestController.php';
+require_once './controllers/Payment/PaymentRequestController.php'; // add
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];
@@ -16,4 +16,4 @@ return [
     'POST /payment-request/' => [$paymentRequestController, 'createRecord'],
     'PUT /payment-request/{id}/' => [$paymentRequestController, 'updateRecord'],
     'DELETE /payment-request/{id}/' => [$paymentRequestController, 'deleteRecord']
-    ];
+];

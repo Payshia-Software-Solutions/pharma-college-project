@@ -1,5 +1,5 @@
 <?php
-require_once './models/payment/PaymentRequest.php';
+require_once './models/Payment/PaymentRequest.php';
 
 class PaymentRequestController
 {

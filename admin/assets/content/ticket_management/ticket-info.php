@@ -72,8 +72,7 @@ $ticketAssignments = GetTicketAssignment($ticketId);
                     ?>
                 </select>
                 <button onclick="ChangeTicketReadStatus('<?= $ticketId ?>', 'unread', 1)" class="btn btn-secondary "><i class="fa-solid fa-eye"></i> Mark As Unread</button>
-                <button onclick="ChangeTicketStatus('<?= $ticketId ?>', 1)" class="btn btn-primary "><i class="fa-solid fa-check"></i> Active</button>
-                <button onclick="ChangeTicketStatus('<?= $ticketId ?>', 3)" class="btn btn-danger "><i class="fa-solid fa-trash"></i> Delete</button>
+                <button onclick="ChangeTicketStatus('<?= $ticketId ?>', 1)" class="btn btn-primary "><i class="fa-solid fa-check"></i> Open</button>
                 <button onclick="ChangeTicketStatus('<?= $ticketId ?>', 2)" class="btn btn-warning "><i class="fa-solid fa-xmark"></i> Close</button>
             </div>
 
@@ -105,13 +104,42 @@ $ticketAssignments = GetTicketAssignment($ticketId);
             <?php
             if (!empty($attachments[0])) {
             ?>
+
+
                 <h6 class="mt-3">Attachments</h6>
-                <?php
-                foreach ($attachments as $attachment) {
-                ?>
-                    <p class="mb-0"><a href="http://web.pharmacollege.lk/lib/ticket/assets/ticket_img/<?= $attachment ?>" target="_blank"><?= $attachment ?></a></p>
+                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <?php
+                    foreach ($attachments as $attachment) {
+                        // Check if the file is an image based on its extension
+                        $file_extension = pathinfo($attachment, PATHINFO_EXTENSION);
+                        $image_extensions = ['jpg', 'jpeg', 'png', 'gif'];
+
+                        if (in_array(strtolower($file_extension), $image_extensions)) {
+                            // Display image thumbnail if it's an image file
+                    ?>
+                            <div style="text-align: center;">
+                                <a href="http://lms.pharmacollege.lk/uploads/ticket_img/<?= $attachment ?>" download="<?= $attachment ?>" target="_blank">
+                                    <img src="http://lms.pharmacollege.lk/uploads/ticket_img/<?= $attachment ?>" alt="<?= $attachment ?>" style="width: auto; height: 80px;" />
+                                </a>
+
+                            </div>
+                        <?php
+                        } else {
+                            // Display as a link if it's not an image file
+                        ?>
+                            <div>
+                                <p class="mb-0">
+                                    <a href="http://lms.pharmacollege.lk/uploads/ticket_img/<?= $attachment ?>" download="<?= $attachment ?>" target="_blank"><?= $attachment ?></a>
+                                </p>
+                            </div>
+                    <?php
+                        }
+                    }
+                    ?>
+                </div>
+
             <?php
-                }
+
             }
             ?>
 
