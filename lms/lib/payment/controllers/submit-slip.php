@@ -35,6 +35,7 @@ if ($image['error'] === UPLOAD_ERR_OK) {
             'reason' => $paymentData['reason'],               // Send reason
             'extra_note' => $paymentData['extra_note'],      // Send extra_note
             'reference_number' => $paymentData['reference_number'], // Send reference_number
+            'amount' => $paymentData['amount'],              // Send amount
             
             // Include the original file name and the image file itself
             'original_filename' => $originalFileName,       
