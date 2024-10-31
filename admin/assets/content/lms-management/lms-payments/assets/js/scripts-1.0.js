@@ -80,8 +80,9 @@ function SavePayment(paymentId, courseCode) {
 
     if (form.checkValidity()) {
 
-        // OpenPopup()
-        // document.getElementById('loading-popup').innerHTML = InnerLoader
+        showOverlay();
+        document.getElementById('loading-popup').innerHTML = InnerLoader
+
         var formData = new FormData(form);
 
         // formData.append("CourseCode", CourseCode);
@@ -101,7 +102,7 @@ function SavePayment(paymentId, courseCode) {
                 if (response.status === "success") {
                     var result = response.message;
                     OpenAlert('success', 'Done!', result)
-                    ClosePopUP();
+                    hideOverlay();
                     OpenIndex();
                 } else {
                     var result = response.message;
