@@ -87,21 +87,26 @@ class CommunityPostReply
     }
 
     public function getReplyStatistics()
-    {
-        $sql = "SELECT 
-                    created_by AS student_name, 
-                    COUNT(*) AS reply_count, 
-                    COUNT(DISTINCT post_id) AS reply_post_count
-                FROM 
-                    community_post_reply
-                GROUP BY 
-                    created_by
-                ORDER BY 
-                    reply_post_count DESC"; 
+{
+    $sql = "
+        SELECT 
+            r.created_by AS student_name, 
+            COUNT(r.id) AS reply_count, 
+            COUNT(DISTINCT r.post_id) AS reply_post_count,
+            COALESCE(SUM(rr.ratings), 0) AS total_ratings
+        FROM 
+            community_post_reply AS r
+        LEFT JOIN 
+            community_post_reply_ratings AS rr ON r.id = rr.reply_id
+        GROUP BY 
+            r.created_by
+        ORDER BY 
+            reply_post_count DESC"; 
 
-        $stmt = $this->pdo->query($sql);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+    $stmt = $this->pdo->query($sql);
+    return $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 
 
     public function getRecordsByPostId($postId, $loggedUser)
