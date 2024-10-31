@@ -21,7 +21,8 @@ function submitSlip() {
                 if (response.status === "success") {
                     var result = response.message;
                     showNotification(result, "success", "Done!");
-                    ClosePopUP()
+                    OpenIndex();
+                    ClosePopUP();
                 } else {
                     var result = response.message;
                     showNotification(result, "error", "Done!");
