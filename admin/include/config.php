@@ -35,7 +35,7 @@ try {
 // Establish LMS Connection
 $server = "localhost";
 $username = "root";
-$password = "root";
+$password = "";
 $database = "pharmaco_pharmacollege";
 $database_error = "";
 

@@ -14,29 +14,37 @@ $chatInfo = [];
             <div class="border-bottom"></div>
         </div>
 
-        <div class="col-md-6">
+        <div class="col-md-9 d-none">
             <label class="text-secondary" for="subject">Subject</label>
-            <input type="text" class="form-control" name="subject" id="subject" value="" placeholder="Enter the Subject of your Issue!">
+            <input type="text" class="form-control" name="subject" id="subject" value="" placeholder="Enter the Subject of your Issue!" value="None">
         </div>
 
-        <div class="col-md-3 col-6">
+        <div class="col-md-3 col-6 d-none">
             <label class="text-secondary" for="department">Department</label>
             <select class="form-control" name="department" id="department">
-                <option value="General Inquiries">General Inquiries</option>
+                <option selected value="General Inquiries">General Inquiries</option>
                 <option value="Payments">Payments</option>
                 <option value="Games">Games</option>
             </select>
         </div>
 
-        <div class="col-md-3 col-6">
+        <div class="col-md-12">
             <label class="text-secondary" for="department">Related Service</label>
             <select class="form-control" name="relatedService" id="relatedService">
+                <option value="Registration">Registration</option>
+                <option value="Payments">Payments</option>
+                <option value="Study Pack">Study Pack</option>
                 <option value="Winpharma">Winpharma</option>
-                <option value="Pharma Hunter">Pharma Hunter</option>
+                <option value="D Pad">D Pad</option>
                 <option value="Ceylon Pharmacy">Ceylon Pharmacy</option>
-                <option value="Pharma Reader">Pharma Reader</option>
-                <option value="Quiz">Quiz</option>
-                <option value="Payment">Payment</option>
+                <option value="Hunter">Hunter</option>
+                <option value="Hunter Pro">Hunter Pro</option>
+                <option value="Certificates">Certificates</option>
+                <option value="Convocation">Convocation</option>
+                <option value="Dilip Fonseka Call Request">Dilip Fonseka Call Request</option>
+                <option value="Assignments">Assignments</option>
+                <option value="Exams">Exams</option>
+                <option value="Other">Other</option>
             </select>
         </div>
 

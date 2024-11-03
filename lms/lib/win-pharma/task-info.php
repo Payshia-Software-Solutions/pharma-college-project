@@ -11,6 +11,7 @@ $LevelCode = $_POST["LevelCode"];
 $DefaultCourse = $_POST["defaultCourseCode"];
 
 $Submissions = GetWinpharmaSubmissions($link, $LoggedUser);
+$commonReasons = GetCommonReasons($link);
 $Tasks = GetTasks($link, $LevelCode);
 // var_dump($Tasks);
 $Task = $Tasks[$TaskID];
@@ -61,14 +62,21 @@ $Task = $Tasks[$TaskID];
             if ($Submissions[0]["grade_status"] == "Try Again") {
 
                 $SubmissionID = $Submissions[0]['submission_id'];
-                if ($Submissions[0]["grade_status"] == "Try Again") { ?>
+                if ($Submissions[0]["grade_status"] == "Try Again") {
+                    $reasonString = $Submissions[0]["reason"];
+
+                    // Convert to array and clean up the values
+                    $reasonArray = array_map('trim', explode(',', $reasonString)); ?>
                     <div class="mb-3">
                         <h3>Your Attempt result</h3>
 
                         <button type="button" class="w-100 btn btn-warning p-3 rounded-3 fw-bold">Try Again</button>
 
                         <div class="alert alert-light my-2">
-                            <span class="card-title mb-1 pb-0 fw-bolder text-danger">Reason : <?= $Submissions[0]["reason"] ?></span>
+                            <span class="card-title mb-1 pb-0 fw-bolder text-danger">Reason(s)</span>
+                            <?php foreach ($reasonArray as $reasonId): ?>
+                                <div class="alert alert-warning"><?= $commonReasons[$reasonId]['reason'] ?></div>
+                            <?php endforeach ?>
                         </div>
 
                         <p class="text-start text-muted mt-2 border-top pt-2">If you need to re-check your submission please press on re-correction button</p>
