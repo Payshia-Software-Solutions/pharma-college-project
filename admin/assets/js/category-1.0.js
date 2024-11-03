@@ -6,10 +6,10 @@ $(document).ready(function () {
   OpenIndex()
 })
 
-function OpenIndex () {
+function OpenIndex() {
   document.getElementById('index-content').innerHTML = InnerLoader
   ClosePopUP()
-  function fetch_data () {
+  function fetch_data() {
     $.ajax({
       url: 'assets/content/' + folder + '/index.php',
       method: 'POST',
@@ -25,9 +25,9 @@ function OpenIndex () {
   fetch_data()
 }
 
-function LoadPopUPContent (UpdateKey) {
+function LoadPopUPContent(UpdateKey) {
   document.getElementById('loading-popup').innerHTML = InnerLoader
-  function fetch_data () {
+  function fetch_data() {
     $.ajax({
       url: 'assets/content/' + folder + '/popup-content.php',
       method: 'POST',
@@ -47,11 +47,13 @@ function LoadPopUPContent (UpdateKey) {
   fetch_data()
 }
 
-function AddNew (is_active, UpdateKey) {
+function AddNew(is_active, UpdateKey) {
   LoadPopUPContent(UpdateKey)
 }
 
-function Save (is_active, UpdateKey) {
+alert("test");
+
+function Save(is_active, UpdateKey) {
   var form = document.getElementById('location-form')
 
   if (form.checkValidity()) {
@@ -63,7 +65,7 @@ function Save (is_active, UpdateKey) {
     formData.append('is_active', is_active)
     formData.append('UpdateKey', UpdateKey)
 
-    function fetch_data () {
+    function fetch_data() {
       $.ajax({
         url: 'assets/content/' + folder + '/save.php',
         method: 'POST',
@@ -91,10 +93,10 @@ function Save (is_active, UpdateKey) {
   }
 }
 
-function ChangeStatus (IsActive, UpdateKey) {
+function ChangeStatus(IsActive, UpdateKey) {
   showOverlay()
   document.getElementById('index-content').innerHTML = InnerLoader
-  function fetch_data () {
+  function fetch_data() {
     $.ajax({
       url: 'assets/content/' + folder + '/change-status.php',
       method: 'POST',

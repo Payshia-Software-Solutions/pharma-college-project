@@ -14,7 +14,8 @@
 
                     <div class="col-12 mt-2">
                         <?php $ProgressValue = 0; ?>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
                         </div>
                     </div>
@@ -33,7 +34,8 @@
 
                     <div class="col-12 mt-2">
                         <?php $ProgressValue = 0; ?>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
                         </div>
                     </div>
@@ -57,7 +59,8 @@
                             $ProgressValue = 0;
                         }
                         ?>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
                         </div>
                     </div>
@@ -77,7 +80,8 @@
 
                     <div class="col-12 mt-2">
                         <?php $ProgressValue = 0; ?>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
                         </div>
                     </div>
@@ -97,7 +101,8 @@
 
                     <div class="col-12 mt-2">
                         <?php $ProgressValue = 0; ?>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
                         </div>
                     </div>
@@ -118,7 +123,8 @@
 
                     <div class="col-12 mt-2">
                         <?php $ProgressValue = 0; ?>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
                         </div>
                     </div>
@@ -138,7 +144,8 @@
 
                     <div class="col-12 mt-2">
                         <?php $ProgressValue = 0; ?>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
                         </div>
                     </div>
@@ -158,7 +165,29 @@
 
                     <div class="col-12 mt-2">
                         <?php $ProgressValue = 0; ?>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4 mb-2 d-flex">
+        <div class="card game-card shadow flex-fill" onclick="redirectToURL('certificate-center')">
+            <div class="card-body text-center">
+                <div class="row">
+                    <div class="col-12">
+                        <img src="./lib/certificate-center/assets/images/certificate.gif" class="game-icon">
+                        <h4 class="card-title">Certificate Center</h4>
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <?php $ProgressValue = 0; ?>
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
                         </div>
                     </div>

@@ -12,6 +12,12 @@ class PaymentRequestController
         $this->ftpConfig = include('./config/ftp.php');
     }
 
+    public function getAllRecords()
+    {
+        $records = $this->model->getAllRecords();
+        echo json_encode($records);
+    }
+
     // Function to upload file via FTP with original filename
     private function uploadFileToFtp($localFilePath, $originalFileName, $userName)
     {
@@ -46,86 +52,87 @@ class PaymentRequestController
             }
         }
 
-        // Explicitly set a unique local path to rename the file temporarily
-        $tempLocalPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid() . '-' . $originalFileName;
-        if (!move_uploaded_file($localFilePath, $tempLocalPath)) {
-            throw new Exception("Failed to move uploaded file to temporary location.");
-        }
-
         // Upload the file with the original filename
         $remoteFilePath = $ftp_target_dir . $originalFileName;
-        if (!ftp_put($ftpCon, $remoteFilePath, $tempLocalPath, FTP_BINARY)) {
+        if (!ftp_put($ftpCon, $remoteFilePath, $localFilePath, FTP_BINARY)) {
             ftp_close($ftpCon);
             throw new Exception("Failed to upload file to FTP Server");
         }
 
-        // Remove the temporary file
-        unlink($tempLocalPath);
-
         // Close FTP connection
         ftp_close($ftpCon);
 
-        return $remoteFilePath;
+        return $originalFileName;
     }
 
     public function createRecord()
-    {
-        // Collect POST data
-        $data = $_POST;
+{
+    // Collect POST data
+    $data = $_POST;
 
-        // Handle file upload
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            // $localFilePath = $_FILES['image']['tmp_name'];
-            error_log(json_encode($_FILES));
-            $originalFileName = basename($_FILES['image']['name']); // Original name with extension
-            return;
-
-
-            try {
-                // Upload to FTP server using the original file name (with extension)
-                $imagePath = $this->uploadFileToFtp($localFilePath, $originalFileName, $data['created_by']);
-            } catch (Exception $e) {
-                http_response_code(500);
-                echo json_encode(['error' => $e->getMessage()]);
-                return;
-            }
-        } else {
-            http_response_code(400);
-            echo json_encode(['error' => 'Image is required']);
-            return;
+    // Handle file upload
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        // Use the original file name from POST, or default to a unique name if missing
+        $originalFileName = isset($data['original_filename']) ? $data['original_filename'] : uniqid('file_') . '.tmp';
+        $originalFileName = $data['created_by'] . uniqid() . '_' . $originalFileName;
+        // Define a temporary local file path with the correct extension
+        $tempLocalPath = $_FILES['image']['tmp_name'];
+        $newLocalFilePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . uniqid() . '-' . $originalFileName;
+      
+        // Move the uploaded file to the new local path with the correct name
+        if (!move_uploaded_file($tempLocalPath, $newLocalFilePath)) {
+            throw new Exception("Failed to move uploaded file to a temporary location.");
         }
 
-        // Pass data and image path to the model
-        $this->model->createRecord($data, $imagePath);
-        http_response_code(201);
-        echo json_encode(['message' => 'Record created successfully']);
-    }
+        try {
+            // Upload to FTP server using the correct original file name
+            $imagePath = $this->uploadFileToFtp($newLocalFilePath, $originalFileName, $data['created_by']);
 
-    public function updateRecord($id)
-    {
-        $data = $_POST;
-        $imagePath = null;
-
-        // Handle file upload
-        if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $localFilePath = $_FILES['image']['tmp_name'];
-            $originalFileName = $_FILES['image']['name']; // Original name with extension
-
-            try {
-                // Upload to FTP server using the original file name (with extension)
-                $imagePath = $this->uploadFileToFtp($localFilePath, $originalFileName, $data['created_by']);
-            } catch (Exception $e) {
-                http_response_code(500);
-                echo json_encode(['error' => $e->getMessage()]);
-                return;
-            }
+            // Remove the local temporary file after FTP upload
+            unlink($newLocalFilePath);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+            return;
         }
-
-        // Pass the data and image path to the model for updating
-        $this->model->updateRecord($id, $data, $imagePath);
-        http_response_code(200);
-        echo json_encode(['message' => 'Record updated successfully']);
+    } else {
+        http_response_code(400);
+        echo json_encode(['error' => 'Image is required']);
+        return;
     }
+
+    // Pass data and image path to the model
+    $this->model->createRecord($data, $imagePath);
+    http_response_code(201);
+    echo json_encode(['message' => 'Record created successfully']);
+}
+
+public function updateRecord($id)
+{
+    $data = $_POST;
+    $imagePath = null;
+
+    // Handle file upload
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $localFilePath = $_FILES['image']['tmp_name'];
+        $originalFileName = $_FILES['image']['name']; // Original name with extension
+        $uniqueFileName = $data['created_by'] . '_' . uniqid() . '_' . $originalFileName; // Create a unique name
+
+        try {
+            // Upload to FTP server using the unique file name
+            $imagePath = $this->uploadFileToFtp($localFilePath, $uniqueFileName, $data['created_by']);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
+            return;
+        }
+    }
+
+    // Pass the data and image path to the model for updating
+    $this->model->updateRecord($id, $data, $imagePath);
+    http_response_code(200);
+    echo json_encode(['message' => 'Record updated successfully']);
+}
 
     public function deleteRecord($id)
     {
@@ -133,6 +140,11 @@ class PaymentRequestController
         echo json_encode(['message' => 'Record deleted successfully']);
     }
 
+    public function getRecordById($created_by)
+    {
+        $records = $this->model->getRecordById($created_by);
+        echo json_encode($records);
+    }
     public function getRecordByUserName($created_by)
     {
         $records = $this->model->getRecordByUserName($created_by);

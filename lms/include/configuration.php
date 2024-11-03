@@ -19,7 +19,7 @@
 
 $server = "localhost";
 $username = "root";
-$password = "";
+$password = "root";
 $database = "pharmaco_pharmacollege";
 $database_error = "";
 

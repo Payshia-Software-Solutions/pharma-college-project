@@ -18,7 +18,7 @@ $statistics = $response2->toArray();
 
 <div class="row g-3">
     <div class="col-12">
-        <h5 class="table-title mb-4">course - 2002 |
+        <h5 class="table-title mb-4">Course - <?= $courseCode ?> |
             Winpharma Payments</h5>
         <div class="row g-2 mb-4">
             <div class="col-6 col-md-2">
@@ -81,7 +81,8 @@ $statistics = $response2->toArray();
                                 <td><?= $paymentRequest['created_by'] ?></td>
                                 <td>2024-10-15</td>
                                 <td>
-                                    <button onclick="OpenPaymentView(<?= $paymentRequest['id'] ?>)"
+                                    <button
+                                        onclick="OpenPaymentView(<?= $paymentRequest['id'] ?>, '<?= $courseCode ?>')"
                                         class="btn btn-primary btn-sm" type="button"><i class="fa-solid fa-eye"></i>
                                         View</button>
 

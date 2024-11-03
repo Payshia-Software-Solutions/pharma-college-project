@@ -102,8 +102,8 @@ class StudentPayment
             // Set 'Bank Transfer' as default if payment_type is not provided
             $paymentType = isset($data['payment_type']) ? $data['payment_type'] : 'Bank Transfer';
 
-            // Retrieve student_id and user information using created_by username
-            $user = $this->userModel->getByUsername($data['created_by']);
+            // Retrieve student_id and user information using studentName
+            $user = $this->userModel->getByUsername($data['student_name']);
             if (!$user) {
                 throw new Exception("User not found with username: " . $data['created_by']);
             }
@@ -125,7 +125,7 @@ class StudentPayment
                 'course_code' => $data['course_code'],
                 'student_id' => $studentId, // Use the retrieved student ID
                 'paid_amount' => $data['paid_amount'],
-                'discount_amount' => $data['discount_amount'],
+                'discount_amount' => 00.00,
                 'payment_status' => $data['payment_status'],
                 'payment_type' => $paymentType, // Use client provided or default 'Bank Transfer'
                 'paid_date' => $data['paid_date'],

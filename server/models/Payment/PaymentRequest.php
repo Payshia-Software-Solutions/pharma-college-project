@@ -20,7 +20,7 @@ class PaymentRequest
     // Use a JOIN to get the reason from payment_reason table based on the reason id
     $sql = "
         SELECT pr.id, pr.created_by, pr.created_at, pr.course_id, pr.image, 
-               pr.extra_note, pr.status, pr.reference_number, prr.reason AS reason
+               pr.extra_note, pr.status, pr.reference_number, pr.amount, prr.reason AS reason
         FROM payment_request pr
         JOIN payment_reasons prr ON pr.reason = prr.id
         WHERE pr.id = :id
@@ -37,7 +37,7 @@ class PaymentRequest
     public function createRecord($data, $imagePath)
     {
         // Check for required fields
-        $requiredFields = ['created_by', 'created_at', 'course_id', 'reason', 'extra_note', 'reference_number'];
+        $requiredFields = ['created_by', 'created_at', 'course_id', 'reason', 'extra_note', 'reference_number', 'amount'];
         foreach ($requiredFields as $field) {
             if (!isset($data[$field])) {
                 throw new Exception("The '{$field}' field is required.");
@@ -53,8 +53,8 @@ class PaymentRequest
         $data['image'] = $imagePath;
     
         // Prepare the SQL statement with placeholders
-        $sql = "INSERT INTO payment_request (created_by, created_at, course_id, image, reason, extra_note, status, reference_number) 
-                VALUES (:created_by, :created_at, :course_id, :image, :reason, :extra_note, :status, :reference_number)";
+        $sql = "INSERT INTO payment_request (created_by, created_at, course_id, image, reason, extra_note, status, reference_number, amount) 
+                VALUES (:created_by, :created_at, :course_id, :image, :reason, :extra_note, :status, :reference_number, :amount)";
     
         // Prepare the statement
         $stmt = $this->pdo->prepare($sql);
@@ -68,14 +68,12 @@ class PaymentRequest
             'reason' => $data['reason'],
             'extra_note' => $data['extra_note'],
             'status' => $data['status'],
-            'reference_number' => $data['reference_number']
+            'reference_number' => $data['reference_number'],
+            'amount' => $data['amount'],
         ]);
     }
     
     
-    
-    
-
 
     public function updateRecord($id, $data, $imagePath = null)
     {
@@ -98,7 +96,8 @@ class PaymentRequest
                     reason = :reason,
                     extra_note = :extra_note,
                     status = :status,
-                    reference_number = :reference_number
+                    reference_number = :reference_number,
+                    amount = :amount
                 WHERE id = :id";
     
         // Prepare the statement
@@ -114,11 +113,11 @@ class PaymentRequest
             'extra_note' => $data['extra_note'],
             'status' => $data['status'],
             'reference_number' => $data['reference_number'],
-            'id' => $id
+            'id' => $id,
+            'amount' => $data['amount'],
         ]);
     }
     
-
 
     public function deleteRecord($id)
     {

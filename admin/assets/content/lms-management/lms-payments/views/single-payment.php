@@ -4,6 +4,9 @@ require_once '../../../../../vendor/autoload.php';
 use Symfony\Component\HttpClient\HttpClient;
 
 $paymentId = $_POST['paymentId'];
+$LoggedUser = $_POST['LoggedUser'];
+$courseCode = $_POST['courseCode'];
+$contentURL = 'https://content-provider.pharmacollege.lk/content-provider/payments/payment-slips/' . $LoggedUser . '/';
 
 $dotenv = Dotenv\Dotenv::createImmutable('../../../../../');
 $dotenv->load();
@@ -36,21 +39,20 @@ $uploadedDate = date('d-m-Y', strtotime($paymentDetails['created_at']));
 
     <div class="row g-3">
 
-        <div class="col-md-8">
+        <div class="col-md-6">
 
             <!-- Preview Submitted File -->
-            <img class="rounded-4 shadow-sm w-100" id="myImage"
-                src="<?= $_ENV["SERVER_URL"] . $paymentDetails['image'] ?>" alt="image 01">
+            <img class="rounded-4 shadow-sm w-100" id="myImage" src="<?= $contentURL . $paymentDetails['image'] ?>"
+                alt="image 01">
 
             <!-- Download Button -->
-            <a class="d-block text-center mb-3" target="_blank"
-                href="<?= $_ENV["SERVER_URL"] . $paymentDetails['image'] ?>">
+            <a class="d-block text-center mb-3" target="_blank" href="<?= $contentURL . $paymentDetails['image'] ?>">
                 <button class="btn btn-warning rounded-2 mt-3 w-50">Download Slip</button>
             </a>
 
         </div>
 
-        <div class="col-md-4">
+        <div class="col-md-6">
             <h5 class="">Payment ID <?= $paymentId ?></h5>
 
             <form id="approvePaymentForm" enctype="multipart/form-data">
@@ -68,25 +70,25 @@ $uploadedDate = date('d-m-Y', strtotime($paymentDetails['created_at']));
 
                     <div class="col-12">
                         <label>Student Name</label>
-                        <input readonly type="text" value="Class Fee" name="created_by"
-                            class="form-control form-control-sm" placeholder="<?= $paymentDetails['created_by'] ?>">
+                        <input readonly type="text" name="student_name" class="form-control form-control-sm"
+                            value="<?= $paymentDetails['created_by'] ?>">
                     </div>
 
                     <div class="col-12">
                         <label>Reason</label>
                         <input readonly type="text" name="reason" class="form-control form-control-sm"
-                            placeholder="<?= $paymentDetails['reason'] ?>">
+                            value="<?= $paymentDetails['reason'] ?>">
                     </div>
 
                     <div class="col-12">
                         <label>Ref. No</label>
                         <input readonly type="text" class="form-control form-control-sm"
-                            placeholder="<?= $paymentDetails['reference_number'] ?>">
+                            value="<?= $paymentDetails['reference_number'] ?>">
                     </div>
                     <div class="col-12">
                         <label>Uploaded Date</label>
-                        <input readonly type="text" class="form-control form-control-sm"
-                            placeholder="<?= $uploadedDate ?>">
+                        <input readonly type="text" class="form-control form-control-sm" name="uploaded_date"
+                            value="<?= $uploadedDate ?>">
                     </div>
 
                     <div class="col-12">
@@ -99,18 +101,22 @@ $uploadedDate = date('d-m-Y', strtotime($paymentDetails['created_at']));
                     <div class="col-md-6">
                         <label>Payment Amount</label>
                         <input name="paid_amount" type="number" class="form-control form-control-sm" placeholder="0.00"
-                            required value="">
+                            required value="<?= $paymentDetails['amount'] ?>">
+                    </div>
+                    <div class="col-md-6">
+                        <label>Select A Payment Type</label>
+                        <select name="payment_type" class="form-control form-control-sm" required>
+                            <option value="Cash">Cash</option>
+                            <option value="Bank Transfer">Bank Transfer</option>
+                            <option value="Online Payment">Online Payment</option>
+                        </select>
                     </div>
 
-                    <div class="col-md-6">
-                        <label>Discount</label>
-                        <input name="discount_amount" type="number" class="form-control form-control-sm"
-                            placeholder="0.00" required value="">
-                    </div>
 
                     <div class="col-12 text-end mt-3 d-flex">
                         <button type="button" class="btn btn-lg btn-dark rounded-2 text-white flex-fill w-100"
-                            onclick="SavePayment(<?= $paymentId ?>)"><i class="fa-solid fa-floppy-disk"></i> Save
+                            onclick="SavePayment(<?= $paymentId ?>, '<?= $courseCode ?>')"><i
+                                class="fa-solid fa-floppy-disk"></i> Save
                             Payment</button>
                     </div>
 
