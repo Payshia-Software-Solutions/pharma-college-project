@@ -31,6 +31,7 @@ $WinpharmaReasons = new WinpharmaReasons($db);
 $submission = $submissions->fetchById($submissionId);
 $reasonList = $WinpharmaReasons->fetchAll();
 
+
 $defaultCourse = $submission['course_code'];
 $Levels = $level->getLevels($defaultCourse);
 $levelId = $submission["level_id"];
@@ -125,18 +126,27 @@ $file_extension = strtolower(pathinfo($submit_file, PATHINFO_EXTENSION));
                         <input name="grade" id="grade" type="number" class="form-control form-control-sm" placeholder="85%" required value="<?= $submission["grade"] ?>">
                     </div>
 
+                    <!-- HTML with multiple select and added list display -->
                     <div class="col-md-12">
-                        <label>Common Reason</label>
-                        <select class="form-control" id="pre-reason" name="pre-reason">
-                            <option value="">Select Common Reason</option>
+                        <label>Common Reasons</label>
+                        <select class="form-control" id="pre-reasons" name="pre-reasons[]" multiple="multiple">
+                            <option value="">Select Common Reasons</option>
                             <?php if (!empty($reasonList)) : ?>
                                 <?php foreach ($reasonList as $reason) : ?>
-                                    <option value="<?= $reason['reason'] ?>"><?= $reason['reason'] ?></option>
+                                    <option value="<?= $reason['id'] ?>"><?= htmlspecialchars($reason['reason']) ?></option>
                                 <?php endforeach ?>
                             <?php endif ?>
                         </select>
-
                     </div>
+
+                    <!-- Container to display selected reasons -->
+                    <div class="col-md-12 mt-2">
+                        <label>Selected Reasons</label>
+                        <ul id="selected-reasons-list" class="list-group">
+                            <!-- Selected reasons will be dynamically added here -->
+                        </ul>
+                    </div>
+
 
                     <div class="col-md-12">
                         <label>Reason</label>
@@ -193,3 +203,57 @@ $file_extension = strtolower(pathinfo($submit_file, PATHINFO_EXTENSION));
     $('#grade_status').select2();
     $('#pre-reason').select2();
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const reasonsSelect = document.getElementById('pre-reasons');
+        const selectedReasonsList = document.getElementById('selected-reasons-list');
+
+        reasonsSelect.addEventListener('change', function() {
+            // Clear existing list
+            selectedReasonsList.innerHTML = '';
+
+            // Get all selected options
+            const selectedOptions = Array.from(this.selectedOptions);
+
+            // Populate the list with selected reasons
+            selectedOptions.forEach(option => {
+                if (option.value) {
+                    const listItem = document.createElement('li');
+                    listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+
+                    // Reason text
+                    const reasonText = document.createElement('span');
+                    reasonText.textContent = option.value;
+                    listItem.appendChild(reasonText);
+
+                    // Remove button
+                    const removeButton = document.createElement('button');
+                    removeButton.classList.add('btn', 'btn-danger', 'btn-sm');
+                    removeButton.textContent = '×';
+                    removeButton.addEventListener('click', function() {
+                        // Deselect the corresponding option
+                        option.selected = false;
+                        // Remove the list item
+                        listItem.remove();
+                    });
+                    listItem.appendChild(removeButton);
+
+                    selectedReasonsList.appendChild(listItem);
+                }
+            });
+        });
+    });
+</script>
+
+<!-- Optional CSS to improve appearance (can be in a separate stylesheet) -->
+<style>
+    #selected-reasons-list .list-group-item {
+        padding: 0.5rem 1rem;
+    }
+
+    #selected-reasons-list .btn-sm {
+        padding: 0.125rem 0.25rem;
+        font-size: 0.75rem;
+    }
+</style>

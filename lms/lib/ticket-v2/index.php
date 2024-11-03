@@ -42,6 +42,9 @@ $recentChats = $response->toArray();
 
         // Calculate the time ago in a human-readable format
         $timeAgo = $createdDateTime->diffForHumans();
+
+        $ticketText = strip_tags($ticketInfo['ticket']); // Remove HTML tags
+        $shortText = substr($ticketText, 0, 100); // Limit to 100 characters
     ?>
         <!-- Chat Item -->
         <div class="col-12">
@@ -49,7 +52,7 @@ $recentChats = $response->toArray();
                 <div class="card-body">
                     <div class="d-flex justify-content-between">
                         <div class="left">
-                            <h5 class="mb-0"><?= $ticketInfo['subject'] ?></h5>
+                            <h5 class="mb-0"><?= $shortText ?></h5>
                             <div class="badge bg-danger mb-0"><?= $ticketInfo['related_service'] ?></div>
                         </div>
                         <div class="right">

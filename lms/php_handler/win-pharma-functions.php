@@ -60,6 +60,20 @@ function StudentRegisteredCourses($link, $userid)
     return $ArrayResult;
 }
 
+
+function GetCommonReasons($link)
+{
+    $ArrayResult = array();
+    $sql = "SELECT `id`, `reason`, `is_active`, `created_by`, `created_at` FROM `winpharma_common_resons`";
+    $result = $link->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ArrayResult[$row['id']] = $row;
+        }
+    }
+    return $ArrayResult;
+}
+
 function GetUserData($link)
 {
     $ArrayResult = array();

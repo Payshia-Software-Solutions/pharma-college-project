@@ -29,8 +29,11 @@ $submissionId = $_POST['submissionId'];
 $LoggedUser = $_POST['LoggedUser'];
 $reason = $_POST['reason'];
 $grade_status = $_POST['grade_status'];
-$grade = $_POST['grade'];
-$preReason = $_POST['pre-reason'];
+$grade = $_POST['grade']; // If pre-reasons is submitted as an array
+$preReasons = $_POST['pre-reasons'] ?? [];
+
+// Convert array to comma-separated string
+$preReason = implode(', ', $preReasons);
 
 if ($preReason != '') {
     $reason = $preReason;
