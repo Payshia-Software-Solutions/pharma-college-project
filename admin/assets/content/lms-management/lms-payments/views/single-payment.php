@@ -18,6 +18,14 @@ $paymentDetails = $response->toArray();
 //only show date
 $uploadedDate = date('d-m-Y', strtotime($paymentDetails['created_at']));
 
+// get file extension 
+$extension = pathinfo($paymentDetails['image'], PATHINFO_EXTENSION);
+if (strtolower($extension) == 'pdf') {
+    $pdfViewer = true;
+}else{
+    $pdfViewer = false;
+}
+
 ?>
 
 
@@ -42,8 +50,12 @@ $uploadedDate = date('d-m-Y', strtotime($paymentDetails['created_at']));
         <div class="col-md-6">
 
             <!-- Preview Submitted File -->
+            <?php if ($pdfViewer) : ?>
+            <iframe src="<?= $contentURL . $paymentDetails['image'] ?>" width="100%" height="400px"></iframe>
+            <?php else : ?>
             <img class="rounded-4 shadow-sm w-100" id="myImage" src="<?= $contentURL . $paymentDetails['image'] ?>"
                 alt="image 01">
+            <?php endif ?>
 
             <!-- Download Button -->
             <a class="d-block text-center mb-3" target="_blank" href="<?= $contentURL . $paymentDetails['image'] ?>">
