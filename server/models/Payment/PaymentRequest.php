@@ -172,7 +172,7 @@ public function getByCourseCode($courseCode)
         SELECT pr.*, prn.reason, DATE(pr.created_at) AS created_at
         FROM payment_request pr
         JOIN payment_reasons prn ON pr.reason = prn.id
-        WHERE pr.course_id = :courseCode
+        WHERE pr.course_id = :courseCode AND pr.status = 0
     ");
     
     $stmt->execute(['courseCode' => $courseCode]);
