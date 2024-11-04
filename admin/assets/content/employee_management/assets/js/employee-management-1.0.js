@@ -4,7 +4,7 @@ var company_id = document.getElementById('company_id').value
 var default_location = document.getElementById('default_location').value
 var default_location_name = document.getElementById('default_location_name').value
 
-$(document).ready(function() {
+$(document).ready(function () {
     OpenIndex()
 })
 
@@ -20,7 +20,7 @@ function OpenIndex(studentBatch = 0) {
                 company_id: company_id,
                 studentBatch: studentBatch
             },
-            success: function(data) {
+            success: function (data) {
                 $('#index-content').html(data)
                 GetMailBox()
             }
@@ -44,7 +44,7 @@ function AddNewEmployee(employeeId = 0) {
                 employeeId: employeeId,
                 userTheme: userTheme
             },
-            success: function(data) {
+            success: function (data) {
                 $('#loading-popup-right').html(data)
             }
         })
@@ -61,7 +61,7 @@ function OpenMigrations() {
                 LoggedUser: LoggedUser,
                 UserLevel: UserLevel
             },
-            success: function(data) {
+            success: function (data) {
                 var response = JSON.parse(data)
                 if (response.status === 'success') {
                     var result = response.message
@@ -97,7 +97,7 @@ function SaveEmployee(employeeId = 0) {
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(data) {
+                success: function (data) {
                     var response = JSON.parse(data)
                     if (response.status === 'success') {
                         var result = response.message
@@ -146,7 +146,7 @@ function DisableEmployee(employee_id, is_active = 1) {
                 employee_id: employee_id,
                 is_active: is_active
             },
-            success: function(data) {
+            success: function (data) {
                 var response = JSON.parse(data)
                 if (response.status === 'success') {
                     var result = response.message
@@ -191,7 +191,7 @@ function AddNewPosition(positionId = 0) {
                 positionId: positionId,
                 userTheme: userTheme
             },
-            success: function(data) {
+            success: function (data) {
                 $('#loading-popup').html(data)
             }
         })
@@ -218,7 +218,7 @@ function SavePosition(positionId = 0) {
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(data) {
+                success: function (data) {
                     var response = JSON.parse(data)
                     if (response.status === 'success') {
                         var result = response.message
@@ -269,7 +269,7 @@ function AddNewDepartment(department_id = 0) {
                 department_id: department_id,
                 userTheme: userTheme
             },
-            success: function(data) {
+            success: function (data) {
                 $('#loading-popup').html(data)
             }
         })
@@ -296,7 +296,7 @@ function SaveDepartment(department_id = 0) {
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(data) {
+                success: function (data) {
                     var response = JSON.parse(data)
                     if (response.status === 'success') {
                         var result = response.message
@@ -347,7 +347,7 @@ function AddNewWorkLocation(work_location_id = 0) {
                 work_location_id: work_location_id,
                 userTheme: userTheme
             },
-            success: function(data) {
+            success: function (data) {
                 $('#loading-popup').html(data)
             }
         })
@@ -374,7 +374,7 @@ function SaveWorkLocation(work_location_id = 0) {
                 data: formData,
                 contentType: false,
                 processData: false,
-                success: function(data) {
+                success: function (data) {
                     var response = JSON.parse(data)
                     if (response.status === 'success') {
                         var result = response.message
@@ -425,7 +425,7 @@ function OpenEmployee(employee_id) {
                 employee_id: employee_id,
                 userTheme: userTheme
             },
-            success: function(data) {
+            success: function (data) {
                 $('#loading-popup-right').html(data)
             }
         })
@@ -451,7 +451,7 @@ function CreateUserLink(employee_id, user_type, is_active) {
                 user_id: user_id,
                 is_active: is_active
             },
-            success: function(data) {
+            success: function (data) {
                 var response = JSON.parse(data)
                 if (response.status === 'success') {
                     var result = response.message
@@ -495,7 +495,7 @@ function OpenMyDashboard() {
                 UserLevel: UserLevel,
                 userTheme: userTheme
             },
-            success: function(data) {
+            success: function (data) {
                 $('#loading-popup-right').html(data)
             }
         })

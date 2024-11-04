@@ -24,7 +24,6 @@ function OpenIndex() {
             },
             success: function (data) {
                 $("#index-content").html(data);
-                GetMailBox();
             },
         });
     }
@@ -103,7 +102,8 @@ function SavePayment(paymentId, courseCode) {
                     var result = response.message;
                     OpenAlert('success', 'Done!', result)
                     hideOverlay();
-                    OpenIndex();
+                    ClosePopUPRight(0);
+                    GetCoursePayments(courseCode);
                 } else {
                     var result = response.message;
                     showNotification(result, "error", "Done!");
