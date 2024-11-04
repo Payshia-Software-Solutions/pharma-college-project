@@ -51,7 +51,7 @@ if (strtolower($extension) == 'pdf') {
 
             <!-- Preview Submitted File -->
             <?php if ($pdfViewer) : ?>
-            <iframe src="<?= $contentURL . $paymentDetails['image'] ?>" width="100%" height="400px"></iframe>
+            <iframe src="<?= $contentURL . $paymentDetails['image'] ?>" width="100%" height="600px"></iframe>
             <?php else : ?>
             <img class="rounded-4 shadow-sm w-100" id="myImage" src="<?= $contentURL . $paymentDetails['image'] ?>"
                 alt="image 01">
