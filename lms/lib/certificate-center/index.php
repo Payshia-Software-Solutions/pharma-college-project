@@ -160,4 +160,6 @@ $orderedCertificate = [
         <div class="border-bottom my-4"></div>
     </div>
     <?php endif ?>
+
+    <button onclick="pickupOptionOpen()" class="btn btn-primary" type="button">Oder</button>
 </div>

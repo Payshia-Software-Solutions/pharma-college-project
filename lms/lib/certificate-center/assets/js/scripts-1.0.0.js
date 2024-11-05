@@ -79,6 +79,60 @@ function statusView() {
 
     fetch_data()
 }
+function pickupOptionOpen() {
+    OpenPopup()
+    document.getElementById('pop-content').innerHTML = InnerLoader
+
+    function fetch_data() {
+        showOverlay()
+        $.ajax({
+            url: 'lib/certificate-center/views/pickup-option.php',
+            method: 'POST',
+            data: {
+                LoggedUser: LoggedUser,
+                UserLevel: UserLevel,
+                company_id: company_id,
+            },
+            success: function (data) {
+                $('#pop-content').html(data)
+                hideOverlay()
+            }
+        })
+    }
+
+    fetch_data()
+}
+
+function PickupOption(option) {
+    $("#root").html(InnerLoader);
+
+    let goTo = '';
+
+    if (option == 1) {
+        goTo = 'graduate.php';
+    } else {
+        goTo = 'delivery-form.php';
+    }
+
+
+    function fetch_data() {
+        $.ajax({
+            url: 'lib/certificate-center/views/' + goTo,
+            method: 'POST',
+            data: {
+                LoggedUser: LoggedUser,
+                UserLevel: UserLevel,
+                company_id: company_id,
+            },
+            success: function (data) {
+                ClosePopUP()
+                $("#root").html(data);
+            }
+        })
+    }
+
+    fetch_data()
+}
 
 
 

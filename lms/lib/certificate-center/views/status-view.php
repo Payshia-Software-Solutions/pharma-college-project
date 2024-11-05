@@ -1,5 +1,15 @@
-<div class="row justify-content-center">
+<?php
+
+$status = 'In Delivery';
+
+?>
+
+
+
+
+<div class="row justify-content-center mb-4">
     <div class="col-md-8">
+        <?php if ($status == 'In Delivery') : ?>
         <div class="text-center">
             <img src="./lib/certificate-center/assets/images/delivery-scooter.gif" alt="delivery animation"
                 width="100px">
@@ -9,6 +19,18 @@
             <h3>In Delivery</h3>
             <h6>We are preparing your certificate</h6>
         </div>
+
+        <?php else : ?>
+        <div class="text-center">
+            <img src="./lib/certificate-center/assets/images/printer.gif" alt="printing animation" width="100px">
+        </div>
+
+        <div class="text-center mt-3">
+            <h3>In Printing</h3>
+            <h6>We are printing your certificate</h6>
+        </div>
+
+        <?php endif ?>
 
         <div class="row mt-5">
             <div class="col-6 fw-bold mb-2">
