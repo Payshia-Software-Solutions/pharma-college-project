@@ -56,6 +56,30 @@ function OpenIndex() {
     fetch_data();
 }
 
+function statusView() {
+    OpenPopup()
+    document.getElementById('pop-content').innerHTML = InnerLoader
+
+    function fetch_data() {
+        showOverlay()
+        $.ajax({
+            url: 'lib/certificate-center/views/status-view.php',
+            method: 'POST',
+            data: {
+                LoggedUser: LoggedUser,
+                UserLevel: UserLevel,
+                company_id: company_id,
+            },
+            success: function (data) {
+                $('#pop-content').html(data)
+                hideOverlay()
+            }
+        })
+    }
+
+    fetch_data()
+}
+
 
 
 

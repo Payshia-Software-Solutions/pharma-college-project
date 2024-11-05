@@ -132,19 +132,19 @@ $orderedCertificate = [
                         <table class="table">
                             <thead>
                                 <tr>
-                                    <th scope="col">Certificate</th>
-                                    <th scope="col">Order Date</th>
-                                    <th scope="col">Action</th>
+                                    <th scope="col">Certificate Name</th>
+                                    <!-- <th scope="col">Order Date</th> -->
+                                    <th scope="col">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <?php foreach ($orderedCertificate as $certificate) : ?>
                                 <tr>
                                     <td><?= $certificate['name'] ?></td>
-                                    <td><?= $certificate['created_at'] ?></td>
+
                                     <td>
-                                        <button onclick="OpenPaymentView(1, 'CPCC10')" class="btn btn-primary btn-sm"
-                                            type="button"><i class="fa-solid fa-eye"></i>
+                                        <button onclick="statusView()" class="btn btn-primary btn-sm" type="button"><i
+                                                class="fa-solid fa-eye"></i>
                                             View</button>
                                     </td>
                                 </tr>
