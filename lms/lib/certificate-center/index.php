@@ -8,19 +8,19 @@ $certificateList = [
         'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
     ],
     [
-        'id' => 1,
+        'id' => 2,
         'name' => 'Workshop Certificate',
         'bg_color' => '#8498ba',
         'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
     ],
     [
-        'id' => 1,
+        'id' => 3,
         'name' => 'Canada Certificate',
         'bg_color' => '#7aeb89',
         'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
     ],
     [
-        'id' => 1,
+        'id' => 4,
         'name' => 'Pharma Hunter Certificate',
         'bg_color' => '#b6d9bb',
         'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
@@ -34,31 +34,31 @@ $certificateList = [
 ];
 
 $orderedCertificate = [
-         [
-             'id' => 1,
-             'name' => 'Advanced Certificate',
-             'created_at' => '2022-01-01',
-             'bg_color' => '#797bba',
-             'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-             'status' => 'In Printing'
-         ],
-         [
-             'id' => 1,
-             'name' => 'Workshop Certificate',
-             'created_at' => '2022-01-25',
-             'bg_color' => '#8498ba',
-             'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-             'status' => 'In Delivery'
-         ],
-         [
-             'id' => 1,
-             'name' => 'Canada Certificate',
-             'created_at' => '2022-01-25',
-             'bg_color' => '#7aeb89',
-             'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-             'status' => 'Delivered'
-         ]
-         
+    [
+        'id' => 1,
+        'name' => 'Advanced Certificate',
+        'created_at' => '2022-01-01',
+        'bg_color' => '#797bba',
+        'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
+        'status' => 'In Printing'
+    ],
+    [
+        'id' => 1,
+        'name' => 'Workshop Certificate',
+        'created_at' => '2022-01-25',
+        'bg_color' => '#8498ba',
+        'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
+        'status' => 'In Delivery'
+    ],
+    [
+        'id' => 1,
+        'name' => 'Canada Certificate',
+        'created_at' => '2022-01-25',
+        'bg_color' => '#7aeb89',
+        'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
+        'status' => 'Delivered'
+    ]
+
 ];
 
 ?>
@@ -68,8 +68,6 @@ include './components/certificate-center-header.php';
 ?>
 
 <div class="row g-3">
-
-
     <?php if ($orderedCertificate) : ?>
     <div class="col-md-6">
         <?php else : ?>
@@ -87,7 +85,8 @@ include './components/certificate-center-header.php';
 
                     <?php foreach ($certificateList as $certificate) : ?>
                     <div class="col-md-6 d-flex mt-2">
-                        <div class="card rounded-1 clickable knowledge-card flex-fill">
+                        <div class="card rounded-1 clickable knowledge-card flex-fill"
+                            onclick="OpenCertificate('<?= $certificate['id'] ?>')">
                             <div class="card-body">
                                 <h4 class="mb-0 knowledge-title"
                                     style="--bg-color: <?= htmlspecialchars($certificate['bg_color']) ?>;">>

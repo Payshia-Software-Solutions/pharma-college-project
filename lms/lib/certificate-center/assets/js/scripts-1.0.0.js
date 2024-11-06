@@ -29,8 +29,6 @@ function hideOverlay() {
     overlay.style.display = "none";
 }
 
-
-
 const InnerLoader = document.getElementById(
     "inner-preloader-content"
 ).innerHTML;
