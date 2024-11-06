@@ -8,7 +8,7 @@ $criteraList = [
         'bar_width' => '10%',
     ],
     [
-       'id' => 2,
+        'id' => 2,
         'title' => 'Pharmer Hunter Game 1',
         'description' => '11',
         'bar_width' => '30%',
@@ -33,6 +33,9 @@ $criteraList = [
     ],
 ];
 
+$certificateEligibility = true;
+$certificateEligibility = false;
+
 ?>
 
 <div class="card border-0 shadow-lg rounded-4">
@@ -54,8 +57,7 @@ $criteraList = [
                                 aria-label="Basic example"
                                 aria-valuenow="0"
                                 aria-valuemin="0"
-                                aria-valuemax="100"
-                            >
+                                aria-valuemax="100">
                                 <div class="progress-bar" style="width: <?= htmlspecialchars($criteria['bar_width']) ?>;"></div>
                             </div>
                         </div>
@@ -63,17 +65,21 @@ $criteraList = [
                 </div>
             <?php endforeach; ?>
 
-    
+
         </div>
+        <div class="row mt-4">
+            <div class="col-12">
 
-        <!-- Button for getting certificate -->
-        <div class="d-grid gap-2 col-8 mx-auto mt-4">
-        <button class="btn btn-primary" type="button">Button</button>
-    </div>
+                <?php if ($certificateEligibility) : ?>
+                    <!-- Button for getting certificate -->
 
+                    <button class="btn btn-primary w-100" type="button">Button</button>
+
+                <?php else : ?>
+                    <div class="alert alert-warning mb-0">You are not Eligible for order this certificate. Please complete all Criteria</div>
+                <?php endif ?>
+            </div>
+        </div>
 
     </div>
 </div>
-
-
-
