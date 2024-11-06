@@ -1,0 +1,39 @@
+.heading {
+  margin: 1rem;
+  width: 30rem;
+  height: 7rem;
+  justify-self: center;
+  text-align: center;
+}
+
+.heading h1 {
+  padding: 0m;
+  margin: 0;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: "FILL" 10, "wght" 1000, "GRAD" 10, "opsz" 100;
+  margin: 0;
+  font-size: 3rem;
+  padding: 0;
+}
+
+.card-container {
+  justify-content: center;
+  margin: 1rem;
+  text-align: center;
+}
+
+.card {
+  margin: 0.3rem;
+  text-align: center;
+  height: fit-content;
+  width: 15rem;
+}
+
+@media only screen and (max-width: 360px) {
+  .heading {
+    margin: 2rem;
+    width: 15rem;
+  }
+}
