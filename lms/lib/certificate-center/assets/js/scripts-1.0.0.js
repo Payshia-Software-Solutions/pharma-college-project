@@ -134,6 +134,18 @@ function PickupOption(option) {
     fetch_data()
 }
 
+function orderConfirm() {
+    OpenPopup()
+    document.getElementById('pop-content').innerHTML = InnerLoader
+
+    showNotification("Successfully placed your order", "success", "Done!");
+    ClosePopUP();
+    OpenIndex();
+
+
+}
+
+
 
 
 
