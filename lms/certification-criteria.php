@@ -10,7 +10,7 @@
     <!-- Common CSS -->
     <?php include './include/common-css.php' ?>
     <!-- End of Common CSS -->
-    <title>Document</title>
+    <title>hello</title>
 </head>
 <body>
     
