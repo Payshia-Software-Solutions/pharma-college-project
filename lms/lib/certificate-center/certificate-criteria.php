@@ -34,7 +34,7 @@ $criteraList = [
 ];
 
 $certificateEligibility = true;
-$certificateEligibility = false;
+// $certificateEligibility = false;
 
 ?>
 
@@ -72,9 +72,7 @@ $certificateEligibility = false;
 
                 <?php if ($certificateEligibility) : ?>
                     <!-- Button for getting certificate -->
-
-                    <button class="btn btn-primary w-100" type="button">Button</button>
-
+                    <button class="btn btn-success w-100 btn-lg" type="button"><i class="fa fa-shopping-cart"></i> Order Certificate</button>
                 <?php else : ?>
                     <div class="alert alert-warning mb-0">You are not Eligible for order this certificate. Please complete all Criteria</div>
                 <?php endif ?>
