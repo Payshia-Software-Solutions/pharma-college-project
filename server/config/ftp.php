@@ -74,3 +74,6 @@ return [
 
 // // Close the FTP connection
 // ftp_close($ftp_conn);
+
+// ftp username : qa_deploy@pharmacollege.lk	
+// password : AF}y,0soi-EY
