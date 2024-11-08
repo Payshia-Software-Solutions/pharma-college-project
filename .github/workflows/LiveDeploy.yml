@@ -1,4 +1,4 @@
-name: 🚀 Deploy website on push LIVE
+name: 🚀 Deploy website on push LIVE API
 on:
   push:
     branches:
