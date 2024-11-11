@@ -1,7 +1,7 @@
 <?php
 // controllers/QMeter/QMeterSubmitController.php
 
-require_once 'models\QMeter\QMeterSubmit.php';
+require_once './models/QMeter/QMeterSubmit.php';
 
 class QMeterSubmitController
 {
