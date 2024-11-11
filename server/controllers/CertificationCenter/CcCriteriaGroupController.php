@@ -1,7 +1,7 @@
 <?php
 // controllers/CertificationCenter/CcCriteriaGroupController.php
 
-require_once 'models/CertificationCenter/CcCriteriaGroup.php';
+require_once './models/CertificationCenter/CcCriteriaGroup.php';
 
 class CcCriteriaGroupController
 {

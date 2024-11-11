@@ -1,7 +1,7 @@
 <?php
 // routes/CertificationCenter/ccCertificateOrderRoutes.php
 
-require_once 'controllers/CertificationCenter/CcCertificateOrderController.php';
+require_once './controllers/CertificationCenter/CcCertificateOrderController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];
