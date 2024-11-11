@@ -65,10 +65,36 @@ $courseRoutes = require './routes/Course/courseRoutes.php';
 $studentPaymentRoutes = require './routes/Student/studentPaymentRoutes.php';
 $supportTicketRoutes = require './routes/TicketRoutes/supportTicketRoutes.php';
 
+$activityLogRoutes = require './routes/OtherRoutes/activitylogsRoutes.php';
+$levelRoutes = require './routes/OtherRoutes/levelRoutes.php';
+$prescriptionRoutes = require './routes/Prescription/prescriptionRoutes.php';
+$prescriptionAnswerRoutes = require './routes/Prescription/prescriptionAnswerRoutes.php';
+$prescriptionAnswerSubmissionRoutes = require './routes/Prescription/prescriptionAnswerSubmissionRoutes.php';
+$prescriptionContentRoutes = require './routes/Prescription/prescriptionContentRoutes.php';
+$winpharmaCommonReasonRoutes = require './routes/Winpharma/winpharmaCommonReasonRoutes.php';
+$winPharmaLevelRoutes = require './routes/Winpharma/winPharmaLevelRoutes.php';
+$winPharmaLevelResourceRoutes = require './routes/Winpharma/winPharmaLevelResourceRoutes.php';
+$winPharmaSubmissionRoutes = require './routes/Winpharma/winPharmaSubmissionRoutes.php';
+$qMeterRoutes = require './routes/QMeter/qMeterRoutes.php';
+$qMeterOpenRoutes = require './routes/QMeter/qMeterOpenRoutes.php';
+$qMeterSubmitRoutes = require './routes/QMeter/qMeterSubmitRoutes.php';
+$ccCriteriaGroupRoutes = require './routes/CertificationCenter/ccCriteriaGroupRoutes.php';
+$ccCriteriaListRoutes = require './routes/CertificationCenter/ccCriteriaListRoutes.php';
+$ccGraduationPackageItemRoutes = require './routes/CertificationCenter/ccGraduationPackageItemRoutes.php';
+$ccCertificateListRoutes = require './routes/CertificationCenter/ccCertificateListRoutes.php';
+$ccGraduationPackageRoutes = require './routes/CertificationCenter/ccGraduationPackageRoutes.php';
+$ccCertificateOrderRoutes = require './routes\CertificationCenter\ccCertificationOrderRoutes.php';
+
+
+
+
+
+
 
 // if (!is_array($paymentRequestRoutes)) {
 //     throw new Exception("paymentRequestRoutes is not an array");
 // }
+$CeylonPharmacyCriteria = require './routes/CertificateCenter/certificateRoutes.php';
 
 // Combine all routes
 
@@ -116,7 +142,27 @@ $routes = array_merge(
     $paymentRequestRoutes,
     $courseRoutes,
     $studentPaymentRoutes,
-    $supportTicketRoutes
+    $supportTicketRoutes,
+    $activityLogRoutes,
+    $levelRoutes,
+    $prescriptionRoutes,
+    $prescriptionAnswerRoutes,
+    $prescriptionAnswerSubmissionRoutes,
+    $prescriptionContentRoutes,
+    $winpharmaCommonReasonRoutes,
+    $winPharmaLevelRoutes,
+    $winPharmaLevelResourceRoutes,
+    $winPharmaSubmissionRoutes,
+    $qMeterRoutes,
+    $qMeterOpenRoutes,
+    $qMeterSubmitRoutes,
+    $ccCriteriaGroupRoutes,
+    $ccCriteriaListRoutes,
+    $ccGraduationPackageItemRoutes,
+    $ccCertificateListRoutes,
+    $ccGraduationPackageRoutes,
+    $ccCertificateOrderRoutes
+    $CeylonPharmacyCriteria
 );
 
 
@@ -155,26 +201,23 @@ if ($uri !== '/') {
 // Debugging
 error_log("Method: $method");
 error_log("URI: $uri");
+// echo $uri . '<br>';
+
 
 // Route matching
 foreach ($routes as $route => $handler) {
     list($routeMethod, $routeUri) = explode(' ', $route, 2);
 
-
     // Convert route URI to regex
     $routeRegex = str_replace(
-        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}'],
-        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)'],
+        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{CourseCode}', '{loggedUser}'],
+        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)'],
         $routeUri
     );
 
-
-
-
     $routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
-
-
     error_log("Checking route: $routeRegex");
+    // echo $routeRegex . '<br>';
 
     if ($method === $routeMethod && preg_match($routeRegex, $uri, $matches)) {
         array_shift($matches); // Remove the full match

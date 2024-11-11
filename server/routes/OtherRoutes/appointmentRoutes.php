@@ -16,3 +16,5 @@ return [
     'PUT /appointments/{id}/' => [$appointmentController, 'updateAppointment'],
     'DELETE /appointments/{id}/' => [$appointmentController, 'deleteAppointment']
 ];
+
+?>
