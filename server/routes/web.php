@@ -83,12 +83,7 @@ $ccCriteriaListRoutes = require './routes/CertificationCenter/ccCriteriaListRout
 $ccGraduationPackageItemRoutes = require './routes/CertificationCenter/ccGraduationPackageItemRoutes.php';
 $ccCertificateListRoutes = require './routes/CertificationCenter/ccCertificateListRoutes.php';
 $ccGraduationPackageRoutes = require './routes/CertificationCenter/ccGraduationPackageRoutes.php';
-$ccCertificateOrderRoutes = require './routes\CertificationCenter\ccCertificationOrderRoutes.php';
-
-
-
-
-
+$ccCertificateOrderRoutes = require './routes/CertificationCenter/ccCertificationOrderRoutes.php';
 
 
 // if (!is_array($paymentRequestRoutes)) {
