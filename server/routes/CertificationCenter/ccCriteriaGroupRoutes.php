@@ -1,7 +1,7 @@
 <?php
 // routes/CertificationCenter/ccCriteriaGroupRoutes.php
 
-require_once 'controllers\CertificationCenter\CcCriteriaGroupController.php';
+require_once 'controllers/CertificationCenter/CcCriteriaGroupController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];

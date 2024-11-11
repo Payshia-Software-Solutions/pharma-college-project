@@ -161,7 +161,7 @@ $routes = array_merge(
     $ccGraduationPackageItemRoutes,
     $ccCertificateListRoutes,
     $ccGraduationPackageRoutes,
-    $ccCertificateOrderRoutes
+    $ccCertificateOrderRoutes,
     $CeylonPharmacyCriteria
 );
 
