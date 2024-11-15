@@ -1,8 +1,8 @@
-name: 🚀 Deploy website on push
+name: 🚀 Deploy website on push LIVE API
 on:
   push:
     branches:
-      - main  # Trigger deployment on push to the main branch
+      - live  # Trigger deployment on push to the main branch
       
 jobs:
   web-deploy:

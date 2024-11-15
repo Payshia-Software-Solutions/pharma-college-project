@@ -64,6 +64,7 @@ $paymentRequestRoutes = require './routes/Payment/paymentRequestRoutes.php';
 $courseRoutes = require './routes/Course/courseRoutes.php';
 $studentPaymentRoutes = require './routes/Student/studentPaymentRoutes.php';
 $supportTicketRoutes = require './routes/TicketRoutes/supportTicketRoutes.php';
+
 $activityLogRoutes = require './routes/OtherRoutes/activitylogsRoutes.php';
 $levelRoutes = require './routes/OtherRoutes/levelRoutes.php';
 $prescriptionRoutes = require './routes/Prescription/prescriptionRoutes.php';
@@ -93,6 +94,7 @@ $ccCertificateOrderRoutes = require './routes\CertificationCenter\ccCertificatio
 // if (!is_array($paymentRequestRoutes)) {
 //     throw new Exception("paymentRequestRoutes is not an array");
 // }
+$CeylonPharmacyCriteria = require './routes/CertificateCenter/certificateRoutes.php';
 
 // Combine all routes
 
@@ -160,6 +162,7 @@ $routes = array_merge(
     $ccCertificateListRoutes,
     $ccGraduationPackageRoutes,
     $ccCertificateOrderRoutes
+    $CeylonPharmacyCriteria
 );
 
 
@@ -198,26 +201,23 @@ if ($uri !== '/') {
 // Debugging
 error_log("Method: $method");
 error_log("URI: $uri");
+// echo $uri . '<br>';
+
 
 // Route matching
 foreach ($routes as $route => $handler) {
     list($routeMethod, $routeUri) = explode(' ', $route, 2);
 
-
     // Convert route URI to regex
     $routeRegex = str_replace(
-        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}'],
-        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)'],
+        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{CourseCode}', '{loggedUser}'],
+        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)'],
         $routeUri
     );
 
-
-
-
     $routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
-
-
     error_log("Checking route: $routeRegex");
+    // echo $routeRegex . '<br>';
 
     if ($method === $routeMethod && preg_match($routeRegex, $uri, $matches)) {
         array_shift($matches); // Remove the full match
