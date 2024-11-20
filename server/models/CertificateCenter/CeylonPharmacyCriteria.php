@@ -1,4 +1,6 @@
 <?php
+
+
 class CeylonPharmacyCriteria
 {
     private $pdo;
@@ -43,5 +45,27 @@ class CeylonPharmacyCriteria
         }
 
         return $recoveredCount;
+    }
+
+    // New method to fetch the correct answer count for a user
+    public function getCorrectAnswersCount($loggedUser)
+    {
+        $correctAnswersCount = 0;
+
+        // Fetch the correct answer count from the database (assuming there is a table `student_answers`)
+        $stmt = $this->pdo->prepare("
+            SELECT COUNT(*) AS correct_count
+            FROM `student_answers` sa
+            LEFT JOIN `questions` q ON sa.`question_id` = q.`id`
+            WHERE sa.`student_id` = ? AND sa.`answer_status` = 'Correct'
+        ");
+        $stmt->execute([$loggedUser]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($result) {
+            $correctAnswersCount = $result['correct_count'];
+        }
+
+        return $correctAnswersCount;
     }
 }

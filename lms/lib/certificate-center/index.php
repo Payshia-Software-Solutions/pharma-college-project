@@ -1,5 +1,8 @@
 <?php
 
+$LoggedUser = $_POST['LoggedUser'];
+
+
 $certificateList = [
     [
         'id' => 1,
