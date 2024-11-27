@@ -13,5 +13,7 @@ return [
     'PUT /hunter_saveanswer/{id}/' => [$hunterSaveAnswerController, 'updateRecord'],
     'DELETE /hunter_saveanswer/{id}/' => [$hunterSaveAnswerController, 'deleteRecord'],
     'GET /hunter_saveanswer/' => [$hunterSaveAnswerController, 'getAllSavedAnswers'],
-    'GET /hunter_saveanswer/{username}/' => [$hunterSaveAnswerController, 'HunterSavedAnswersByUser']
+    'GET /hunter_saveanswer/{username}/' => [$hunterSaveAnswerController, 'HunterSavedAnswersByUser'],
+
+
 ];

@@ -26,6 +26,13 @@ class StudentPayment
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getRecordByUser($studentNumber)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM student_payment WHERE `student_id` = :studentNumber");
+        $stmt->execute(['studentNumber' => $studentNumber]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function createRecord($data)
     {
         if (!isset($data['created_at'])) {
@@ -36,7 +43,7 @@ class StudentPayment
                 (receipt_number, course_code, student_id, paid_amount, discount_amount, payment_status, payment_type, paid_date, created_at, created_by, reason) 
                 VALUES 
                 (:receipt_number, :course_code, :student_id, :paid_amount, :discount_amount, :payment_status, :payment_type, :paid_date, :created_at, :created_by, :reason)";
-        
+
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($data);
     }
@@ -118,7 +125,7 @@ class StudentPayment
                     (receipt_number, course_code, student_id, paid_amount, discount_amount, payment_status, payment_type, paid_date, created_at, created_by, reason) 
                     VALUES 
                     (:receipt_number, :course_code, :student_id, :paid_amount, :discount_amount, :payment_status, :payment_type, :paid_date, :created_at, :created_by, :reason)";
-            
+
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([
                 'receipt_number' => $newReceiptNumber, // Use the newly generated receipt number

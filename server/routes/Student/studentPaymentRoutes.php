@@ -13,5 +13,7 @@ return [
     'PUT /student-payment/{id}/' => [$studentPaymentController, 'updateRecord'],
     'DELETE /student-payment/{id}/' => [$studentPaymentController, 'deleteRecord'],
     'POST /student-payment-with-status-update/' => [$studentPaymentController, 'createRecordAndUpdateStatus'],
+    'GET /student-payment/{username}/' => [$studentPaymentController, 'getRecordByUser'],
+
 
 ];
