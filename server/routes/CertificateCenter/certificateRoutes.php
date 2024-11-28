@@ -10,7 +10,7 @@ $CeylonPharmacyCriteriaController = new CeylonPharmacyCriteriaController($pdo);
 // Define an array of routes
 return [
     // Define a GET route to handle the "recovered-patients" endpoint with dynamic parameters
-    'GET /certificate-criteria/recovered-patients/\?CourseCode=[\w]+&loggedUser=[\w]+/$' => function () use ($CeylonPharmacyCriteriaController) {
+    'GET /certificate-criteria/recovered-patients/\?CourseCode=[\w]+&LoggedUser=[\w]+/$' => function () use ($CeylonPharmacyCriteriaController) {
 
         // Call the controller method with the query parameters
         return $CeylonPharmacyCriteriaController->getRecoveredPatientsByCourse($_GET);

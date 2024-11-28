@@ -34,7 +34,10 @@ class CcCertificateOrderController
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['updated_at'] = date('Y-m-d H:i:s');
 
+
         $this->model->createOrder($data);
+
+        http_response_code(201);
         echo json_encode(["message" => "Order created successfully"]);
     }
 
