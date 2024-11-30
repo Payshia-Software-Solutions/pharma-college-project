@@ -28,3 +28,21 @@
   background-color: #f7f7f5;
   transform: translateY(-2px);
 }
+
+.desktop-view {
+  display: block; /* Show desktop form */
+}
+
+.mobile-view {
+  display: none; /* Hide mobile form */
+}
+
+/* Mobile View Styles */
+@media (max-width: 768px) {
+  .desktop-view {
+    display: none;
+  }
+  .mobile-view {
+    display: block;
+  }
+}

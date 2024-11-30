@@ -124,41 +124,6 @@ function CloseCertificateForm(loggedUser, certificateId) {
   fetch_data(); // Execute the AJAX request.
 }
 
-// function SaveCertificate(certificateId) {
-//    // Example: retrieve LoggedUser dynamically if not hardcoded.
-
-//   function fetch_data() {
-//     showOverlay();
-//     $.ajax({
-//       url: "./pharma-college-project/server/cc_certificate_order/",
-//       method: "POST",
-//       data: {
-//         LoggedUser: LoggedUser,
-//         certificateId: certificateId,
-//         mobile: mobile,
-//         address_line1: address_line1,
-//         address_line2: address_line2,
-//         city: city,
-//       },
-//       success: function (data) {
-//         var response = JSON.parse(data);
-//         if (response.status === "success") {
-//           showNotification(response.message, "success", "Done!");
-//           AddTopics(); // If needed
-//         } else {
-//           showNotification(response.message, "error", "Oops!");
-//         }
-//         hideOverlay();
-//       },
-//     });
-//   }
-//   if (mobile && address_line1 && city) {
-//     fetch_data();
-//   } else {
-//     showNotification("Please fill all required fields!", "error", "Oops!");
-//   }
-// }
-
 function submitOrder(certificateId) {
   var form = document.getElementById("order_form");
 
