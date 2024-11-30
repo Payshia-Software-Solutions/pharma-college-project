@@ -1,6 +1,7 @@
 <?php
 
 require '../../vendor/autoload.php';
+require_once '../../php_handler/function_handler.php';
 
 use Symfony\Component\HttpClient\HttpClient;
 
@@ -42,8 +43,6 @@ $firstName = $formData['first_name'] ?? null;
 $lastName = $formData['last_name'] ?? null;
 $fullName = $firstName . ' ' . $lastName;
 
-$city = $formData['city'] ?? null;
-
 // Output the mobile number
 //echo $mobile;
 //echo $addressLine1;
@@ -63,6 +62,41 @@ $formData3 = $certificateData->toArray();
 $Title = $formData3['list_name'] ?? 0;
 //print_r($Title);
 
+require_once '../../php_handler/function_handler.php'; // Include your function file
+
+// Fetch all cities
+$cities = GetCities($link);
+
+// Extract `name_en` values
+$cityNames = [];
+foreach ($cities as $city) {
+    if (isset($city['name_en'])) {
+        $cityNames[] = $city['name_en'];
+    }
+}
+
+// Validation logic for Mobile and Address Line 1
+$mobileError = $addressLine1Error = "";
+
+// Check if the form is submitted
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Validate Mobile Number
+    if (empty($_POST["mobile"])) {
+        $mobileError = "Mobile number is required.";
+    } else {
+        $mobile = htmlspecialchars($_POST["mobile"]);
+        if (!preg_match("/^\d{10}$/", $mobile)) {
+            $mobileError = "Mobile number must be 10 digits.";
+        }
+    }
+
+    // Validate Address Line 1
+    if (empty($_POST["address_line1"])) {
+        $addressLine1Error = "Address Line 1 is required.";
+    } else {
+        $addressLine1 = htmlspecialchars($_POST["address_line1"]);
+    }
+}
 
 ?>
 
@@ -78,7 +112,94 @@ $Title = $formData3['list_name'] ?? 0;
         </div>
     </div>
 
-    <form id="order_form" action="" method="post">
+    <!--desktop view-->
+
+    <form class="desktop-view" id="order_form" action="" method="post">
+        <div class="text-center p-10">
+            <h3 class="p-2 fw-bold"><?= $Title ?> Order Form</h3>
+        </div>
+
+        <!-- Hidden input to auto-fill created_by -->
+        <div class="form-group row">
+            <div class="col-5">
+                <label for="Student_ID">Student ID:</label>
+                <input type="text" class="form-control" id="created_by" name="created_by" value=<?= htmlspecialchars($LoggedUser) ?> readonly>
+                <br>
+            </div>
+            <div class="col-7">
+                <!--Student Name-->
+                <label for="fullName">Full Name:</label>
+                <input type="text" class="form-control" id="fullName" name="fullName" value="<?= htmlspecialchars($fullName) ?>" required readonly>
+                <br>
+            </div>
+        </div>
+
+
+        <div class="form-group row">
+            <!-- Mobile Number -->
+            <div class="col-5">
+                <label for="mobile">Mobile Number:</label>
+                <input type="text" class="form-control" id="mobile" name="mobile" value="<?= htmlspecialchars($mobile) ?>" required>
+                <?php if (!empty($mobileError)): ?>
+                    <div class="text-danger"><?= $mobileError ?></div>
+                <?php endif; ?>
+                <br>
+            </div>
+            <!-- Address Line 1 -->
+            <div class="col-7">
+                <label for="address_line1">Address Line 1:</label>
+                <input type="text" class="form-control" id="address_line1" name="address_line1" value="<?= htmlspecialchars($addressLine1) ?>" required>
+                <?php if (!empty($addressLine1Error)): ?>
+                    <div class="text-danger"><?= $addressLine1Error ?></div>
+                <?php endif; ?>
+                <br>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <!--city_id-->
+            <div class="col-5">
+                <label for="city-dropdown">Select City:</label>
+                <select name="city_id" id="city_id" class="form-control" required>
+                    <option value="" disabled selected>Select City</option>
+                    <?php foreach ($cities as $city): ?>
+                        <option value="<?= htmlspecialchars($city['id'], ENT_QUOTES, 'UTF-8') ?>">
+                            <?= htmlspecialchars($city['name_en'], ENT_QUOTES, 'UTF-8') ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <br>
+            </div>
+            <!-- Address Line 2 -->
+            <div class="col-7">
+                <label for="address_line2">Address Line 2:</label>
+                <input type="text" class="form-control" id="address_line2" name="address_line2" value="<?= htmlspecialchars($addressLine2) ?>">
+                <br>
+            </div>
+        </div>
+
+
+
+        <input type="hidden" name="type" value="1">
+        <input type="hidden" name="payment" value="12000">
+        <input type="hidden" name="package_id" value="1">
+        <input type="hidden" name="certificate_id" value="1">
+        <input type="hidden" name="certificate_status" value="print">
+        <input type="hidden" name="cod_amount" value="111">
+        <input type="hidden" name="is_active" value="1">
+
+        <!--Submit Button-->
+
+        <button class="btn btn-success w-100 btn-lg"
+            onclick="submitOrder('<?= $certificateId ?>')"
+            type="button">Order</button>
+
+    </form>
+
+
+    <!--mobile view-->
+
+    <form class="mobile-view" id="order_form" action="" method="post">
         <div class="text-center p-10">
             <h3 class="p-2 fw-bold"><?= $Title ?> Order Form</h3>
         </div>
@@ -93,7 +214,7 @@ $Title = $formData3['list_name'] ?? 0;
         <!--Student Name-->
         <div class="form-group">
             <label for="fullName">Full Name:</label>
-            <input type="text" class="form-control" id="fullName" name="fullName" value="<?= htmlspecialchars($fullName) ?>" required>
+            <input type="text" class="form-control" id="fullName" name="fullName" value="<?= htmlspecialchars($fullName) ?>" required readonly>
             <br>
         </div>
 
@@ -101,6 +222,9 @@ $Title = $formData3['list_name'] ?? 0;
         <div class="form-group">
             <label for="mobile">Mobile Number:</label>
             <input type="text" class="form-control" id="mobile" name="mobile" value="<?= htmlspecialchars($mobile) ?>" required>
+            <?php if (!empty($mobileError)): ?>
+                <div class="text-danger"><?= $mobileError ?></div>
+            <?php endif; ?>
             <br>
         </div>
 
@@ -108,6 +232,9 @@ $Title = $formData3['list_name'] ?? 0;
         <div class="form-group">
             <label for="address_line1">Address Line 1:</label>
             <input type="text" class="form-control" id="address_line1" name="address_line1" value="<?= htmlspecialchars($addressLine1) ?>" required>
+            <?php if (!empty($addressLine1Error)): ?>
+                <div class="text-danger"><?= $addressLine1Error ?></div>
+            <?php endif; ?>
             <br>
         </div>
 
@@ -118,12 +245,21 @@ $Title = $formData3['list_name'] ?? 0;
             <br>
         </div>
 
-        <!-- City -->
+        <!--city_id-->
         <div class="form-group">
-            <label for="city_id">City:</label>
-            <input type="text" class="form-control" id="city_id" name="city_id" value="<?= htmlspecialchars($city) ?>">
+            <label for="city-dropdown">Select City:</label>
+            <select name="city_id" id="city_id" class="form-control" required>
+                <option value="" disabled selected>Select City</option>
+                <?php foreach ($cities as $city): ?>
+                    <option value="<?= htmlspecialchars($city['id'], ENT_QUOTES, 'UTF-8') ?>">
+                        <?= htmlspecialchars($city['name_en'], ENT_QUOTES, 'UTF-8') ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
             <br>
         </div>
+
+
 
         <input type="hidden" name="type" value="1">
         <input type="hidden" name="payment" value="12000">
@@ -137,10 +273,12 @@ $Title = $formData3['list_name'] ?? 0;
 
         <button class="btn btn-success w-100 btn-lg"
             onclick="submitOrder('<?= $certificateId ?>')"
-            type="button">save</button>
+            type="button">Order</button>
 
     </form>
+
 </div>
+
 
 <!-- <script>
     // Get the radio buttons and packageGroup div

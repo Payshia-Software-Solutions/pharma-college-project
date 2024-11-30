@@ -26,9 +26,10 @@ class CcCriteriaGroup
 
     public function createCriteriaGroup($data)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO `cc_criteria_group` (`group_name`, `created_at`, `created_by`, `is_active`) VALUES (?, ?, ?, ?)");
+        $stmt = $this->pdo->prepare("INSERT INTO `cc_criteria_group` (`group_name`,`criteria_group`, `created_at`, `created_by`, `is_active`) VALUES (?, ?, ?, ?)");
         $stmt->execute([
             $data['group_name'],
+            $data['criteria_group'],
             $data['created_at'],
             $data['created_by'],
             $data['is_active']
@@ -37,9 +38,10 @@ class CcCriteriaGroup
 
     public function updateCriteriaGroup($id, $data)
     {
-        $stmt = $this->pdo->prepare("UPDATE `cc_criteria_group` SET `group_name` = ?, `created_at` = ?, `created_by` = ?, `is_active` = ? WHERE `id` = ?");
+        $stmt = $this->pdo->prepare("UPDATE `cc_criteria_group` SET `group_name` = ?,`criteria_group`=?, `created_at` = ?, `created_by` = ?, `is_active` = ? WHERE `id` = ?");
         $stmt->execute([
             $data['group_name'],
+            $data['criteria_group'],
             $data['created_at'],
             $data['created_by'],
             $data['is_active'],
