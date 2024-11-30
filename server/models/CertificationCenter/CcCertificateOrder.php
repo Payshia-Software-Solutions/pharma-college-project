@@ -53,11 +53,12 @@ class CcCertificateOrder
     public function createOrder($data)
     {
         // Prepare and execute the insert statement
-        $stmt = $this->pdo->prepare("INSERT INTO `cc_certificate_order` (`created_by`, `created_at`, `updated_at`, `mobile`, `address_line1`, `address_line2`, `city_id`, `type`, `payment`, `package_id`, `certificate_id`, `certificate_status`, `cod_amount`, `is_active`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $this->pdo->prepare("INSERT INTO `cc_certificate_order` (`created_by`, `created_at`, `updated_at`, `course_code`, `mobile`, `address_line1`, `address_line2`, `city_id`, `type`, `payment`, `package_id`, `certificate_id`, `certificate_status`, `cod_amount`, `is_active`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $data['created_by'],
             $data['created_at'],
             $data['updated_at'],
+            $data['course_code'],
             $data['mobile'],
             $data['address_line1'],
             $data['address_line2'],
@@ -75,11 +76,12 @@ class CcCertificateOrder
 
     public function updateOrder($id, $data)
     {
-        $stmt = $this->pdo->prepare("UPDATE `cc_certificate_order` SET `created_by` = ?, `created_at` = ?, `updated_at` = ?, `mobile` = ?, `address_line1` = ?, `address_line2` = ?, `city_id` = ?, `type` = ?, `payment` = ?, `package_id` = ?, `certificate_id` = ?, `certificate_status` = ?, `cod_amount` = ?, `is_active` = ? WHERE `id` = ?");
+        $stmt = $this->pdo->prepare("UPDATE `cc_certificate_order` SET `created_by` = ?, `created_at` = ?, `updated_at` = ?, `course_code` = ?, `mobile` = ?, `address_line1` = ?, `address_line2` = ?, `city_id` = ?, `type` = ?, `payment` = ?, `package_id` = ?, `certificate_id` = ?, `certificate_status` = ?, `cod_amount` = ?, `is_active` = ? WHERE `id` = ?");
         $stmt->execute([
             $data['created_by'],
             $data['created_at'],
             $data['updated_at'],
+            $data['course_code'],
             $data['mobile'],
             $data['address_line1'],
             $data['address_line2'],

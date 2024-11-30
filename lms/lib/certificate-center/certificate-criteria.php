@@ -218,12 +218,12 @@ foreach ($criteraList as $criteria) {
                 $index = 0;
 
                 //!check order button
-                // $correctCount = 1000;
-                // $recoveredCount = 50;
-                // $Assignment_01 = 50;
-                // $Assignment_02 = 50;
-                // $Assignment_03 = 50;
-                // $dueBalance = 0;
+                $correctCount = 1000;
+                $recoveredCount = 50;
+                $Assignment_01 = 50;
+                $Assignment_02 = 50;
+                $Assignment_03 = 50;
+                $dueBalance = 0;
 
                 foreach ($criteriaWithListNames as $criteria) {
                     $listName = $criteria['list_name'];
