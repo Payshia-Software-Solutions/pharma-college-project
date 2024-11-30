@@ -119,6 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <h3 class="p-2 fw-bold"><?= $Title ?> Order Form</h3>
         </div>
 
+        <input type="hidden" name="course_code" value="<?= htmlspecialchars($CourseCode) ?>">
         <!-- Hidden input to auto-fill created_by -->
         <div class="form-group row">
             <div class="col-5">
@@ -205,6 +206,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </div>
 
         <!-- Hidden input to auto-fill created_by -->
+
+        <input type="hidden" name="course_code" value="<?= htmlspecialchars($CourseCode) ?>">
         <div class="form-group">
             <label for="Student_ID">Student ID:</label>
             <input type="text" class="form-control" id="created_by" name="created_by" value=<?= htmlspecialchars($LoggedUser) ?> readonly>

@@ -14,6 +14,7 @@ $client = HttpClient::create();
 
 $LoggedUser = $_POST['LoggedUser'];
 $certificateId = $_POST['certificateId'];
+$CourseCode = $_POST['CourseCode'];
 
 // Get the form data
 $formdata = $_POST;
@@ -22,7 +23,7 @@ $timeDate = date("Y-m-d H:i:s");
 
 
 // Make the POST request to send the payment data along with the image
-$response = $client->request('POST', 'http://localhost/pharma-college-project/server/cc_certificate_order', [
+$response = $client->request('POST', $_ENV["SERVER_URL"] . '/cc_certificate_order', [
     'headers' => [
         'Content-Type' => 'application/json',
     ],
@@ -32,6 +33,7 @@ $response = $client->request('POST', 'http://localhost/pharma-college-project/se
         'created_by' => $LoggedUser,
         'created_at' => $timeDate,
         'updated_at' => $timeDate,
+        'course_code' => $CourseCode,
         'mobile' => $formdata['mobile'],
         'address_line1' => $formdata['address_line1'],
         'address_line2' => $formdata['address_line2'],

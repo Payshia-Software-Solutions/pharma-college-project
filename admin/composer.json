@@ -10,7 +10,8 @@
         "twbs/bootstrap": "^5.3",
         "fortawesome/font-awesome": "^6.6",
         "vlucas/phpdotenv": "^5.6",
-        "components/jquery": "^3.7"
+        "components/jquery": "^3.7",
+        "chillerlan/php-qrcode": "^5.0"
 
     }
 }
