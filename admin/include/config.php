@@ -33,7 +33,7 @@ try {
 
 
 // Establish LMS Connection
-$server = "109.70.148.53";
+$server = "91.204.209.19";
 $username = "pharmaco_admin";
 $password = "pharmaadmin";
 $database = "pharmaco_pharmacollege";

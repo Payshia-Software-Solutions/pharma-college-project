@@ -1,4 +1,9 @@
 <?php
+
+error_reporting(E_ALL); // Report all PHP errors
+ini_set('display_errors', 1); // Display errors on the page
+ini_set('display_startup_errors', 1); // Display startup errors
+
 require_once('../../../include/config.php');
 include '../../../include/function-update.php';
 include '../../../include/finance-functions.php';
@@ -26,6 +31,7 @@ $reportDate = $generateDate->format('d/m/Y H:i:s');
 
 // Winpharma
 $winpharmaLevels = GetLevels($lms_link, $studentBatch);
+$taskList = GetAllTasks($lms_link);
 $courseTopLevel = GetCourseTopLevel($lms_link, $studentBatch);
 $winpharmaTopLevels =  GetTopLevelAllUsersCompleted($lms_link, $studentBatch);
 
@@ -88,14 +94,31 @@ $reportTitle = "Winpharma Assessment Report";
                     <tr>
                         <th>Index No</th>
                         <th>Name</th>
-                        <th>WinPharma</th>
+                        <th>Last Completed WinPharma</th>
+                        <?php
+
+                        $totalLevels = 0;
+                        $taskCounts = [];
+                        foreach ($winpharmaLevels as $level) :
+                            $LevelCode = $level['level_id']; // Assuming 'level_code' is the key for the level code.
+                            $tasks = GetTasks($lms_link, $LevelCode);
+                            $taskCounts[$LevelCode] = count($tasks);
+                            $totalLevels += count($tasks);
+                        ?>
+                            <th><?= $level['level_name'] ?></th>
+                        <?php endforeach ?>
+                        <th>Total</th>
+                        <th>Marks</th>
+                        <th>Percentage</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
+
                     if (!empty($userList)) {
                         foreach ($userList as $selectedArray) {
 
+                            $submissionCount = 0;
                             $selectedStudent = $selectedArray['student_id'];
                             $selectedUsername =  $userDetails[$selectedStudent]['username'];
 
@@ -104,12 +127,29 @@ $reportTitle = "Winpharma Assessment Report";
                             } else {
                                 $winpharmaCurrentTopLevel = $courseTopLevel;
                             }
+
+                            $submissionsByUser = GetWinpharmaCompletedResourceIds($lms_link, $selectedUsername, $winpharmaCurrentTopLevel);
                     ?>
                             <tr>
                                 <td class="border-bottom"><?= $userDetails[$selectedStudent]['username'] ?></td>
                                 <td class="border-bottom"><?= $userDetails[$selectedStudent]['name_on_certificate'] ?></td>
+
                                 <td class="border-bottom text-center"><?= $winpharmaLevels[$winpharmaCurrentTopLevel]['level_name'] ?></td>
+                                <?php
+                                foreach ($winpharmaLevels as $level) :
+                                    $levelId = $level['level_id'];
+                                    $submissionsByUser = GetWinpharmaCompletedResourceIds($lms_link, $selectedUsername, $levelId);
+                                    $submissionCount += count($submissionsByUser);
+                                ?>
+                                    <td class="border-bottom text-center"><?= count($submissionsByUser) ?>/<?= $taskCounts[$levelId]; ?></td>
+                                <?php endforeach ?>
+                                <td class="border-bottom text-center"><?= $submissionCount ?>/<?= $totalLevels ?></td>
+                                <td class="border-bottom text-center"><?= $submissionCount ?></td>
+                                <td class="border-bottom text-center"><?= ($submissionCount / $totalLevels) * 100 ?>%</td>
                             </tr>
+
+
+
                     <?php
                         }
                     }
