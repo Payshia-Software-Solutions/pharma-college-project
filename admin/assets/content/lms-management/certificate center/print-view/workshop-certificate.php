@@ -10,7 +10,6 @@ $PrintDate = $_GET['issuedDate'];
 $CourseCode = $_GET['selectedCourse'];
 $templateId = $_GET['certificateTemplate'];
 $backImageStatus = $_GET['backImageStatus'];
-$orientationStatus = $_GET['orientationStatus'];
 $TemplateDetails = GetTemplate($templateId);
 $batchStudents =  GetLmsStudents();
 $studentDetailsArray = $batchStudents[$s_user_name];
@@ -18,10 +17,7 @@ $studentDetailsArray = $batchStudents[$s_user_name];
 if (isset($TemplateDetails[$templateId])) {
     $Template = $TemplateDetails[$templateId];
 }
-$pgWidth = 297;
-if ($orientationStatus == 'Portrait') {
-    $pgWidth = 210;
-}
+
 $qr_position_from_left = $Template['left_to_qr'];
 $qr_position_from_top = $Template['top_to_qr'];
 $qr_code_width = $Template['qr_width'];
@@ -34,17 +30,16 @@ $name_position_from_top = $Template['top_to_name'];
 $backImage = $Template['back_image'];
 
 $printDate = date("Y-m-d H:i:s");
-$certificateEntryResult = EnterCertificateEntry($printDate, 1, $loggedUser, 'Certificate', $s_user_name, $CourseCode);
+$certificateEntryResult = EnterCertificateEntry($printDate, 1, $loggedUser, 'Workshop-Certificate', $s_user_name, $CourseCode);
 // var_dump($certificateEntryResult);
 
-require_once __DIR__ . '/../../../../../vendor/autoload.php'; // Include the QR Code library
+// Include the vender
+require_once(__DIR__ . '/../../../../../vendor/autoload.php');
 
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
 
-// Data for the QR code (URL or any string you want to encode)
-$data = "https://pharmacollege.lk/result-view.php?CourseCode=" . $CourseCode . "&LoggedUser=" . $s_user_name;
-
+$text = "https://pharmacollege.lk/result-view.php?CourseCode=" . $CourseCode . "&LoggedUser=" . $s_user_name;
 // QR Code settings
 $options = new QROptions([
     'eccLevel' => QRCode::ECC_L, // Error correction level
@@ -55,7 +50,7 @@ $options = new QROptions([
 $qrCode = new QRCode($options);
 
 // Generate the QR code image (this returns binary data)
-$imageData = $qrCode->render($data);
+$imageData = $qrCode->render($text);
 
 // Test by saving the image to a file
 file_put_contents('qr_code.png', $imageData);  // Save the generated QR code image to a file
@@ -70,11 +65,6 @@ if (empty($imageBase64)) {
     // Output the base64 string (for debugging)
     //     echo "QR Code Base64: " . $imageBase64;
 }
-
-// Embed the QR code as an image in the HTML page
-// echo '<img width="100px" height="100px" src="data:image/png;base64,' . $imageBase64 . '" alt="QR Code" />';
-// echo '<img src="' . (new QRCode)->render($data) . '" alt="QR Code" />';
-
 ?>
 
 <title><?= $s_user_name ?> - <?= $CourseCode ?> - Certificate Print</title>
@@ -104,8 +94,8 @@ if (empty($imageBase64)) {
 
     .pv-number {
         position: fixed;
-        left: <?= $pgWidth - 30 ?>mm;
-        top: 5mm
+        left: 273mm;
+        top: 2mm
     }
 
     .certificate-user {
@@ -113,7 +103,7 @@ if (empty($imageBase64)) {
         /* border: 1px solid black; */
 
         font-family: "Chaparral Pro Bold Italic";
-        width: calc(<?= $pgWidth ?>mm - 100px);
+        width: calc(297mm - 100px);
         font-size: 35px;
         text-align: center !important;
         font-weight: 800 !important;
@@ -151,11 +141,10 @@ if (empty($imageBase64)) {
     }
 </style>
 
-
 <?php
 if ($backImage != "" && $backImageStatus == 1) {
 ?>
-    <img class="back-image" src="../assets/images/certificate-back/ <?= $backImage ?>">
+    <img class="back-image" src="../assets/images/certificate-back/<?= $backImage ?>">
 <?php
 }
 ?>
@@ -164,9 +153,7 @@ if ($backImage != "" && $backImageStatus == 1) {
     <p class="certificate-user"><?= $studentDetailsArray['name_on_certificate'] ?></p>
 
 </div>
-
-<img class="qr-code" src=<?= (new QRCode)->render($data) ?> />
-
+<img class="qr-code" src=<?= (new QRCode)->render($text) ?> />
 <p class="print-date">Date:<?= $PrintDate ?></p>
 <p class="print-number">Index Number:<?= $s_user_name ?></p>
-<p class="certificate-number">Certificate ID:<?= GetCertificateID('Certificate', $s_user_name, $CourseCode) ?></p>
+<p class="certificate-number">Certificate ID:<?= GetCertificateID('Workshop-Certificate', $s_user_name, $CourseCode) ?></p>

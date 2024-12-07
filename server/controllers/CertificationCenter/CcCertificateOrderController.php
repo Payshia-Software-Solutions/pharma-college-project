@@ -55,4 +55,24 @@ class CcCertificateOrderController
         $this->model->deleteOrder($id);
         echo json_encode(["message" => "Order deleted successfully"]);
     }
+
+
+    public function updateCertificateStatus($id)
+    {
+        // Get the status from the request body
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        // Ensure certificate status is set in the request
+        if (!isset($data['certificate_status'])) {
+            echo json_encode(["error" => "Certificate status is required"]);
+            return;
+        }
+
+        $certificateStatus = $data['certificate_status'];
+
+        // Call the model's updateCertificateStatus method
+        $this->model->updateCertificateStatus($id, $certificateStatus);
+
+        echo json_encode(["message" => "Certificate status updated successfully"]);
+    }
 }

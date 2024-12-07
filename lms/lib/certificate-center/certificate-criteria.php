@@ -144,7 +144,7 @@ $batchList =  GetCourses($link);
 $studentBalanceArray = GetStudentBalance($LoggedUser);
 $dueBalance = $studentBalanceArray['studentBalance'];
 
-//!certificate title
+//!certificate title & criteria group id
 
 //certificate Title
 $certificateName = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_certificate_list/' . $certificateId);
@@ -153,15 +153,17 @@ $certificateName = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_certificat
 $data6 = $certificateName->toArray();
 //print_r($data6);
 $Title = $data6['list_name'] ?? 0;
+$CertificateCriteriaaGroupId = $data6['criteria_group_id'];
 //print_r($Title);
 
 //! Get certificate Criteria Group
 
 // Fetch the data from the server
-$certificateName = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_criteria_group/' . $certificateId);
+$certificateName = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_criteria_group/' . $CertificateCriteriaaGroupId);
 
 // Convert the response to an array
 $data6 = $certificateName->toArray();
+//print_r($data6);
 
 // Extract criteria_group JSON string
 $cdata = $data6['criteria_group'] ?? null;
@@ -173,35 +175,40 @@ if ($cdata) {
     $criteraList = json_decode($cdata, true);
 }
 
-// If criteriaList is not an array, provide an empty array
+// If $criteraList is not an array, provide an empty array
 if (!is_array($criteraList)) {
     $criteraList = [];
 }
 
-//! Get certificate Criteria List
+// print_r($criteraList);
+
 // Initialize an array to store results
 $criteriaWithListNames = [];
 
-// Loop through the criteria list
-foreach ($criteraList as $criteria) {
-    $title = $criteria['title'] ?? null;
-
-    if ($title) {
-        // Fetch the list_name from the /cc_criteria_list/{id}/ API endpoint
-        $response = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_criteria_list/' . $title);
+// Iterate through the criteria list
+foreach ($criteraList as $id) {
+    // Ensure $id is valid
+    if ($id) {
+        // Fetch the list_name and moq from the /cc_criteria_list/{id}/ API endpoint
+        $response = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_criteria_list/' . $id);
         $listData = $response->toArray();
 
-        // Extract the list_name
-        $listName = $listData['list_name'] ?? 'Unknown';
+        // Debugging output to check the response data
+        // var_dump($listData);
 
-        // Add the title and list name to the results array
+        // Extract list_name and moq
+        $listName = $listData['list_name'] ?? 'Unknown';
+        $moq = $listData['moq'] ?? 0;
+
+        // Save the extracted data into the results array
         $criteriaWithListNames[] = [
-            'title' => $title,
-            'moq' => $criteria['moq'] ?? 0,
+            'id' => $id,
             'list_name' => $listName,
+            'moq' => $moq,
         ];
     }
 }
+
 ?>
 
 <div class="card border-0 shadow-lg rounded-4">
@@ -211,11 +218,12 @@ foreach ($criteraList as $criteria) {
                 <h3 class="p-2 fw-bold"><?= htmlspecialchars($Title, ENT_QUOTES, 'UTF-8') ?> Criteria</h3>
             </div>
 
-            <?php
 
-            if (!empty($criteraList)) {
+
+            <?php if (!empty($criteraList)): ?>
+                <?php
                 $eligibility = true; // Assume eligibility is true
-                $index = 0;
+                $index = 0; // Initialize index for progress tracking
 
                 //!check order button
                 $correctCount = 1000;
@@ -224,74 +232,71 @@ foreach ($criteraList as $criteria) {
                 $Assignment_02 = 50;
                 $Assignment_03 = 50;
                 $dueBalance = 0;
+                ?>
 
-                foreach ($criteriaWithListNames as $criteria) {
-                    $listName = $criteria['list_name'];
-                    $moq = $criteria['moq'];
-                    $title = $criteria['title'];
+                <!-- Loop through criteria and render cards -->
+                <?php foreach ($criteriaWithListNames as $criteria): ?>
+                    <?php
+                    $listName = $criteria['list_name'] ?? 'Unknown Criteria';
+                    $moq = $criteria['moq'] ?? 0;
+                    $title = $criteria['title'] ?? 'Unknown';
+                    $id = $criteria['id'] ?? 0;
 
-                    //! switch for get values
-
-                    switch ($title) {
+                    // Determine the current progress based on title
+                    switch ($id) {
                         case 1:
-                            $currentBar = $correctCount;
+                            $currentBar = $correctCount ?? 0;
                             break;
                         case 2:
-                            $currentBar = $recoveredCount;
+                            $currentBar = $recoveredCount ?? 0;
                             break;
                         case 3:
-                            $currentBar = $Assignment_01;
+                            $currentBar = $Assignment_01 ?? 0;
                             break;
                         case 4:
-                            $currentBar = $Assignment_02;
+                            $currentBar = $Assignment_02 ?? 0;
                             break;
                         case 5:
-                            $currentBar = $Assignment_03;
+                            $currentBar = $Assignment_03 ?? 0;
                             break;
                         case 6:
+                            $dueBalance = $dueBalance ?? 0;
                             if ($dueBalance === 0) {
-                                $dueBalance = 1;
-                                $moq = 1;
+                                $dueBalance = 1; // Set due balance to 1
+                                $moq = 1; // Ensure MOQ is also 1
                             }
                             $currentBar = $dueBalance;
                             break;
                         case 7:
-                            $currentBar = $incorrectCount;
+                            $currentBar = $incorrectCount ?? 0;
                             break;
                         default:
-                            echo "no value";
+                            $currentBar = 0;
                             break;
                     }
 
-                    //! Validate and calculate barWidth as needed
+                    // Calculate the progress bar width
+                    $barWidth = (isset($moq) && is_numeric($moq) && $moq > 0)
+                        ? min(($currentBar / $moq) * 100, 100)
+                        : 0;
 
-                    $barWidth = 0;
-
-                    if (isset($moq) && is_numeric($moq) && $moq > 0) {
-                        $barWidth = min(($currentBar / $moq) * 100, 100);
-                    } else {
-                        $barWidth = 0; // Default to 0 if invalid
-                    }
-
-                    // If any barWidth is less than 100, set eligibility to false
+                    // Update eligibility if any progress is below 100%
                     if ($barWidth < 100) {
                         $eligibility = false;
                     }
+                    ?>
 
-                    // Increment index for barWidthArray
-                    $index++;
-            ?>
-
+                    <!-- Render individual criteria card -->
                     <div class="col-md-3 d-flex mt-2">
                         <div class="card rounded-3 knowledge-card flex-fill shadow">
                             <div class="card-body">
                                 <h5 class="p-1 text-center"><?= htmlspecialchars($listName, ENT_QUOTES, 'UTF-8') ?></h5>
-                                <p class="text-center">You must pass: <?= htmlspecialchars($moq ?? '', ENT_QUOTES, 'UTF-8') ?></p>
+                                <p class="text-center">You must pass: <?= htmlspecialchars($moq, ENT_QUOTES, 'UTF-8') ?></p>
                                 <p class="text-center">Progress: <?= htmlspecialchars($currentBar, ENT_QUOTES, 'UTF-8') ?></p>
 
                                 <div class="progress"
                                     role="progressbar"
-                                    aria-label="Progress for <?= htmlspecialchars($criteria['title'], ENT_QUOTES, 'UTF-8') ?>"
+                                    aria-label="Progress for <?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?>"
                                     aria-valuenow="<?= htmlspecialchars($barWidth, ENT_QUOTES, 'UTF-8') ?>"
                                     aria-valuemin="0"
                                     aria-valuemax="100">
@@ -300,30 +305,25 @@ foreach ($criteraList as $criteria) {
                             </div>
                         </div>
                     </div>
-            <?php
-                }
-            } else {
-                echo "<p>No criteria available</p>";
-            }
-            ?>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No criteria available</p>
+            <?php endif; ?>
 
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-12">
-                <!-- Conditional Button or Div based on eligibility -->
-                <?php if ($eligibility): ?>
-                    <!-- Button enabled if eligibility is true -->
-                    <button class="btn btn-success w-100 btn-lg" id="order-button" onclick="OpenCertificateForm('<?= htmlspecialchars($LoggedUser, ENT_QUOTES, 'UTF-8') ?>', '<?= htmlspecialchars($certificateId, ENT_QUOTES, 'UTF-8') ?>')">
-                        <i class="fa fa-shopping-cart"></i> Go to Form
-                    </button>
-                <?php else: ?>
-                    <!-- Div displayed if eligibility is false -->
-                    <div class="alert alert-danger w-100">
-                        <p class="text-center">You are not eligible to place an order at this moment.</p>
-                    </div>
-                <?php endif; ?>
+            <!-- Conditional button or message based on eligibility -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <?php if ($eligibility): ?>
+                        <!-- Button enabled if eligibility is true -->
+                        <button class="btn btn-success w-100 btn-lg" id="order-button"
+                            onclick="OpenCertificateForm('<?= htmlspecialchars($LoggedUser, ENT_QUOTES, 'UTF-8') ?>', '<?= htmlspecialchars($certificateId, ENT_QUOTES, 'UTF-8') ?>')">
+                            <i class="fa fa-shopping-cart"></i> Go to Form
+                        </button>
+                    <?php else: ?>
+                        <!-- Message displayed if eligibility is false -->
+                        <div class="alert alert-danger w-100">
+                            <p class="text-center">You are not eligible to place an order at this moment.</p>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
-        </div>
-    </div>
-</div>

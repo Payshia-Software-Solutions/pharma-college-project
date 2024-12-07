@@ -10,8 +10,26 @@ include '../assets/lms_methods/pharma-hunter-methods.php';
 include '../assets/lms_methods/pharma-reader-methods.php';
 
 
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+// For use env file data
+use Dotenv\Dotenv;
+use Symfony\Component\HttpClient\HttpClient;
+
+// Load environment variables
+$dotenv = Dotenv::createImmutable(dirname(__DIR__, 4)); // Go up 5 directories
+$dotenv->load();
+
+// Initialize HTTP client
+$client = HttpClient::create();
+
+
+
 $indexNumber = $_POST['studentNumber'];
 $studentBatch = $_POST['studentBatch'];
+$certificatestatusId = $_POST['certificateId'];
+
+
 
 $CourseAssignments = GetAssignments($studentBatch);
 $assignmentSubmissions = GetAssignmentSubmissionsByUser($indexNumber);
@@ -135,7 +153,85 @@ if ($AttemptRate > $MedicineCount) {
 $pharmaReaderGradeArray = GetReaderOverallGrade($LoggedUser);
 $pharmaReaderGrade = $pharmaReaderGradeArray['overallGrade'];
 $ceylonPharmacyGrade = 0;
+
+// Update certificate status
+$certificatestatusId = intval($certificatestatusId); // Sanitize the certificateId
+
+// Fetch data from the API
+$response = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_certificate_order/' . $certificatestatusId);
+
+// Convert the API response to an associative array
+$data = $response->toArray();
+
+// Check if the response contains valid data
+if (!empty($data)) {
+    // Assuming $data is a single record fetched for the given $certificatestatusId
+    //var_dump($data);  // Output the API response data
+
+    // Process the fetched data (similar to fetching SQL results)
+    $row = [
+        'id' => $data['id'] ?? null,
+        'status' => $data['status'] ?? null,
+        // Add other fields based on the API response structure
+    ];
+
+    // var_dump($row); // Output the processed row
+} else {
+    throw new Exception("No data found for the provided certificate status ID.");
+}
+
+
+// Update certificate status in the database if printed
+if ($certificatePrintStatus === "Printed") {
+    // Prepare the data for only the 'certificate_status' field
+    $updateData = [
+        'certificate_status' => $certificatePrintStatus
+    ];
+
+    try {
+        // Send the PUT request to update the certificate status
+        $response = $client->request('PUT', $_ENV["SERVER_URL"] . '/cc_certificate_order/' . $certificatestatusId . '/status', [
+            'json' => $updateData  // Send only the certificate_status
+        ]);
+
+        // Check if the response status is successful
+        if ($response->getStatusCode() === 200) {
+            echo "Certificate status updated successfully!";
+        } else {
+            echo "Error updating certificate status: " . $response->getStatusCode();
+        }
+    } catch (Exception $e) {
+        echo "Error updating certificate status: " . $e->getMessage();
+    }
+} else {
+    echo "The certificate print status is not 'Printed', no update performed.";
+}
+
+
+
+// // Update certificate status in the database if printed
+// if ($certificatePrintStatus === "Printed") {
+//     $sql_update = "UPDATE `cc_certificate_order` SET `certificate_status` = ? WHERE `id` = ?";
+//     $stmt = $lms_link->prepare($sql_update);
+//     $stmt->bind_param("si", $certificatePrintStatus, $certificatestatusId);
+
+//     if ($stmt->execute()) {
+//         echo "Certificate status updated successfully!";
+//     } else {
+//         echo "Error updating certificate status: " . $stmt->error;
+//     }
+
+//     $stmt->close();
+// } else {
+//     echo "The certificate print status is not 'Printed', no update performed.";
+// }
+
+
+
+
 ?>
+
+
 
 <div class="loading-popup-content">
     <div class="row">
