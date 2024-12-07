@@ -185,7 +185,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <input type="hidden" name="payment" value="12000">
         <input type="hidden" name="package_id" value="1">
         <input type="hidden" name="certificate_id" value="1">
-        <input type="hidden" name="certificate_status" value="print">
+        <input type="hidden" name="certificate_status" value="Pending">
         <input type="hidden" name="cod_amount" value="111">
         <input type="hidden" name="is_active" value="1">
 

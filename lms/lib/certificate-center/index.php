@@ -159,6 +159,7 @@ $orderedCertificate = $response2->toArray();
                                             <tr>
                                                 <th scope="col">Certificate</th>
                                                 <th scope="col">Order Date</th>
+                                                <th scope="col">Status</th>
                                                 <th scope="col">Action</th>
                                             </tr>
                                         </thead>
@@ -168,7 +169,13 @@ $orderedCertificate = $response2->toArray();
                                                     <td><?= $certificate['certificate_name'] ?></td>
                                                     <td><?= $certificate['created_at'] ?></td>
                                                     <td>
-                                                        <button onclick="OpenPaymentView(1, 'CPCC10')" class="btn btn-primary btn-sm"
+                                                        <?php
+                                                        $buttonClass = ($certificate['certificate_status'] === 'Printed') ? 'btn-success' : 'btn-danger';
+                                                        $buttonText = ($certificate['certificate_status'] === 'Printed') ? 'Printed' : 'Pending';
+                                                        ?>
+                                                        <button class="btn btn-sm <?= $buttonClass ?>" disabled><?= $buttonText ?></button></td>
+                                                    <td>
+                                                        <button onclick="OpenPaymentView('<?= $certificate['id'] ?>','<?= $certificate['certificate_name'] ?>')" class="btn btn-primary btn-sm"
                                                             type="button"><i class="fa-solid fa-eye"></i>
                                                             View</button>
                                                     </td>
