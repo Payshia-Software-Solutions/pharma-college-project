@@ -12,10 +12,28 @@ class CcCertificateOrder
 
     public function getAllOrders()
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM `cc_certificate_order`");
+        // SQL query to join `cc_certificate_order` with `cc_certificate_list` and get certificate_name
+        $sql = "SELECT 
+                o.*, 
+                c.list_name AS certificate_name 
+            FROM 
+                `cc_certificate_order` o
+            JOIN 
+                `cc_certificate_list` c 
+            ON 
+                o.certificate_id = c.id";
+
+        // Prepare the SQL statement
+        $stmt = $this->pdo->prepare($sql);
+
+        // Execute the statement
         $stmt->execute();
+
+        // Fetch all results as an associative array
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+
 
     public function getOrderById($id)
     {
@@ -34,19 +52,13 @@ class CcCertificateOrder
 
     public function createOrder($data)
     {
-        // Fetch address from user details
-        $userAddress = $this->getUserAddress($data['created_by']);
-
-        // Assign address lines to the order data
-        $data['address_line1'] = $userAddress['address_line1'];
-        $data['address_line2'] = $userAddress['address_line2'];
-
         // Prepare and execute the insert statement
-        $stmt = $this->pdo->prepare("INSERT INTO `cc_certificate_order` (`created_by`, `created_at`, `updated_at`, `mobile`, `address_line1`, `address_line2`, `city_id`, `type`, `payment`, `package_id`, `certificate_id`, `certificate_status`, `cod_amount`, `is_active`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt = $this->pdo->prepare("INSERT INTO `cc_certificate_order` (`created_by`, `created_at`, `updated_at`, `course_code`, `mobile`, `address_line1`, `address_line2`, `city_id`, `type`, `payment`, `package_id`, `certificate_id`, `certificate_status`, `cod_amount`, `is_active`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
             $data['created_by'],
             $data['created_at'],
             $data['updated_at'],
+            $data['course_code'],
             $data['mobile'],
             $data['address_line1'],
             $data['address_line2'],
@@ -64,11 +76,12 @@ class CcCertificateOrder
 
     public function updateOrder($id, $data)
     {
-        $stmt = $this->pdo->prepare("UPDATE `cc_certificate_order` SET `created_by` = ?, `created_at` = ?, `updated_at` = ?, `mobile` = ?, `address_line1` = ?, `address_line2` = ?, `city_id` = ?, `type` = ?, `payment` = ?, `package_id` = ?, `certificate_id` = ?, `certificate_status` = ?, `cod_amount` = ?, `is_active` = ? WHERE `id` = ?");
+        $stmt = $this->pdo->prepare("UPDATE `cc_certificate_order` SET `created_by` = ?, `created_at` = ?, `updated_at` = ?, `course_code` = ?, `mobile` = ?, `address_line1` = ?, `address_line2` = ?, `city_id` = ?, `type` = ?, `payment` = ?, `package_id` = ?, `certificate_id` = ?, `certificate_status` = ?, `cod_amount` = ?, `is_active` = ? WHERE `id` = ?");
         $stmt->execute([
             $data['created_by'],
             $data['created_at'],
             $data['updated_at'],
+            $data['course_code'],
             $data['mobile'],
             $data['address_line1'],
             $data['address_line2'],
@@ -88,5 +101,12 @@ class CcCertificateOrder
     {
         $stmt = $this->pdo->prepare("DELETE FROM `cc_certificate_order` WHERE `id` = ?");
         $stmt->execute([$id]);
+    }
+
+    // New method to update only the certificate_status
+    public function updateCertificateStatus($id, $certificateStatus)
+    {
+        $stmt = $this->pdo->prepare("UPDATE `cc_certificate_order` SET `certificate_status` = ? WHERE `id` = ?");
+        $stmt->execute([$certificateStatus, $id]);
     }
 }

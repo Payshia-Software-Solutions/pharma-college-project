@@ -32,10 +32,17 @@ try {
 }
 
 
-// Establish LMS Connection
-$server = "91.204.209.19";
-$username = "pharmaco_admin";
-$password = "pharmaadmin";
+
+//Establish LMS Connection
+// $server = "91.204.209.19";
+// $username = "pharmaco_admin";
+// $password = "pharmaadmin";
+// $database = "pharmaco_pharmacollege";
+// $database_error = "";
+
+$server = "localhost";
+$username = "root";
+$password = "";
 $database = "pharmaco_pharmacollege";
 $database_error = "";
 

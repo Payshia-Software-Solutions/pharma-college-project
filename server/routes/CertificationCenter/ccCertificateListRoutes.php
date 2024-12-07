@@ -11,6 +11,7 @@ $ccCertificateListController = new CcCertificateListController($pdo);
 return [
     'GET /cc_certificate_list/' => [$ccCertificateListController, 'getCertificates'],
     'GET /cc_certificate_list/{id}/' => [$ccCertificateListController, 'getCertificate'],
+    'GET /cc_certificate_list/{list_name}/' => [$ccCertificateListController, 'getCertificateByListName'],
     'POST /cc_certificate_list/' => [$ccCertificateListController, 'createCertificate'],
     'PUT /cc_certificate_list/{id}/' => [$ccCertificateListController, 'updateCertificate'],
     'DELETE /cc_certificate_list/{id}/' => [$ccCertificateListController, 'deleteCertificate']

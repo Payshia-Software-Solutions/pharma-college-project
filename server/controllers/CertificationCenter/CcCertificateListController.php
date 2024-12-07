@@ -24,6 +24,17 @@ class CcCertificateListController
         echo json_encode($certificate);
     }
 
+    public function getCertificateByListName($list_name)
+    {
+        $user = $this->model->getCertificateByListName($list_name);
+        if ($list_name) {
+            echo json_encode($list_name);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'User not found']);
+        }
+    }
+
     public function createCertificate()
     {
         $data = json_decode(file_get_contents('php://input'), true);

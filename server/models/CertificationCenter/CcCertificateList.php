@@ -24,6 +24,14 @@ class CcCertificateList
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getCertificateByListName($list_name)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM cc_certificate_list WHERE list_name = :list_name");
+        $stmt->execute(['list_name' => $list_name]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
     public function createCertificate($data)
     {
         $stmt = $this->pdo->prepare("INSERT INTO `cc_certificate_list` (`list_name`, `criteria_group_id`, `price`, `created_at`, `created_by`, `is_active`) VALUES (?, ?, ?, ?, ?, ?)");

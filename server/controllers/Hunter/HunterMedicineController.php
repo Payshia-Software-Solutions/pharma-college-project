@@ -1,5 +1,5 @@
 <?php
-require_once './models/Hunter/HunterMedicine.php';
+require_once '.\models\Hunter\HunterMedicine.php';
 
 class HunterMedicineController
 {
@@ -46,5 +46,11 @@ class HunterMedicineController
     {
         $this->model->deleteRecord($id);
         echo json_encode(['message' => 'Record deleted successfully']);
+    }
+
+    public function HunterMedicines()
+    {
+        $medicines = $this->model->HunterMedicines();
+        echo json_encode($medicines);
     }
 }

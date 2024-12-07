@@ -27,6 +27,12 @@ class StudentPaymentController
         }
     }
 
+    public function getRecordByUser($studentNumber)
+    {
+        $savedAnswers = $this->model->getRecordByUser($studentNumber);
+        echo json_encode($savedAnswers);
+    }
+
     public function createRecord()
     {
         $data = json_decode(file_get_contents("php://input"), true);
@@ -48,18 +54,18 @@ class StudentPaymentController
         echo json_encode(['message' => 'Record deleted successfully']);
     }
 
-        // New method to create record and update status in payment_request table
-        public function createRecordAndUpdateStatus()
-        {
-            $data = json_decode(file_get_contents("php://input"), true);
-    
-            try {
-                $response = $this->model->createRecordAndUpdateStatus($data);
-                http_response_code(201);
-                echo json_encode($response);
-            } catch (Exception $e) {
-                http_response_code(500);
-                echo json_encode(['error' => $e->getMessage()]);
-            }
+    // New method to create record and update status in payment_request table
+    public function createRecordAndUpdateStatus()
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        try {
+            $response = $this->model->createRecordAndUpdateStatus($data);
+            http_response_code(201);
+            echo json_encode($response);
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['error' => $e->getMessage()]);
         }
+    }
 }

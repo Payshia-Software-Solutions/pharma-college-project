@@ -84,6 +84,7 @@ $ccGraduationPackageItemRoutes = require './routes/CertificationCenter/ccGraduat
 $ccCertificateListRoutes = require './routes/CertificationCenter/ccCertificateListRoutes.php';
 $ccGraduationPackageRoutes = require './routes/CertificationCenter/ccGraduationPackageRoutes.php';
 $ccCertificateOrderRoutes = require './routes/CertificationCenter/ccCertificationOrderRoutes.php';
+$certtficateUserResultRoutes = require './routes/Certificate/certificateUserResultRoutes.php';
 
 
 // if (!is_array($paymentRequestRoutes)) {
@@ -157,7 +158,8 @@ $routes = array_merge(
     $ccCertificateListRoutes,
     $ccGraduationPackageRoutes,
     $ccCertificateOrderRoutes,
-    $CeylonPharmacyCriteria
+    $CeylonPharmacyCriteria,
+    $certtficateUserResultRoutes
 );
 
 
@@ -205,8 +207,8 @@ foreach ($routes as $route => $handler) {
 
     // Convert route URI to regex
     $routeRegex = str_replace(
-        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{CourseCode}', '{loggedUser}'],
-        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)'],
+        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{CourseCode}', '{loggedUser}', '{title_id}'],
+        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)'],
         $routeUri
     );
 
