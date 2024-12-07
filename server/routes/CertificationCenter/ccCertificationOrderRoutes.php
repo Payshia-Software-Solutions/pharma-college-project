@@ -13,5 +13,6 @@ return [
     'GET /cc_certificate_order/{id}/' => [$CcCertificateOrderController, 'getOrderById'],       // Route to get order by ID
     'POST /cc_certificate_order/' => [$CcCertificateOrderController, 'createOrder'],           // Route to create a new order
     'PUT /cc_certificate_order/{id}/' => [$CcCertificateOrderController, 'updateOrder'],       // Route to update an order by ID
+    'PUT /cc_certificate_order/{id}/status' => [$CcCertificateOrderController, 'updateCertificateStatus'], // Route to update only the certificate status
     'DELETE /cc_certificate_order/{id}/' => [$CcCertificateOrderController, 'deleteOrder']     // Route to delete an order by ID
 ];

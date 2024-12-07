@@ -102,4 +102,11 @@ class CcCertificateOrder
         $stmt = $this->pdo->prepare("DELETE FROM `cc_certificate_order` WHERE `id` = ?");
         $stmt->execute([$id]);
     }
+
+    // New method to update only the certificate_status
+    public function updateCertificateStatus($id, $certificateStatus)
+    {
+        $stmt = $this->pdo->prepare("UPDATE `cc_certificate_order` SET `certificate_status` = ? WHERE `id` = ?");
+        $stmt->execute([$certificateStatus, $id]);
+    }
 }
