@@ -159,3 +159,26 @@ function submitOrder(certificateId) {
     showNotification("Please fill out all required fields.", "error", "Ops!");
   }
 }
+
+function OpenPaymentView(certificateId, certificateName) {
+  $("#pageContent").html(InnerLoader);
+
+  function fetch_data() {
+    $.ajax({
+      url: "lib/certificate-center/open-orderd-certificate.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        CourseCode: CourseCode,
+        company_id: company_id,
+        certificateId: certificateId,
+        certificateName: certificateName,
+      },
+      success: function (data) {
+        $("#pageContent").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
