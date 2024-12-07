@@ -51,7 +51,7 @@ $LoggedUser = $_POST['LoggedUser'] ?? 'Guest';
                 </div>
                 <div class="text-end">
                     <button type="button" class="btn btn-light" onclick="AddNewCriteria(LoggedUser)">Clear</button>
-                    <button type=" button" class="btn btn-dark" onclick="InsertCriteria()">Save</button>
+                    <button type="button" class="btn btn-dark" onclick="InsertCriteria(LoggedUser)">Save</button>
                 </div>
 
             </form>

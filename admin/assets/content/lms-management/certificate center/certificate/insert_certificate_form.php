@@ -32,6 +32,7 @@ try {
 } catch (Exception $e) {
     die('Failed to fetch criteria group data: ' . $e->getMessage());
 }
+//print_r($LoggedUser);
 ?>
 
 <div class="container loading-popup-content">
@@ -41,7 +42,7 @@ try {
         </div>
     </div>
     <h3 class="border-bottom pb-2">Add New Certificate</h3>
-    <form id="insertCertificateForm" class="form">
+    <form id="insertCertificateForm" class="form" method="post">
         <div class="row">
             <div class="col-md-5 mb-2">
                 <h6 class="certificateName-label">Certificate Name</h6>
@@ -74,7 +75,7 @@ try {
             <input type="hidden" id="createdBy" name="created_by" value="<?= htmlspecialchars($LoggedUser, ENT_QUOTES, 'UTF-8') ?>">
             <div class="text-end">
                 <button type="button" class="btn btn-light" onclick="openCertificateInsertForm(LoggedUser)">Clear</button>
-                <button type=" button" class="btn btn-dark" onclick="submitInsertForm()">Save</button>
+                <button type="button" class="btn btn-dark" onclick="submitInsertForm(LoggedUser)">Save</button>
             </div>
         </div>
     </form>

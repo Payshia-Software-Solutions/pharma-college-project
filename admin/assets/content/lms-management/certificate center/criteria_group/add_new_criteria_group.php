@@ -22,6 +22,8 @@ $client = HttpClient::create();
 $response = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_criteria_list/');
 $criteriaList = $response->toArray();
 
+$LoggedUser = $_POST['LoggedUser']
+
 // if ($result && $result->num_rows > 0) {
 //     while ($row = $result->fetch_assoc()) {
 //         $criteriaList[] = $row;
@@ -74,7 +76,7 @@ $criteriaList = $response->toArray();
 
 
         <!--created_by and is_active fields-->
-        <input type="text" class="form-control" id="created_by" name="created_by" value="$LoggedUser" hidden>
+        <input type="text" class="form-control" id="created_by" name="created_by" value="<?= htmlspecialchars($LoggedUser, ENT_QUOTES, 'UTF-8') ?>" hidden>
         <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" hidden>
 
         <!-- <div class="form-check mb-3">
@@ -84,7 +86,7 @@ $criteriaList = $response->toArray();
 
         <div class="text-end">
             <button type="button" class="btn btn-light" onclick="AddNewCriteriaGroup(LoggedUser)">Clear</button>
-            <button type="submit" class="btn btn-dark" onclick="submitCriteriaGroupInsertForm()">Save</button>
+            <button type="button" class="btn btn-dark" onclick="submitCriteriaGroupInsertForm(LoggedUser)">Save</button>
         </div>
     </form>
 </div>

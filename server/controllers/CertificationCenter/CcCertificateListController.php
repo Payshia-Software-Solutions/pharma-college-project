@@ -39,7 +39,7 @@ class CcCertificateListController
     {
         $data = json_decode(file_get_contents('php://input'), true);
         $this->model->createCertificate($data);
-        echo json_encode(['status' => 'CcCertificateList created']);
+        echo json_encode(['status' => 'success', 'message' => 'CcCertificateList created']);
     }
 
     public function updateCertificate($id)

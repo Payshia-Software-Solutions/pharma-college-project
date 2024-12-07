@@ -1,5 +1,8 @@
 <?php
 // Include necessary files
+
+use GrahamCampbell\ResultType\Success;
+
 require_once('../../../../../include/config.php');
 
 // Enable error reporting for debugging
@@ -39,19 +42,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $lms_link->prepare($query);
 
     if ($stmt === false) {
-        echo json_encode(['success' => false, 'message' => 'Failed to prepare statement: ' . $lms_link->error]);
+        echo json_encode(['status' => 'error', 'message' => 'Failed to prepare statement: ' . $lms_link->error]);
         exit;
     }
 
     $stmt->bind_param("sssi", $group_name, $criteria_group_json, $created_by, $is_active);
 
     if ($stmt->execute()) {
-        echo json_encode(['success' => true, 'message' => 'Criteria Group added successfully.']);
+        echo json_encode(['status' => 'success', 'message' => 'Criteria Group added successfully.']);
     } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to save data: ' . $stmt->error]);
+        echo json_encode(['status' => 'error', 'message' => 'Failed to save data: ' . $stmt->error]);
     }
 
     $stmt->close();
 } else {
-    echo json_encode(['success' => false, 'message' => 'Invalid request method.']);
+    echo json_encode(['status' => 'error', 'message' => 'Invalid request method.']);
 }
