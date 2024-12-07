@@ -2,7 +2,7 @@
 require_once('../../../../../include/config.php');
 include '../../../../../include/lms-functions.php';
 
-header('Content-Type: application/json');
+// header('Content-Type: application/json');
 
 // Ensure request method is POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -47,7 +47,7 @@ try {
     $stmt = $lms_link->prepare("INSERT INTO `cc_certificate_list` (`list_name`, `criteria_group_id`, `price`, `created_at`, `created_by`, `is_active`) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->execute([$list_name, $criteria_group_id, $price, $created_at, $created_by, $is_active]);
 
-    echo json_encode(['success' => true, 'message' => 'Certificate added successfully.']);
+    echo json_encode(['status' => 'success', 'message' => 'Certificate added successfully.']);
 } catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'An error occurred: ' . $e->getMessage()]);
+    echo json_encode(['status' => 'error', 'message' => 'An error occurred: ' . $e->getMessage()]);
 }

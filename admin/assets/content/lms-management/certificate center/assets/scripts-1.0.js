@@ -360,217 +360,26 @@ function SaveCertificateConfiguration(selectedCourse) {
 
 //Certificate
 
-//Criteria_Group
-
-function ViewCriteriaGroups(LoggedUser) {
-  showOverlay();
-  document.getElementById("index-content").innerHTML = InnerLoader;
-
-  function fetch_data() {
-    $.ajax({
-      url: "assets/content/lms-management/certificate center/criteria_group/criteria_group.php",
-      method: "POST",
-      data: {
-        LoggedUser: LoggedUser,
-      },
-      success: function (data) {
-        $("#index-content").html(data);
-        hideOverlay();
-      },
-    });
-  }
-  fetch_data();
-}
-
-//Criteria
-
-function ViewCriteriaList(LoggedUser) {
-  showOverlay();
-  document.getElementById("index-content").innerHTML = InnerLoader;
-
-  function fetch_data() {
-    $.ajax({
-      url: "assets/content/lms-management/certificate center/criteria/criteria_list.php",
-      method: "POST",
-      data: {
-        LoggedUser: LoggedUser,
-      },
-      success: function (data) {
-        $("#index-content").html(data);
-        hideOverlay();
-      },
-    });
-  }
-  fetch_data();
-}
-
-function AddNewCriteria(LoggedUser) {
-  OpenPopup();
-  document.getElementById("loading-popup").innerHTML = InnerLoader;
-  function fetch_data() {
-    $.ajax({
-      url: "assets/content/lms-management/certificate center/criteria/new_criteria.php",
-      method: "POST",
-      data: {
-        LoggedUser: LoggedUser,
-      },
-      success: function (data) {
-        $("#loading-popup").html(data);
-        ViewCriteriaList();
-      },
-    });
-  }
-  fetch_data();
-}
-
-//insert and save criteria
-function InsertCriteria() {
-  var form = document.getElementById("order_form");
-
-  if (form.checkValidity()) {
-    showOverlay();
-    var formData = new FormData(form);
-
-    // Append the logged user
-    formData.append("LoggedUser", LoggedUser);
-
-    $.ajax({
-      url: "assets/content/lms-management/certificate center/criteria/insert_criteria.php", // Ensure the URL is correct
-      method: "POST",
-      data: formData,
-      contentType: false,
-      processData: false,
-      success: function (data) {
-        try {
-          var response = JSON.parse(data);
-          console.log("Response:", response); // For debugging
-
-          // Check the response status
-          if (response.status === "success") {
-            OpenAlert("success", "Done!", response.message); // Replace showNotification with OpenAlert
-            ViewCriteriaList();
-          } else {
-            OpenAlert(
-              "error",
-              "Failed!",
-              response.message || "Failed to submit criteria."
-            );
-          }
-        } catch (e) {
-          console.error("Error parsing response:", e);
-          OpenAlert("error", "Error!", "An unexpected error occurred.");
-        }
-        hideOverlay();
-      },
-      error: function (xhr, status, error) {
-        console.error("AJAX Error:", status, error);
-        OpenAlert("error", "Ops!", "Server error occurred.");
-        hideOverlay();
-      },
-    });
-  } else {
-    form.reportValidity();
-    OpenAlert("error", "Ops!", "Please fill out all required fields.");
-  }
-}
-
-//open criteria
-function OpenEditCriteria(loggedUser, criteriaId) {
-  OpenPopup(); // Open the popup
-  document.getElementById("loading-popup").innerHTML = InnerLoader; // Show loading animation
-
-  $.ajax({
-    url: "assets/content/lms-management/certificate center/criteria/edit_criteria.php",
-    method: "POST",
-    data: {
-      LoggedUser: loggedUser,
-      criteriaId: criteriaId, // Pass the criteria ID
-    },
-    success: function (data) {
-      $("#loading-popup").html(data); // Load the HTML from the response
-    },
-    error: function (xhr, status, error) {
-      console.error("Error loading edit-criteria.php:", status, error);
-      $("#loading-popup").html(
-        `<div class="error-message">Failed to load the criteria editor. Please try again later.</div>`
-      );
-    },
-  });
-}
-
-//update criteria and save
-function UpdateCriteria(criteriaId) {
-  console.log("Criteria ID:", criteriaId); // Log the ID to check if it's correct
-
-  var form = document.getElementById("update-form");
-  // Check form validity
-  if (form.checkValidity()) {
-    showOverlay();
-    var formData = new FormData(form);
-
-    // Append the logged user and criteria ID
-    formData.append("LoggedUser", LoggedUser);
-    formData.append("criteria_id", criteriaId); // Ensure the criteria ID is included
-
-    // Perform the AJAX request to update the criteria
-    $.ajax({
-      url: "assets/content/lms-management/certificate center/criteria/update_criteria.php",
-      method: "POST",
-      data: formData,
-      contentType: false,
-      processData: false,
-      success: function (data) {
-        try {
-          var response = JSON.parse(data);
-          console.log("Response:", response); // For debugging
-
-          // Check the response status
-          if (response.status === "success") {
-            OpenAlert("success", "Done!", response.message);
-            ViewCriteriaList();
-          } else {
-            OpenAlert(
-              "error",
-              "Failed!",
-              response.message || "Failed to update criteria."
-            );
-          }
-        } catch (e) {
-          console.error("Error parsing response:", e);
-          OpenAlert("error", "Error!", "An unexpected error occurred.");
-        }
-        hideOverlay();
-      },
-      error: function (xhr, status, error) {
-        console.error("AJAX Error:", status, error);
-        OpenAlert("error", "Ops!", "Server error occurred.");
-        hideOverlay();
-      },
-    });
-  } else {
-    form.reportValidity();
-    OpenAlert("error", "Ops!", "Please fill out all required fields.");
-  }
-}
-
 function ViewCertificate(LoggedUser) {
   showOverlay();
   document.getElementById("index-content").innerHTML = InnerLoader;
 
-  function fetch_data() {
-    $.ajax({
-      url: "assets/content/lms-management/certificate center/certificate/certificate.php",
+  fetch(
+    "assets/content/lms-management/certificate center/certificate/certificate.php",
+    {
       method: "POST",
-      data: {
-        LoggedUser: LoggedUser,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      success: function (data) {
-        $("#index-content").html(data);
-        hideOverlay();
-      },
-    });
-  }
-  fetch_data();
+      body: new URLSearchParams({ LoggedUser: LoggedUser }),
+    }
+  )
+    .then((response) => response.text())
+    .then((data) => {
+      document.getElementById("index-content").innerHTML = data;
+      hideOverlay();
+    })
+    .catch((error) => console.error("Error:", error));
 }
 
 function changeCertificateStatus(certificateId, status) {
@@ -617,27 +426,41 @@ function openCertificateInsertForm(LoggedUser) {
   });
 }
 
-function submitInsertForm() {
-  const form = document.getElementById("insertCertificateForm");
-  const formData = new FormData(form);
+function submitInsertForm(LoggedUser) {
+  var form = document.getElementById("insertCertificateForm");
 
-  fetch(
-    "assets/content/lms-management/certificate center/certificate/save_certificate.php",
-    {
-      method: "POST",
-      body: formData,
+  if (form.checkValidity()) {
+    showOverlay();
+    var formData = new FormData(form);
+    formData.append("LoggedUser", LoggedUser);
+
+    function fetch_data() {
+      $.ajax({
+        url: "assets/content/lms-management/certificate center/certificate/save_certificate.php",
+        method: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (data) {
+          var response = JSON.parse(data);
+          if (response.status === "success") {
+            var result = response.message;
+            OpenAlert("success", "Done!", result);
+            ViewCertificate(LoggedUser);
+            ClosePopUP();
+          } else {
+            var result = response.message;
+            OpenAlert("error", "Oops.. Something Wrong!", result);
+          }
+          hideOverlay();
+        },
+      });
     }
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.success) {
-        OpenAlert("success", "Success!", data.message);
-        ViewCertificate(); // Reload the page to reflect changes
-      } else {
-        OpenAlert("error", "Error!", data.message);
-      }
-    })
-    .catch((error) => console.error("Error:", error));
+    fetch_data();
+  } else {
+    result = "Please Filled out All * marked Fields.";
+    OpenAlert("error", "Oops!", result);
+  }
 }
 
 function OpenEditCertificate(LoggedUser, certificateId) {
@@ -686,6 +509,54 @@ function SubmitCertificateUpdateForm() {
     .catch((error) => console.error("Error:", error));
 }
 
+function changeCertificateStatus(certificateId, status) {
+  fetch(
+    "assets/content/lms-management/certificate center/certificate/update_certificate_status.php",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id: certificateId, is_active: status }),
+    }
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.success) {
+        OpenAlert("success", "Success!", data.message); // Show success popup
+        ViewCertificate(); // Reload the list to reflect changes
+      } else {
+        OpenAlert("error", "Error!", data.message); // Show error popup
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      OpenAlert("error", "Error!", "An unexpected error occurred.");
+    });
+}
+
+//Criteria_Group
+
+function ViewCriteriaGroups(LoggedUser) {
+  showOverlay();
+  document.getElementById("index-content").innerHTML = InnerLoader;
+
+  function fetch_data() {
+    $.ajax({
+      url: "assets/content/lms-management/certificate center/criteria_group/criteria_group.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+      },
+      success: function (data) {
+        $("#index-content").html(data);
+        hideOverlay();
+      },
+    });
+  }
+  fetch_data();
+}
+
 function AddNewCriteriaGroup(LoggedUser) {
   OpenPopup();
   document.getElementById("loading-popup").innerHTML = InnerLoader;
@@ -706,32 +577,68 @@ function AddNewCriteriaGroup(LoggedUser) {
   fetch_data();
 }
 
-function submitCriteriaGroupInsertForm() {
-  const form = document.getElementById("criteriaGroupInsertForm");
-  const formData = new FormData(form);
+function submitCriteriaGroupInsertForm(LoggedUser) {
+  var form = document.getElementById("criteriaGroupInsertForm");
 
-  fetch(
-    "assets/content/lms-management/certificate center/criteria_group/save_new_criteria_group.php",
-    {
-      method: "POST",
-      body: formData,
+  if (form.checkValidity()) {
+    showOverlay();
+    var formData = new FormData(form);
+    formData.append("LoggedUser", LoggedUser);
+
+    function fetch_data() {
+      $.ajax({
+        url: "assets/content/lms-management/certificate center/criteria_group/save_new_criteria_group.php",
+        method: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (data) {
+          var response = JSON.parse(data);
+          if (response.status === "success") {
+            var result = response.message;
+            OpenAlert("success", "Done!", result);
+            ViewCriteriaGroups(LoggedUser);
+            ClosePopUP();
+          } else {
+            var result = response.message;
+            OpenAlert("error", "Oops.. Something Wrong!", result);
+          }
+          hideOverlay();
+        },
+      });
     }
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      console.log(data); // Log the response to inspect the structure
-      if (data.success) {
-        OpenAlert("success", "Success!", data.message);
-        alert();
-        ViewCriteriaGroups(); // Reload the page to reflect changes
-      } else {
-        OpenAlert("error", "Error!", data.message);
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+    fetch_data();
+  } else {
+    result = "Please Filled out All * marked Fields.";
+    OpenAlert("error", "Oops!", result);
+  }
 }
+// function submitCriteriaGroupInsertForm() {
+//   const form = document.getElementById("criteriaGroupInsertForm");
+//   const formData = new FormData(form);
+
+//   fetch(
+//     "assets/content/lms-management/certificate center/criteria_group/save_new_criteria_group.php",
+//     {
+//       method: "POST",
+//       body: formData,
+//     }
+//   )
+//     .then((response) => response.json())
+//     .then((data) => {
+//       console.log(data); // Log the response to inspect the structure
+//       if (data.success) {
+//         OpenAlert("success", "Success!", data.message);
+//         alert();
+//         ViewCriteriaGroups(); // Reload the page to reflect changes
+//       } else {
+//         OpenAlert("error", "Error!", data.message);
+//       }
+//     })
+//     .catch((error) => {
+//       console.error("Error:", error);
+//     });
+// }
 
 function OpenEditCriteriaGroup(LoggedUser, criteriaGroupId) {
   OpenPopup();
@@ -842,32 +749,6 @@ function viewCriteriaGroupDetails(LoggedUser, criteriaGroupId) {
   fetch_data();
 }
 
-function changeCriteriaStatus(certificateId, status) {
-  fetch(
-    "assets/content/lms-management/certificate center/certificate/update_certificate_status.php",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id: certificateId, is_active: status }),
-    }
-  )
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.success) {
-        OpenAlert("success", "Success!", data.message); // Show success popup
-        ViewCertificate(); // Reload the list to reflect changes
-      } else {
-        OpenAlert("error", "Error!", data.message); // Show error popup
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      OpenAlert("error", "Error!", "An unexpected error occurred.");
-    });
-}
-
 function changeCriteriaGroupStatus(criteriaGroupId, status) {
   fetch(
     "assets/content/lms-management/certificate center/criteria_group/update_criteria_group_status.php",
@@ -892,6 +773,214 @@ function changeCriteriaGroupStatus(criteriaGroupId, status) {
       console.error("Error:", error);
       OpenAlert("error", "Error!", "An unexpected error occurred.");
     });
+}
+
+//Criteria
+
+function ViewCriteriaList(LoggedUser) {
+  showOverlay();
+  document.getElementById("index-content").innerHTML = InnerLoader;
+
+  function fetch_data() {
+    $.ajax({
+      url: "assets/content/lms-management/certificate center/criteria/criteria_list.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+      },
+      success: function (data) {
+        $("#index-content").html(data);
+        hideOverlay();
+      },
+    });
+  }
+  fetch_data();
+}
+
+function AddNewCriteria(LoggedUser) {
+  OpenPopup();
+  document.getElementById("loading-popup").innerHTML = InnerLoader;
+  function fetch_data() {
+    $.ajax({
+      url: "assets/content/lms-management/certificate center/criteria/new_criteria.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+      },
+      success: function (data) {
+        $("#loading-popup").html(data);
+        ViewCriteriaList();
+      },
+    });
+  }
+  fetch_data();
+}
+
+//insert and save criteria
+// function InsertCriteria() {
+//   var form = document.getElementById("order_form");
+
+//   if (form.checkValidity()) {
+//     showOverlay();
+//     var formData = new FormData(form);
+
+//     // Append the logged user
+//     formData.append("LoggedUser", LoggedUser);
+
+//     $.ajax({
+//       url: "assets/content/lms-management/certificate center/criteria/insert_criteria.php", // Ensure the URL is correct
+//       method: "POST",
+//       data: formData,
+//       contentType: false,
+//       processData: false,
+//       success: function (data) {
+//         try {
+//           var response = JSON.parse(data);
+//           console.log("Response:", response); // For debugging
+
+//           // Check the response status
+//           if (response.status === "success") {
+//             OpenAlert("success", "Done!", response.message); // Replace showNotification with OpenAlert
+//             ViewCriteriaList();
+//           } else {
+//             OpenAlert(
+//               "error",
+//               "Failed!",
+//               response.message || "Failed to submit criteria."
+//             );
+//           }
+//         } catch (e) {
+//           console.error("Error parsing response:", e);
+//           OpenAlert("error", "Error!", "An unexpected error occurred.");
+//         }
+//         hideOverlay();
+//       },
+//       error: function (xhr, status, error) {
+//         console.error("AJAX Error:", status, error);
+//         OpenAlert("error", "Ops!", "Server error occurred.");
+//         hideOverlay();
+//       },
+//     });
+//   } else {
+//     form.reportValidity();
+//     OpenAlert("error", "Ops!", "Please fill out all required fields.");
+//   }
+// }
+
+function InsertCriteria(LoggedUser) {
+  var form = document.getElementById("order_form");
+
+  if (form.checkValidity()) {
+    showOverlay();
+    var formData = new FormData(form);
+    formData.append("LoggedUser", LoggedUser);
+
+    function fetch_data() {
+      $.ajax({
+        url: "assets/content/lms-management/certificate center/criteria/insert_criteria.php",
+        method: "POST",
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function (data) {
+          var response = JSON.parse(data);
+          if (response.status === "success") {
+            var result = response.message;
+            OpenAlert("success", "Done!", result);
+            ViewCriteriaList(LoggedUser);
+            ClosePopUP();
+          } else {
+            var result = response.message;
+            OpenAlert("error", "Oops.. Something Wrong!", result);
+          }
+          hideOverlay();
+        },
+      });
+    }
+    fetch_data();
+  } else {
+    result = "Please Filled out All * marked Fields.";
+    OpenAlert("error", "Oops!", result);
+  }
+}
+
+//open criteria
+function OpenEditCriteria(loggedUser, criteriaId) {
+  OpenPopup(); // Open the popup
+  document.getElementById("loading-popup").innerHTML = InnerLoader; // Show loading animation
+
+  $.ajax({
+    url: "assets/content/lms-management/certificate center/criteria/edit_criteria.php",
+    method: "POST",
+    data: {
+      LoggedUser: loggedUser,
+      criteriaId: criteriaId, // Pass the criteria ID
+    },
+    success: function (data) {
+      $("#loading-popup").html(data); // Load the HTML from the response
+    },
+    error: function (xhr, status, error) {
+      console.error("Error loading edit-criteria.php:", status, error);
+      $("#loading-popup").html(
+        `<div class="error-message">Failed to load the criteria editor. Please try again later.</div>`
+      );
+    },
+  });
+}
+
+//update criteria and save
+function UpdateCriteria(criteriaId) {
+  console.log("Criteria ID:", criteriaId); // Log the ID to check if it's correct
+
+  var form = document.getElementById("update-form");
+  // Check form validity
+  if (form.checkValidity()) {
+    showOverlay();
+    var formData = new FormData(form);
+
+    // Append the logged user and criteria ID
+    formData.append("LoggedUser", LoggedUser);
+    formData.append("criteria_id", criteriaId); // Ensure the criteria ID is included
+
+    // Perform the AJAX request to update the criteria
+    $.ajax({
+      url: "assets/content/lms-management/certificate center/criteria/update_criteria.php",
+      method: "POST",
+      data: formData,
+      contentType: false,
+      processData: false,
+      success: function (data) {
+        try {
+          var response = JSON.parse(data);
+          console.log("Response:", response); // For debugging
+
+          // Check the response status
+          if (response.status === "success") {
+            OpenAlert("success", "Done!", response.message);
+            ViewCriteriaList();
+          } else {
+            OpenAlert(
+              "error",
+              "Failed!",
+              response.message || "Failed to update criteria."
+            );
+          }
+        } catch (e) {
+          console.error("Error parsing response:", e);
+          OpenAlert("error", "Error!", "An unexpected error occurred.");
+        }
+        hideOverlay();
+      },
+      error: function (xhr, status, error) {
+        console.error("AJAX Error:", status, error);
+        OpenAlert("error", "Ops!", "Server error occurred.");
+        ClosePopUP();
+      },
+    });
+  } else {
+    form.reportValidity();
+    OpenAlert("error", "Ops!", "Please fill out all required fields.");
+  }
 }
 
 function changeCriteriaStatus(criteriaId, status) {

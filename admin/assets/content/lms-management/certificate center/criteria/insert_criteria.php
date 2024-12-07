@@ -7,9 +7,9 @@ require __DIR__ . '/../../../../../vendor/autoload.php';
 use Dotenv\Dotenv;
 use Symfony\Component\HttpClient\HttpClient;
 
-// Enable error reporting for debugging
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+// // Enable error reporting for debugging
+// error_reporting(E_ALL);
+// ini_set('display_errors', 1);
 
 // Load environment variables
 $dotenv = Dotenv::createImmutable(dirname(__DIR__, 5)); // Go up 5 directories
@@ -17,6 +17,9 @@ $dotenv->load();
 
 // Create the HttpClient
 $client = HttpClient::create();
+
+//header('Content-Type: application/json');
+
 
 try {
     // Validate POST request

@@ -53,16 +53,16 @@ foreach ($data as $row) {
         </div>
     </div>
 
-    <div class="col-12 col-md-3 ">
+    <div class="col-12 col-md-3 mb-3 ">
         <div class="card bg-warning text-white">
             <button type="button"
-                onclick="ViewCertificate('<?= htmlspecialchars($LoggedUser, ENT_QUOTES) ?>')"
+                onclick="ViewCertificate('<?= $LoggedUser ?>')"
                 class="btn btn-dark card-body"><i class="fa fa-certificate"></i><br>
                 Certificate
             </button>
         </div>
     </div>
-    <div class="col-12 col-md-3 text-end">
+    <div class="col-12 col-md-3 mb-3 ">
         <div class="card bg-warning text-white">
             <button type="button"
                 onclick="ViewCriteriaGroups('<?= htmlspecialchars($LoggedUser, ENT_QUOTES) ?>')"
@@ -71,7 +71,7 @@ foreach ($data as $row) {
             </button>
         </div>
     </div>
-    <div class="col-12 col-md-3 text-end">
+    <div class="col-12 col-md-3 mb-3">
         <div class="card bg-warning text-white">
             <button type="button"
                 onclick="ViewCriteriaList('<?= htmlspecialchars($LoggedUser, ENT_QUOTES) ?>')"

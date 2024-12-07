@@ -35,7 +35,7 @@ class CcCriteriaGroupController
     {
         $data = json_decode(file_get_contents('php://input'), true);
         $this->model->updateCriteriaGroup($id, $data);
-        echo json_encode(['status' => 'CriteriaGroup updated']);
+        echo json_encode(['status' => 'success', 'message' => 'CriteriaGroup created']);
     }
 
     public function deleteCriteriaGroup($id)

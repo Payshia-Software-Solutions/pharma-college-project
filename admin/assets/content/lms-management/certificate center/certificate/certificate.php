@@ -29,6 +29,7 @@ $certificateData = $response1->toArray();
 //     echo "No data available.";
 //     exit;
 // }
+//print_r($LoggedUser);
 ?>
 
 <div class="row">
