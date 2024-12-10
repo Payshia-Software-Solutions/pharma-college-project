@@ -24,6 +24,20 @@ class Course
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getCourseFeeByCourseCode($course_code)
+    {
+        $query = "
+        SELECT course_fee
+        FROM course
+        WHERE course_code = :course_code
+    ";
+
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['course_code' => $course_code]);
+
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function createRecord($data)
     {
         if (!isset($data['created_at'])) {
@@ -34,7 +48,7 @@ class Course
                 (course_name, course_code, instructor_id, course_description, course_duration, course_fee, registration_fee, other, created_at, created_by, enroll_key, certification, mini_description, course_img, CertificateImagePath) 
                 VALUES 
                 (:course_name, :course_code, :instructor_id, :course_description, :course_duration, :course_fee, :registration_fee, :other, :created_at, :created_by, :enroll_key, :certification, :mini_description, :course_img, :CertificateImagePath)";
-        
+
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($data);
     }
@@ -74,5 +88,4 @@ class Course
         $stmt = $this->pdo->prepare("UPDATE course SET display = 0 WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
-
-    }
+}

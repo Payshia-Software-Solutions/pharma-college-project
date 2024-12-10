@@ -1,4 +1,6 @@
 <?php
+
+
 class CeylonPharmacyCriteria
 {
     private $pdo;
@@ -8,7 +10,7 @@ class CeylonPharmacyCriteria
         $this->pdo = $pdo;
     }
 
-    public function getRecoveredPatientsByCourse($CourseCode, $loggedUser)
+    public function getRecoveredPatientsByCourse($CourseCode, $LoggedUser)
     {
         $recoveredCount = 0;
 
@@ -19,7 +21,7 @@ class CeylonPharmacyCriteria
             LEFT JOIN `care_start` cs ON ccc.`prescription_id` = cs.`PresCode` AND cs.`student_id` = ?
             WHERE ccc.`CourseCode` LIKE ? AND ccc.`status` = 'Active' AND cs.`patient_status` IN ('Pending', 'Recovered')
         ");
-        $stmt->execute([$loggedUser, $CourseCode]);
+        $stmt->execute([$LoggedUser, $CourseCode]);
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         foreach ($rows as $row) {

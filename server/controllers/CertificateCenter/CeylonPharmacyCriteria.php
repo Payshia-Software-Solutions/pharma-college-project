@@ -15,16 +15,16 @@ class CeylonPharmacyCriteriaController
     public function getRecoveredPatientsByCourse($request)
     {
         $CourseCode = $request['CourseCode'] ?? '';
-        $loggedUser = $request['loggedUser'] ?? '';
+        $LoggedUser = $request['LoggedUser'] ?? '';
 
-        if (empty($CourseCode) || empty($loggedUser)) {
+        if (empty($CourseCode) || empty($LoggedUser)) {
             http_response_code(400);
             echo json_encode(["error" => "CourseCode and loggedUser are required."]);
             return;
         }
 
         try {
-            $result = $this->CeylonPharmacyCriteria->getRecoveredPatientsByCourse($CourseCode, $loggedUser);
+            $result = $this->CeylonPharmacyCriteria->getRecoveredPatientsByCourse($CourseCode, $LoggedUser);
             http_response_code(200);
             echo json_encode(["recoveredCount" => $result]);
         } catch (Exception $e) {

@@ -226,6 +226,19 @@ function GetLevels($lms_link, $CourseCode)
     return $ArrayResult;
 }
 
+function GetAllTasks($lms_link)
+{
+    $ArrayResult = array();
+    $sql = "SELECT `resource_id`, `level_id`, `resource_title`, `resource_data`, `created_by`, `task_cover`, `is_active` FROM `win_pharma_level_resources`";
+    $result = $lms_link->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ArrayResult[$row['resource_id']] = $row;
+        }
+    }
+    return $ArrayResult;
+}
+
 function GetTasks($lms_link, $LevelCode)
 {
     $ArrayResult = array();
@@ -318,6 +331,20 @@ function GetWinpharmaSubmissions($lms_link, $UserName)
     return $ArrayResult;
 }
 
+function GetWinpharmaCompletedResourceIds($lms_link, $UserName, $winpharmaCurrentTopLevel)
+{
+    $ResourceIds = array();
+    $sql = "SELECT `resource_id` FROM `win_pharma_submission` WHERE `index_number` LIKE '$UserName' AND `grade_status` = 'Completed' AND `level_id` LIKE '$winpharmaCurrentTopLevel'";
+    $result = $lms_link->query($sql);
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ResourceIds[$row['resource_id']] = $row['resource_id'];
+        }
+    }
+    return $ResourceIds;
+}
+
+
 function GetWinpharmaSubmissionsByID($lms_link, $submission_id)
 {
     $ArrayResult = array();
@@ -403,7 +430,7 @@ function GetTopLevelAllUsers($lms_link, $CourseCode)
 function GetTopLevelAllUsersCompleted($lms_link, $CourseCode)
 {
     $topLevels = []; // Array to store top levels for all users
-    $sql = "SELECT `index_number`, MAX(`level_id`) AS `top_level` FROM `win_pharma_submission` WHERE `course_code` = '$CourseCode' AND `grade_status` LIKE 'Completed' GROUP BY `index_number`";
+    $sql = "SELECT `index_number`, MAX(`level_id`) AS `top_level`, MAX(`resource_id`) AS `top_resource` FROM `win_pharma_submission` WHERE `course_code` = '$CourseCode' AND `grade_status` LIKE 'Completed' GROUP BY `index_number`";
     $result = $lms_link->query($sql);
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {

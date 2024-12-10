@@ -47,4 +47,17 @@ class HunterSaveAnswerController
         $this->model->deleteRecord($id);
         echo json_encode(['message' => 'Record deleted successfully']);
     }
+    // Method to get all saved answers
+    public function getAllSavedAnswers()
+    {
+        $savedAnswers = $this->model->getHunterSavedAnswers();
+        echo json_encode($savedAnswers);
+    }
+
+    // Method to get saved answers by a specific user
+    public function HunterSavedAnswersByUser($studentNumber)
+    {
+        $savedAnswers = $this->model->HunterSavedAnswersByUser($studentNumber);
+        echo json_encode($savedAnswers);
+    }
 }

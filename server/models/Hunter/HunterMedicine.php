@@ -50,4 +50,18 @@ class HunterMedicine
         $stmt = $this->pdo->prepare("DELETE FROM hunter_medicine WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
+
+    public function HunterMedicines()
+    {
+        $sql = "SELECT * FROM `hunter_medicine` WHERE `active_status` NOT LIKE 'Deleted'";
+        $stmt = $this->pdo->query($sql);
+        $ArrayResult = [];
+
+        if ($stmt->rowCount() > 0) {
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $ArrayResult[$row['id']] = $row;
+            }
+        }
+        return $ArrayResult;
+    }
 }

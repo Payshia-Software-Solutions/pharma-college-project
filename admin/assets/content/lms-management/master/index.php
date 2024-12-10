@@ -13,9 +13,9 @@ $studentCount = count($accountDetails);
 ?>
 
 <style>
-.card {
-    min-height: 112px;
-}
+    .card {
+        min-height: 112px;
+    }
 </style>
 
 <div class="row mt-5">
@@ -125,6 +125,17 @@ $studentCount = count($accountDetails);
 
                     <i class="fa-solid fa-wallet icon-card"></i>
                     <h5 class="mb-0">Payments</h5>
+                </div>
+            </div>
+        </a>
+    </div>
+    <div class="col-md-3 col-6 col-xxl-2">
+        <a href="./lms-certificate-center" rel="noopener noreferrer">
+            <div class="card clickable">
+                <div class="card-body text-center">
+
+                    <i class="fa-solid fa-certificate icon-card"></i>
+                    <h5 class="mb-0">Certification Center</h5>
                 </div>
             </div>
         </a>

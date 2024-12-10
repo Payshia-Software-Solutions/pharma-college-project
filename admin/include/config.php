@@ -1,7 +1,7 @@
 <?php
 $server = "localhost";
 $username = "root";
-$password = "root";
+$password = "";
 $database = "payshia_erp";
 $database_error = "";
 
@@ -32,7 +32,14 @@ try {
 }
 
 
-// Establish LMS Connection
+
+//Establish LMS Connection
+// $server = "91.204.209.19";
+// $username = "pharmaco_admin";
+// $password = "pharmaadmin";
+// $database = "pharmaco_pharmacollege";
+// $database_error = "";
+
 $server = "localhost";
 $username = "root";
 $password = "";

@@ -1,66 +1,24 @@
 <?php
+require '../../vendor/autoload.php';
 
-$certificateList = [
-    [
-        'id' => 1,
-        'name' => 'Advanced Certificate',
-        'bg_color' => '#797bba',
-        'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-    ],
-    [
-        'id' => 2,
-        'name' => 'Workshop Certificate',
-        'bg_color' => '#8498ba',
-        'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-    ],
-    [
-        'id' => 3,
-        'name' => 'Canada Certificate',
-        'bg_color' => '#7aeb89',
-        'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-    ],
-    [
-        'id' => 4,
-        'name' => 'Pharma Hunter Certificate',
-        'bg_color' => '#b6d9bb',
-        'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-    ],
-    [
-        'id' => 1,
-        'name' => 'HP Drugs Certificate',
-        'bg_color' => '#000000',
-        'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-    ],
-];
+use Symfony\Component\HttpClient\HttpClient;
 
-$orderedCertificate = [
-    [
-        'id' => 1,
-        'name' => 'Advanced Certificate',
-        'created_at' => '2022-01-01',
-        'bg_color' => '#797bba',
-        'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-        'status' => 'In Printing'
-    ],
-    [
-        'id' => 1,
-        'name' => 'Workshop Certificate',
-        'created_at' => '2022-01-25',
-        'bg_color' => '#8498ba',
-        'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-        'status' => 'In Delivery'
-    ],
-    [
-        'id' => 1,
-        'name' => 'Canada Certificate',
-        'created_at' => '2022-01-25',
-        'bg_color' => '#7aeb89',
-        'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-        'status' => 'Delivered'
-    ]
+$client = HttpClient::create();
 
-];
+//for use env file data
+use Dotenv\Dotenv;
 
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv->load();
+
+$LoggedUser = $_POST['LoggedUser'];
+// Making a GET request
+$response = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_certificate_list/');
+$response2 = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_certificate_order/');
+
+// Get the response body as an array (if it's JSON)
+$certificateList = $response->toArray();
+$orderedCertificate = $response2->toArray();
 ?>
 
 <div class="row mt-2 mb-5">
@@ -100,11 +58,11 @@ $orderedCertificate = [
                                 <div class="card rounded-1 clickable knowledge-card flex-fill" onclick="OpenCertificate('<?= $certificate['id'] ?>')">
                                     <div class="card-body">
                                         <h4 class="mb-0 knowledge-title"
-                                            style="--bg-color: <?= htmlspecialchars($certificate['bg_color']) ?>;">>
+                                            style="--bg-color:#797bba;">>
                                             <span class="rectangle"></span>
-                                            <?= $certificate['icon'] ?>
+                                            <i class="fa-solid fa-graduation-cap"></i>
                                         </h4>
-                                        <p class="mb-0 text-muted"><?= $certificate['name'] ?></p>
+                                        <p class="mb-0 text-muted"><?= $certificate['list_name'] ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -134,16 +92,24 @@ $orderedCertificate = [
                                             <tr>
                                                 <th scope="col">Certificate</th>
                                                 <th scope="col">Order Date</th>
+                                                <th scope="col">Status</th>
                                                 <th scope="col">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <?php foreach ($orderedCertificate as $certificate) : ?>
                                                 <tr>
-                                                    <td><?= $certificate['name'] ?></td>
+                                                    <td><?= $certificate['certificate_name'] ?></td>
                                                     <td><?= $certificate['created_at'] ?></td>
                                                     <td>
-                                                        <button onclick="OpenPaymentView(1, 'CPCC10')" class="btn btn-primary btn-sm"
+                                                        <?php
+                                                        $buttonClass = ($certificate['certificate_status'] === 'Printed') ? 'btn-success' : 'btn-danger';
+                                                        $buttonText = ($certificate['certificate_status'] === 'Printed') ? 'Printed' : 'Pending';
+                                                        ?>
+                                                        <button class="btn btn-sm <?= $buttonClass ?>" disabled><?= $buttonText ?></button>
+                                                    </td>
+                                                    <td>
+                                                        <button onclick="OpenPaymentView('<?= $certificate['id'] ?>','<?= $certificate['certificate_name'] ?>')" class="btn btn-primary btn-sm"
                                                             type="button"><i class="fa-solid fa-eye"></i>
                                                             View</button>
                                                     </td>

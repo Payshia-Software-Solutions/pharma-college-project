@@ -27,6 +27,19 @@ class CourseController
         }
     }
 
+    public function getCourseFeeByCourseCode($course_code)
+    {
+        $record = $this->model->getCourseFeeByCourseCode($course_code);
+        if ($record) {
+            echo json_encode($record);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Record not found']);
+        }
+    }
+
+
+
     public function createRecord()
     {
         $data = json_decode(file_get_contents("php://input"), true);
@@ -47,5 +60,4 @@ class CourseController
         $this->model->deleteRecord($id);
         echo json_encode(['message' => 'Record deleted successfully']);
     }
-
-    }
+}
