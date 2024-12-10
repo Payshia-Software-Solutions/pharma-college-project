@@ -20,39 +20,25 @@ $LoggedUser = $_POST['LoggedUser'];
 $certificateId = $_POST['certificateId'];
 $CourseCode = $_POST['CourseCode'] ?? null; // CourseCode sent as a query parameter
 
-// echo '<pre>';
-// print_r($CourseCode);
-// echo '</pre>';
 
-// !Parmer Hunter correct answer count
-
+// !Pharma Hunter correct answer count
 // Make a GET request to fetch the saved answers by user
 $response = $client->request('GET', $_ENV["SERVER_URL"] . '/hunter_saveanswer/' . $LoggedUser);
+$hunterData = $response->toArray();
+$correctCount = isset($hunterData[$LoggedUser]['correct_count']) ? (int) $hunterData[$LoggedUser]['correct_count'] : 0;
 
-// Get the response body as an array
-$data = $response->toArray();
-//print_r($data);
-
-// Check if 'Admin' key exists, and then get the 'correct_count' field as an integer
-$correctCount = isset($data[$LoggedUser]['correct_count']) ? (int) $data[$LoggedUser]['correct_count'] : 0;
-
-// echo "correctCount: $correctCount\n";
 
 // !winpharmer game recover count
-
 // Making a GET request to fetch the recovered count from the appropriate route
-$response2 = $client->request('GET', $_ENV["SERVER_URL"] . '/certificate-criteria/recovered-patients/', [
+$response = $client->request('GET', $_ENV["SERVER_URL"] . '/certificate-criteria/recovered-patients/', [
     'query' => [
         'CourseCode' => $CourseCode,
         'LoggedUser' => $LoggedUser
     ]
 ]);
 
-// Get the response body as an array (if it's JSON)
-$data = $response2->toArray();
-
-// Extract the recovered count from the response
-$recoveredCount = $data['recoveredCount'] ?? 0; // Default to 0 if not found
+$ceylonPharmacyData = $response->toArray();
+$recoveredCount = $ceylonPharmacyData['recoveredCount'] ?? 0; // Default to 0 if not found
 
 // !Assignments
 
@@ -69,19 +55,10 @@ $Assignment_03_ID = '';
 //* Call the function to get all user enrollments by course
 $CourseAssignments = GetAssignments($CourseCode);
 
-// Print the result or use the data as needed
-// echo '<pre>';
-// print_r('assigments by course code');
-// print_r($CourseAssignments);  // This will print the entire result in a readable format
-// echo '</pre>';
-
-//* Call the function to get all assigments by user
+//* Call the function to get all assignments by user
 $userassigments = GetAssignmentSubmissionsByUser($LoggedUser);
 
-// echo '<pre>';
-// print_r('assigments submission by user');
-// print_r($userassigments);  // This will print the entire result in a readable format
-// echo '</pre>';
+
 
 // Initialize an empty array to store matching assignments
 $matchingAssignments = array();
@@ -98,10 +75,6 @@ foreach ($CourseAssignments as $courseAssignmentId => $courseAssignment) {
     }
 }
 
-// echo '<pre>';
-// print_r('match assigment by assigment id');
-// print_r($matchingAssignments);  // This will print the entire result in a readable format
-// echo '</pre>';
 
 //* get assigment grades by assigment id
 foreach ($matchingAssignments as $assignmentId => $assignments) {
@@ -132,13 +105,7 @@ foreach ($matchingAssignments as $assignmentId => $assignments) {
     }
 }
 
-// Example: Display the grades dynamically
-// echo "Grade for {$Assignment_01_ID}: " . ($Assignment_01 ? $Assignment_01 : 'Not graded yet') . "<br>";
-// echo "Grade for {$Assignment_02_ID}: " . ($Assignment_02 ? $Assignment_02 : 'Not graded yet') . "<br>";
-// echo "Grade for {$Assignment_03_ID}: " . ($Assignment_03 ? $Assignment_03 : 'Not graded yet') . "<br>";
-
 //! Due Payments
-
 $enrollmentList =  getUserEnrollments($LoggedUser);
 $batchList =  GetCourses($link);
 $studentBalanceArray = GetStudentBalance($LoggedUser);
@@ -147,24 +114,20 @@ $dueBalance = $studentBalanceArray['studentBalance'];
 //!certificate title & criteria group id
 
 //certificate Title
-$certificateName = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_certificate_list/' . $certificateId);
+$response = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_certificate_list/' . $certificateId);
 // Get the response body as an array (if it's JSON)
 
-$data6 = $certificateName->toArray();
-//print_r($data6);
+$data6 = $response->toArray();
 $Title = $data6['list_name'] ?? 0;
 $CertificateCriteriaaGroupId = $data6['criteria_group_id'];
-//print_r($Title);
+
 
 //! Get certificate Criteria Group
-
 // Fetch the data from the server
 $certificateName = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_criteria_group/' . $CertificateCriteriaaGroupId);
 
 // Convert the response to an array
 $data6 = $certificateName->toArray();
-//print_r($data6);
-
 // Extract criteria_group JSON string
 $cdata = $data6['criteria_group'] ?? null;
 
@@ -180,8 +143,6 @@ if (!is_array($criteraList)) {
     $criteraList = [];
 }
 
-// print_r($criteraList);
-
 // Initialize an array to store results
 $criteriaWithListNames = [];
 
@@ -192,9 +153,6 @@ foreach ($criteraList as $id) {
         // Fetch the list_name and moq from the /cc_criteria_list/{id}/ API endpoint
         $response = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_criteria_list/' . $id);
         $listData = $response->toArray();
-
-        // Debugging output to check the response data
-        // var_dump($listData);
 
         // Extract list_name and moq
         $listName = $listData['list_name'] ?? 'Unknown';
@@ -218,20 +176,18 @@ foreach ($criteraList as $id) {
                 <h3 class="p-2 fw-bold"><?= htmlspecialchars($Title, ENT_QUOTES, 'UTF-8') ?> Criteria</h3>
             </div>
 
-
-
             <?php if (!empty($criteraList)): ?>
                 <?php
                 $eligibility = true; // Assume eligibility is true
                 $index = 0; // Initialize index for progress tracking
 
                 //!check order button
-                $correctCount = 1000;
-                $recoveredCount = 50;
-                $Assignment_01 = 50;
-                $Assignment_02 = 50;
-                $Assignment_03 = 50;
-                $dueBalance = 0;
+                // $correctCount = 1000;
+                // $recoveredCount = 50;
+                // $Assignment_01 = 50;
+                // $Assignment_02 = 50;
+                // $Assignment_03 = 50;
+                // $dueBalance = 0;
                 ?>
 
                 <!-- Loop through criteria and render cards -->

@@ -20,25 +20,18 @@ $certificateId = $_POST['certificateId'];
 $CourseCode = $_POST['CourseCode'];
 $certificateName = $_POST['certificateName'];
 
-// print_r($LoggedUser);
-
-$certficateDataformResponse = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_certificate_order/' . $certificateId);
-$orderData = $certficateDataformResponse->toArray();
-//print_r($orderData);
-
+$certificateDataFormResponse = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_certificate_order/' . $certificateId);
+$orderData = $certificateDataFormResponse->toArray();
 
 //get full name
 $userDataResponse = $client->request('GET', $_ENV["SERVER_URL"] . '/userFullDetails/username/' . $LoggedUser);
 
 // Get the response body as an array
 $userData = $userDataResponse->toArray();
-//print_r($userData);
-
 
 $firstName = $userData['first_name'] ?? null;
 $lastName = $userData['last_name'] ?? null;
 $fullName = trim($firstName . ' ' . $lastName);
-
 
 // Get city
 $cities = GetCities($link);
@@ -55,67 +48,63 @@ if (isset($cities[$city_id])) {
 $certificateStatus = $orderData['certificate_status']; // Assuming this is either "Printed" or "Pending"
 ?>
 
-
-
 <div class="row g-3">
     <div class="col-12">
         <div class="card shadow border-0 rounded-3">
             <div class="card-body p-5">
                 <div class="row g-2">
                     <div class="col-6 col-12">
-                        <span class="status-span bg-primary text-light mb-5" style="padding: 5px 10px; border-radius: 5px;" ><?= $orderData['id'] ?></span>
+                        <span class="status-span bg-primary text-light mb-5" style="padding: 5px 10px; border-radius: 5px;"><?= $orderData['id'] ?></span>
                         <span class="status-span mb-5 <?php echo $certificateStatus === 'Printed' ? 'bg-success' : 'bg-danger'; ?>" style="color: white; padding: 5px 10px; border-radius: 5px;">
-                        <?php echo $certificateStatus === 'Printed' ? 'Printed' : 'Pending'; ?>
+                            <?php echo $certificateStatus === 'Printed' ? 'Printed' : 'Pending'; ?>
                         </span>
                         <h3 class="mt-3 border-bottom pb-2"><?= $certificateName ?></h3>
+                    </div>
+                    <div class="col-12 col-lg-3 text-center text-md-start d-flex">
+                        <div class="card bg-light border-0 flex-fill">
+                            <div class="card-body">
+                                <p class="mb-0">Student ID</p>
+                                <h4 class="fw-bold mb-0"><?= $orderData['created_by'] ?></h4>
                             </div>
-                            <div class="col-12 col-lg-3 text-center text-md-start d-flex">
-                                <div class="card bg-light border-0 flex-fill">
-                                    <div class="card-body">
-                                        <p class="mb-0">Student ID</p>
-                                        <h4 class="fw-bold mb-0"><?= $orderData['created_by'] ?></h4>
-                                    </div>
-                                </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-9 text-center text-md-start d-flex">
+                        <div class="card bg-light border-0 flex-fill">
+                            <div class="card-body">
+                                <p class="mb-0">Name</p>
+                                <h4 class="fw-bold mb-0"><?= htmlspecialchars($fullName) ?></h4>
                             </div>
-                            <div class="col-12 col-lg-9 text-center text-md-start d-flex">
-                                <div class="card bg-light border-0 flex-fill">
-                                    <div class="card-body">
-                                        <p class="mb-0">Name</p>
-                                        <h4 class="fw-bold mb-0"><?= htmlspecialchars($fullName) ?></h4>
-                                    </div>
-                                </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3 text-center text-md-start d-flex">
+                        <div class="card bg-light border-0 flex-fill">
+                            <div class="card-body">
+                                <p class="mb-0">Mobile Number</p>
+                                <h5 class="fw-bold mb-0"><?= $orderData['mobile'] ?></h5>
                             </div>
-                            <div class="col-12 col-lg-3 text-center text-md-start d-flex">
-                                <div class="card bg-light border-0 flex-fill">
-                                    <div class="card-body">
-                                        <p class="mb-0">Mobile Number</p>
-                                        <h5 class="fw-bold mb-0"><?= $orderData['mobile'] ?></h5>
-                                    </div>
-                                </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3 text-center text-md-start d-flex">
+                        <div class="card bg-light border-0 flex-fill">
+                            <div class="card-body">
+                                <p class="mb-0">Address Line 1</p>
+                                <h5 class="fw-bold mb-0 due-balance"><?= $orderData['address_line1'] ?></h5>
                             </div>
-                            <div class="col-12 col-lg-3 text-center text-md-start d-flex">
-                                <div class="card bg-light border-0 flex-fill">
-                                    <div class="card-body">
-                                        <p class="mb-0">Address Line 1</p>
-                                        <h5 class="fw-bold mb-0 due-balance"><?= $orderData['address_line1'] ?></h5>
-                                    </div>
-                                </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3 text-center text-md-start d-flex">
+                        <div class="card bg-light border-0 flex-fill">
+                            <div class="card-body">
+                                <p class="mb-0">Address Line 2</p>
+                                <h5 class="fw-bold mb-0 due-balance"><?= $orderData['address_line2'] ?></h5>
                             </div>
-                            <div class="col-12 col-lg-3 text-center text-md-start d-flex">
-                                <div class="card bg-light border-0 flex-fill">
-                                    <div class="card-body">
-                                        <p class="mb-0">Address Line 2</p>
-                                        <h5 class="fw-bold mb-0 due-balance"><?= $orderData['address_line2'] ?></h5>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-lg-3 text-center text-md-start d-flex">
-                                <div class="card bg-light border-0 flex-fill">
-                                    <div class="card-body">
-                                        <p class="mb-0">City</p>
-                                        <h5 class="fw-bold mb-0 due-balance"><?= $city_name_en ?></h5>
-                                    </div>
-                                </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-3 text-center text-md-start d-flex">
+                        <div class="card bg-light border-0 flex-fill">
+                            <div class="card-body">
+                                <p class="mb-0">City</p>
+                                <h5 class="fw-bold mb-0 due-balance"><?= $city_name_en ?></h5>
                             </div>
                         </div>
                     </div>

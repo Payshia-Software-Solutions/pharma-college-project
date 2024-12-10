@@ -1,5 +1,4 @@
 <?php
-
 require '../../vendor/autoload.php';
 
 use Symfony\Component\HttpClient\HttpClient;
@@ -19,73 +18,7 @@ $response2 = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_certificate_orde
 
 // Get the response body as an array (if it's JSON)
 $certificateList = $response->toArray();
-//print_r($certificateList);
-
 $orderedCertificate = $response2->toArray();
-//print_r($orderedCertificate);
-
-
-// $certificateList = [
-//     [
-//         'id' => 1,
-//         'name' => 'Advanced Certificate',
-//         'bg_color' => '#797bba',
-//         'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-//     ],
-//     [
-//         'id' => 2,
-//         'name' => 'Workshop Certificate',
-//         'bg_color' => '#8498ba',
-//         'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-//     ],
-//     [
-//         'id' => 3,
-//         'name' => 'Canada Certificate',
-//         'bg_color' => '#7aeb89',
-//         'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-//     ],
-//     [
-//         'id' => 4,
-//         'name' => 'Pharma Hunter Certificate',
-//         'bg_color' => '#b6d9bb',
-//         'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-//     ],
-//     [
-//         'id' => 1,
-//         'name' => 'HP Drugs Certificate',
-//         'bg_color' => '#000000',
-//         'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-//     ],
-// ];
-
-// $orderedCertificate = [
-//     [
-//         'id' => 1,
-//         'name' => 'Advanced Certificate',
-//         'created_at' => '2022-01-01',
-//         'bg_color' => '#797bba',
-//         'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-//         'status' => 'In Printing'
-//     ],
-//     [
-//         'id' => 1,
-//         'name' => 'Workshop Certificate',
-//         'created_at' => '2022-01-25',
-//         'bg_color' => '#8498ba',
-//         'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-//         'status' => 'In Delivery'
-//     ],
-//     [
-//         'id' => 1,
-//         'name' => 'Canada Certificate',
-//         'created_at' => '2022-01-25',
-//         'bg_color' => '#7aeb89',
-//         'icon' => '<i class="fa-solid fa-graduation-cap"></i>',
-//         'status' => 'Delivered'
-//     ]
-
-// ];
-
 ?>
 
 <div class="row mt-2 mb-5">
@@ -173,7 +106,8 @@ $orderedCertificate = $response2->toArray();
                                                         $buttonClass = ($certificate['certificate_status'] === 'Printed') ? 'btn-success' : 'btn-danger';
                                                         $buttonText = ($certificate['certificate_status'] === 'Printed') ? 'Printed' : 'Pending';
                                                         ?>
-                                                        <button class="btn btn-sm <?= $buttonClass ?>" disabled><?= $buttonText ?></button></td>
+                                                        <button class="btn btn-sm <?= $buttonClass ?>" disabled><?= $buttonText ?></button>
+                                                    </td>
                                                     <td>
                                                         <button onclick="OpenPaymentView('<?= $certificate['id'] ?>','<?= $certificate['certificate_name'] ?>')" class="btn btn-primary btn-sm"
                                                             type="button"><i class="fa-solid fa-eye"></i>

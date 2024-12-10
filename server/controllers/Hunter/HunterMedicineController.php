@@ -1,5 +1,5 @@
 <?php
-require_once '.\models\Hunter\HunterMedicine.php';
+require_once './models/Hunter/HunterMedicine.php';
 
 class HunterMedicineController
 {
