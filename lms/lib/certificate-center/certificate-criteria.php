@@ -1,8 +1,18 @@
 <?php
 
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require '../../vendor/autoload.php';
 require '../../php_handler/course_functions.php';
 require '../../php_handler/function_handler.php';
+
+
+include_once '../home/classes/Database.php';
+// Create a new Database object with the path to the configuration file
+$config_file = '../../include/env.txt';
+$database = new Database($config_file);
+$db = $database->getConnection();
 
 use Symfony\Component\HttpClient\HttpClient;
 
@@ -167,8 +177,40 @@ foreach ($criteraList as $id) {
     }
 }
 
-?>
+include_once '../pharma-hunter-pro/classes/HunterCourseMedicine.php';
+include '../pharma-hunter-pro/php_methods/pharma-hunter-methods.php';
+$hunterCourseMedicine = new HunterCourseMedicine($db);
+$Medicines = $hunterCourseMedicine->GetProMedicines($CourseCode);
 
+$MedicineCount = count($Medicines);
+// Get Gem & Coin Counts
+$CountAnswer = GetHunterProAttempts($link);
+$correctAttempts = GetHPCorrectAttempts($link, $LoggedUser);
+$pendingCount = ($MedicineCount * $CountAnswer) - count($correctAttempts);
+
+$totalGem = $totalCoin = 0;
+$AllSubmissionsByMedicine  = GetAllSubmissionsByMedicine($link, $LoggedUser);
+$AllSubmissions = GetAllSubmissions($link, $LoggedUser);
+foreach ($AllSubmissionsByMedicine as $submission) :
+    $medicineId = $submission['medicine_id'];
+    $savedItems = array_filter($AllSubmissions, function ($item) use ($medicineId) {
+        return isset($item['medicine_id']) && $item['medicine_id'] === $medicineId;
+    });
+
+    $hunterProCorrectCount = array_filter($savedItems, function ($item) {
+        return isset($item['answer_status']) && $item['answer_status'] === 'Correct';
+    });
+
+    $hunterProCorrectCount = count($hunterProCorrectCount);
+
+endforeach;
+
+?>
+<div class="row">
+    <div class="col-12 d-flex justify-content-end mb-3">
+        <button onclick="OpenIndex()" type="button" class="btn btn-success btn-sm">Home</button>
+    </div>
+</div>
 <div class="card border-0 shadow-lg rounded-4">
     <div class="card-body">
         <div class="row">
@@ -224,7 +266,7 @@ foreach ($criteraList as $id) {
                             $currentBar = $dueBalance;
                             break;
                         case 7:
-                            $currentBar = $incorrectCount ?? 0;
+                            $currentBar = $hunterProCorrectCount ?? 0;
                             break;
                         default:
                             $currentBar = 0;
