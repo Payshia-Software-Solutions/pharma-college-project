@@ -18,6 +18,12 @@ class CcCertificateOrderController
         echo json_encode($orders);
     }
 
+    public function getAllOrdersByUsername($username)
+    {
+        $orders = $this->model->getAllOrdersByUsername($username);
+        echo json_encode($orders);
+    }
+
     public function getOrderById($id)
     {
         $order = $this->model->getOrderById($id);

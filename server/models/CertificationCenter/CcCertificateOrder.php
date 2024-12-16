@@ -33,6 +33,35 @@ class CcCertificateOrder
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getAllOrdersByUsername($username)
+    {
+        // SQL query to join `cc_certificate_order` with `cc_certificate_list` and get certificate_name
+        $sql = "SELECT 
+                  o.*, 
+                  c.list_name AS certificate_name 
+              FROM 
+                  `cc_certificate_order` o
+              JOIN 
+                  `cc_certificate_list` c 
+              ON 
+                  o.certificate_id = c.id
+              WHERE 
+                  o.created_by LIKE :username";
+
+        // Prepare the SQL statement
+        $stmt = $this->pdo->prepare($sql);
+
+        // Bind the username parameter with wildcards for the LIKE condition
+        $stmt->bindValue(':username', '%' . $username . '%', PDO::PARAM_STR);
+
+        // Execute the statement
+        $stmt->execute();
+
+        // Fetch all results as an associative array
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
 
 
     public function getOrderById($id)
