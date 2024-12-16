@@ -14,7 +14,7 @@ $dotenv->load();
 $LoggedUser = $_POST['LoggedUser'];
 // Making a GET request
 $response = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_certificate_list/');
-$response2 = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_certificate_order/');
+$response2 = $client->request('GET', $_ENV["SERVER_URL"] . '/cc_certificate_order/by-user/' . $LoggedUser);
 
 // Get the response body as an array (if it's JSON)
 $certificateList = $response->toArray();
@@ -35,8 +35,14 @@ $orderedCertificate = $response2->toArray();
     </div>
 </div>
 
-<div id="pageContent">
 
+
+<div id="pageContent">
+    <div class="row">
+        <div class="col-12 d-flex justify-content-end mb-3">
+            <button onclick="OpenIndex()" type="button" class="btn btn-warning btn-sm">Reload</button>
+        </div>
+    </div>
     <div class="row g-3">
         <?php if ($orderedCertificate) : ?>
             <div class="col-md-6">
