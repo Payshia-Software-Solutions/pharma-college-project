@@ -88,7 +88,7 @@ $certtficateUserResultRoutes = require './routes/Certificate/certificateUserResu
 $parentMainCourseRoutes = require './routes/Course/ParentMainCourseRoutes.php';
 $courseModuleRoutes = require './routes/Course/CourseModuleRoutes.php';
 $courseOutcomeRoutes = require './routes/Course/CourseOutcomeRoutes.php';
-$courseOverviewRoutes = require './routes/Course/CourseOverviewRoutes.php';
+$courseOverviewRoutes = require './routes/Course/courseOverviewRoutes.php';
 
 // if (!is_array($paymentRequestRoutes)) {
 //      throw new Exception("paymentRequestRoutes is not an array");
