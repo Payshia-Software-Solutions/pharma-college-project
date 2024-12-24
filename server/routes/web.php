@@ -85,10 +85,13 @@ $ccCertificateListRoutes = require './routes/CertificationCenter/ccCertificateLi
 $ccGraduationPackageRoutes = require './routes/CertificationCenter/ccGraduationPackageRoutes.php';
 $ccCertificateOrderRoutes = require './routes/CertificationCenter/ccCertificationOrderRoutes.php';
 $certtficateUserResultRoutes = require './routes/Certificate/certificateUserResultRoutes.php';
-
+$parentMainCourseRoutes = require './routes/Course/parentMainCourseRoutes.php';
+$courseModuleRoutes = require './routes/Course/CourseModuleRoutes.php';
+$courseOutcomeRoutes = require './routes/Course/CourseOutcomeRoutes.php';
+$courseOverviewRoutes = require './routes/Course/courseOverviewRoutes.php';
 
 // if (!is_array($paymentRequestRoutes)) {
-//     throw new Exception("paymentRequestRoutes is not an array");
+//      throw new Exception("paymentRequestRoutes is not an array");
 // }
 $CeylonPharmacyCriteria = require './routes/CertificateCenter/certificateRoutes.php';
 
@@ -159,7 +162,12 @@ $routes = array_merge(
     $ccGraduationPackageRoutes,
     $ccCertificateOrderRoutes,
     $CeylonPharmacyCriteria,
-    $certtficateUserResultRoutes
+    $certtficateUserResultRoutes,
+    $parentMainCourseRoutes,
+    $courseModuleRoutes,
+    $courseOutcomeRoutes,
+    $courseOverviewRoutes
+   
 );
 
 
@@ -201,14 +209,17 @@ error_log("URI: $uri");
 // echo $uri . '<br>';
 
 
+
+
+
 // Route matching
 foreach ($routes as $route => $handler) {
     list($routeMethod, $routeUri) = explode(' ', $route, 2);
 
     // Convert route URI to regex
     $routeRegex = str_replace(
-        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{CourseCode}', '{loggedUser}', '{title_id}'],
-        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)'],
+        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{CourseCode}', '{loggedUser}', '{title_id}','{slug}','{module_code}'],
+        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-]+)'],
         $routeUri
     );
 
