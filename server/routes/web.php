@@ -85,10 +85,10 @@ $ccCertificateListRoutes = require './routes/CertificationCenter/ccCertificateLi
 $ccGraduationPackageRoutes = require './routes/CertificationCenter/ccGraduationPackageRoutes.php';
 $ccCertificateOrderRoutes = require './routes/CertificationCenter/ccCertificationOrderRoutes.php';
 $certtficateUserResultRoutes = require './routes/Certificate/certificateUserResultRoutes.php';
-$parentMainCourseRoutes = require './routes/Course/parentMainCourseRoutes.php';
+$parentMainCourseRoutes = require './routes/Course/ParentMainCourseRoutes.php';
 $courseModuleRoutes = require './routes/Course/CourseModuleRoutes.php';
 $courseOutcomeRoutes = require './routes/Course/CourseOutcomeRoutes.php';
-$courseOverviewRoutes = require './routes/Course/courseOverviewRoutes.php';
+$courseOverviewRoutes = require './routes/Course/CourseOverviewRoutes.php';
 
 // if (!is_array($paymentRequestRoutes)) {
 //      throw new Exception("paymentRequestRoutes is not an array");
