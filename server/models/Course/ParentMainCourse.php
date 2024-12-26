@@ -9,6 +9,18 @@ class ParentMainCourse
         $this->pdo = $pdo;
     }
 
+    public function countAllCourses()
+    {
+        error_log("Executing count query...");  // Debug log to confirm query is running
+        $stmt = $this->pdo->query("SELECT COUNT(*) AS total FROM parent_main_course");
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        error_log("Count result: " . print_r($result, true));  // Log the result
+        return $result['total'];
+        
+    }
+    
+    
+
     // Fetch all records from the table
     public function getAllCourses()
     {

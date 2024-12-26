@@ -57,4 +57,10 @@ class UserController
         $this->model->deleteUser($id);
         echo json_encode(['status' => 'User deleted']);
     }
+
+    public function getUserCount()
+    {
+        $count = $this->model->getUserCount();
+        echo json_encode(['user_count' => $count]);
+    }
 }

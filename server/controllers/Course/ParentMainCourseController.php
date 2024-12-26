@@ -78,7 +78,12 @@ class ParentMainCourseController
         $courseCounts = $this->model->countCoursesByMode();
         echo json_encode($courseCounts);
     }
-
+  // count alll courses
+    public function countAllCourses()
+    {
+        $count = $this->model->countAllCourses();
+        echo json_encode(['total_courses' => $count]);
+    }
     // Get courses by skill level
     public function getCoursesBySkillLevel($skill_level)
     {
