@@ -16,5 +16,6 @@ return [
     'DELETE /temp-users/{id}' => [$tempLmsUserController, 'deleteUser'],
     'GET /temp-users/count' => [$tempLmsUserController, 'countUsers'],
     'GET /temp-users/status/{status}' => [$tempLmsUserController, 'getUsersByApprovalStatus'],
-    'GET /temp-users/course/{course}' => [$tempLmsUserController, 'getUsersByCourse']
+    'GET /temp-users/course/{course}' => [$tempLmsUserController, 'getUsersByCourse'],
+
 ];

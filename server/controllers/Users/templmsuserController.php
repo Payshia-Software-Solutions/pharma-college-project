@@ -40,27 +40,20 @@ class TempLmsUserController
     // Create a new user
     public function createUser()
     {
+        // Get the data from the request body
         $data = json_decode(file_get_contents("php://input"), true);
-        try {
-            $this->model->createUser($data);
-            http_response_code(201);
-            echo json_encode(['message' => 'User created successfully']);
-        } catch (Exception $e) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Failed to create user', 'details' => $e->getMessage()]);
-        }
-    }
 
-    // Update a user by ID
-    public function updateUser($id)
-    {
-        $data = json_decode(file_get_contents("php://input"), true);
         try {
-            $this->model->updateUser($id, $data);
-            echo json_encode(['message' => 'User updated successfully']);
+            // Call the model to insert the new user and get the last inserted ID
+            $userId = $this->model->createUser($data);
+
+            // Return success response with the new user's ID
+            http_response_code(201); // Created successfully
+            echo json_encode(['message' => 'User created successfully', 'user_id' => $userId]);
         } catch (Exception $e) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Failed to update user', 'details' => $e->getMessage()]);
+            // Handle error
+            http_response_code(400); // Bad Request
+            echo json_encode(['error' => 'Failed to create user', 'details' => $e->getMessage()]);
         }
     }
 

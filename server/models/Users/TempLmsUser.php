@@ -32,6 +32,9 @@ class TempLmsUser
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+
+    
+
     // Create a new user
     public function createUser($data)
     {
