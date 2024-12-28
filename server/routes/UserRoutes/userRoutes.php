@@ -12,6 +12,7 @@ return [
     'GET /users' => [$userController, 'getUsers'],
     'POST /users' => [$userController, 'createUser'],
     'GET /users/{id}' => [$userController, 'getUser'],
+    'GET /users/count' => [$userController, 'getUserCount'],
     'GET /users/username/{username}' => [$userController, 'getUserByUsername'],
     'PUT /users/username/{username}' => [$userController, 'UpdateUserByUsername'],
     'PUT /users/{id}' => [$userController, 'updateUser'],
