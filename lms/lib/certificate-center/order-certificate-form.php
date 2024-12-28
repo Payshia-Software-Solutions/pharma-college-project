@@ -37,6 +37,7 @@ if (!$mobile && isset($formData['telephone_2'])) {
 }
 
 $addressLine1 = $formData['address_line_1'] ?? null;
+$studentCity = $formData['city'];
 $addressLine2 = $formData['address_line_2'] ?? null;
 
 $firstName = $formData['first_name'] ?? null;
@@ -97,7 +98,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $addressLine1 = htmlspecialchars($_POST["address_line1"]);
     }
 }
-
 ?>
 
 
@@ -164,7 +164,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 <select name="city_id" id="city_id" class="form-control" required>
                     <option value="" disabled selected>Select City</option>
                     <?php foreach ($cities as $city): ?>
-                        <option value="<?= htmlspecialchars($city['id'], ENT_QUOTES, 'UTF-8') ?>">
+                        <option value="<?= htmlspecialchars($city['id'], ENT_QUOTES, 'UTF-8') ?>" <?= ($studentCity == $city['id']) ? 'selected' : '' ?>>
                             <?= htmlspecialchars($city['name_en'], ENT_QUOTES, 'UTF-8') ?>
                         </option>
                     <?php endforeach; ?>
@@ -252,9 +252,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <div class="form-group">
             <label for="city-dropdown">Select City:</label>
             <select name="city_id" id="city_id" class="form-control" required>
-                <option value="" disabled selected>Select City</option>
+                <option value="">Select City</option>
                 <?php foreach ($cities as $city): ?>
-                    <option value="<?= htmlspecialchars($city['id'], ENT_QUOTES, 'UTF-8') ?>">
+                    <option value="<?= htmlspecialchars($city['id'], ENT_QUOTES, 'UTF-8') ?>" <?= ($studentCity == $city['id']) ? 'selected' : '' ?>>
                         <?= htmlspecialchars($city['name_en'], ENT_QUOTES, 'UTF-8') ?>
                     </option>
                 <?php endforeach; ?>

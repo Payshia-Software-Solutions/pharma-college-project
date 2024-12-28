@@ -259,7 +259,7 @@ endforeach;
                             break;
                         case 6:
                             $dueBalance = $dueBalance ?? 0;
-                            if ($dueBalance === 0) {
+                            if ($dueBalance == 0) {
                                 $dueBalance = 1; // Set due balance to 1
                                 $moq = 1; // Ensure MOQ is also 1
                             }
@@ -315,7 +315,7 @@ endforeach;
                         <!-- Button enabled if eligibility is true -->
                         <button class="btn btn-success w-100 btn-lg" id="order-button"
                             onclick="OpenCertificateForm('<?= htmlspecialchars($LoggedUser, ENT_QUOTES, 'UTF-8') ?>', '<?= htmlspecialchars($certificateId, ENT_QUOTES, 'UTF-8') ?>')">
-                            <i class="fa fa-shopping-cart"></i> Go to Form
+                            <i class="fa fa-shopping-cart"></i> Proceed Order Form
                         </button>
                     <?php else: ?>
                         <!-- Message displayed if eligibility is false -->

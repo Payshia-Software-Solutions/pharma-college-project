@@ -80,7 +80,7 @@ $deliveryItem = $Deliveries[$delivery_id]['delivery_title'];
             </div>
 
             <div class="col-6">
-                <h4 class="company-title"><?= $full_name ?></h4>
+                <p class="mb-0"><?= $full_name ?></p>
 
                 <p class="mb-0"><?= $street_address ?></p>
                 <p class="mb-0"><?= $city ?>, <?= $district ?></p>
@@ -125,18 +125,18 @@ $deliveryItem = $Deliveries[$delivery_id]['delivery_title'];
 
 
         <div class="row" style="margin-top: 15mm; padding-left:5mm;">
-            <div class="col-6">
+            <div class="col-8">
                 <div class="mb-3">
-                    <h4 class="company-title">No Remarks</h4>
+                    <h6 class="company-title" style="font-size: 18px;">බෙදාහැරීමේදී ගැටලුවක් ඇත්නම් <br>071 5 884 884 ට අමතන්න. ස්තූතියි!</h6>
                 </div>
 
-                <div class="mb-3" style="margin-top: 15mm;padding-left:30mm">
+                <div class="mb-3" style="margin-top: 2mm;padding-left:30mm">
                     <h4 class="company-title">LKR <?= number_format($codAmount, 2) ?></h4>
                 </div>
 
             </div>
 
-            <div class="col-6 " style="padding-left:33mm; margin-top:-7px">
+            <div class="col-4 " style="padding-left:33mm; margin-top:-7px">
                 <img src="<?= generateQRCode($qrText) ?>" style="width: 20mm; ">
             </div>
         </div>

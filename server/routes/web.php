@@ -3,6 +3,7 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("X-Page-Title: API Service");
 // Handle OPTIONS requests (preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
@@ -85,7 +86,7 @@ $ccCertificateListRoutes = require './routes/CertificationCenter/ccCertificateLi
 $ccGraduationPackageRoutes = require './routes/CertificationCenter/ccGraduationPackageRoutes.php';
 $ccCertificateOrderRoutes = require './routes/CertificationCenter/ccCertificationOrderRoutes.php';
 $certtficateUserResultRoutes = require './routes/Certificate/certificateUserResultRoutes.php';
-
+$certificateEvaluationRoutes = require './routes/CertificationCenter/ccEvaluationRoutes.php';
 
 // if (!is_array($paymentRequestRoutes)) {
 //     throw new Exception("paymentRequestRoutes is not an array");
@@ -159,7 +160,8 @@ $routes = array_merge(
     $ccGraduationPackageRoutes,
     $ccCertificateOrderRoutes,
     $CeylonPharmacyCriteria,
-    $certtficateUserResultRoutes
+    $certtficateUserResultRoutes,
+    $certificateEvaluationRoutes
 );
 
 
@@ -200,30 +202,40 @@ error_log("Method: $method");
 error_log("URI: $uri");
 // echo $uri . '<br>';
 
-
 // Route matching
 foreach ($routes as $route => $handler) {
     list($routeMethod, $routeUri) = explode(' ', $route, 2);
 
-    // Convert route URI to regex
+    // Convert route URI to regex (without query parameters)
     $routeRegex = str_replace(
         ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{CourseCode}', '{loggedUser}', '{title_id}'],
         ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)'],
         $routeUri
     );
 
+    // Ensure route regex matches the path only, not query parameters
     $routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
-    error_log("Checking route: $routeRegex");
-    // echo $routeRegex . '<br>';
 
+    // Debugging output
+    // echo ("Checking route: $routeRegex <br>");
+    // echo ("Uri : $uri<br>");
+
+    // Check if the method and path match
     if ($method === $routeMethod && preg_match($routeRegex, $uri, $matches)) {
-        array_shift($matches); // Remove the full match
+
+        header("X-Page-Title: API Service");
+        // Remove the full match
+        array_shift($matches);
+
+        // Debugging output
         error_log("Route matched: $route");
+
+        // Call the handler with matched parameters
         call_user_func_array($handler, $matches);
         exit;
     }
 }
 
-// Default 404 response
+// Default 404 response if no match is found
 header("HTTP/1.1 404 Not Found");
 echo json_encode(['error' => 'Route not found']);

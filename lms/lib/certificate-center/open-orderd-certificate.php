@@ -47,7 +47,11 @@ if (isset($cities[$city_id])) {
 
 $certificateStatus = $orderData['certificate_status']; // Assuming this is either "Printed" or "Pending"
 ?>
-
+<div class="row">
+    <div class="col-12 d-flex justify-content-end mb-3">
+        <button onclick="OpenIndex()" type="button" class="btn btn-success btn-sm">Home</button>
+    </div>
+</div>
 <div class="row g-3">
     <div class="col-12">
         <div class="card shadow border-0 rounded-3">
