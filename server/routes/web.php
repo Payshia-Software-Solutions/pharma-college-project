@@ -167,7 +167,7 @@ $routes = array_merge(
     $ccCertificateOrderRoutes,
     $CeylonPharmacyCriteria,
     $certtficateUserResultRoutes,
-    $certificateEvaluationRoutes
+    $certificateEvaluationRoutes,
     $parentMainCourseRoutes,
     $courseModuleRoutes,
     $courseOutcomeRoutes,
@@ -221,8 +221,8 @@ foreach ($routes as $route => $handler) {
 
     // Convert route URI to regex (without query parameters)
     $routeRegex = str_replace(
-        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{CourseCode}', '{loggedUser}', '{title_id}','{slug}','{module_code}'],
-        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-]+)'],
+        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{CourseCode}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}'],
+        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)'],
         $routeUri
     );
 
