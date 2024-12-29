@@ -14,6 +14,7 @@ return [
     'GET /users/{id}' => [$userController, 'getUser'],
     'GET /users/count' => [$userController, 'getUserCount'],
     'GET /users/username/{username}' => [$userController, 'getUserByUsername'],
+    'GET /users/search/{value}' => [$userController, 'getRecordByUsernameOrName'],
     'PUT /users/username/{username}' => [$userController, 'UpdateUserByUsername'],
     'PUT /users/{id}' => [$userController, 'updateUser'],
     'DELETE /users/{id}' => [$userController, 'deleteUser']

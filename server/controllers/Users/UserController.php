@@ -53,4 +53,19 @@ class UserController
         $count = $this->model->getUserCount();
         echo json_encode(['user_count' => $count]);
     }
+
+  // get user by username,fname,lname
+  public function getRecordByUsernameOrName($value)
+  {
+      $record = $this->model->getRecordByUsernameOrName($value);
+      if ($record) {
+          echo json_encode($record);
+      } else {
+          http_response_code(404);
+          echo json_encode(['error' => 'Record not found']);
+      }
+  }
+  
+  
+  
 }
