@@ -247,6 +247,31 @@ function GetCorrectInstructions($link, $prescriptionID, $coverID)
     return $ArrayResult;
 }
 
+
+function GetDropdownOptions($link, $prescriptionID, $coverID)
+{
+    // Step 1: Get all available answers
+    $allInstructions = GetAllInstructions($link);
+
+    // Step 2: Get the correct answers for the given prescription and cover
+    $correctInstructions = GetCorrectInstructions($link, $prescriptionID, $coverID);
+
+    // Step 3: Filter out correct answers from the pool of all instructions
+    $remainingInstructions = array_diff_key($allInstructions, $correctInstructions);
+
+    // Step 4: Randomly select 5 additional answers from the remaining instructions
+    $additionalInstructions = array_slice($remainingInstructions, 0, 5, true);
+
+    // Step 5: Combine correct answers with the additional answers
+    $dropdownOptions = $correctInstructions + $additionalInstructions;
+
+    // Shuffle the combined options to ensure randomness
+    shuffle($dropdownOptions);
+
+    return $dropdownOptions;
+}
+
+
 function insertInstructions($link, $LoggedUser, $presCode, $coverId, $instructions)
 {
     $currentTime = date("Y-m-d H:i:s");
