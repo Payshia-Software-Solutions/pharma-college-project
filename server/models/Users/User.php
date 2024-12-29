@@ -77,4 +77,17 @@ class User
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result['user_count'];
     }
+
+
+    public function getRecordByUsernameOrName($value)
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT * FROM users 
+            WHERE (username = :value OR fname = :value OR lname = :value) 
+            AND status = 'Active'
+        ");
+        $stmt->execute(['value' => $value]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
 }
