@@ -27,7 +27,7 @@ $eCertificateRoutes = require './routes/OtherRoutes/eCertificateRoutes.php';
 $courseAssignmentRoutes = require './routes/OtherRoutes/courseAssignmentRoutes.php';
 $courseAssignmentSubmissionRoutes = require './routes/OtherRoutes/courseAssignmentSubmissionRoutes.php';
 $reportRoutes = require './routes/OtherRoutes/reportRoutes.php';
-$studentCourseRoutes = require './routes/OtherRoutes/studentCourseRoutes.php';
+// $studentCourseRoutes = require './routes/OtherRoutes/studentCourseRoutes.php';
 $userRoutes = require './routes/UserRoutes/userRoutes.php';
 $userFullDetailsRoutes = require './routes/UserRoutes/userFullDetailsRoutes.php';
 $companyRoutes = require './routes/OtherRoutes/companyRoutes.php';
@@ -93,8 +93,11 @@ $courseOutcomeRoutes = require './routes/Course/CourseOutcomeRoutes.php';
 $courseOverviewRoutes = require './routes/Course/courseOverviewRoutes.php';
 $tempLmsUserRoutes = require './routes/UserRoutes/tempLmsUserRoutes.php';
 $CityRoutes = require './routes/CityRoutes.php';
+$StudentValuesRoutes = require './routes/Student/StudentValuesRoutes.php';
+$CertificateVerificationRoutes = require './routes/CertificationCenter/CertificateVerificationRoutes.php';
 
-// if (!is_array($paymentRequestRoutes)) {
+
+// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes
 //      throw new Exception("paymentRequestRoutes is not an array");
 // }
 $CeylonPharmacyCriteria = require './routes/CertificateCenter/certificateRoutes.php';
@@ -111,7 +114,7 @@ $routes = array_merge(
     $hpSaveAnswerRoutes,
     $reportRoutes,
     $courseRoutes,
-    $studentCourseRoutes,
+
     $userFullDetailsRoutes,
     $companyRoutes,
     $hpCourseMedicineRoutes,
@@ -173,7 +176,9 @@ $routes = array_merge(
     $courseOutcomeRoutes,
     $courseOverviewRoutes,
     $tempLmsUserRoutes,
-    $CityRoutes
+    $CityRoutes,
+    $StudentValuesRoutes,
+    $CertificateVerificationRoutes,
 );
 
 
@@ -219,10 +224,11 @@ error_log("URI: $uri");
 foreach ($routes as $route => $handler) {
     list($routeMethod, $routeUri) = explode(' ', $route, 2);
 
-    // Convert route URI to regex (without query parameters)
+    // Convert route URI to regex (without query parameters){studentId}
     $routeRegex = str_replace(
-        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{CourseCode}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}', '{value}'],
-        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)'],
+
+        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{course_code}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}', '{value}', '{course_code}', '{studentId}'],
+        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-\/]+)'],
         $routeUri
     );
 
