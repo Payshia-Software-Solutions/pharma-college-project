@@ -13,5 +13,7 @@ return [
     'PUT /course/{id}/' => [$courseController, 'updateRecord'],
     'DELETE /course/{id}/' => [$courseController, 'deleteRecord'],
 
-    'GET /course-fee/{course_code}/' => [$courseController, 'getCourseFeeByCourseCode'],
+     'GET /course/code/{course_code}/' => [$courseController, 'getRecordByCourseCode'], 
+
+
 ];
