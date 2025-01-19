@@ -18,14 +18,16 @@ class CertificateVerificationController
         $userEnrollment = $this->model->getUserEnrollments($userName);
         $studentInfo = $this->model->GetLmsStudentsByUserName($userName);
         $CourseResultInfo = $this->model->GetResultByUserName($userName);
+        $userGradeDetails = $this->model->getGradeDetails($userName);
 
-        // Respond with JSON
+        // Respond with JSON getGradeDetails
         http_response_code(200);
         echo json_encode([
             'title' => 'Certificate Verification',
             'studentInfo' => $studentInfo,
             'userEnrollment' => $userEnrollment,
             'CourseResultInfo' => $CourseResultInfo,
+            'userGradeDetails' => $userGradeDetails,
            
         ]);
     }
