@@ -14,9 +14,4 @@ return [
     'POST /activitylogs/' => [$activityLogController, 'createActivityLog'],
     'PUT /activitylogs/{id}/' => [$activityLogController, 'updateActivityLog'],
     'DELETE /activitylogs/{id}/' => [$activityLogController, 'deleteActivityLog']
-
-
 ];
-
-?>
-
