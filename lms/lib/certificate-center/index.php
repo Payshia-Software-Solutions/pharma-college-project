@@ -173,7 +173,7 @@ $orderedCertificate = $response2->toArray();
                                                         $buttonClass = ($certificate['certificate_status'] === 'Printed') ? 'btn-success' : 'btn-danger';
                                                         $buttonText = ($certificate['certificate_status'] === 'Printed') ? 'Printed' : 'Pending';
                                                         ?>
-                                                        <button class="btn btn-sm <?= $buttonClass ?>" disabled><?= $buttonText ?></button></td>
+                                                        <span class="btn btn-sm <?= $buttonClass ?>" disabled><?= $buttonText ?></button></td>
                                                     <td>
                                                         <button onclick="OpenPaymentView('<?= $certificate['id'] ?>','<?= $certificate['certificate_name'] ?>')" class="btn btn-primary btn-sm"
                                                             type="button"><i class="fa-solid fa-eye"></i>

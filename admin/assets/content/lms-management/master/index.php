@@ -140,4 +140,15 @@ $studentCount = count($accountDetails);
             </div>
         </a>
     </div>
+    <div class="col-md-3 col-6 col-xxl-2">
+        <a href="./lms-student-account-center" rel="noopener noreferrer">
+            <div class="card clickable">
+                <div class="card-body text-center">
+
+                    <i class="fa-solid fa-user-graduate icon-card"></i>
+                    <h5 class="mb-0">Student Acount Center</h5>
+                </div>
+            </div>
+        </a>
+    </div>
 </div>

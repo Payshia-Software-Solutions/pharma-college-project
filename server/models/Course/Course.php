@@ -24,6 +24,13 @@ class Course
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getRecordByCourseCode($course_code)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM course WHERE course_code = :course_code");
+        $stmt->execute(['course_code' => $course_code]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function getCourseFeeByCourseCode($course_code)
     {
         $query = "

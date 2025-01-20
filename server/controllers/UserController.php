@@ -51,6 +51,26 @@ class UserController
         echo json_encode(['status' => 'User updated']);
     }
 
+    public function updateUserPasswordByUsername($selectusername)
+    {
+        // Get the data from the POST request body
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        // Only pass the password to the model
+        if (isset($data['password'])) {
+            $result = $this->model->updateUserPasswordByUsername($selectusername, $data);
+
+            if ($result) {
+                echo json_encode(['status' => 'success', 'message' => 'Password updated successfully.']);
+            } else {
+                echo json_encode(['status' => 'failure', 'message' => 'Failed to update password.']);
+            }
+        } else {
+            echo json_encode(['status' => 'failure', 'message' => 'Password field is missing.']);
+        }
+    }
+
+
 
     public function deleteUser($id)
     {

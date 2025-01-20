@@ -2,6 +2,7 @@
 
 include __DIR__ . '/../../../../../include/config.php'; // Database Configuration
 
+
 // Enable MySQLi error reporting
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
@@ -297,6 +298,19 @@ function HunterSavedAnswersByUser($studentNumber)
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
             $ArrayResult[$row['index_number']] = $row;
+        }
+    }
+    return $ArrayResult;
+}
+
+function GetHunterCourseMedicines($lms_link, $CourseCode)
+{
+    $ArrayResult = array();
+    $sql = "SELECT `id`, `CourseCode`, `MediID`, `status` FROM `hunter_course` WHERE `status` LIKE 'Active' AND `CourseCode` LIKE '$CourseCode'";
+    $result = $lms_link->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ArrayResult[$row['MediID']] = $row["MediID"];
         }
     }
     return $ArrayResult;

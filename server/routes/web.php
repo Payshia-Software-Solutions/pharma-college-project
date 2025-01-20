@@ -85,7 +85,7 @@ $ccCertificateListRoutes = require './routes/CertificationCenter/ccCertificateLi
 $ccGraduationPackageRoutes = require './routes/CertificationCenter/ccGraduationPackageRoutes.php';
 $ccCertificateOrderRoutes = require './routes/CertificationCenter/ccCertificationOrderRoutes.php';
 $certtficateUserResultRoutes = require './routes/Certificate/certificateUserResultRoutes.php';
-
+$deliveryOrdersRoutes = require './routes/OtherRoutes/deliveryOrdersRoutes.php';
 
 // if (!is_array($paymentRequestRoutes)) {
 //     throw new Exception("paymentRequestRoutes is not an array");
@@ -159,7 +159,8 @@ $routes = array_merge(
     $ccGraduationPackageRoutes,
     $ccCertificateOrderRoutes,
     $CeylonPharmacyCriteria,
-    $certtficateUserResultRoutes
+    $certtficateUserResultRoutes,
+    $deliveryOrdersRoutes
 );
 
 

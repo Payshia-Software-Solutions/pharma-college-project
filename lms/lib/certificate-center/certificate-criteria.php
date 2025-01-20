@@ -226,12 +226,12 @@ foreach ($criteraList as $id) {
                 $index = 0; // Initialize index for progress tracking
 
                 //!check order button
-                $correctCount = 1000;
-                $recoveredCount = 50;
-                $Assignment_01 = 50;
-                $Assignment_02 = 50;
-                $Assignment_03 = 50;
-                $dueBalance = 0;
+                // $correctCount = 1000;
+                // $recoveredCount = 50;
+                // $Assignment_01 = 50;
+                // $Assignment_02 = 50;
+                // $Assignment_03 = 50;
+                // $dueBalance = 0;
                 ?>
 
                 <!-- Loop through criteria and render cards -->

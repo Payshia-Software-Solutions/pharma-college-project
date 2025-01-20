@@ -9,6 +9,7 @@ $courseController = new CourseController($pdo);
 return [
     'GET /course/' => [$courseController, 'getAllRecords'],
     'GET /course/{id}/' => [$courseController, 'getRecordById'],
+    'GET /course/{course_code}/' => [$courseController, 'getRecordByCourseCode'],
     'POST /course/' => [$courseController, 'createRecord'],
     'PUT /course/{id}/' => [$courseController, 'updateRecord'],
     'DELETE /course/{id}/' => [$courseController, 'deleteRecord'],

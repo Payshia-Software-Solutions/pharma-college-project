@@ -13,6 +13,8 @@ return [
     'POST /users' => [$userController, 'createUser'],
     'GET /users/{id}' => [$userController, 'getUser'],
     'GET /users/username/{username}' => [$userController, 'getUserByUsername'],
+    'PUT /users/selectusername/{username}' => [$userController, 'updateUserPasswordByUsername'],
+
     'PUT /users/username/{username}' => [$userController, 'UpdateUserByUsername'],
     'PUT /users/{id}' => [$userController, 'updateUser'],
     'DELETE /users/{id}' => [$userController, 'deleteUser']

@@ -11,6 +11,7 @@ $CcCertificateOrderController = new CcCertificateOrderController($pdo);
 return [
     'GET /cc_certificate_order/' => [$CcCertificateOrderController, 'getAllOrders'],           // Route to get all orders
     'GET /cc_certificate_order/{id}/' => [$CcCertificateOrderController, 'getOrderById'],       // Route to get order by ID
+    'GET /cc_certificate_order/{username}/' => [$CcCertificateOrderController, 'getOrderByUsername'],       // Route to get order by ID
     'POST /cc_certificate_order/' => [$CcCertificateOrderController, 'createOrder'],           // Route to create a new order
     'PUT /cc_certificate_order/{id}/' => [$CcCertificateOrderController, 'updateOrder'],       // Route to update an order by ID
     'PUT /cc_certificate_order/{id}/status' => [$CcCertificateOrderController, 'updateCertificateStatus'], // Route to update only the certificate status

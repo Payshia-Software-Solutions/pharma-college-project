@@ -1,14 +1,25 @@
 <?php
 require_once './models/Student/StudentPayment.php';
+require_once './models/UserFullDetails.php';
 
 class StudentPaymentController
 {
     private $model;
+    private $model2;
 
     public function __construct($pdo)
     {
         $this->model = new StudentPayment($pdo);
+        $this->model2 = new UserFullDetails($pdo);
     }
+
+    public function getUserId($username)
+    {
+        $userInfo = $this->model2->getUserByUserName($username);
+        return $userInfo['student_id'];
+    }
+
+
 
     public function getAllRecords()
     {
@@ -29,7 +40,8 @@ class StudentPaymentController
 
     public function getRecordByUser($studentNumber)
     {
-        $savedAnswers = $this->model->getRecordByUser($studentNumber);
+        $userId = $this->getUserId($studentNumber);
+        $savedAnswers = $this->model->getRecordsByUser($userId);
         echo json_encode($savedAnswers);
     }
 

@@ -42,10 +42,17 @@ class CcCertificateOrder
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    private function getUserAddress($userId)
+    public function getUserAddress($userId)
     {
         $stmt = $this->pdo->prepare("SELECT `address_line_1`, `address_line_2` FROM `user_full_details` WHERE `id` = ?");
         $stmt->execute([$userId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getOrderByUsername($username)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM `cc_certificate_order` WHERE `created_by` = ?");
+        $stmt->execute([$username]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 

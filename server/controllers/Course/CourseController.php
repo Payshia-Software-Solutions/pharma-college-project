@@ -27,6 +27,17 @@ class CourseController
         }
     }
 
+    public function getRecordByCourseCode($course_code)
+    {
+        $record = $this->model->getRecordByCourseCode($course_code);
+        if ($record) {
+            echo json_encode($record);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Record not found']);
+        }
+    }
+
     public function getCourseFeeByCourseCode($course_code)
     {
         $record = $this->model->getCourseFeeByCourseCode($course_code);

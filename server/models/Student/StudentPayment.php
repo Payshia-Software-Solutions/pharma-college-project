@@ -33,6 +33,13 @@ class StudentPayment
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getRecordsByUser($studentNumber)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM student_payment WHERE `student_id` = :studentNumber");
+        $stmt->execute(['studentNumber' => $studentNumber]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function createRecord($data)
     {
         if (!isset($data['created_at'])) {

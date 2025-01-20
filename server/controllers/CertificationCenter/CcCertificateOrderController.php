@@ -28,6 +28,16 @@ class CcCertificateOrderController
         }
     }
 
+    public function getOrderByUsername($username)
+    {
+        $order = $this->model->getOrderByUsername($username);
+        if ($order) {
+            echo json_encode($order);
+        } else {
+            echo json_encode(["error" => "Order not found"]);
+        }
+    }
+
     public function createOrder()
     {
         $data = json_decode(file_get_contents("php://input"), true);

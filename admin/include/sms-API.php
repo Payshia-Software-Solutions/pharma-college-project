@@ -33,15 +33,21 @@ function SentSMS($mobile, $senderId = 'Pharma C.', $message = "Waiting..!")
     curl_close($curl);
 
     if ($err) {
-        $error = array('status' => 'error', 'message' => $err);
-    } else {
-        $responseArray = json_decode($response, true);
-        if ($responseArray['status'] === "success") {
-            $error = array('status' => 'success', 'message' => $responseArray['message']);
-        } else {
-            $error = array('status' => 'success', 'message' => $responseArray['message']);
-        }
+        // Return error information in case of a cURL failure
+        return array('status' => 'error', 'message' => $err);
     }
 
-    return $responseArray;
+    $responseArray = json_decode($response, true);
+
+    // Handle invalid JSON response
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        return array('status' => 'error', 'message' => 'Invalid JSON response from server');
+    }
+
+    // Return response or error based on the API status
+    if (isset($responseArray['status']) && $responseArray['status'] === "success") {
+        return array('status' => 'success', 'message' => $responseArray['message']);
+    }
+
+    return array('status' => 'error', 'message' => $responseArray['message'] ?? 'Unknown error occurred');
 }

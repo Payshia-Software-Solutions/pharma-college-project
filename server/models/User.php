@@ -42,11 +42,35 @@ class User
         return $stmt->execute([$data['name'], $data['email'], $id]);
     }
 
+    public function updateUserPasswordByUsername($selectusername, $data)
+    {
+        // Only update the password field using the username to match
+        $stmt = $this->pdo->prepare("UPDATE users SET password = ? WHERE username = ?");
+
+        if (!$stmt) {
+            // Log or print the error
+            error_log("Prepare statement failed: " . implode(":", $this->pdo->errorInfo()));
+            return false;
+        }
+
+        $result = $stmt->execute([$data['password'], $selectusername]);
+
+        if (!$result) {
+            // Log or print the error
+            error_log("Execute statement failed: " . implode(":", $stmt->errorInfo()));
+        }
+
+        return $result;
+    }
+
+
     public function updateUserByUsername($username, $data)
     {
         $stmt = $this->pdo->prepare("UPDATE users SET name = ?, email = ? WHERE id = ?");
         return $stmt->execute([$data['name'], $data['email'], $username]);
     }
+
+
 
     public function deleteUser($id)
     {

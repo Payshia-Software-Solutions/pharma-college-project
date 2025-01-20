@@ -9,10 +9,10 @@ $userFullDetailsController = new UserFullDetailsController($pdo);
 
 // Define user full details routes
 return [
-    'GET /userFullDetails/' => [$userFullDetailsController, 'getAllUsers'],
-    'GET /userFullDetails/{id}/' => [$userFullDetailsController, 'getUserById'],
-    'GET /userFullDetails/username/{username}/' => [$userFullDetailsController, 'getUserByUserName'],
-    'POST /userFullDetails/' => [$userFullDetailsController, 'createUser'],
-    'PUT /userFullDetails/{id}/' => [$userFullDetailsController, 'updateUser'],
-    'DELETE /userFullDetails/{id}/' => [$userFullDetailsController, 'deleteUser']
+    'GET /user_full_details/' => [$userFullDetailsController, 'getAllUsers'],
+    'GET /user_full_details/{id}/' => [$userFullDetailsController, 'getUserById'],
+    'GET /user_full_details/username/{username}/' => [$userFullDetailsController, 'getUserByUserName'],
+    'POST /user_full_details/' => [$userFullDetailsController, 'createUser'],
+    'PUT /user_full_details/{id}/' => [$userFullDetailsController, 'updateUser'],
+    'DELETE /user_full_details/{id}/' => [$userFullDetailsController, 'deleteUser']
 ];
