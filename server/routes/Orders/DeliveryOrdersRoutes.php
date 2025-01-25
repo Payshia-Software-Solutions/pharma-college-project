@@ -13,34 +13,34 @@ return [
     // Get a delivery order by ID
     'GET /delivery_orders/{id}/' => [$deliveryOrderController, 'getRecordById'],
 
-'GET /delivery-orders\?indexNumber=[\w]+/$' => function () use ($deliveryOrderController) {
-    // Access query parameters using $_GET
-    $indexNumber = isset($_GET['indexNumber']) ? $_GET['indexNumber'] : null;
+    'GET /delivery_orders\?indexNumber=[\w]+/$' => function () use ($deliveryOrderController) {
+        // Access query parameters using $_GET
+        $indexNumber = isset($_GET['indexNumber']) ? $_GET['indexNumber'] : null;
 
-    // Validate parameters
-    if (!$indexNumber) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Missing required parameters. indexNumber is required for this API']);
-        return;
-    }
+        // Validate parameters
+        if (!$indexNumber) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required parameters. indexNumber is required for this API']);
+            return;
+        }
 
-    return $deliveryOrderController->getRecordByIndexNumber($indexNumber);
-},
+        return $deliveryOrderController->getRecordByIndexNumber($indexNumber);
+    },
 
     // Get a delivery order by Tracking Number
-'GET /delivery-orders\?trackingNumber=[\w]+/$' => function () use ($deliveryOrderController) {
-    // Access query parameters using $_GET
-    $trackingNumber = isset($_GET['trackingNumber']) ? $_GET['trackingNumber'] : null;
+    'GET /delivery_orders\?trackingNumber=[\w]+/$' => function () use ($deliveryOrderController) {
+        // Access query parameters using $_GET
+        $trackingNumber = isset($_GET['trackingNumber']) ? $_GET['trackingNumber'] : null;
 
-    // Validate parameters
-    if (!$trackingNumber) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Missing required parameters. trackingNumber is required for this API']);
-        return;
-    }
+        // Validate parameters
+        if (!$trackingNumber) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required parameters. trackingNumber is required for this API']);
+            return;
+        }
 
-    return $deliveryOrderController->getRecordByTrackingNumber($trackingNumber);
-},
+        return $deliveryOrderController->getRecordByTrackingNumber($trackingNumber);
+    },
 
 
 
@@ -57,19 +57,19 @@ return [
 
     // In the routes file
 
-// Get a delivery order by Current Status
-'GET /delivery-orders\?currentStatus=[\w]+/$' => function () use ($deliveryOrderController) {
-    // Access query parameters using $_GET
-    $currentStatus = isset($_GET['currentStatus']) ? $_GET['currentStatus'] : null;
+    // Get a delivery order by Current Status
+    'GET /delivery_orders\?currentStatus=[\w]+/$' => function () use ($deliveryOrderController) {
+        // Access query parameters using $_GET
+        $currentStatus = isset($_GET['currentStatus']) ? $_GET['currentStatus'] : null;
 
-    // Validate parameters
-    if (!$currentStatus) {
-        http_response_code(400);
-        echo json_encode(['error' => 'Missing required parameters. currentStatus is required for this API']);
-        return;
-    }
+        // Validate parameters
+        if (!$currentStatus) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required parameters. currentStatus is required for this API']);
+            return;
+        }
 
-    return $deliveryOrderController->getRecordByCurrentStatus($currentStatus);
-},
+        return $deliveryOrderController->getRecordByCurrentStatus($currentStatus);
+    },
 
 ];
