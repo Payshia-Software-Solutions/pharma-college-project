@@ -66,13 +66,13 @@ $studentEnrollments = $studentFullInfo['studentEnrollments'];
         <?php foreach ($studentEnrollments as $enrollment) : ?>
             <div class="row">
                 <div class="col-md-12">
-                    <h4 class="fw-bold">
+                    <h4 class="fw-bold border-bottom pb-2 mb-3">
                         <?= $enrollment['batch_name'] ?>
                     </h4>
                 </div>
             </div>
             <div class="row g-3 mb-3">
-                <div class="col-6 col-md-4 d-flex">
+                <div class="col-6 col-md-4 col-xl-3 d-flex">
                     <div class="card flex-fill">
                         <div class="card-body text-center">
                             <img src="./assets/content/lms-management/assets/images/icons/pharmacy.gif" class="game-icon w-25">
@@ -82,22 +82,73 @@ $studentEnrollments = $studentFullInfo['studentEnrollments'];
                     </div>
                 </div>
 
-                <div class="col-6 col-md-4 d-flex">
+                <div class="col-6 col-md-4 col-xl-3 d-flex">
                     <div class="card flex-fill">
                         <div class="card-body text-center">
                             <img src="./assets/content/lms-management/assets/images/icons/medicine.gif" class="game-icon w-25">
                             <h5 class="mb-0">Pharma Hunter</h5>
-                            <h2 class="mb-0 fw-bold"><?= $enrollment['pharma_hunter']['ProgressValue'] ?></h2>
+                            <h2 class="mb-0 fw-bold"><?= $enrollment['pharma_hunter']['ProgressValue'] ?>%</h2>
+
+                            <hr>
+                            <div class="row">
+                                <div class="col-6">
+                                    <p class="mb-0 text-muted">Correct</p>
+                                    <h4><?= $enrollment['pharma_hunter']['correctCount'] ?></h4>
+                                </div>
+
+                                <div class="col-6">
+                                    <p class="mb-0 text-muted">Wrong</p>
+                                    <h4><?= $enrollment['pharma_hunter']['wrongCount'] ?></h4>
+                                </div>
+
+
+                                <div class="col-6">
+                                    <p class="mb-0 text-muted">Gems</p>
+                                    <h4><?= $enrollment['pharma_hunter']['gemCount'] ?></h4>
+                                </div>
+
+
+                                <div class="col-6">
+                                    <p class="mb-0 text-muted">Coins</p>
+                                    <h4><?= $enrollment['pharma_hunter']['coinCount'] ?></h4>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-6 col-md-4 d-flex">
+                <div class="col-6 col-md-4 col-xl-3 d-flex">
                     <div class="card flex-fill">
                         <div class="card-body text-center">
                             <img src="./assets/content/lms-management/assets/images/icons/medicine.gif" class="game-icon w-25">
                             <h5 class="mb-0">Pharma Hunter Pro</h5>
-                            <h2 class="mb-0 fw-bold"><?= $enrollment['pharma_hunter_pro']['progressValue'] ?></h2>
+                            <h2 class="mb-0 fw-bold"><?= $enrollment['pharma_hunter_pro']['results']['progressPercentage'] ?>%</h2>
+
+                            <hr>
+                            <div class="row">
+                                <div class="col-6">
+                                    <p class="mb-0 text-muted">Correct</p>
+                                    <h4><?= $enrollment['pharma_hunter_pro']['results']['correctCount'] ?></h4>
+                                </div>
+
+                                <div class="col-6">
+                                    <p class="mb-0 text-muted">Pending</p>
+                                    <h4><?= $enrollment['pharma_hunter_pro']['results']['pendingCount'] ?></h4>
+                                </div>
+
+
+                                <div class="col-6">
+                                    <p class="mb-0 text-muted">Gems</p>
+                                    <h4><?= $enrollment['pharma_hunter_pro']['results']['gemCount'] ?></h4>
+                                </div>
+
+
+                                <div class="col-6">
+                                    <p class="mb-0 text-muted">Coins</p>
+                                    <h4><?= $enrollment['pharma_hunter_pro']['results']['coinCount'] ?></h4>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
                 </div>
