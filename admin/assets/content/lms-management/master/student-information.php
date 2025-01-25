@@ -21,12 +21,16 @@ $searchStudentNumber = $_POST['studentNumber'];
 $client = HttpClient::create();
 
 // Fetch certificate order data from API
-$response = $client->request('GET', $_ENV["SERVER_URL"] . '/get-student-full-info?loggedUser=' . $searchStudentNumber);
-$studentFullInfo = $response->toArray();
+$studentInfoResponse = $client->request('GET', $_ENV["SERVER_URL"] . '/get-student-full-info?loggedUser=' . $searchStudentNumber);
+$studentFullInfo = $studentInfoResponse->toArray();
 
-$studentInfo = $studentFullInfo['studentInfo'];
+$searchedStudent = $studentFullInfo['studentInfo'];
 $studentPayments = $studentFullInfo['studentBalance'];
 $studentEnrollments = $studentFullInfo['studentEnrollments'];
+
+$citiesListResponse = $client->request('GET', $_ENV["SERVER_URL"] . '/cities');
+$cityList = $citiesListResponse->toArray();
+
 ?>
 
 <div class="row my-4">
@@ -60,7 +64,7 @@ $studentEnrollments = $studentFullInfo['studentEnrollments'];
 
 <!-- Game Results -->
 <div class="row g-3">
-    <div class="col-md-8">
+    <div class="col-lg-8">
         <div class="table-title font-weight-bold mb-2 mt-0">Game Results</div>
 
         <?php foreach ($studentEnrollments as $enrollment) : ?>
@@ -155,5 +159,112 @@ $studentEnrollments = $studentFullInfo['studentEnrollments'];
             </div>
         <?php endforeach ?>
 
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card mt-2">
+            <div class="card-body">
+                <div class="table-title font-weight-bold mb-4 mt-0">Student Details</div>
+                <div class="row g-3">
+                    <div class="col-4 col-md-4">
+                        <label class="text-secondary">Civil Status</label>
+                        <h5><?= $searchedStudent['civil_status'] ?></h5>
+                    </div>
+
+                    <div class="col-8 col-md-8">
+                        <label class="text-secondary">Student Name</label>
+                        <h5><?= $searchedStudent['first_name'] ?> <?= $searchedStudent['last_name'] ?></h5>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <label class="text-secondary">User Name</label>
+                        <h5><?= $searchedStudent['username'] ?></h5>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <label class="text-secondary">User ID</label>
+                        <h5><?= $searchedStudent['student_id'] ?></h5>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <label class="text-secondary">Email Address</label>
+                        <h5><?= $searchedStudent['e_mail'] ?></h5>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <label class="text-secondary">Primary Number</label>
+                        <h5><?= $searchedStudent['telephone_1'] ?></h5>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <label class="text-secondary">Gender</label>
+                        <h5><?= $searchedStudent['gender'] ?></h5>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <label class="text-secondary">Registered Date</label>
+                        <h5><?= date("Y-m-d H:i:s", strtotime($searchedStudent['updated_at'])); ?></h5>
+                    </div>
+
+
+
+
+                    <div class="col-6 col-md-4">
+                        <label class="text-secondary">Birth Day</label>
+                        <h5><?= $searchedStudent['birth_day'] ?></h5>
+                    </div>
+
+                    <div class="col-6 col-md-4">
+                        <label class="text-secondary">NIC</label>
+                        <h5><?= $searchedStudent['nic'] ?></h5>
+                    </div>
+
+
+                    <div class="col-12">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="table-title font-weight-bold">Contact Details</div>
+                            </div>
+
+                            <div class="col-md-8">
+                                <label class="text-secondary">Address</label>
+                                <h5><?= $searchedStudent['address_line_1'] ?>, <?= $searchedStudent['address_line_2'] ?>, <?= $cityList[$searchedStudent['city']]['name_en'] ?>, <?= $cityList[$searchedStudent['district']]['name_en'] ?>, <?= $searchedStudent['postal_code'] ?></h5>
+                            </div>
+
+                            <div class="col-6 col-md-4">
+                                <label class="text-secondary">Secondary Number</label>
+                                <h5><?= $searchedStudent['telephone_2'] ?></h5>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <div class="table-title font-weight-bold">Certificate Details</div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="text-secondary">Full Name</label>
+                                <h5><?= $searchedStudent['full_name'] ?></h5>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="text-secondary">Name with Initials</label>
+                                <h5><?= $searchedStudent['name_with_initials'] ?></h5>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="text-secondary">Name on Certificate</label>
+                                <h5><?= $searchedStudent['name_on_certificate'] ?></h5>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
     </div>
 </div>
