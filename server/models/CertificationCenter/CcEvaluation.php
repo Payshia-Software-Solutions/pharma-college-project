@@ -173,7 +173,14 @@ class CcEvaluation
                     'pendingCount' => 0,
                     'correctCount' => 0,
                     'gemCount' => 0,
-                    'coinCount' => 0
+                    'coinCount' => 0,
+                    'results' => [
+                        'progressPercentage' => 0,
+                        'pendingCount' => 0,
+                        'correctCount' => 0,
+                        'gemCount' => 0,
+                        'coinCount' => 0
+                    ]
                 ];
             }
 
