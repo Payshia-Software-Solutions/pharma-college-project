@@ -142,4 +142,19 @@ class DeliveryOrderController
 
         return true;
     }
+
+    // In the DeliveryOrderController class
+
+// Get a delivery order by Current Status
+public function getRecordByCurrentStatus($current_status)
+{
+    $record = $this->model->getRecordByCurrentStatus($current_status);
+    if ($record) {
+        echo json_encode($record);
+    } else {
+        http_response_code(404);
+        echo json_encode(['error' => 'No delivery orders found for the given current status']);
+    }
+}
+
 }

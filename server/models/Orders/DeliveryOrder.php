@@ -123,4 +123,20 @@ class DeliveryOrder
             return ['error' => $e->getMessage()];
         }
     }
+
+
+
+
+// Get a delivery order by Current Status
+public function getRecordByCurrentStatus($current_status)
+{
+    try {
+        $stmt = $this->pdo->prepare("SELECT * FROM delivery_orders WHERE current_status = :current_status");
+        $stmt->execute(['current_status' => $current_status]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        return ['error' => $e->getMessage()];
+    }
+}
+
 }

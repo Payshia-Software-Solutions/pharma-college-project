@@ -52,4 +52,24 @@ return [
 
     // Delete a delivery order by ID
     'DELETE /delivery_orders/{id}/' => [$deliveryOrderController, 'deleteRecord'],
+
+
+
+    // In the routes file
+
+// Get a delivery order by Current Status
+'GET /delivery-orders\?currentStatus=[\w]+/$' => function () use ($deliveryOrderController) {
+    // Access query parameters using $_GET
+    $currentStatus = isset($_GET['currentStatus']) ? $_GET['currentStatus'] : null;
+
+    // Validate parameters
+    if (!$currentStatus) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Missing required parameters. currentStatus is required for this API']);
+        return;
+    }
+
+    return $deliveryOrderController->getRecordByCurrentStatus($currentStatus);
+},
+
 ];
