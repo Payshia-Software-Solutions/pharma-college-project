@@ -48,4 +48,3 @@ if (strpos($requestUri, '/student-courses/student/') !== false) {
     http_response_code(404);
     echo json_encode(['error' => 'Route not found']);
 }
--
