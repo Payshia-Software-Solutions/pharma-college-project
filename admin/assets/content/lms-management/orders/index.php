@@ -64,6 +64,9 @@ $InactiveCount = 0;
         <button type="button" onclick="GetUploadExcelNew()" class="btn btn-dark btn-sm">
             Download New
         </button>
+        <button type="button" onclick="GetOrderSummary()" class="btn btn-dark btn-sm">
+            Summary Report
+        </button>
     </div>
 
 </div>

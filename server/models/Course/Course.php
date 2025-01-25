@@ -24,19 +24,19 @@ class Course
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function getCourseFeeByCourseCode($course_code)
-    {
-        $query = "
-        SELECT course_fee
-        FROM course
-        WHERE course_code = :course_code
-    ";
+    // public function getCourseFeeByCourseCode($course_code)
+    // {
+    //     $query = "
+    //     SELECT course_fee
+    //     FROM course
+    //     WHERE course_code = :course_code
+    // ";
 
-        $stmt = $this->pdo->prepare($query);
-        $stmt->execute(['course_code' => $course_code]);
+    //     $stmt = $this->pdo->prepare($query);
+    //     $stmt->execute(['course_code' => $course_code]);
 
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+    //     return $stmt->fetch(PDO::FETCH_ASSOC);
+    // }
 
     public function createRecord($data)
     {
@@ -88,4 +88,24 @@ class Course
         $stmt = $this->pdo->prepare("UPDATE course SET display = 0 WHERE id = :id");
         $stmt->execute(['id' => $id]);
     }
+
+    public function getRecordByCourseCode($course_code)
+    {
+        error_log("Executing query for course_code: $course_code");
+    
+        $query = "SELECT * FROM course WHERE course_code = :course_code ";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->execute(['course_code' => $course_code]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if ($result) {
+            error_log("Query successful, found record: " . json_encode($result));
+        } else {
+            error_log("Query returned no results for course_code: $course_code");
+        }
+    
+        return $result;
+    }
+    
+
 }

@@ -57,4 +57,39 @@ class UserController
         $this->model->deleteUser($id);
         echo json_encode(['status' => 'User deleted']);
     }
+
+    public function getUserCount()
+    {
+        $count = $this->model->getUserCount();
+        echo json_encode(['user_count' => $count]);
+    }
+
+
+    //   // get user by username,fname,lname
+    //   public function getRecordByUsernameOrName($value)
+    //   {
+    //       // Ensure the value is properly sanitized for wildcard search
+    //       $record = $this->model->getRecordByUsernameOrName($value);
+          
+    //       if ($record) {
+    //           echo json_encode($record);
+    //       } else {
+    //           http_response_code(404);
+    //           echo json_encode(['error' => 'Record not found']);
+    //       }
+    //   }
+    public function getRecordByUsernameOrName($value)
+{
+    // Ensure the value is properly sanitized for wildcard search
+    $record = $this->model->getRecordByUsernameOrName($value);
+    
+    if ($record) {
+        echo json_encode($record);
+    } else {
+        http_response_code(404);
+        echo json_encode(['error' => 'Record not found']);
+    }
+}
+
+  
 }

@@ -3,12 +3,12 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("X-Page-Title: API Service");
 // Handle OPTIONS requests (preflight)
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
     exit();
 }
-
 
 ini_set('memory_limit', '256M');
 
@@ -26,7 +26,7 @@ $eCertificateRoutes = require './routes/OtherRoutes/eCertificateRoutes.php';
 $courseAssignmentRoutes = require './routes/OtherRoutes/courseAssignmentRoutes.php';
 $courseAssignmentSubmissionRoutes = require './routes/OtherRoutes/courseAssignmentSubmissionRoutes.php';
 $reportRoutes = require './routes/OtherRoutes/reportRoutes.php';
-$studentCourseRoutes = require './routes/OtherRoutes/studentCourseRoutes.php';
+// $studentCourseRoutes = require './routes/OtherRoutes/studentCourseRoutes.php';
 $userRoutes = require './routes/UserRoutes/userRoutes.php';
 $userFullDetailsRoutes = require './routes/UserRoutes/userFullDetailsRoutes.php';
 $companyRoutes = require './routes/OtherRoutes/companyRoutes.php';
@@ -51,7 +51,6 @@ $lectureRoutes = require './routes/OtherRoutes/lectureRoutes.php';
 $careInstructionRoutes = require './routes/Care/careInstructionRoutes.php';
 $careInstructionPreRoutes = require './routes/Care/careInstructionPreRoutes.php';
 $chatRoutes = require './routes/Chats/chatRoutes.php';
-$chatRoutes = require './routes/Chats/chatRoutes.php';
 $attachmentRoutes = require './routes/Chats/attachmentRoutes.php';
 $messageRoutes = require './routes/Chats/messageRoutes.php';
 $communityPostCategoryRoutes = require './routes/Community/communityPostCategoryRoutes.php';
@@ -64,7 +63,6 @@ $paymentRequestRoutes = require './routes/Payment/paymentRequestRoutes.php';
 $courseRoutes = require './routes/Course/courseRoutes.php';
 $studentPaymentRoutes = require './routes/Student/studentPaymentRoutes.php';
 $supportTicketRoutes = require './routes/TicketRoutes/supportTicketRoutes.php';
-
 $activityLogRoutes = require './routes/OtherRoutes/activitylogsRoutes.php';
 $levelRoutes = require './routes/OtherRoutes/levelRoutes.php';
 $prescriptionRoutes = require './routes/Prescription/prescriptionRoutes.php';
@@ -85,12 +83,20 @@ $ccCertificateListRoutes = require './routes/CertificationCenter/ccCertificateLi
 $ccGraduationPackageRoutes = require './routes/CertificationCenter/ccGraduationPackageRoutes.php';
 $ccCertificateOrderRoutes = require './routes/CertificationCenter/ccCertificationOrderRoutes.php';
 $certtficateUserResultRoutes = require './routes/Certificate/certificateUserResultRoutes.php';
-
-
-// if (!is_array($paymentRequestRoutes)) {
-//     throw new Exception("paymentRequestRoutes is not an array");
-// }
+$certificateEvaluationRoutes = require './routes/CertificationCenter/ccEvaluationRoutes.php';
+$parentMainCourseRoutes = require './routes/Course/ParentMainCourseRoutes.php';
+$courseModuleRoutes = require './routes/Course/CourseModuleRoutes.php';
+$courseOutcomeRoutes = require './routes/Course/CourseOutcomeRoutes.php';
+$courseOverviewRoutes = require './routes/Course/courseOverviewRoutes.php';
+$tempLmsUserRoutes = require './routes/UserRoutes/tempLmsUserRoutes.php';
+$CityRoutes = require './routes/CityRoutes.php';
+$StudentValuesRoutes = require './routes/Student/StudentValuesRoutes.php';
+$CertificateVerificationRoutes = require './routes/CertificationCenter/CertificateVerificationRoutes.php';
 $CeylonPharmacyCriteria = require './routes/CertificateCenter/certificateRoutes.php';
+
+// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes
+//      throw new Exception("paymentRequestRoutes is not an array");
+// }
 
 // Combine all routes
 
@@ -104,7 +110,7 @@ $routes = array_merge(
     $hpSaveAnswerRoutes,
     $reportRoutes,
     $courseRoutes,
-    $studentCourseRoutes,
+
     $userFullDetailsRoutes,
     $companyRoutes,
     $hpCourseMedicineRoutes,
@@ -159,7 +165,16 @@ $routes = array_merge(
     $ccGraduationPackageRoutes,
     $ccCertificateOrderRoutes,
     $CeylonPharmacyCriteria,
-    $certtficateUserResultRoutes
+    $certtficateUserResultRoutes,
+    $certificateEvaluationRoutes,
+    $parentMainCourseRoutes,
+    $courseModuleRoutes,
+    $courseOutcomeRoutes,
+    $courseOverviewRoutes,
+    $tempLmsUserRoutes,
+    $CityRoutes,
+    $StudentValuesRoutes,
+    $CertificateVerificationRoutes,
 );
 
 
@@ -205,25 +220,38 @@ error_log("URI: $uri");
 foreach ($routes as $route => $handler) {
     list($routeMethod, $routeUri) = explode(' ', $route, 2);
 
-    // Convert route URI to regex
+    // Convert route URI to regex (without query parameters){studentId}
     $routeRegex = str_replace(
-        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{CourseCode}', '{loggedUser}', '{title_id}'],
-        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)'],
+
+        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{course_code}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}', '{value}', '{course_code}', '{studentId}'],
+        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-\/]+)'],
+
         $routeUri
     );
 
+    // Ensure route regex matches the path only, not query parameters
     $routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
-    error_log("Checking route: $routeRegex");
-    // echo $routeRegex . '<br>';
 
+    // Debugging output
+    // echo ("Checking route: $routeRegex <br>");
+    // echo ("Uri : $uri<br>");
+
+    // Check if the method and path match
     if ($method === $routeMethod && preg_match($routeRegex, $uri, $matches)) {
-        array_shift($matches); // Remove the full match
+
+        header("X-Page-Title: API Service");
+        // Remove the full match
+        array_shift($matches);
+
+        // Debugging output
         error_log("Route matched: $route");
+
+        // Call the handler with matched parameters
         call_user_func_array($handler, $matches);
         exit;
     }
 }
 
-// Default 404 response
+// Default 404 response if no match is found
 header("HTTP/1.1 404 Not Found");
 echo json_encode(['error' => 'Route not found']);

@@ -59,7 +59,20 @@ $orderedCertificate = $response2->toArray();
 
                     <div class="row">
 
-                        <?php foreach ($certificateList as $certificate) : ?>
+                        <?php foreach ($certificateList as $certificate) :
+
+                            $isOrdered = false; // Initialize a flag
+
+                            foreach ($orderedCertificate as $certificateOrder) {
+                                if ($certificateOrder['certificate_id'] == $certificate['id']) {
+                                    $isOrdered = true; // Set flag to true if a match is found
+                                    break; // Exit the inner loop since a match is found
+                                }
+                            }
+
+                            if ($isOrdered) {
+                                continue; // Skip this certificate if it is already ordered
+                            } ?>
                             <div class="col-md-6 d-flex mt-2">
                                 <div class="card rounded-1 clickable knowledge-card flex-fill" onclick="OpenCertificate('<?= $certificate['id'] ?>')">
                                     <div class="card-body">

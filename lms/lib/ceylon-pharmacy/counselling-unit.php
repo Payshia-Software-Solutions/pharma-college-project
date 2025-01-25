@@ -2,36 +2,8 @@
 require_once '../../include/configuration.php';
 include '../../php_handler/function_handler.php';
 
-require '../../vendor/autoload.php';
-
-// for call server endpoint
-use Symfony\Component\HttpClient\HttpClient;
-
-$client = HttpClient::create();
-
-//for use env file data
-use Dotenv\Dotenv;
-
-$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
-$dotenv->load();
-
 $loggedUser = $_POST['LoggedUser'];
 $UserLevel = $_POST['UserLevel'];
-$UserLevel = 'Student';
-
-// get correct answers
-$correctInstructionsResponse = $client->request('GET', $_ENV["SERVER_URL"] . '/care-instructions-correct/');
-$correctInstructionsList = $correctInstructionsResponse->toArray();
-$correctInstructionsListCount = count($correctInstructionsList);
-
-if ($UserLevel == "Admin") {
-    $response = $client->request('GET', $_ENV["SERVER_URL"] . '/care-instructions-pre/role/Admin');
-} else {
-    $response = $client->request('GET', $_ENV["SERVER_URL"] . '/care-instructions-pre/role/Student');
-}
-$answers = $response->toArray();
-$answersCount = count($answers);
-
 
 // $UserLevel = "Student";
 $coverID = $_POST['coverID'];
@@ -53,14 +25,18 @@ if (!empty($SubmissionArray)) {
     }
 }
 $instructions = GetAllInstructions($link);
+$dropDownOptions = GetDropdownOptions($link, $prescriptionID, $coverID);
 $correctAnswer =  GetCorrectInstructions($link, $prescriptionID, $coverID);
 $instructionsCount = count($correctAnswer);
+if ($UserLevel != "Student") {
+    $selectValues = $instructions;
+} else {
+    $selectValues = $dropDownOptions;
+}
 
 $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $coverID);
-$userAnswers = array();
-
 ?>
-<input type="hidden" name="instructionsCount" id="instructionsCount" value="<?= $correctInstructionsListCount ?>">
+<input type="hidden" name="instructionsCount" id="instructionsCount" value="<?= $instructionsCount ?>">
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Indie+Flower&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
@@ -93,13 +69,9 @@ $userAnswers = array();
 
 <div class="row">
     <div class="col-12 text-end mt-3">
-        <button class="btn btn-success btn-sm rounded-3" onclick="GetPatient('<?= $prescriptionID ?>')"><i
-                class="fa-solid fa-arrow-left player-icon"></i> Back</button>
-        <button class="btn btn-dark btn-sm rounded-3"
-            onclick="OpenCounselling('<?= $prescriptionID ?>', '<?= $coverID ?>')"><i
-                class="fa-solid fa-rotate-right player-icon"></i> Reload</button>
-        <button class="btn btn-warning btn-sm rounded-3" onclick="OpenIndex()"><i
-                class="fa-solid fa-home player-icon"></i> Home</button>
+        <button class="btn btn-success btn-sm rounded-3" onclick="GetPatient('<?= $prescriptionID ?>')"><i class="fa-solid fa-arrow-left player-icon"></i> Back</button>
+        <button class="btn btn-dark btn-sm rounded-3" onclick="OpenCounselling('<?= $prescriptionID ?>', '<?= $coverID ?>')"><i class="fa-solid fa-rotate-right player-icon"></i> Reload</button>
+        <button class="btn btn-warning btn-sm rounded-3" onclick="OpenIndex()"><i class="fa-solid fa-home player-icon"></i> Home</button>
     </div>
     <div class="col-12">
         <h4 class="section-topic mb-0">Task 1</h4>
@@ -118,22 +90,18 @@ $userAnswers = array();
                         <h4>Instruction List</h4>
                     </div>
 
-                    <?php if (!empty($userAnswers)) { ?>
-                    <div class="col-12 mb-2">
-                        <div class="alert alert-warning"><b><?= $correctInstructionsListCount ?> Instruction</b>(s) must
-                            be
-                            given!
-
+                    <?php if (empty($userAnswers) || $UserLevel != "Student") { ?>
+                        <div class="col-12 mb-2">
+                            <div class="alert alert-warning"><b><?= $instructionsCount ?> Instruction</b>(s) must be given!</div>
                         </div>
                         <div class="col-9">
                             <label>Choice Instruction</label>
                             <select id="instructionSelect" class="form-control">
                                 <?php
-                                if (!empty($answers)) {
-                                    foreach ($answers as $selectedArray) {
+                                if (!empty($selectValues)) {
+                                    foreach ($selectValues as $selectedArray) {
                                 ?>
-                                        <option value="<?= $selectedArray['id'] ?>"><?= $selectedArray['id'] ?> -
-                                            <?= $selectedArray['instruction'] ?></option>
+                                        <option value="<?= $selectedArray['id'] ?>"><?= $selectedArray['id'] ?> - <?= $selectedArray['instruction'] ?></option>
                                 <?php
                                     }
                                 }
@@ -142,9 +110,7 @@ $userAnswers = array();
                         </div>
                         <div class="col-3">
                             <label>Action</label>
-                            <button class="btn btn-dark w-100 text-center"
-                                <?= ($UserLevel != "Student") ? 'onclick="addInstructionAdmin()"' : 'onclick="addInstruction()"' ?>><i
-                                    class="fa-solid fa-plus player-icon"></i></button>
+                            <button class="btn btn-dark w-100 text-center" <?= ($UserLevel != "Student") ? 'onclick="addInstructionAdmin()"' : 'onclick="addInstruction()"' ?>><i class="fa-solid fa-plus player-icon"></i></button>
                         </div>
                     <?php } ?>
                     <div class="col-12 mt-3">
@@ -168,13 +134,13 @@ $userAnswers = array();
                                 ?>
 
                                 <?php
-                                if (!empty($correctInstructionsList) && $UserLevel != "Student") {
-                                    foreach ($correctInstructionsList as $selectedArray) {
+                                if (!empty($correctAnswer) && $UserLevel != "Student") {
+                                    foreach ($correctAnswer as $selectedArray) {
                                 ?>
-                                <tr>
-                                    <td><?= $selectedArray['id'] ?></td>
-                                    <td><?= $selectedArray['instruction'] ?></td>
-                                </tr>
+                                        <tr>
+                                            <td><?= $selectedArray['content'] ?></td>
+                                            <td><?= $instructions[$selectedArray['content']]['instruction'] ?></td>
+                                        </tr>
                                 <?php
                                     }
                                 }
@@ -185,20 +151,14 @@ $userAnswers = array();
 
                     <?php if (empty($userAnswers)) { ?>
                         <div class="col-12 text-end">
-                            <button type="button"
-                                onclick="ValidateInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')"
-                                class="btn btn-success btn-sm d-none d-md-inline-block"><i
-                                    class="fa-solid fa-floppy-disk player-icon"></i> Validate</button>
+                            <button type="button" onclick="ValidateInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')" class="btn btn-success btn-sm d-none d-md-inline-block"><i class="fa-solid fa-floppy-disk player-icon"></i> Validate</button>
                         </div>
                     <?php }
 
                     if ($UserLevel != "Student") { ?>
                         <div class="col-12 text-end mt-2">
-                            <button type="button" onclick="ClearInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')"
-                                class="btn btn-primary btn-sm"><i class="fa-solid fa-trash  player-icon"></i> Clear</button>
-                            <button type="button" onclick="SaveInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')"
-                                class="btn btn-dark btn-sm"><i class="fa-solid fa-floppy-disk player-icon"></i>
-                                Save</button>
+                            <button type="button" onclick="ClearInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')" class="btn btn-primary btn-sm"><i class="fa-solid fa-trash  player-icon"></i> Clear</button>
+                            <button type="button" onclick="SaveInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')" class="btn btn-dark btn-sm"><i class="fa-solid fa-floppy-disk player-icon"></i> Save</button>
                         </div>
                     <?php
                     }
@@ -214,13 +174,8 @@ $userAnswers = array();
             <div class="row">
                 <div class="col-12">
                     <div class="btn-group w-100" role="group" aria-label="Basic example">
-                        <button type="button" onclick="ViewPrescription('<?= $prescriptionID ?>')"
-                            class="btn btn-dark  w-100" style="border-radius: 15px 0 0 15px"><i
-                                class="fa-solid fa-file-prescription player-icon"></i> Prescription</button>
-                        <button type="button"
-                            onclick="ValidateInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')"
-                            class="btn btn-success  w-100" style="border-radius: 0 15px 15px 0"><i
-                                class="fa-solid fa-floppy-disk player-icon"></i> Validate</button>
+                        <button type="button" onclick="ViewPrescription('<?= $prescriptionID ?>')" class="btn btn-dark  w-100" style="border-radius: 15px 0 0 15px"><i class="fa-solid fa-file-prescription player-icon"></i> Prescription</button>
+                        <button type="button" onclick="ValidateInstructions('<?= $prescriptionID ?>', '<?= $coverID ?>')" class="btn btn-success  w-100" style="border-radius: 0 15px 15px 0"><i class="fa-solid fa-floppy-disk player-icon"></i> Validate</button>
                     </div>
                 </div>
             </div>
@@ -265,8 +220,7 @@ $userAnswers = array();
             addedInstructions.push(selectedInstructionId);
 
             // Add a new row to the table with separate columns for ID and Instructions, highlighting if it's correct
-            var newRow = '<tr><td>' + selectedInstructionId + '</td><td style="color: green;">' + textAfterHyphen +
-                '</td></tr>';
+            var newRow = '<tr><td>' + selectedInstructionId + '</td><td style="color: green;">' + textAfterHyphen + '</td></tr>';
             $('#instructionTable tbody').append(newRow);
         } else {
             if (addedInstructions.length >= maxInstructionsCount) {

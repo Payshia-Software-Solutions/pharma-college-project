@@ -1,24 +1,9 @@
-<?php
-require_once('../../../../include/config.php');
-include '../../../../include/function-update.php';
-include '../../../../include/lms-functions.php';
-
-$LoggedUser = $_POST['LoggedUser'];
-
-$accountDetails = GetAccounts($link);
-$Locations = GetLocations($link);
-$CourseBatches = getLmsBatches();
-
-$studentCount = count($accountDetails);
-?>
-
 <div class="loading-popup-content">
     <div class="row">
         <div class="col-12 w-100 text-end">
             <button class="btn btn-sm btn-light rounded-5" onclick="ClosePopUP()"><i class="fa-regular fa-circle-xmark"></i></button>
         </div>
     </div>
-
 
     <div class="row g-3">
         <div class="col-12">
