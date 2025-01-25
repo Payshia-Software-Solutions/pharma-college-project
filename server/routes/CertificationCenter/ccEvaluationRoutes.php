@@ -94,6 +94,19 @@ return [
 
         return $CcEvaluationController->GetCertificationEvaluation($courseCode, $loggedUser);
     },
+    'GET /get-student-full-info\?loggedUser=[\w]+/$' => function () use ($CcEvaluationController) {
+
+        $loggedUser = isset($_GET['loggedUser']) ? $_GET['loggedUser'] : null;
+
+        // Validate parameters
+        if (!$loggedUser) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required parameters. loggedUser are must use for this API']);
+            return;
+        }
+
+        return $CcEvaluationController->GetStudentFullDetails($loggedUser);
+    },
 
 
 

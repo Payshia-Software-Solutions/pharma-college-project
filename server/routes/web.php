@@ -10,7 +10,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit();
 }
 
-
 ini_set('memory_limit', '256M');
 
 // Report all PHP errors
@@ -52,7 +51,6 @@ $lectureRoutes = require './routes/OtherRoutes/lectureRoutes.php';
 $careInstructionRoutes = require './routes/Care/careInstructionRoutes.php';
 $careInstructionPreRoutes = require './routes/Care/careInstructionPreRoutes.php';
 $chatRoutes = require './routes/Chats/chatRoutes.php';
-$chatRoutes = require './routes/Chats/chatRoutes.php';
 $attachmentRoutes = require './routes/Chats/attachmentRoutes.php';
 $messageRoutes = require './routes/Chats/messageRoutes.php';
 $communityPostCategoryRoutes = require './routes/Community/communityPostCategoryRoutes.php';
@@ -65,7 +63,6 @@ $paymentRequestRoutes = require './routes/Payment/paymentRequestRoutes.php';
 $courseRoutes = require './routes/Course/courseRoutes.php';
 $studentPaymentRoutes = require './routes/Student/studentPaymentRoutes.php';
 $supportTicketRoutes = require './routes/TicketRoutes/supportTicketRoutes.php';
-
 $activityLogRoutes = require './routes/OtherRoutes/activitylogsRoutes.php';
 $levelRoutes = require './routes/OtherRoutes/levelRoutes.php';
 $prescriptionRoutes = require './routes/Prescription/prescriptionRoutes.php';
@@ -95,12 +92,11 @@ $tempLmsUserRoutes = require './routes/UserRoutes/tempLmsUserRoutes.php';
 $CityRoutes = require './routes/CityRoutes.php';
 $StudentValuesRoutes = require './routes/Student/StudentValuesRoutes.php';
 $CertificateVerificationRoutes = require './routes/CertificationCenter/CertificateVerificationRoutes.php';
-
+$CeylonPharmacyCriteria = require './routes/CertificateCenter/certificateRoutes.php';
 
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes
 //      throw new Exception("paymentRequestRoutes is not an array");
 // }
-$CeylonPharmacyCriteria = require './routes/CertificateCenter/certificateRoutes.php';
 
 // Combine all routes
 

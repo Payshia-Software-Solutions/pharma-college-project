@@ -248,28 +248,62 @@ function GetCorrectInstructions($link, $prescriptionID, $coverID)
 }
 
 
+// function GetDropdownOptions($link, $prescriptionID, $coverID)
+// {
+//     // Step 1: Get all available answers
+//     $allInstructions = GetAllInstructions($link);
+
+//     // Step 2: Get the correct answers for the given prescription and cover
+//     $correctInstructions = GetCorrectInstructions($link, $prescriptionID, $coverID);
+
+//     // Step 3: Filter out correct answers from the pool of all instructions
+//     $remainingInstructions = array_diff_key($allInstructions, $correctInstructions);
+
+//     // Step 4: Randomly select 5 additional answers from the remaining instructions
+//     $additionalInstructions = array_slice($remainingInstructions, 0, 5, true);
+
+//     // Step 5: Combine correct answers with the additional answers
+//     $dropdownOptions = $correctInstructions + $additionalInstructions;
+
+//     // Shuffle the combined options to ensure randomness
+//     shuffle($dropdownOptions);
+
+//     return $dropdownOptions;
+// }
+
+
 function GetDropdownOptions($link, $prescriptionID, $coverID)
 {
-    // Step 1: Get all available answers
+    // Step 1: Get all available answers (care_instruction_pre)
     $allInstructions = GetAllInstructions($link);
 
-    // Step 2: Get the correct answers for the given prescription and cover
+    // Step 2: Get the correct answers for the given prescription and cover (care_instruction)
     $correctInstructions = GetCorrectInstructions($link, $prescriptionID, $coverID);
 
-    // Step 3: Filter out correct answers from the pool of all instructions
-    $remainingInstructions = array_diff_key($allInstructions, $correctInstructions);
+    // Step 3: Map the `content` from correct instructions to the corresponding values in all instructions
+    $correctMappedInstructions = [];
+    foreach ($correctInstructions as $instruction) {
+        $instructionID = $instruction['content']; // `content` from care_instruction corresponds to `id` in care_instruction_pre
+        if (isset($allInstructions[$instructionID])) {
+            $correctMappedInstructions[$instructionID] = $allInstructions[$instructionID];
+        }
+    }
 
-    // Step 4: Randomly select 5 additional answers from the remaining instructions
+    // Step 4: Filter out the correct instructions from all instructions
+    $remainingInstructions = array_diff_key($allInstructions, $correctMappedInstructions);
+
+    // Step 5: Randomly select 5 additional answers from the remaining instructions
     $additionalInstructions = array_slice($remainingInstructions, 0, 5, true);
 
-    // Step 5: Combine correct answers with the additional answers
-    $dropdownOptions = $correctInstructions + $additionalInstructions;
+    // Step 6: Combine correct answers with the additional answers
+    $dropdownOptions = $correctMappedInstructions + $additionalInstructions;
 
     // Shuffle the combined options to ensure randomness
     shuffle($dropdownOptions);
 
     return $dropdownOptions;
 }
+
 
 
 function insertInstructions($link, $LoggedUser, $presCode, $coverId, $instructions)
