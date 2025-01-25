@@ -84,4 +84,20 @@ class CcEvaluationController
             'studentBalance' => $studentBalance,
         ]);
     }
+
+    public function GetStudentFullDetails($loggedUser)
+    {
+        $studentBalance = $this->model->GetStudentBalance($loggedUser);
+        $studentInfo = $this->model->GetLmsStudentsByUserName($loggedUser);
+        $studentEnrollments = $this->model->getUserEnrollmentsFullDetails($loggedUser);
+
+        // Respond with JSON
+        http_response_code(200);
+        echo json_encode([
+            'title' => 'Student Full Information',
+            'studentInfo' => $studentInfo,
+            'studentBalance' => $studentBalance,
+            'studentEnrollments' => $studentEnrollments,
+        ]);
+    }
 }

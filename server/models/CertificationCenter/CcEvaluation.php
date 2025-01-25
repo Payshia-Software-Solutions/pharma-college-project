@@ -385,7 +385,6 @@ class CcEvaluation
             'TotalStudentPaymentRecords' => $TotalStudentPaymentRecords,
             'studentBalance' => $studentBalance,
             'TotalRegistrationFee' => $TotalRegistrationFee,
-            'studentEnrollments' => $studentEnrollments,
             'paymentRecords' => $paymentRecords,
         ];
     }
@@ -464,5 +463,54 @@ class CcEvaluation
         }
 
         return $ArrayResult[$userName] ?? null;
+    }
+
+    public function getUserEnrollmentsFullDetails($userName)
+    {
+        $ArrayResult = [];
+        try {
+            $studentId = $this->GetLmsStudentsByUserName($userName)['student_id'];
+            $sql = "SELECT 
+                    sc.`id`, 
+                    sc.`course_code`, 
+                    sc.`student_id`, 
+                    sc.`enrollment_key`, 
+                    sc.`created_at`, 
+                    c.`course_name` as `batch_name`
+                FROM 
+                    `student_course` AS sc
+                INNER JOIN 
+                    `course` AS c 
+                ON 
+                    sc.`course_code` = c.`course_code`
+                WHERE 
+                    sc.`student_id` LIKE ?
+                ORDER BY 
+                    sc.`id` DESC
+            ";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$studentId]);
+            $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($rows as $row) {
+                $recoveredPatients = $this->GetRecoveredPatientsByCourse($row['course_code'], $userName);
+                $hunterProgress = $this->HunterProgress($userName);
+                $hunterProProgress =  $this->getHunterProProgress($row['course_code'], $userName);
+                $assignmentGrades = $this->calculateAssignmentsGrades($row['course_code'], $userName);
+
+                // Append the data to the course details
+                $row['ceylon_pharmacy'] = $recoveredPatients;
+                $row['pharma_hunter'] = $hunterProgress;
+                $row['pharma_hunter_pro'] = $hunterProProgress;
+                $row['assignment_grades'] = $assignmentGrades;
+
+                // Add the updated row to the result array
+                $ArrayResult[] = $row;
+            }
+        } catch (PDOException $e) {
+            return ["error" => $e->getMessage()];
+        }
+
+        return $ArrayResult;
     }
 }
