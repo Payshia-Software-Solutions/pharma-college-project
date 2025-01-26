@@ -1,0 +1,14 @@
+<div class="row g-3">
+    <div class="col-12">
+        <h5 class="mb-0 pb-2 border-bottom fw-bold">Student Information</h5>
+    </div>
+
+    <div class="col-md-6 offset-md-3">
+        <input type="text" class="form-control p-3 text-center border-2" placeholder="Enter Student Number" name="studentNumber" id="studentNumber">
+    </div>
+
+    <div class="col-md-6 offset-md-3 text-center">
+        <button onclick="GetStudentInformation($('#studentNumber').val())" type="button" class="btn btn-dark btn-lg">Get Information</button>
+    </div>
+
+</div>
