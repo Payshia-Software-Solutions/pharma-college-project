@@ -22,7 +22,7 @@ ini_set('display_errors', 1);
 // Include route files
 $assignmentRoutes = require './routes/OtherRoutes/assignmentRoutes.php';
 $appointmentRoutes = require './routes/OtherRoutes/appointmentRoutes.php';
-$eCertificateRoutes = require './routes/OtherRoutes/eCertificateRoutes.php';
+// $eCertificateRoutes = require './routes/OtherRoutes/eCertificateRoutes.php';
 $courseAssignmentRoutes = require './routes/OtherRoutes/courseAssignmentRoutes.php';
 $courseAssignmentSubmissionRoutes = require './routes/OtherRoutes/courseAssignmentSubmissionRoutes.php';
 $reportRoutes = require './routes/OtherRoutes/reportRoutes.php';
@@ -95,8 +95,9 @@ $CertificateVerificationRoutes = require './routes/CertificationCenter/Certifica
 $CeylonPharmacyCriteria = require './routes/CertificateCenter/certificateRoutes.php';
 $DeliveryOrdersRoutes = require './routes/Orders/DeliveryOrdersRoutes.php';
 $DistrictsRoutes = require './routes/District/DistrictsRoutes.php';
+$ECertificateRoutes = require './routes/ecertificates/ECertificateRoutes.php';
 
-// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes DistrictsRoutes
+// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
 //      throw new Exception("paymentRequestRoutes is not an array");
 // }
 
@@ -106,7 +107,7 @@ $routes = array_merge(
     $userRoutes,
     $assignmentRoutes,
     $appointmentRoutes,
-    $eCertificateRoutes,
+    // $eCertificateRoutes,
     $courseAssignmentRoutes,
     $courseAssignmentSubmissionRoutes,
     $hpSaveAnswerRoutes,
@@ -178,7 +179,8 @@ $routes = array_merge(
     $StudentValuesRoutes,
     $CertificateVerificationRoutes,
     $DeliveryOrdersRoutes,
-    $DistrictsRoutes
+    $DistrictsRoutes,
+    $ECertificateRoutes
 );
 
 
@@ -224,10 +226,10 @@ error_log("URI: $uri");
 foreach ($routes as $route => $handler) {
     list($routeMethod, $routeUri) = explode(' ', $route, 2);
 
-    // Convert route URI to regex (without query parameters){trackingNumber} provinceId
+    // Convert route URI to regex (without query parameters){trackingNumber} student_number
     $routeRegex = str_replace(
-        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{course_code}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}','{value}','{course_code}','{studentId}','{tracking_number}','{index_number}','{provinceId}'],
-        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)'],
+        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{course_code}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}','{value}','{course_code}','{studentId}','{tracking_number}','{index_number}','{provinceId}','{student_number}'],
+        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)',],
 
         $routeUri
     );
