@@ -77,6 +77,38 @@ $cityList = $citiesListResponse->toArray();
             </div>
             <div class="row g-3 mb-3">
                 <div class="col-12">
+                    <h5>Orders</h5>
+                </div>
+                <!-- Orders Info -->
+                <?php if (isset($enrollment['deliveryOrders'])) :
+                    foreach ($enrollment['deliveryOrders'] as $orderInfo) :
+                ?>
+                        <div class="col-12">
+                            <div class="card flex-fill">
+                                <div class="card-body text-start">
+                                    <div class="row">
+                                        <div class="col-3">Tracking #</div>
+                                        <div class="col-3">Item</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-3">
+                                            <h5 class="mb-0"><?= $orderInfo['tracking_number'] ?></h5>
+                                        </div>
+                                        <div class="col-3">
+                                            <h5 class="mb-0"><?= $orderInfo['delivery_id'] ?></h5>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+                <!-- Enf of the Orders Info -->
+            </div>
+
+            <div class="row g-3 mb-3">
+                <div class="col-12">
                     <h5>Assignments</h5>
                 </div>
                 <!-- Assignments -->
@@ -103,9 +135,7 @@ $cityList = $citiesListResponse->toArray();
                 <?php endif; ?>
                 <!-- Enf of the Assignments -->
             </div>
-
             <hr>
-
             <div class="row g-3 mb-3">
                 <div class="col-12">
                     <h5>Games</h5>
