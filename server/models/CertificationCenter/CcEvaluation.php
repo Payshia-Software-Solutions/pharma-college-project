@@ -1,17 +1,20 @@
 <?php
 // models/CertificationCenter/CcEvaluation.php
 require './models/Orders/DeliveryOrder.php';
+require_once './models/StudentCertificates/UserCertificatePrintStatus.php';
+
 
 class CcEvaluation extends DeliveryOrder
 {
     private $pdo;
     protected $lastError;
-
+    private $certificatePrintStatus;
 
     public function __construct($pdo)
     {
         parent::__construct($pdo);
-        $this->pdo = $pdo;
+        $this->pdo = $pdo; // Initialize UserCertificatePrintStatus
+        $this->certificatePrintStatus = new UserCertificatePrintStatus($pdo);
     }
 
     public function GetRecoveredPatientsByCourse($CourseCode, $loggedUser)
@@ -507,6 +510,7 @@ class CcEvaluation extends DeliveryOrder
                 $hunterProProgress =  $this->getHunterProProgress($row['course_code'], $userName);
                 $assignmentGrades = $this->calculateAssignmentsGrades($row['course_code'], $userName);
                 $deliveryOrders = $this->getRecordByIndexNumberAndCourse($userName, $row['course_code']);
+                $certificateRecords = $this->certificatePrintStatus->getRecordsByStudentNumberCourseCode($userName, $row['course_code']);
 
                 // Append the data to the course details
                 $row['ceylon_pharmacy'] = $recoveredPatients;
@@ -514,6 +518,7 @@ class CcEvaluation extends DeliveryOrder
                 $row['pharma_hunter_pro'] = $hunterProProgress;
                 $row['assignment_grades'] = $assignmentGrades;
                 $row['deliveryOrders'] = $deliveryOrders;
+                $row['certificateRecords'] = $certificateRecords;
 
                 // Add the updated row to the result array
                 $ArrayResult[$row['course_code']] = $row;
