@@ -109,8 +109,15 @@ class DeliveryOrder
         $stmt->execute(['index_number' => $index_number]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches all matching records
     }
-    
-    
+
+    public function getRecordByIndexNumberAndCourse($index_number, $courseCode)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM delivery_orders WHERE index_number = :index_number AND course_code = :course_code");
+        $stmt->execute(['index_number' => $index_number, 'course_code' => $courseCode]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches all matching records
+    }
+
+
 
     // Get a delivery order by Tracking Number
     public function getRecordByTrackingNumber($tracking_number)
@@ -127,16 +134,15 @@ class DeliveryOrder
 
 
 
-// Get a delivery order by Current Status
-public function getRecordByCurrentStatus($current_status)
-{
-    try {
-        $stmt = $this->pdo->prepare("SELECT * FROM delivery_orders WHERE current_status = :current_status");
-        $stmt->execute(['current_status' => $current_status]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } catch (PDOException $e) {
-        return ['error' => $e->getMessage()];
+    // Get a delivery order by Current Status
+    public function getRecordByCurrentStatus($current_status)
+    {
+        try {
+            $stmt = $this->pdo->prepare("SELECT * FROM delivery_orders WHERE current_status = :current_status");
+            $stmt->execute(['current_status' => $current_status]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return ['error' => $e->getMessage()];
+        }
     }
-}
-
 }
