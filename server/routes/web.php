@@ -93,8 +93,10 @@ $CityRoutes = require './routes/CityRoutes.php';
 $StudentValuesRoutes = require './routes/Student/StudentValuesRoutes.php';
 $CertificateVerificationRoutes = require './routes/CertificationCenter/CertificateVerificationRoutes.php';
 $CeylonPharmacyCriteria = require './routes/CertificateCenter/certificateRoutes.php';
+$DeliveryOrdersRoutes = require './routes/Orders/DeliveryOrdersRoutes.php';
+$DistrictsRoutes = require './routes/District/DistrictsRoutes.php';
 
-// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes
+// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes DistrictsRoutes
 //      throw new Exception("paymentRequestRoutes is not an array");
 // }
 
@@ -175,6 +177,8 @@ $routes = array_merge(
     $CityRoutes,
     $StudentValuesRoutes,
     $CertificateVerificationRoutes,
+    $DeliveryOrdersRoutes,
+    $DistrictsRoutes
 );
 
 
@@ -220,11 +224,10 @@ error_log("URI: $uri");
 foreach ($routes as $route => $handler) {
     list($routeMethod, $routeUri) = explode(' ', $route, 2);
 
-    // Convert route URI to regex (without query parameters){studentId}
+    // Convert route URI to regex (without query parameters){trackingNumber} provinceId
     $routeRegex = str_replace(
-
-        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{course_code}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}', '{value}', '{course_code}', '{studentId}'],
-        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-\/]+)'],
+        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{course_code}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}','{value}','{course_code}','{studentId}','{tracking_number}','{index_number}','{provinceId}'],
+        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)'],
 
         $routeUri
     );

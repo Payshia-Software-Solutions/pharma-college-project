@@ -1,7 +1,8 @@
 <?php
 // models/CertificationCenter/CcEvaluation.php
+require './models/Orders/DeliveryOrder.php';
 
-class CcEvaluation
+class CcEvaluation extends DeliveryOrder
 {
     private $pdo;
     protected $lastError;
@@ -9,6 +10,7 @@ class CcEvaluation
 
     public function __construct($pdo)
     {
+        parent::__construct($pdo);
         $this->pdo = $pdo;
     }
 
@@ -173,7 +175,14 @@ class CcEvaluation
                     'pendingCount' => 0,
                     'correctCount' => 0,
                     'gemCount' => 0,
-                    'coinCount' => 0
+                    'coinCount' => 0,
+                    'results' => [
+                        'progressPercentage' => 0,
+                        'pendingCount' => 0,
+                        'correctCount' => 0,
+                        'gemCount' => 0,
+                        'coinCount' => 0
+                    ]
                 ];
             }
 
@@ -497,15 +506,17 @@ class CcEvaluation
                 $hunterProgress = $this->HunterProgress($userName);
                 $hunterProProgress =  $this->getHunterProProgress($row['course_code'], $userName);
                 $assignmentGrades = $this->calculateAssignmentsGrades($row['course_code'], $userName);
+                $deliveryOrders = $this->getRecordByIndexNumberAndCourse($userName, $row['course_code']);
 
                 // Append the data to the course details
                 $row['ceylon_pharmacy'] = $recoveredPatients;
                 $row['pharma_hunter'] = $hunterProgress;
                 $row['pharma_hunter_pro'] = $hunterProProgress;
                 $row['assignment_grades'] = $assignmentGrades;
+                $row['deliveryOrders'] = $deliveryOrders;
 
                 // Add the updated row to the result array
-                $ArrayResult[] = $row;
+                $ArrayResult[$row['course_code']] = $row;
             }
         } catch (PDOException $e) {
             return ["error" => $e->getMessage()];

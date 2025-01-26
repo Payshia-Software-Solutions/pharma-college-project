@@ -13,7 +13,15 @@ class City
     public function getAllRecords()
     {
         $stmt = $this->pdo->query("SELECT * FROM cities");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Reassign keys using the 'id' column
+        $keyedResults = [];
+        foreach ($results as $row) {
+            $keyedResults[$row['id']] = $row;
+        }
+
+        return $keyedResults;
     }
 
     // Fetch a city by its ID
