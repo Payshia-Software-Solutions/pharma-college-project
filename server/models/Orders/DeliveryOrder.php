@@ -112,10 +112,48 @@ class DeliveryOrder
 
     public function getRecordByIndexNumberAndCourse($index_number, $courseCode)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM delivery_orders WHERE index_number = :index_number AND course_code = :course_code");
+        $stmt = $this->pdo->prepare("
+        SELECT 
+            do.`id`, 
+            do.`delivery_id`, 
+            do.`tracking_number`, 
+            do.`index_number`, 
+            do.`order_date`, 
+            do.`packed_date`, 
+            do.`send_date`, 
+            do.`removed_date`, 
+            do.`current_status`, 
+            do.`delivery_partner`, 
+            do.`value`, 
+            do.`payment_method`, 
+            do.`course_code`, 
+            do.`estimate_delivery`, 
+            do.`full_name`, 
+            do.`street_address`, 
+            do.`city`, 
+            do.`district`, 
+            do.`phone_1`, 
+            do.`phone_2`, 
+            do.`is_active`, 
+            do.`received_date`, 
+            do.`cod_amount`, 
+            do.`package_weight`, 
+            ds.`delivery_title` 
+        FROM 
+            `delivery_orders` AS do
+        LEFT JOIN 
+            `delivery_setting` AS ds
+        ON 
+            do.delivery_id = ds.id
+        WHERE 
+            do.index_number = :index_number 
+        AND 
+            do.course_code = :course_code
+    ");
         $stmt->execute(['index_number' => $index_number, 'course_code' => $courseCode]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches all matching records
+        return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches all matching records with delivery_title
     }
+
 
 
 
