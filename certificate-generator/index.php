@@ -3,7 +3,7 @@ header("Content-Type: application/json");
 
 // Check if student_id and course_code are provided
 if (!isset($_GET['student_id']) || !isset($_GET['course_code'])) {
-    echo json_encode(["error" => "Student ID and Course Code are required."]);
+    echo json_encode(["validation_result" => ["status" => "error", "message" => "Student ID and Course Code are required."]]);
     exit;
 }
 
@@ -16,13 +16,23 @@ $certificate_response = file_get_contents($certificate_api_url);
 
 // Validate API Response
 if ($certificate_response === FALSE) {
-    echo json_encode(["error" => "Unable to fetch certificate data for Student ID: " . htmlspecialchars($student_id) . " and Course Code: " . htmlspecialchars($course_code)]);
+    echo json_encode([
+        "validation_result" => [
+            "status" => "error",
+            "message" => "Unable to fetch certificate data for Student ID: " . htmlspecialchars($student_id) . " and Course Code: " . htmlspecialchars($course_code)
+        ]
+    ]);
     exit;
 }
 
 $certificate_data = json_decode($certificate_response, true);
 if (json_last_error() !== JSON_ERROR_NONE) {
-    echo json_encode(["error" => "Failed to decode certificate JSON response."]);
+    echo json_encode([
+        "validation_result" => [
+            "status" => "error",
+            "message" => "Failed to decode certificate JSON response."
+        ]
+    ]);
     exit;
 }
 
@@ -31,16 +41,22 @@ if (!empty($certificate_data) && isset($certificate_data[0])) {
     // If certificate exists, return the existing certificate image
     $existing_certificate = $certificate_data[0];  // Assuming the data is an array of certificate records
     echo json_encode([
-        "message" => "Certificate already generated.",
-        "certificate_image" => $existing_certificate['generated_image_name']
+        "certificate_check" => [
+            "status" => "success",
+            "message" => "Certificate already generated.",
+            "certificate_image" => $existing_certificate['generated_image_name']
+        ]
     ]);
     exit;
 } else {
     // If no certificate data found, proceed to generate the image
-    echo json_encode(["message" => "Proceeding to generate a new image."]);
+    echo json_encode([
+        "certificate_check" => [
+            "status" => "info",
+            "message" => "Proceeding to generate a new image."
+        ]
+    ]);
 }
-
-
 
 // Fetch Student Data from the Student Info API
 $student_api_url = "https://qa-api.pharmacollege.lk/certificate-verification?studentNumber=" . urlencode($student_id);
@@ -48,13 +64,23 @@ $student_response = file_get_contents($student_api_url);
 
 // Validate Student API Response
 if ($student_response === FALSE) {
-    echo json_encode(["error" => "Unable to fetch student data for Student ID: " . htmlspecialchars($student_id)]);
+    echo json_encode([
+        "validation_result" => [
+            "status" => "error",
+            "message" => "Unable to fetch student data for Student ID: " . htmlspecialchars($student_id)
+        ]
+    ]);
     exit;
 }
 
 $student_data = json_decode($student_response, true);
 if (json_last_error() !== JSON_ERROR_NONE) {
-    echo json_encode(["error" => "Failed to decode student JSON response."]);
+    echo json_encode([
+        "validation_result" => [
+            "status" => "error",
+            "message" => "Failed to decode student JSON response."
+        ]
+    ]);
     exit;
 }
 
@@ -68,14 +94,24 @@ $font_path = realpath("font/Roboto-Black.ttf");
 
 // Check if files exist
 if (!file_exists($img_path) || !file_exists($font_path)) {
-    echo json_encode(["error" => "Required files are missing."]);
+    echo json_encode([
+        "validation_result" => [
+            "status" => "error",
+            "message" => "Required files are missing."
+        ]
+    ]);
     exit;
 }
 
 // Load Image
 $image = imagecreatefromjpeg($img_path);
 if (!$image) {
-    echo json_encode(["error" => "Unable to create image from file."]);
+    echo json_encode([
+        "validation_result" => [
+            "status" => "error",
+            "message" => "Unable to create image from file."
+        ]
+    ]);
     exit;
 }
 
@@ -132,17 +168,26 @@ curl_setopt($ch, CURLOPT_HTTPHEADER, [
     "Content-Type: application/json"
 ]);
 
-
 $response = curl_exec($ch);
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
-
 $response_data = json_decode($response, true);
-header('Content-Type: application/json');
 // Handle Success or Error Based on Response
 if ($http_code == 200 || $http_code == 201 || (isset($response_data['message']) && $response_data['message'] === "Certificate created successfully")) {
-    echo json_encode(["success" => "Certificate generated and saved!", "image_name" => $file_name]);
+    echo json_encode([
+        "certificate_generation" => [
+            "status" => "success",
+            "message" => "Certificate generated and saved!",
+            "image_name" => $file_name
+        ]
+    ]);
 } else {
-    echo json_encode(["error" => "Failed to save certificate details.", "response" => $response_data]);
+    echo json_encode([
+        "certificate_generation" => [
+            "status" => "error",
+            "message" => "Failed to save certificate details.",
+            "response" => $response_data
+        ]
+    ]);
 }
