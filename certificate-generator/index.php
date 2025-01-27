@@ -1,6 +1,18 @@
 <?php
 header("Content-Type: application/json");
 
+// Load the .env file
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Dotenv\Dotenv;
+
+// Initialize the Dotenv instance
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
+// Access the API_URL from the .env file
+$api_url = $_ENV['API_URL'];
+
 // Check if student_id and course_code are provided
 if (!isset($_GET['student_id']) || !isset($_GET['course_code'])) {
     echo json_encode(["error" => "Student ID and Course Code are required."]);
@@ -11,7 +23,7 @@ $student_id = $_GET['student_id'];
 $course_code = $_GET['course_code'];
 
 // Fetch Certificate Data from API (to check if it already exists)
-$certificate_api_url = "https://qa-api.pharmacollege.lk/certificate-verification?studentNumber=" . urlencode($student_id) . "&courseCode=" . urlencode($course_code);
+$certificate_api_url = $api_url . "/certificate-verification?studentNumber=" . urlencode($student_id) . "&courseCode=" . urlencode($course_code);
 $certificate_response = file_get_contents($certificate_api_url);
 
 // Validate API Response
@@ -28,22 +40,18 @@ if (json_last_error() !== JSON_ERROR_NONE) {
 
 // Check if the certificate data already exists
 if (!empty($certificate_data) && isset($certificate_data[0])) {
-    // If certificate exists, return the existing certificate image
-    $existing_certificate = $certificate_data[0];  // Assuming the data is an array of certificate records
+    $existing_certificate = $certificate_data[0];
     echo json_encode([
         "message" => "Certificate already generated.",
         "certificate_image" => $existing_certificate['generated_image_name']
     ]);
     exit;
 } else {
-    // If no certificate data found, proceed to generate the image
     echo json_encode(["message" => "Proceeding to generate a new image."]);
 }
 
-
-
 // Fetch Student Data from the Student Info API
-$student_api_url = "https://qa-api.pharmacollege.lk/certificate-verification?studentNumber=" . urlencode($student_id);
+$student_api_url = $api_url . "/ecertificate-verification?studentNumber=" . urlencode($student_id);
 $student_response = file_get_contents($student_api_url);
 
 // Validate Student API Response
@@ -66,7 +74,6 @@ $name_on_certificate = $studentInfo['name_on_certificate'] ?? 'Unknown Name';
 $img_path = "images/e-certificate.jpg";
 $font_path = realpath("font/Roboto-Black.ttf");
 
-// Check if files exist
 if (!file_exists($img_path) || !file_exists($font_path)) {
     echo json_encode(["error" => "Required files are missing."]);
     exit;
@@ -82,31 +89,41 @@ if (!$image) {
 // Set Text Properties
 $text_color = imagecolorallocate($image, 0, 0, 0);
 $font_size = 40;
-$x = 650;
-$y = 570;
+
+// Calculate Text Dimensions and Center It Horizontally
+$text_dimensions = imagettfbbox($font_size, 0, $font_path, $name_on_certificate);
+if (!$text_dimensions) {
+    echo json_encode(["error" => "Failed to calculate text dimensions."]);
+    exit;
+}
+
+$text_width = $text_dimensions[4] - $text_dimensions[0]; // Width of the text
+$text_height = $text_dimensions[1] - $text_dimensions[7]; // Height of the text
+
+$image_width = imagesx($image); // Width of the image
+$text_x = intval(($image_width - $text_width) / 2); // Center the text horizontally
+$text_y = 570; // Fixed Y-coordinate
 
 // Add Student Name to Certificate
-imagettftext($image, $font_size, 0, $x, $y, $text_color, $font_path, $name_on_certificate);
+imagettftext($image, $font_size, 0, $text_x, $text_y, $text_color, $font_path, $name_on_certificate);
 
 // Generate Unique Number
 $unique_number = time();
 
-// Define the filename format: eCertificate-{CourseCode}-{StudentID}-{UniqueNumber}.jpg
+// Define the filename format
 $file_name = "eCertificate-{$course_code}-{$student_id}-{$unique_number}.jpg";
 
-// Save Certificate in a folder named after the student's name
-$folder_name = str_replace(" ", "_", $name_on_certificate);
+// Save Certificate in a folder named after the student's ID
+$folder_name = str_replace(" ", "_", $student_id);
 $folder_path = "certificates/" . $folder_name;
 
-// Check if the folder exists, if not, create it
 if (!is_dir($folder_path)) {
-    mkdir($folder_path, 0777, true); // Create the folder if it doesn't exist
+    mkdir($folder_path, 0777, true);
 }
 
-// Define the full save path
 $save_path = $folder_path . "/" . $file_name;
 
-// Save the image to the specified path
+// Save the image
 imagejpeg($image, $save_path);
 imagedestroy($image);
 
@@ -121,27 +138,23 @@ $post_data = [
 ];
 
 $post_json = json_encode($post_data);
-$post_url = "https://qa-api.pharmacollege.lk/ecertificates";
+$post_url = $api_url . "/ecertificates";
 
-// Initialize cURL session to post the certificate details
 $ch = curl_init($post_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
 curl_setopt($ch, CURLOPT_POSTFIELDS, $post_json);
-curl_setopt($ch, CURLOPT_HTTPHEADER, [
-    "Content-Type: application/json"
-]);
-
+curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
 
 $response = curl_exec($ch);
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
-
 $response_data = json_decode($response, true);
-// Handle Success or Error Based on Response
+
 if ($http_code == 200 || $http_code == 201 || (isset($response_data['message']) && $response_data['message'] === "Certificate created successfully")) {
     echo json_encode(["success" => "Certificate generated and saved!", "image_name" => $file_name]);
 } else {
     echo json_encode(["error" => "Failed to save certificate details.", "response" => $response_data]);
 }
+?>

@@ -20,7 +20,7 @@ return [
     'GET /ecertificates/course/{course_code}' => [$eCertificateController, 'getCertificatesByCourseCode'],
 
     // Retrieve certificates by student number and course code
-'GET /certificate-verification\?studentNumber=[\w]+&courseCode=[\w]+/$' => function () use ($eCertificateController) {
+'GET /ecertificate-verification\?studentNumber=[\w]+&courseCode=[\w]+/$' => function () use ($eCertificateController) {
     // Access query parameters using $_GET
     $studentNumber = isset($_GET['studentNumber']) ? $_GET['studentNumber'] : null;
     $courseCode = isset($_GET['courseCode']) ? $_GET['courseCode'] : null;
