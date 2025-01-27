@@ -58,7 +58,7 @@ function GetStudentInformation(studentNumber) {
   function fetch_data() {
     document.getElementById("index-content").innerHTML = InnerLoader;
     $.ajax({
-      url: "assets/content/lms-management/master/student-information.php",
+      url: "assets/content/lms-management/student-info/student-information.php",
       method: "POST",
       data: {
         LoggedUser: LoggedUser,

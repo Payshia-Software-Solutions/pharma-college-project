@@ -251,6 +251,28 @@ $cityList = $citiesListResponse->toArray();
                 </div>
                 <!-- End of Pharma Hunter Pro Game Results -->
             </div>
+            <div class="row g-3 mb-3">
+                <div class="col-12">
+                    <h5>Certificates</h5>
+                </div>
+
+                <!-- Certificates -->
+                <?php if (isset($enrollment['certificateRecords'])) :
+                    foreach ($enrollment['certificateRecords'] as $certificate) :
+                ?>
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="card flex-fill">
+                                <div class="card-body text-center">
+                                    <h5 class="mb-0"><?= $certificate['type'] ?></h5>
+                                    <h4 class="mb-0 fw-bold"><?= $certificate['certificate_id'] ?></h4>
+                                    <span class="badge bg-success">Printed</span>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </div>
+
         <?php endforeach ?>
 
     </div>
