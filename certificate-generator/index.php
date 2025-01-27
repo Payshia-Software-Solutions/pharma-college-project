@@ -43,7 +43,7 @@ if (!empty($certificate_data) && isset($certificate_data[0])) {
 
 
 // Fetch Student Data from the Student Info API
-$student_api_url = "http://localhost/pharma-college-project/server/certificate-verification?studentNumber=" . urlencode($student_id);
+$student_api_url = "https://qa-api.pharmacollege.lk/server/certificate-verification?studentNumber=" . urlencode($student_id);
 $student_response = file_get_contents($student_api_url);
 
 // Validate Student API Response
@@ -121,7 +121,7 @@ $post_data = [
 ];
 
 $post_json = json_encode($post_data);
-$post_url = "http://localhost/pharma-college-project/server/ecertificates";
+$post_url = "https://qa-api.pharmacollege.lk/ecertificates";
 
 // Initialize cURL session to post the certificate details
 $ch = curl_init($post_url);
@@ -139,7 +139,7 @@ curl_close($ch);
 
 
 $response_data = json_decode($response, true);
-
+header('Content-Type: application/json');
 // Handle Success or Error Based on Response
 if ($http_code == 200 || $http_code == 201 || (isset($response_data['message']) && $response_data['message'] === "Certificate created successfully")) {
     echo json_encode(["success" => "Certificate generated and saved!", "image_name" => $file_name]);
