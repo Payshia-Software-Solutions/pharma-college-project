@@ -131,7 +131,7 @@ $unique_number = time();
 $file_name = "eCertificate-{$course_code}-{$student_id}-{$unique_number}.jpg";
 
 // Save Certificate in a folder named after the student's name
-$folder_name = str_replace(" ", "_", $name_on_certificate);
+$folder_name = str_replace(" ", "_", $student_id);
 $folder_path = "certificates/" . $folder_name;
 
 // Check if the folder exists, if not, create it
