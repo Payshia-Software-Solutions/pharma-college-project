@@ -43,7 +43,7 @@ if (!empty($certificate_data) && isset($certificate_data[0])) {
 
 
 // Fetch Student Data from the Student Info API
-$student_api_url = "https://qa-api.pharmacollege.lk/server/certificate-verification?studentNumber=" . urlencode($student_id);
+$student_api_url = "https://qa-api.pharmacollege.lk/certificate-verification?studentNumber=" . urlencode($student_id);
 $student_response = file_get_contents($student_api_url);
 
 // Validate Student API Response
