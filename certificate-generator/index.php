@@ -11,7 +11,7 @@ $student_id = $_GET['student_id'];
 $course_code = $_GET['course_code'];
 
 // Fetch Certificate Data from API (to check if it already exists)
-$certificate_api_url = "http://localhost/pharma-college-project/server/certificate-verification?studentNumber=" . urlencode($student_id) . "&courseCode=" . urlencode($course_code);
+$certificate_api_url = "https://qa-api.pharmacollege.lk/certificate-verification?studentNumber=" . urlencode($student_id) . "&courseCode=" . urlencode($course_code);
 $certificate_response = file_get_contents($certificate_api_url);
 
 // Validate API Response
@@ -63,8 +63,8 @@ $studentInfo = $student_data['studentInfo'] ?? [];
 $name_on_certificate = $studentInfo['name_on_certificate'] ?? 'Unknown Name';
 
 // Certificate Template
-$img_path = "images/e-certificate.jpg"; 
-$font_path = realpath("font/Roboto-Black.ttf"); 
+$img_path = "images/e-certificate.jpg";
+$font_path = realpath("font/Roboto-Black.ttf");
 
 // Check if files exist
 if (!file_exists($img_path) || !file_exists($font_path)) {
@@ -80,7 +80,7 @@ if (!$image) {
 }
 
 // Set Text Properties
-$text_color = imagecolorallocate($image, 0, 0, 0); 
+$text_color = imagecolorallocate($image, 0, 0, 0);
 $font_size = 40;
 $x = 650;
 $y = 570;
@@ -89,7 +89,7 @@ $y = 570;
 imagettftext($image, $font_size, 0, $x, $y, $text_color, $font_path, $name_on_certificate);
 
 // Generate Unique Number
-$unique_number = time(); 
+$unique_number = time();
 
 // Define the filename format: eCertificate-{CourseCode}-{StudentID}-{UniqueNumber}.jpg
 $file_name = "eCertificate-{$course_code}-{$student_id}-{$unique_number}.jpg";
@@ -114,7 +114,7 @@ imagedestroy($image);
 $post_data = [
     "student_number" => $student_id,
     "course_code" => $course_code,
-    "generated_image_name" => $file_name, 
+    "generated_image_name" => $file_name,
     "unique_number" => $unique_number,
     "created_at" => date('Y-m-d H:i:s'),
     "created_by" => "System"
@@ -146,5 +146,3 @@ if ($http_code == 200 || $http_code == 201 || (isset($response_data['message']) 
 } else {
     echo json_encode(["error" => "Failed to save certificate details.", "response" => $response_data]);
 }
-
-?>
