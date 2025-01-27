@@ -23,7 +23,7 @@ $student_id = $_GET['student_id'];
 $course_code = $_GET['course_code'];
 
 // Fetch Certificate Data from API (to check if it already exists)
-$certificate_api_url = $api_url . "/certificate-verification?studentNumber=" . urlencode($student_id) . "&courseCode=" . urlencode($course_code);
+$certificate_api_url = $api_url . "/ecertificate-verification?studentNumber=" . urlencode($student_id) . "&courseCode=" . urlencode($course_code);
 $certificate_response = file_get_contents($certificate_api_url);
 
 // Validate API Response
