@@ -4,11 +4,11 @@ require_once './models/PaymentRequests/PaymentPortalRequest.php';
 class PaymentPortalRequestController
 {
     private $model;
-    private $pdo; // Store PDO separately
+    private $pdo; // Store PDO connection
 
     public function __construct($pdo)
     {
-        $this->pdo = $pdo; // Store PDO
+        $this->pdo = $pdo; // Store PDO for database operations
         $this->model = new PaymentPortalRequest($pdo);
     }
 
@@ -34,14 +34,53 @@ class PaymentPortalRequestController
     // Create a new payment request
     public function createRecord()
     {
-        $data = json_decode(file_get_contents("php://input"), true);
+        // Extract data from $_POST
+        $data = [
+            'unique_number'     => $_POST['studentNumber'] ?? null,
+            'number_type'       => 'student_number', // Set a default or map accordingly
+            'payment_reson'     => $_POST['paymentReason'] ?? null,
+            'paid_amount'       => $_POST['amount'] ?? null,
+            'payment_reference' => $_POST['reference'] ?? null,
+            'bank'              => $_POST['bank'] ?? null,
+            'branch'            => $_POST['branch'] ?? null,
+            'slip_path'         => 'test', // Will handle file separately
+            'paid_date'         => date('Y-m-d'), // Use current date if not provided
+            'created_at'        => date('Y-m-d H:i:s'),
+            'is_active'         => 1,
+            'hash_value'        => md5(uniqid()), // Generate a unique hash
+        ];
 
+        print_r($data);
+
+        // Handle file upload
+        if (!empty($_FILES['slip']['name'])) {
+            $uploadDir  = './uploads/';
+            $fileName   = time() . '_' . basename($_FILES['slip']['name']); // Unique filename
+            $uploadFile = $uploadDir . $fileName;
+
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true); // Ensure the upload directory exists
+            }
+
+            if (move_uploaded_file($_FILES['slip']['tmp_name'], $uploadFile)) {
+                $data['slip_path'] = $uploadFile;
+            } else {
+                http_response_code(400);
+                echo json_encode([
+                    'success' => false,
+                    'error'   => 'File upload failed'
+                ]);
+                return;
+            }
+        }
+
+        // Validate data
         if ($this->validateData($data)) {
-            // Insert the payment request
+            // Insert into database
             $this->model->createRecord($data);
 
-            // Get the last inserted ID as the reference number
-            $reference = $this->pdo->lastInsertId(); // Fix: Use $this->model->pdo instead of $this->pdo
+            // Get last inserted ID as reference number
+            $reference = $this->pdo->lastInsertId();
 
             http_response_code(201);
             echo json_encode([
@@ -57,8 +96,6 @@ class PaymentPortalRequestController
             ]);
         }
     }
-
-
 
     // Update a payment request
     public function updateRecord($id)
@@ -95,8 +132,7 @@ class PaymentPortalRequestController
             $data['slip_path'],
             $data['paid_date'],
             $data['created_at'],
-            $data['is_active'],
-            $data['hash_value']
+            $data['is_active']
         );
     }
 }
