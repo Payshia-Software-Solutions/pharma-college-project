@@ -37,32 +37,49 @@ class PaymentPortalRequestController
         // Extract data from $_POST
         $data = [
             'unique_number'     => $_POST['studentNumber'] ?? null,
-            'number_type'       => 'student_number', // Set a default or map accordingly
+            'number_type'       => 'default', // Set a default value
             'payment_reson'     => $_POST['paymentReason'] ?? null,
             'paid_amount'       => $_POST['amount'] ?? null,
             'payment_reference' => $_POST['reference'] ?? null,
             'bank'              => $_POST['bank'] ?? null,
             'branch'            => $_POST['branch'] ?? null,
-            'slip_path'         => 'test', // Will handle file separately
-            'paid_date'         => date('Y-m-d'), // Use current date if not provided
+            'slip_path'         => null, // Will be assigned after upload
+            'paid_date'         => date('Y-m-d'),
             'created_at'        => date('Y-m-d H:i:s'),
             'is_active'         => 1,
-            'hash_value'        => md5(uniqid()), // Generate a unique hash
+            'hash_value'        => null, // Image hash
         ];
 
-        print_r($data);
-
         // Handle file upload
-        if (!empty($_FILES['slip']['name'])) {
-            $uploadDir  = './uploads/';
-            $fileName   = time() . '_' . basename($_FILES['slip']['name']); // Unique filename
-            $uploadFile = $uploadDir . $fileName;
+        if (!empty($_FILES['slip']['tmp_name'])) {
+            $fileTmpPath = $_FILES['slip']['tmp_name'];
 
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true); // Ensure the upload directory exists
+            // Generate SHA-256 hash of the image file
+            $imageHash = hash_file('sha256', $fileTmpPath);
+            $data['hash_value'] = $imageHash; // Store in the database
+
+            // Check if the image already exists in the database
+            if ($this->isDuplicateImage($imageHash)) {
+                http_response_code(409); // Conflict
+                echo json_encode([
+                    'success' => false,
+                    'error'   => 'Duplicate image detected. The same image has already been uploaded.'
+                ]);
+                return;
             }
 
-            if (move_uploaded_file($_FILES['slip']['tmp_name'], $uploadFile)) {
+            // Define upload path
+            $uploadDir  = './uploads/';
+            $fileName   = $imageHash . '.' . pathinfo($_FILES['slip']['name'], PATHINFO_EXTENSION); // Name file using hash
+            $uploadFile = $uploadDir . $fileName;
+
+            // Ensure the upload directory exists
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+
+            // Move the file to the upload directory
+            if (move_uploaded_file($fileTmpPath, $uploadFile)) {
                 $data['slip_path'] = $uploadFile;
             } else {
                 http_response_code(400);
@@ -109,6 +126,16 @@ class PaymentPortalRequestController
             http_response_code(400);
             echo json_encode(['error' => 'Invalid data']);
         }
+    }
+
+    /**
+     * Check if an image with the same hash already exists in the database
+     */
+    private function isDuplicateImage($imageHash)
+    {
+        $stmt = $this->pdo->prepare("SELECT COUNT(*) FROM payment_requests WHERE hash_value = :hash_value");
+        $stmt->execute(['hash_value' => $imageHash]);
+        return $stmt->fetchColumn() > 0;
     }
 
     // Delete a payment request
