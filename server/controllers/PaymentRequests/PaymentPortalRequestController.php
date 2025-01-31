@@ -4,12 +4,14 @@ require_once './models/PaymentRequests/PaymentPortalRequest.php';
 class PaymentPortalRequestController
 {
     private $model;
+    private $ftpConfig;
     private $pdo; // Store PDO connection
 
     public function __construct($pdo)
     {
         $this->pdo = $pdo; // Store PDO for database operations
         $this->model = new PaymentPortalRequest($pdo);
+        $this->ftpConfig = include('./config/ftp.php');
     }
 
     // Get all payment requests
@@ -31,19 +33,37 @@ class PaymentPortalRequestController
         }
     }
 
+    private function ensureDirectoryExists($ftp_conn, $dir)
+    {
+        $parts = explode('/', $dir);
+        $path = '';
+        foreach ($parts as $part) {
+            if (empty($part)) {
+                continue;
+            }
+            $path .= '/' . $part;
+            if (!@ftp_chdir($ftp_conn, $path)) {
+                if (!ftp_mkdir($ftp_conn, $path)) {
+                    throw new Exception("Could not create directory: $path on FTP server.");
+                }
+            }
+        }
+    }
+
+
     // Create a new payment request
     public function createRecord()
     {
         // Extract data from $_POST
         $data = [
             'unique_number'     => $_POST['studentNumber'] ?? null,
-            'number_type'       => 'default', // Set a default value
+            'number_type'       => 'default',
             'payment_reson'     => $_POST['paymentReason'] ?? null,
             'paid_amount'       => $_POST['amount'] ?? null,
             'payment_reference' => $_POST['reference'] ?? null,
             'bank'              => $_POST['bank'] ?? null,
             'branch'            => $_POST['branch'] ?? null,
-            'slip_path'         => null, // Will be assigned after upload
+            'slip_path'         => null, // FTP file path will be stored here
             'paid_date'         => date('Y-m-d'),
             'created_at'        => date('Y-m-d H:i:s'),
             'is_active'         => 1,
@@ -56,7 +76,7 @@ class PaymentPortalRequestController
 
             // Generate SHA-256 hash of the image file
             $imageHash = hash_file('sha256', $fileTmpPath);
-            $data['hash_value'] = $imageHash; // Store in the database
+            $data['hash_value'] = $imageHash;
 
             // Check if the image already exists in the database
             if ($this->isDuplicateImage($imageHash)) {
@@ -68,25 +88,31 @@ class PaymentPortalRequestController
                 return;
             }
 
-            // Define upload path
-            $uploadDir  = './uploads/';
-            $fileName   = $imageHash . '.' . pathinfo($_FILES['slip']['name'], PATHINFO_EXTENSION); // Name file using hash
-            $uploadFile = $uploadDir . $fileName;
+            // File details
+            $fileExtension = pathinfo($_FILES['slip']['name'], PATHINFO_EXTENSION);
+            $fileName = $imageHash . '.' . $fileExtension;
+            $localUploadPath = './uploads/' . $fileName; // Temporary local storage
+            $ftpFilePath = "/content-provider/payment-slips/" . $fileName; // Path on FTP
 
-            // Ensure the upload directory exists
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
+            // Ensure the local upload directory exists
+            if (!is_dir('./uploads/')) {
+                mkdir('./uploads/', 0777, true);
             }
 
-            // Move the file to the upload directory
-            if (move_uploaded_file($fileTmpPath, $uploadFile)) {
-                $data['slip_path'] = $uploadFile;
-            } else {
+            // Move the file locally first
+            if (!move_uploaded_file($fileTmpPath, $localUploadPath)) {
                 http_response_code(400);
-                echo json_encode([
-                    'success' => false,
-                    'error'   => 'File upload failed'
-                ]);
+                echo json_encode(['success' => false, 'error' => 'File upload failed']);
+                return;
+            }
+
+            // Upload to FTP server
+            if ($this->uploadToFTP($localUploadPath, $ftpFilePath)) {
+                $data['slip_path'] = $ftpFilePath; // Store FTP path in database
+                unlink($localUploadPath); // Remove local file after successful FTP upload
+            } else {
+                http_response_code(500);
+                echo json_encode(['success' => false, 'error' => 'FTP upload failed']);
                 return;
             }
         }
@@ -113,6 +139,50 @@ class PaymentPortalRequestController
             ]);
         }
     }
+
+
+    private function uploadToFTP($localFile, $ftpFilePath)
+    {
+        // FTP credentials from config
+        $ftp_server   = $this->ftpConfig['ftp_server'];
+        $ftp_username = $this->ftpConfig['ftp_username'];
+        $ftp_password = $this->ftpConfig['ftp_password'];
+
+        // Connect to FTP server
+        $ftp_conn = ftp_connect($ftp_server);
+        if (!$ftp_conn) {
+            error_log("FTP connection failed: $ftp_server");
+            return false;
+        }
+
+        // Login to FTP
+        if (!ftp_login($ftp_conn, $ftp_username, $ftp_password)) {
+            ftp_close($ftp_conn);
+            error_log("FTP login failed for user: $ftp_username");
+            return false;
+        }
+
+        // Enable passive mode
+        ftp_pasv($ftp_conn, true);
+
+        // Ensure directory exists
+        if (!$this->ensureDirectoryExists($ftp_conn, dirname($ftpFilePath))) {
+            ftp_close($ftp_conn);
+            return false;
+        }
+
+        // Upload file
+        if (!ftp_put($ftp_conn, $ftpFilePath, $localFile, FTP_BINARY)) {
+            ftp_close($ftp_conn);
+            error_log("Failed to upload: $localFile to $ftpFilePath");
+            return false;
+        }
+
+        // Close FTP connection
+        ftp_close($ftp_conn);
+        return true;
+    }
+
 
     // Update a payment request
     public function updateRecord($id)
