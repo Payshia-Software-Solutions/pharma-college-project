@@ -4,9 +4,11 @@ require_once './models/PaymentRequests/PaymentPortalRequest.php';
 class PaymentPortalRequestController
 {
     private $model;
+    private $pdo; // Store PDO separately
 
     public function __construct($pdo)
     {
+        $this->pdo = $pdo; // Store PDO
         $this->model = new PaymentPortalRequest($pdo);
     }
 
@@ -39,7 +41,7 @@ class PaymentPortalRequestController
             $this->model->createRecord($data);
 
             // Get the last inserted ID as the reference number
-            $reference = $this->pdo->lastInsertId();
+            $reference = $this->pdo->lastInsertId(); // Fix: Use $this->model->pdo instead of $this->pdo
 
             http_response_code(201);
             echo json_encode([
@@ -55,6 +57,7 @@ class PaymentPortalRequestController
             ]);
         }
     }
+
 
 
     // Update a payment request
