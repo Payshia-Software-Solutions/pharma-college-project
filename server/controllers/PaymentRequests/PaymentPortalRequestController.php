@@ -92,7 +92,7 @@ class PaymentPortalRequestController
             $fileExtension = pathinfo($_FILES['slip']['name'], PATHINFO_EXTENSION);
             $fileName = $imageHash . '.' . $fileExtension;
             $localUploadPath = './uploads/' . $fileName; // Temporary local storage
-            $ftpFilePath = "/content-provider/payment-slips/" . $fileName; // Path on FTP
+            $ftpFilePath = "/payment-slips/" . $fileName; // Path on FTP
 
             // Ensure the local upload directory exists
             if (!is_dir('./uploads/')) {
@@ -143,6 +143,7 @@ class PaymentPortalRequestController
 
     private function uploadToFTP($localFile, $ftpFilePath)
     {
+        ini_set('memory_limit', '256M'); // Increase to 256 MB or higher if needed
         // FTP credentials from config
         $ftp_server   = $this->ftpConfig['ftp_server'];
         $ftp_username = $this->ftpConfig['ftp_username'];
@@ -165,10 +166,14 @@ class PaymentPortalRequestController
         // Enable passive mode
         ftp_pasv($ftp_conn, true);
 
-        // Ensure directory exists
-        if (!$this->ensureDirectoryExists($ftp_conn, dirname($ftpFilePath))) {
+
+        // Ensure that the target directory exists
+        try {
+            $this->ensureDirectoryExists($ftp_conn, dirname($ftpFilePath));
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
             ftp_close($ftp_conn);
-            return false;
+            return;
         }
 
         // Upload file
