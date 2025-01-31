@@ -99,6 +99,7 @@ $UserCertificatePrintStatusRoutes = require './routes/UserCertificatePrintStatus
 
 $DistrictsRoutes = require './routes/District/DistrictsRoutes.php';
 $ECertificateRoutes = require './routes/ecertificates/ECertificateRoutes.php';
+$paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.php';
 
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
 
@@ -184,7 +185,8 @@ $routes = array_merge(
     $CertificateVerificationRoutes,
     $DeliveryOrdersRoutes,
     $DistrictsRoutes,
-    $ECertificateRoutes
+    $ECertificateRoutes,
+    $paymentRequestRoutes
 );
 
 
@@ -233,8 +235,8 @@ foreach ($routes as $route => $handler) {
     // Convert route URI to regex (without query parameters){trackingNumber} student_number
     $routeRegex = str_replace(
 
-        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{course_code}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}','{value}','{course_code}','{studentId}','{tracking_number}','{index_number}','{provinceId}','{student_number}'],
-        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)',],
+        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{course_code}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}', '{value}', '{course_code}', '{studentId}', '{tracking_number}', '{index_number}', '{provinceId}', '{student_number}'],
+        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)',],
 
 
         $routeUri
