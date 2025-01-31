@@ -35,14 +35,27 @@ class PaymentPortalRequestController
         $data = json_decode(file_get_contents("php://input"), true);
 
         if ($this->validateData($data)) {
+            // Insert the payment request
             $this->model->createRecord($data);
+
+            // Get the last inserted ID as the reference number
+            $reference = $this->pdo->lastInsertId();
+
             http_response_code(201);
-            echo json_encode(['message' => 'Payment request created successfully']);
+            echo json_encode([
+                'success'   => true,
+                'message'   => 'Payment recorded successfully!',
+                'reference' => (int) $reference
+            ]);
         } else {
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid data']);
+            echo json_encode([
+                'success' => false,
+                'error'   => 'Invalid data'
+            ]);
         }
     }
+
 
     // Update a payment request
     public function updateRecord($id)
