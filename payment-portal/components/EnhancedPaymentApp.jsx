@@ -92,7 +92,7 @@ export default function EnhancedPaymentApp() {
       formDataToSend.append("slip", formData.slip); // File upload
 
       const response = await fetch(
-        "http://localhost/pharma-college-project/server/payment-portal-requests",
+        "https://qa-api.pharmacollege.lk/payment-portal-requests",
         {
           method: "POST",
           body: formDataToSend, // Sending as FormData
