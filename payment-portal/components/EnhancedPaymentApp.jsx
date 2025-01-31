@@ -62,91 +62,44 @@ export default function EnhancedPaymentApp() {
 
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
 
-  // const handleSubmit = async () => {
-  //   setIsLoading(true);
-  //   setShowSuccess(false);
-
-  //   // Validate required fields
-  //   if (
-  //     !formData.studentNumber ||
-  //     !formData.paymentReason ||
-  //     !formData.amount ||
-  //     !formData.reference ||
-  //     !formData.bank ||
-  //     !formData.branch ||
-  //     !formData.slip
-  //   ) {
-  //     alert("Please complete all fields, including the payment slip.");
-  //     setIsLoading(false);
-  //     return;
-  //   }
-
-  //   try {
-  //     const formDataToSend = new FormData();
-  //     formDataToSend.append("studentNumber", formData.studentNumber);
-  //     formDataToSend.append("paymentReason", formData.paymentReason);
-  //     formDataToSend.append("amount", formData.amount);
-  //     formDataToSend.append("reference", formData.reference);
-  //     formDataToSend.append("bank", formData.bank);
-  //     formDataToSend.append("branch", formData.branch);
-  //     formDataToSend.append("slip", formData.slip); // File upload
-
-  //     const response = await fetch("https://api.pharmacollege.lk/payment", {
-  //       method: "POST",
-  //       body: formDataToSend, // Sending as FormData
-  //     });
-
-  //     if (!response.ok) {
-  //       throw new Error("Payment submission failed. Please try again.");
-  //     }
-
-  //     // Success - Show PaymentSuccess
-  //     setShowSuccess(true);
-  //   } catch (error) {
-  //     alert(error.message);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   const handleSubmit = async () => {
     setIsLoading(true);
     setShowSuccess(false);
 
-    // Collect missing fields
-    let missingFields = [];
-
-    if (!formData.studentNumber) missingFields.push("Student Number");
-    if (!formData.paymentReason) missingFields.push("Payment Reason");
-    if (!formData.amount) missingFields.push("Amount");
-    if (!formData.reference) missingFields.push("Reference");
-    if (!formData.bank) missingFields.push("Bank");
-    if (!formData.branch) missingFields.push("Branch");
-    if (!formData.slip) missingFields.push("Payment Slip");
-
-    // If any fields are missing, show alert and return
-    if (missingFields.length > 0) {
-      alert(
-        `Please complete the following fields:\n- ${missingFields.join("\n- ")}`
-      );
+    // Validate required fields
+    if (
+      !formData.studentNumber ||
+      !formData.paymentReason ||
+      !formData.amount ||
+      !formData.reference ||
+      !formData.bank ||
+      !formData.branch ||
+      !formData.slip
+    ) {
+      alert("Please complete all fields, including the payment slip.");
       setIsLoading(false);
       return;
     }
 
     try {
-      // Simulate API request with a delay
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // 2-second delay
+      const formDataToSend = new FormData();
+      formDataToSend.append("studentNumber", formData.studentNumber);
+      formDataToSend.append("paymentReason", formData.paymentReason);
+      formDataToSend.append("amount", formData.amount);
+      formDataToSend.append("reference", formData.reference);
+      formDataToSend.append("bank", formData.bank);
+      formDataToSend.append("branch", formData.branch);
+      formDataToSend.append("slip", formData.slip); // File upload
 
-      // Simulated response
-      const mockResponse = {
-        success: true,
-        message: "Payment recorded successfully!",
-        reference: 4654321,
-      };
+      const response = await fetch(
+        "http://localhost/pharma-college-project/server/payment-portal-requests",
+        {
+          method: "POST",
+          body: formDataToSend, // Sending as FormData
+        }
+      );
 
-      setPaymentReferenceNumber(mockResponse.reference);
-
-      if (!mockResponse.success) {
+      if (!response.ok) {
         throw new Error("Payment submission failed. Please try again.");
       }
 
@@ -158,6 +111,56 @@ export default function EnhancedPaymentApp() {
       setIsLoading(false);
     }
   };
+
+  // const handleSubmit = async () => {
+  //   setIsLoading(true);
+  //   setShowSuccess(false);
+
+  //   // Collect missing fields
+  //   let missingFields = [];
+
+  //   if (!formData.studentNumber) missingFields.push("Student Number");
+  //   if (!formData.paymentReason) missingFields.push("Payment Reason");
+  //   if (!formData.amount) missingFields.push("Amount");
+  //   if (!formData.reference) missingFields.push("Reference");
+  //   if (!formData.bank) missingFields.push("Bank");
+  //   if (!formData.branch) missingFields.push("Branch");
+  //   if (!formData.slip) missingFields.push("Payment Slip");
+
+  //   // If any fields are missing, show alert and return
+  //   if (missingFields.length > 0) {
+  //     alert(
+  //       `Please complete the following fields:\n- ${missingFields.join("\n- ")}`
+  //     );
+  //     setIsLoading(false);
+  //     return;
+  //   }
+
+  //   try {
+  //     // Simulate API request with a delay
+  //     await new Promise((resolve) => setTimeout(resolve, 2000)); // 2-second delay
+
+  //     // Simulated response
+  //     const mockResponse = {
+  //       success: true,
+  //       message: "Payment recorded successfully!",
+  //       reference: 4654321,
+  //     };
+
+  //     setPaymentReferenceNumber(mockResponse.reference);
+
+  //     if (!mockResponse.success) {
+  //       throw new Error("Payment submission failed. Please try again.");
+  //     }
+
+  //     // Success - Show PaymentSuccess
+  //     setShowSuccess(true);
+  //   } catch (error) {
+  //     alert(error.message);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const StepIcon = steps[currentStep - 1].icon;
 
