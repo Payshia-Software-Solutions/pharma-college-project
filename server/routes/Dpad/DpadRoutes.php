@@ -11,12 +11,12 @@ $DpadController = new DpadController($pdo);
 return [
 
     // Get Active Prescriptions
-    'GET /get-active-prescriptions/$' => function () use ($DpadController) {
+    'GET /d-pad/get-active-prescriptions/$' => function () use ($DpadController) {
         return $DpadController->getActivePrescriptions();
     },
 
     // Get Submitted Answers by User
-    'GET /get-submitted-answers\?loggedUser=[\w]+/$' => function () use ($DpadController) {
+    'GET /d-pad/get-submitted-answers\?loggedUser=[\w]+/$' => function () use ($DpadController) {
         $loggedUser = isset($_GET['loggedUser']) ? $_GET['loggedUser'] : null;
 
         if (!$loggedUser) {
@@ -29,7 +29,7 @@ return [
     },
 
     // Get Prescription Covers
-    'GET /get-prescription-covers\?prescriptionId=[\d]+/$' => function () use ($DpadController) {
+    'GET /d-pad/get-prescription-covers\?prescriptionId=[\d]+/$' => function () use ($DpadController) {
         $prescriptionId = isset($_GET['prescriptionId']) ? $_GET['prescriptionId'] : null;
 
         if (!$prescriptionId) {
@@ -42,7 +42,7 @@ return [
     },
 
     // Get Overall Grade for a User
-    'GET /get-overall-grade\?loggedUser=[\w]+/$' => function () use ($DpadController) {
+    'GET /d-pad/get-overall-grade\?loggedUser=[\w]+/$' => function () use ($DpadController) {
         $loggedUser = isset($_GET['loggedUser']) ? $_GET['loggedUser'] : null;
 
         if (!$loggedUser) {
