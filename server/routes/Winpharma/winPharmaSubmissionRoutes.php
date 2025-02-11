@@ -16,7 +16,7 @@ return [
     'DELETE /win_pharma_submission/{id}/' => [$WinPharmaSubmissionController, 'deleteWinPharmaSubmission'],
 
     // Get Levels by Course Code
-    'GET /win_pharma_submission/get-levels\?CourseCode=[\w]+/$' => function () use ($WinPharmaSubmissionController) {
+    'GET /win_pharma/get-levels\?CourseCode=[\w]+/$' => function () use ($WinPharmaSubmissionController) {
         $CourseCode = isset($_GET['CourseCode']) ? $_GET['CourseCode'] : null;
 
         if (!$CourseCode) {
