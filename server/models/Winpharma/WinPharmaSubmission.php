@@ -20,7 +20,7 @@ class WinPharmaSubmission
     public function GetSubmissionLevelCount($UserName, $batchCode)
     {
 
-        $stmt = $this->pdo->prepare("SELECT COUNT(DISTINCT `level_id`) AS `LevelCount` FROM `win_pharma_submission` WHERE `index_number` LIKE '$UserName' AND `course_code` LIKE '$batchCode'");
+        $stmt = $this->pdo->prepare("SELECT COUNT(DISTINCT `level_id`) AS `LevelCount` FROM `win_pharma_submission` WHERE `index_number` LIKE ? AND `course_code` LIKE ? ");
 
         $stmt->execute([$UserName, $batchCode]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
