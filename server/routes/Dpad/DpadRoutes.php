@@ -1,7 +1,7 @@
 <?php
 // routes/DpadRoutes.php
 
-require_once './controllers/DpadController.php';
+require_once './controllers/Dpad/DpadController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];

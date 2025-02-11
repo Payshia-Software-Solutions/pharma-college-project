@@ -1,7 +1,7 @@
 <?php
 // controllers/DpadController.php
 
-require_once './models/DpadModel.php';
+require_once './models/Dpad/DpadModel.php';
 
 class DpadController
 {
