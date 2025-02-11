@@ -31,6 +31,12 @@ class WinPharmaSubmissionController
         echo json_encode($WinPharmaSubmissionCount);
     }
 
+    public function getLevels($batchCode)
+    {
+        $getWinpharmaLevels = $this->model->getLevels($batchCode);
+        echo json_encode($getWinpharmaLevels);
+    }
+
     public function createWinPharmaSubmission()
     {
         $data = json_decode(file_get_contents('php://input'), true);

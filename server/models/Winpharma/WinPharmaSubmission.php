@@ -26,6 +26,25 @@ class WinPharmaSubmission
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getLevels($CourseCode)
+    {
+        $ArrayResult = [];
+
+        $sql = "SELECT `level_id`, `course_code`, `level_name`, `is_active`, `created_at`, `created_by` 
+                FROM `win_pharma_level` 
+                WHERE `course_code` LIKE ? 
+                ORDER BY `level_id`";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$CourseCode]);
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $ArrayResult[$row['level_id']] = $row;
+        }
+
+        return $ArrayResult;
+    }
+
     public function getWinPharmaSubmissionById($id)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM `win_pharma_submission` WHERE `submission_id` = ?");
