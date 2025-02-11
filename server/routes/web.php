@@ -101,6 +101,7 @@ $DistrictsRoutes = require './routes/District/DistrictsRoutes.php';
 $ECertificateRoutes = require './routes/ecertificates/ECertificateRoutes.php';
 $paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.php';
 
+$DpadRoutes = require './routes/Dpad/DpadRoutes.php';
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
 
 //      throw new Exception("paymentRequestRoutes is not an array");
@@ -186,7 +187,8 @@ $routes = array_merge(
     $DeliveryOrdersRoutes,
     $DistrictsRoutes,
     $ECertificateRoutes,
-    $paymentRequestRoutes
+    $paymentRequestRoutes,
+    $DpadRoutes
 );
 
 
