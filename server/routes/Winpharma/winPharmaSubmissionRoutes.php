@@ -43,5 +43,8 @@ return [
         return $WinPharmaSubmissionController->GetSubmissionLevelCount($UserName, $batchCode);
     },
 
-
+    // Get WinPharma Results
+    'GET /win_pharma_submission/get-results\?UserName=[\w]+&batchCode=[\w]+/$' => function () use ($WinPharmaSubmissionController) {
+        return $WinPharmaSubmissionController->getWinPharmaResults();
+    },
 ];
