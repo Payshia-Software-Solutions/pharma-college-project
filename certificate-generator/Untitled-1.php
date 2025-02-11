@@ -5,6 +5,7 @@ header("Content-Type: application/json");
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Dotenv\Dotenv;
+use chillerlan\QRCode\{QRCode, QROptions};
 
 // Initialize the Dotenv instance
 $dotenv = Dotenv::createImmutable(__DIR__);
@@ -22,14 +23,12 @@ if (!isset($_GET['student_id']) || !isset($_GET['course_code'])) {
 $student_id = $_GET['student_id'];
 $course_code = $_GET['course_code'];
 
-// Fetch Certificate Data from API (to check if it already exists)
+// Fetch Certificate Data from API
 $certificate_api_url = $api_url . "/ecertificate-verification?studentNumber=" . urlencode($student_id) . "&courseCode=" . urlencode($course_code);
 $certificate_response = file_get_contents($certificate_api_url);
 
-// Validate API Response
 if ($certificate_response === FALSE) {
-
-   $certificate_response_error=["error" => "Unable to fetch certificate data for Student ID: " . htmlspecialchars($student_id) . " and Course Code: " . htmlspecialchars($course_code)];
+    echo json_encode(["error" => "Unable to fetch certificate data."]);
     exit;
 }
 
@@ -39,25 +38,21 @@ if (json_last_error() !== JSON_ERROR_NONE) {
     exit;
 }
 
-// Check if the certificate data already exists
+// If certificate already exists, return the details
 if (!empty($certificate_data) && isset($certificate_data[0])) {
-    $existing_certificate = $certificate_data[0];
     echo json_encode([
         "message" => "Certificate already generated.",
-        "certificate_image" => $existing_certificate['generated_image_name']
+        "certificate_image" => $certificate_data[0]['generated_image_name']
     ]);
     exit;
-} else {
-    echo json_encode(["message" => "Proceeding to generate a new image."]);
 }
 
-// Fetch Student Data from the Student Info API
+// Fetch Student Data
 $student_api_url = $api_url . "/certificate-verification?studentNumber=" . urlencode($student_id);
 $student_response = file_get_contents($student_api_url);
 
-// Validate Student API Response
 if ($student_response === FALSE) {
-    echo json_encode(["error" => "Unable to fetch student data for Student ID: " . htmlspecialchars($student_id)]);
+    echo json_encode(["error" => "Unable to fetch student data."]);
     exit;
 }
 
@@ -99,10 +94,7 @@ if (!$text_dimensions) {
 }
 
 $text_width = $text_dimensions[4] - $text_dimensions[0]; // Width of the text
-$text_height = $text_dimensions[1] - $text_dimensions[7]; // Height of the text
-
-$image_width = imagesx($image); // Width of the image
-$text_x = intval(($image_width - $text_width) / 2); // Center the text horizontally
+$text_x = intval((imagesx($image) - $text_width) / 2); // Center the text horizontally
 $text_y = 570; // Fixed Y-coordinate
 
 // Add Student Name to Certificate
@@ -111,12 +103,28 @@ imagettftext($image, $font_size, 0, $text_x, $text_y, $text_color, $font_path, $
 // Generate Unique Number
 $unique_number = time();
 
-// Define the filename format
-$file_name = "eCertificate-{$course_code}-{$student_id}-{$unique_number}.jpg";
+// Generate QR Code
+$qr_text = "https://pharmacollege.lk/result-view.php?LoggedUser=" . $student_id . "&CourseCode=" . $course_code;
+$options = new QROptions;
+$options->outputType = QRCode::OUTPUT_IMAGE_JPG;
+$options->eccLevel = QRCode::ECC_H;
+$options->scale = 5;
 
-// Save Certificate in a folder named after the student's ID
-$folder_name = str_replace(" ", "_", $student_id);
-$folder_path = "certificates/" . $folder_name;
+// Create QR code image
+$qrCode = (new QRCode($options))->render($qr_text);
+$qrImage = imagecreatefromstring(base64_decode(str_replace('data:image/jpg;base64,', '', $qrCode)));
+
+if (!$qrImage) {
+    echo json_encode(["error" => "Failed to generate QR code."]);
+    exit;
+}
+
+// Merge QR Code into Certificate
+imagecopy($image, $qrImage, 50, 980, 0, 0, imagesx($qrImage), imagesy($qrImage));
+
+// Define filename and save path
+$file_name = "eCertificate-{$course_code}-{$student_id}-{$unique_number}.jpg";
+$folder_path = "certificates/" . str_replace(" ", "_", $student_id);
 
 if (!is_dir($folder_path)) {
     mkdir($folder_path, 0777, true);
@@ -124,7 +132,7 @@ if (!is_dir($folder_path)) {
 
 $save_path = $folder_path . "/" . $file_name;
 
-// Save the image
+// Save Certificate with QR Code
 imagejpeg($image, $save_path);
 imagedestroy($image);
 
@@ -138,13 +146,10 @@ $post_data = [
     "created_by" => "System"
 ];
 
-$post_json = json_encode($post_data);
-$post_url = $api_url . "/ecertificates";
-
-$ch = curl_init($post_url);
+$ch = curl_init($api_url . "/ecertificates");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 curl_setopt($ch, CURLOPT_POST, true);
-curl_setopt($ch, CURLOPT_POSTFIELDS, $post_json);
+curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($post_data));
 curl_setopt($ch, CURLOPT_HTTPHEADER, ["Content-Type: application/json"]);
 
 $response = curl_exec($ch);
@@ -153,12 +158,14 @@ curl_close($ch);
 
 $response_data = json_decode($response, true);
 
+// Send Final Response
 if ($http_code == 200 || $http_code == 201 || (isset($response_data['message']) && $response_data['message'] === "Certificate created successfully")) {
-    echo json_encode(["success" => "Certificate generated and saved!", "image_name" => $file_name]);
+    echo json_encode([
+        "success" => "Certificate generated and saved!",
+        "image_name" => $file_name
+    ]);
 } else {
     echo json_encode(["error" => "Failed to save certificate details.", "response" => $response_data]);
 }
-echo json_encode([
-     "certificate_response_error" =>   $certificate_response_error
-]);
+
 ?>
