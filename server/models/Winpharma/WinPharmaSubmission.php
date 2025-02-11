@@ -45,6 +45,26 @@ class WinPharmaSubmission
         return $ArrayResult;
     }
 
+    // Fetch WinPharma Results
+    public function getWinPharmaResults($UserName, $batchCode)
+    {
+        $levels = $this->getLevels($batchCode);
+        $submissionCount = $this->getSubmissionLevelCount($UserName, $batchCode);
+        $totalLevels = count($levels);
+
+        if ($totalLevels > 0) {
+            $percentage = ($submissionCount / $totalLevels) * 100;
+        } else {
+            $percentage = 0;
+        }
+
+        return [
+            'total_levels' => $totalLevels,
+            'submitted_levels' => $submissionCount,
+            'completion_percentage' => $percentage
+        ];
+    }
+
     public function getWinPharmaSubmissionById($id)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM `win_pharma_submission` WHERE `submission_id` = ?");
