@@ -17,6 +17,15 @@ class WinPharmaSubmission
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function GetSubmissionLevelCount($UserName, $batchCode)
+    {
+
+        $stmt = $this->pdo->prepare("SELECT COUNT(DISTINCT `level_id`) AS `LevelCount` FROM `win_pharma_submission` WHERE `index_number` LIKE '$UserName' AND `course_code` LIKE '$batchCode'");
+
+        $stmt->execute([$UserName, $batchCode]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function getWinPharmaSubmissionById($id)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM `win_pharma_submission` WHERE `submission_id` = ?");
@@ -25,26 +34,26 @@ class WinPharmaSubmission
     }
 
     public function createWinPharmaSubmission($data)
-{
-    $stmt = $this->pdo->prepare("INSERT INTO `win_pharma_submission` (`index_number`, `level_id`, `resource_id`, `submission`, `grade`, `grade_status`, `date_time`, `attempt`, `course_code`, `reason`, `update_by`, `update_at`, `recorrection_count`, `payment_status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->execute([
-        $data['index_number'],
-        $data['level_id'],
-        $data['resource_id'],
-        $data['submission'],
-        $data['grade'],
-        $data['grade_status'],
-        $data['date_time'],
-        $data['attempt'],
-        $data['course_code'],
-        $data['reason'],
-        $data['update_by'],
-        $data['update_at'],
-        $data['recorrection_count'],
-        $data['payment_status']
-        
-    ]);
-}
+    {
+        $stmt = $this->pdo->prepare("INSERT INTO `win_pharma_submission` (`index_number`, `level_id`, `resource_id`, `submission`, `grade`, `grade_status`, `date_time`, `attempt`, `course_code`, `reason`, `update_by`, `update_at`, `recorrection_count`, `payment_status`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([
+            $data['index_number'],
+            $data['level_id'],
+            $data['resource_id'],
+            $data['submission'],
+            $data['grade'],
+            $data['grade_status'],
+            $data['date_time'],
+            $data['attempt'],
+            $data['course_code'],
+            $data['reason'],
+            $data['update_by'],
+            $data['update_at'],
+            $data['recorrection_count'],
+            $data['payment_status']
+
+        ]);
+    }
 
 
     public function updateWinPharmaSubmission($id, $data)

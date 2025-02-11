@@ -24,7 +24,13 @@ class WinPharmaSubmissionController
         $WinPharmaSubmission = $this->model->getWinPharmaSubmissionById($resource_id);
         echo json_encode($WinPharmaSubmission);
     }
-    
+
+    public function GetSubmissionLevelCount($UserName, $batchCode)
+    {
+        $WinPharmaSubmissionCount = $this->model->GetSubmissionLevelCount($UserName, $batchCode);
+        echo json_encode($WinPharmaSubmissionCount);
+    }
+
     public function createWinPharmaSubmission()
     {
         $data = json_decode(file_get_contents('php://input'), true);
@@ -45,5 +51,3 @@ class WinPharmaSubmissionController
         echo json_encode(['status' => 'WinPharmaSubmission deleted']);
     }
 }
-
-?>
