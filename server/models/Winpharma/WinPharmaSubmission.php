@@ -50,7 +50,7 @@ class WinPharmaSubmission
     {
         $levels = $this->getLevels($batchCode);
         $submissionCount = $this->getSubmissionLevelCount($UserName, $batchCode);
-        $totalLevels = count($levels);
+        $totalLevels = count($levels['LevelCount']);
 
         if ($totalLevels > 0) {
             $percentage = ($submissionCount / $totalLevels) * 100;
