@@ -15,7 +15,7 @@ $dotenv = Dotenv::createImmutable(dirname(__DIR__, 4));
 $dotenv->load();
 
 // POST Parameters
-$searchStudentNumber = $_POST['studentNumber'];
+$searchStudentNumber =  strtoupper($_POST['studentNumber']);
 
 // Initialize HTTP client
 $client = HttpClient::create();
@@ -71,7 +71,7 @@ $cityList = $citiesListResponse->toArray();
             <div class="row">
                 <div class="col-md-12">
                     <h4 class="fw-bold border-bottom pb-2 mb-3">
-                        <?= $enrollment['course_code'] ?> |<?= $enrollment['batch_name'] ?>
+                        <?= $enrollment['course_code'] ?> | <?= $enrollment['batch_name'] ?>
                     </h4>
                 </div>
             </div>
@@ -86,16 +86,40 @@ $cityList = $citiesListResponse->toArray();
                         <div class="col-12">
                             <div class="card flex-fill">
                                 <div class="card-body text-start">
-                                    <div class="row">
-                                        <div class="col-3">Tracking #</div>
-                                        <div class="col-3">Item</div>
+                                    <div class="row g-2">
+                                        <div class="col-3 col-md-2">Ref #</div>
+                                        <div class="col-3 col-md-2">Tracking #</div>
+                                        <div class="col-9 col-md-3">Item</div>
+                                        <div class="col-9 col-md-2">Value</div>
+                                        <div class="col-9 col-md-3">Order Dates</div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-3">
+                                    <div class="row g-2">
+                                        <div class="col-3 col-md-2">
+                                            <h5 class="mb-0"><?= $orderInfo['id'] ?></h5>
+                                            <span class="badge bg-<?= $orderInfo['color'] ?>"><?= $orderInfo['active_status']  ?></span>
+                                        </div>
+                                        <div class="col-3 col-md-2">
                                             <h5 class="mb-0"><?= $orderInfo['tracking_number'] ?></h5>
                                         </div>
-                                        <div class="col-3">
-                                            <h5 class="mb-0"><?= $orderInfo['delivery_id'] ?></h5>
+                                        <div class="col-9 col-md-3">
+                                            <h5 class="mb-0"><?= $orderInfo['delivery_title'] ?></h5>
+                                        </div>
+
+                                        <div class="col-9 col-md-2">
+                                            <h5 class="mb-0"><?= number_format($orderInfo['value'], 2) ?></h5>
+                                        </div>
+                                        <div class="col-9 col-md-3">
+                                            <h6 class="mb-0">Order : <?= date("Y-m-d H:i", strtotime($orderInfo['order_date'])) ?></h6>
+                                            <h6 class="mb-0">Packed : <?= date("Y-m-d H:i", strtotime($orderInfo['packed_date'])) ?></h6>
+                                            <h6 class="mb-0">Sent : <?= date("Y-m-d H:i", strtotime($orderInfo['send_date'])) ?></h6>
+                                        </div>
+
+                                        <div class="col-12">
+                                            <p class="text-muted mb-0">Full Name</p>
+                                            <p class="fw-bold mb-1"><?= $orderInfo['full_name'] ?></p>
+
+                                            <p class="text-muted mb-0">Address</p>
+                                            <p class="fw-bold"><?= $orderInfo['street_address'] ?>, <?= $orderInfo['city'] ?>, <?= $orderInfo['district'] ?></p>
                                         </div>
                                     </div>
 
@@ -294,7 +318,7 @@ $cityList = $citiesListResponse->toArray();
 
                     <div class="col-md-12">
                         <label class="text-secondary">Address</label>
-                        <h5><?= $searchedStudent['address_line_1'] ?>, <?= $searchedStudent['address_line_2'] ?>, <?= $cityList[$searchedStudent['city']]['name_en'] ?>, <?= $cityList[$searchedStudent['district']]['name_en'] ?>, <?= $searchedStudent['postal_code'] ?></h5>
+                        <h5><?= $searchedStudent['address_line_1'] ?>, <?= $searchedStudent['address_line_2'] ?>, <?= $cityList[trim($searchedStudent['city'])]['name_en'] ?>, <?= $cityList[$searchedStudent['district']]['name_en'] ?>, <?= $searchedStudent['postal_code'] ?></h5>
                     </div>
 
                     <div class="col-md-12">
