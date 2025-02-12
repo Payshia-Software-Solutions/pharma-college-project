@@ -69,12 +69,7 @@ class WinPharmaSubmissionController
             return;
         }
 
-        $results = $this->model->getWinPharmaResults($UserName, $batchCode);
-
-        // If no results are found or calculations are incorrect
-        if ($results['total_levels'] == 0) {
-            $results['completion_percentage'] = 0;
-        }
+        $results = $this->model->getWinpharmaResultsAll($UserName, $batchCode);
 
         echo json_encode([
             'success' => true,
