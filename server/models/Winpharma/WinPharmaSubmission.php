@@ -26,6 +26,165 @@ class WinPharmaSubmission
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+
+    public function getWinpharmaCompletedResourceIds($UserName, $winpharmaCurrentTopLevel)
+    {
+        $ResourceIds = [];
+
+        $sql = "SELECT `resource_id` 
+                FROM `win_pharma_submission` 
+                WHERE `index_number` = :UserName 
+                AND `grade_status` = 'Completed' 
+                AND `level_id` = :winpharmaCurrentTopLevel";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([
+            ':UserName' => $UserName,
+            ':winpharmaCurrentTopLevel' => $winpharmaCurrentTopLevel
+        ]);
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $ResourceIds[$row['resource_id']] = $row['resource_id']; // Maintain key-value structure
+        }
+
+        return $ResourceIds;
+    }
+
+
+    public function getTasks($LevelCode)
+    {
+        $ArrayResult = [];
+
+        $sql = "SELECT `resource_id`, `level_id`, `resource_title`, `resource_data`, 
+                   `created_by`, `task_cover`, `is_active` 
+            FROM `win_pharma_level_resources` 
+            WHERE `level_id` = :LevelCode";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':LevelCode' => $LevelCode]);
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $ArrayResult[$row['resource_id']] = $row; // Keep resource_id as the key
+        }
+
+        return $ArrayResult;
+    }
+
+
+    public function getTopLevelAllUsersCompleted($CourseCode)
+    {
+        $topLevels = []; // Array to store top levels for all users
+
+        $sql = "SELECT `index_number`, MAX(`level_id`) AS `top_level`
+            FROM `win_pharma_submission`
+            WHERE `course_code` = :CourseCode 
+              AND `grade_status` = 'Completed' 
+            GROUP BY `index_number`";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':CourseCode' => $CourseCode]);
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $topLevels[$row['index_number']] = $row['top_level']; // Store top level for each user
+        }
+
+        return $topLevels;
+    }
+
+    public function getCourseTopLevel($course_code)
+    {
+        $level_id = -1;
+
+        $sql = "SELECT `level_id`
+            FROM `win_pharma_level`
+            WHERE `course_code` = :course_code
+            ORDER BY `level_id`
+            LIMIT 1";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([':course_code' => $course_code]);
+
+        if ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $level_id = $row['level_id'];
+        }
+
+        return $level_id;
+    }
+
+    public function getAllTasks()
+    {
+        $ArrayResult = [];
+
+        $sql = "SELECT `resource_id`, `level_id`, `resource_title`, `resource_data`, `created_by`, `task_cover`, `is_active`
+            FROM `win_pharma_level_resources`";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        $tasks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($tasks as $task) {
+            $ArrayResult[$task['resource_id']] = $task;
+        }
+
+        return $ArrayResult;
+    }
+
+
+    public function getWinpharmaResultsAll($UserName, $CourseCode)
+    {
+        $winpharmaLevels = $this->GetLevels($CourseCode);
+        $courseTopLevel = $this->getCourseTopLevel($CourseCode);
+        $winpharmaTopLevels = $this->GetTopLevelAllUsersCompleted($CourseCode);
+
+        $winpharmaCurrentTopLevel = $winpharmaTopLevels[$UserName] ?? $courseTopLevel;
+
+        // Fetch all completed submissions at once
+        $completedSubmissions = [];
+        foreach ($winpharmaLevels as $level) {
+            $levelId = $level['level_id'];
+            $completedSubmissions[$levelId] = $this->GetWinpharmaCompletedResourceIds($UserName, $levelId);
+        }
+
+        // Calculate task counts & submission count in one loop
+        $submissionCount = 0;
+        $totalLevels = 0;
+        $taskCounts = [];
+
+        foreach ($winpharmaLevels as $level) {
+            $levelId = $level['level_id'];
+            $tasks = $this->GetTasks($levelId);
+
+            $submissionsByUser = $this->GetWinpharmaCompletedResourceIds($UserName, $levelId);
+
+            $taskCounts[$levelId] = [
+                'levelTasks' => count($tasks),
+                'levelTaskSubmissions' => count($submissionsByUser)
+            ];
+            $totalLevels += count($tasks);
+
+            // Avoid unnecessary function calls
+            $submissionCount += count($completedSubmissions[$levelId] ?? []);
+        }
+
+        // Avoid division by zero
+        $totalGrade = ($totalLevels > 0) ? ($submissionCount / $totalLevels) : 0;
+        $gradePercentage = $totalGrade * 100;
+
+        return [
+            'UserName' => $UserName,
+            'winpharmaCurrentTopLevel' => $winpharmaCurrentTopLevel,
+            'gradePercentage' => $gradePercentage,
+            'submissionCount' => $submissionCount,
+            'totalGrade' => $totalGrade,
+            'taskCounts' => $taskCounts,
+            'totalLevels' => $totalLevels
+        ];
+    }
+
+
+
+
+
     public function getLevels($CourseCode)
     {
         $ArrayResult = [];
