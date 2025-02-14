@@ -53,7 +53,7 @@ if ($certificate_response === FALSE) {
         $response_data["error"] = "Failed to decode certificate JSON response.";
     } elseif (!empty($certificate_data) && isset($certificate_data[0])) {
         $response_data["message"] = "Certificate already generated.";
-        $response_data["certificate_image"] = $certificate_data[0]['generated_image_name'];
+        $response_data["certificate_image_name"] = $certificate_data[0]['generated_image_name'];
     }
 }
 
@@ -132,6 +132,7 @@ if (!file_exists($img_path) || !file_exists($font_path)) {
             imagedestroy($image);
 
             $response_data["success"] = "Certificate generated successfully.";
+            $response_data["certificate_image_name"] = $file_name;
             $response_data["certificate_path"] = $save_path;
         }
     }
