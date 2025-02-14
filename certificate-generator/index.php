@@ -138,7 +138,7 @@ if (!file_exists($img_path) || !file_exists($font_path)) {
     }
 }
 
-// FTP Upload
+// FTP Uploa
 $conn_id = ftp_connect($ftp_config['ftp_server'], $ftp_config['ftp_port']);
 if ($conn_id) {
     if (ftp_login($conn_id, $ftp_config['ftp_username'], $ftp_config['ftp_password'])) {
