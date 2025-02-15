@@ -1,9 +1,14 @@
-import RegisterForm from "@/components/RegisterForm";
+import StepForm from "@/components/StepForm";
+
+export const metadata = {
+  title: "Registration Portal",
+  description: "Registration Portal",
+};
 
 export default function Home() {
   return (
     <div className="">
-      <RegisterForm />
+      <StepForm />
     </div>
   );
 }

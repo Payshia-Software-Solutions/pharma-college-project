@@ -14,13 +14,14 @@ import {
   DollarSign,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import StudentInfo from "./formElements/StudentInfo";
+import ExternalStudentInfo from "./formElements/ExternalStudentInfo";
 import PaymentInfo from "./formElements/PaymentInfo";
 import BankInfo from "./formElements/BankInfo";
 import ReviewPage from "./formElements/ReviewPage";
 import SplashScreen from "./SplashScreen";
 import PaymentSuccess from "./PaymentSuccess";
 import Footer from "./Footer";
+import Link from "next/link";
 
 const steps = [
   { id: 1, title: "Student Info", icon: User },
@@ -29,7 +30,7 @@ const steps = [
   { id: 4, title: "Review", icon: FileText },
 ];
 
-export default function EnhancedPaymentApp() {
+export default function InternalStudentPayment() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
@@ -168,7 +169,7 @@ export default function EnhancedPaymentApp() {
 
   // Simulate splash screen for 2.5 seconds
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 2500);
+    const timer = setTimeout(() => setLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
@@ -178,9 +179,16 @@ export default function EnhancedPaymentApp() {
 
       {/* ✅ Main Payment Portal (Visible after splash) */}
       {!loading && (
-        <div className="h-screen lg:min-h-40 bg-gradient-to-br from-green-50 to-purple-50 flex flex-col w-full lg:w-[50%] lg:rounded-lg mx-auto relative overflow-auto">
+        <div className="h-screen lg:min-h-40 bg-gradient-to-br from-green-50 to-purple-50 flex flex-col w-full lg:w-[50%] lg:rounded-lg mx-auto relative overflow-auto pb-20">
           {/* Header */}
           <header className="bg-white md:shadow-none shadow-lg p-4 flex items-center sticky top-0 z-50">
+            {currentStep == 1 && (
+              <Link href={`/payment`}>
+                <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                  <ArrowLeft className="w-6 h-6" />
+                </button>
+              </Link>
+            )}
             {currentStep > 1 && (
               <button
                 onClick={prevStep}
@@ -278,7 +286,7 @@ export default function EnhancedPaymentApp() {
                 ) : (
                   <>
                     {currentStep === 1 && (
-                      <StudentInfo
+                      <ExternalStudentInfo
                         formData={formData}
                         updateFormData={updateFormData}
                         setIsValid={setIsValid}

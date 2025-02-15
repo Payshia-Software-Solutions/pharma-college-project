@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const RegisterForm = () => {
   const [currentStep, setCurrentStep] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "Mr.",
     firstName: "",
@@ -90,17 +91,11 @@ const RegisterForm = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    // Clear error when user starts typing
-    if (errors[name]) {
-      setErrors((prev) => ({
-        ...prev,
-        [name]: "",
-      }));
-    }
+
+    setFormData((prev) => {
+      if (prev[name] === value) return prev; // Prevent unnecessary re-renders
+      return { ...prev, [name]: value };
+    });
   };
 
   const nextStep = () => {
@@ -131,7 +126,7 @@ const RegisterForm = () => {
   }) => (
     <div className="space-y-1">
       <input
-        id={name} // Added id attribute
+        id={name}
         type={type}
         name={name}
         placeholder={placeholder}
@@ -141,6 +136,7 @@ const RegisterForm = () => {
           errors[name] ? "border-red-500" : "border-gray-200"
         }`}
       />
+
       {errors[name] && <p className="text-red-500 text-xs">{errors[name]}</p>}
     </div>
   );
@@ -504,9 +500,8 @@ const RegisterForm = () => {
       <form onSubmit={handleSubmit} className="flex-1 p-4">
         <Card className="bg-white rounded-xl shadow-lg">
           <CardContent className="p-6 space-y-6">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="popLayout">
               <motion.div
-                key={currentStep}
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -50 }}

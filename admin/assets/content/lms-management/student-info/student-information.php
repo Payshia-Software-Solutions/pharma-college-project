@@ -67,7 +67,15 @@ $cityList = $citiesListResponse->toArray();
     <div class="col-lg-8">
         <div class="table-title font-weight-bold mb-2 mt-0">Results</div>
 
-        <?php foreach ($studentEnrollments as $enrollment) : ?>
+        <?php foreach ($studentEnrollments as $enrollment) :
+
+            $winpharmaResponse = $client->request('GET', $_ENV["SERVER_URL"] . '/win_pharma_submission/get-results?UserName=' . $searchStudentNumber . '&batchCode=' . $enrollment['course_code']);
+            $winpharmaResults = $winpharmaResponse->toArray();
+
+            $dPadResponse = $client->request('GET', $_ENV["SERVER_URL"] . '/d-pad/get-overall-grade?loggedUser=' . $searchStudentNumber);
+            $dPadResponse = $dPadResponse->toArray();
+
+        ?>
             <div class="row">
                 <div class="col-md-12">
                     <h4 class="fw-bold border-bottom pb-2 mb-3">
@@ -143,7 +151,7 @@ $cityList = $citiesListResponse->toArray();
                             <div class="card flex-fill">
                                 <div class="card-body text-center">
                                     <h5 class="mb-0"><?= $assignment['assignment_name'] ?></h5>
-                                    <h2 class="mb-0 fw-bold"><?= $assignment['grade'] ?>%</h2>
+                                    <h2 class="mb-0 fw-bold"><?= number_format($assignment['grade'], 2) ?>%</h2>
                                 </div>
                             </div>
                         </div>
@@ -164,6 +172,32 @@ $cityList = $citiesListResponse->toArray();
                 <div class="col-12">
                     <h5>Games</h5>
                 </div>
+
+                <!-- Win Pharma Game Results-->
+                <div class="col-6 col-md-4 col-xl-3 d-flex">
+                    <div class="card flex-fill">
+                        <div class="card-body text-center">
+                            <img src="https://lms.pharmacollege.lk/lib/home/assets/images/drugs.gif" class="game-icon w-25">
+                            <h5 class="mb-0">Win Pharma</h5>
+                            <h2 class="mb-0 fw-bold"><?= $winpharmaResults['data']['gradePercentage'] ?>%</h2>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of Win Pharma Game Results -->
+
+                <!-- Win Pharma Game Results-->
+                <div class="col-6 col-md-4 col-xl-3 d-flex">
+                    <div class="card flex-fill">
+                        <div class="card-body text-center">
+                            <img src="https://lms.pharmacollege.lk/lib/home/assets/images/pill.gif" class="game-icon w-25">
+                            <h5 class="mb-0">D-Pad</h5>
+                            <h2 class="mb-0 fw-bold"><?= number_format($dPadResponse['overallGrade'], 2) ?>%</h2>
+                        </div>
+                    </div>
+                </div>
+                <!-- End of Win Pharma Game Results -->
+
+
                 <!-- Ceylon Pharmacy Game Results-->
                 <div class="col-6 col-md-4 col-xl-3 d-flex">
                     <div class="card flex-fill">
