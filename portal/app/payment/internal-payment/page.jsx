@@ -1,4 +1,4 @@
-import PaymentSelection from "@/components/PaymentSelection";
+import InternalStudentPayment from "@/components/InternalStudentPayment";
 
 export const metadata = {
   title: "Payment Portal",
@@ -8,7 +8,7 @@ export const metadata = {
 export default function Home() {
   return (
     <div className="">
-      <PaymentSelection />
+      <InternalStudentPayment />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { User, Loader } from "lucide-react";
 
-function StudentInfo({ formData, updateFormData, setIsValid }) {
+function InternalStudentInfo({ formData, updateFormData, setIsValid }) {
   const [error, setError] = useState("");
   const [studentInfo, setStudentInfo] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -97,6 +97,7 @@ function StudentInfo({ formData, updateFormData, setIsValid }) {
             <div className="relative">
               <input
                 type="text"
+                name="studentNumber"
                 value={formData.studentNumber}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -107,7 +108,7 @@ function StudentInfo({ formData, updateFormData, setIsValid }) {
                       : "border-gray-300 focus:ring-green-500"
                   }
                 `}
-                placeholder="Enter student number (e.g., PA12345)"
+                placeholder="Enter Student number (e.g., PA-XXXXXX)"
               />
               <User className="w-5 h-5 text-gray-400 absolute right-3 top-3" />
             </div>
@@ -127,7 +128,7 @@ function StudentInfo({ formData, updateFormData, setIsValid }) {
                 {/* Contact Details */}
                 <div className="">
                   <h1 className="font-medium text-xl mb-2 border-b text-gray-800">
-                    Fetched User Info
+                    Student Information
                   </h1>
                   {/* Name */}
                   <div className="group  mb-2 rounded-xl hover:bg-gray-50 hover:p-2 transition-all duration-300">
@@ -209,4 +210,4 @@ function StudentInfo({ formData, updateFormData, setIsValid }) {
   );
 }
 
-export default StudentInfo;
+export default InternalStudentInfo;
