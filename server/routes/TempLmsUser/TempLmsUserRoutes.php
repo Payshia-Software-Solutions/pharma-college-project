@@ -10,27 +10,27 @@ $tempLmsUserController = new TempLmsUserController($pdo);
 // Define an array of routes
 return [
     // Get all users
-    'GET /users/$' => function () use ($tempLmsUserController) {
+    'GET /temp-users/$' => function () use ($tempLmsUserController) {
         return $tempLmsUserController->getUsers();
     },
 
     // Get a single user by ID
-    'GET /users/(\d+)/$' => function ($id) use ($tempLmsUserController) {
+    'GET /temp-users/(\d+)/$' => function ($id) use ($tempLmsUserController) {
         return $tempLmsUserController->getUserById($id);
     },
 
     // Create a new user
-    'POST /users/$' => function () use ($tempLmsUserController) {
+    'POST /temp-users/$' => function () use ($tempLmsUserController) {
         return $tempLmsUserController->createUser();
     },
 
     // Update an existing user
-    'PUT /users/(\d+)/$' => function ($id) use ($tempLmsUserController) {
+    'PUT /temp-users/(\d+)/$' => function ($id) use ($tempLmsUserController) {
         return $tempLmsUserController->updateUser($id);
     },
 
     // Delete a user by ID
-    'DELETE /users/(\d+)/$' => function ($id) use ($tempLmsUserController) {
+    'DELETE /temp-users/(\d+)/$' => function ($id) use ($tempLmsUserController) {
         return $tempLmsUserController->deleteUser($id);
     },
 
