@@ -1,7 +1,7 @@
 <?php
 // controllers/SMSController.php
 
-require_once '../models/SMSModel.php';
+require_once './models/SMSModel.php';
 
 class SMSController
 {
