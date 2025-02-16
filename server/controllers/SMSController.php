@@ -23,4 +23,15 @@ class SMSController
             echo json_encode($response);
         }
     }
+
+    public function sendWelcomeSMS($mobile, $studentName, $referenceNumber)
+    {
+        try {
+            $response = $this->smsModel->sendWelcomeSMS($mobile, $studentName, $referenceNumber);
+            echo json_encode($response);
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
 }

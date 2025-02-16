@@ -10,6 +10,15 @@ class SMSModel
         $this->authToken = $authToken;
     }
 
+    public function sendWelcomeSMS($mobile, $studentName, $referenceNumber)
+    {
+        // SMS Template
+        $message = "Hello $studentName,\nYour Reference number is $referenceNumber.\n\nThank you,\nCeylon Pharma College";
+
+        // Send SMS
+        return $this->sendSMS($mobile, 'Ceylon Pharma', $message);
+    }
+
     public function sendSMS($mobile, $senderId = 'Pharma C.', $message = "Waiting..!")
     {
         $msgdata = [
