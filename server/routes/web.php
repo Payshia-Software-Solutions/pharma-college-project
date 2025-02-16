@@ -21,6 +21,13 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 // routes/web.php
 
+// Access environment variables
+$authToken = $_ENV['SMS_AUTH_TOKEN'];
+$senderId = $_ENV['SMS_SENDER_ID'];
+
+// Define the path to the template file
+$templatePath = __DIR__ . '/../templates/welcome_sms_template.txt';
+
 
 // Include route files
 $assignmentRoutes = require './routes/OtherRoutes/assignmentRoutes.php';

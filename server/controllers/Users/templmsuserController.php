@@ -5,10 +5,15 @@ require_once './models/Users/TempLmsUser.php';
 class TempLmsUserController
 {
     private $model;
+    private $smsModel;
+    private $templatePath;
 
-    public function __construct($pdo)
+    public function __construct($pdo, $templatePath)
     {
         $this->model = new TempLmsUser($pdo);
+        $this->templatePath = $templatePath;
+
+        $this->smsModel = new SMSModel($_ENV['SMS_AUTH_TOKEN'], $_ENV['SMS_SENDER_ID'], $templatePath);
     }
 
     // Get count of all users
@@ -38,6 +43,27 @@ class TempLmsUserController
     }
 
     // Create a new user
+    // public function createUser()
+    // {
+    //     // Get the data from the request body
+    //     $data = json_decode(file_get_contents("php://input"), true);
+
+    //     try {
+    //         // Call the model to insert the new user and get the last inserted ID
+    //         $userId = $this->model->createUser($data);
+
+    //         // Return success response with the new user's ID
+    //         http_response_code(201); // Created successfully
+    //         echo json_encode(['message' => 'User created successfully', 'user_id' => $userId]);
+    //     } catch (Exception $e) {
+    //         // Handle error
+    //         http_response_code(400); // Bad Request
+    //         echo json_encode(['error' => 'Failed to create user', 'details' => $e->getMessage()]);
+    //     }
+    // }
+
+
+    // Create a new user
     public function createUser()
     {
         // Get the data from the request body
@@ -47,9 +73,27 @@ class TempLmsUserController
             // Call the model to insert the new user and get the last inserted ID
             $userId = $this->model->createUser($data);
 
+            // Prepare the welcome message
+            $mobile = $data['phone_number']; // Assuming 'phone_number' is the key for the user's mobile number
+            $studentName = $data['first_name'] . ' ' . $data['last_name']; // Combine first and last name
+            $referenceNumber = $userId; // Use the user ID as the reference number
+
+            // Send the welcome SMS
+            $smsResponse = $this->smsModel->sendWelcomeSMS($mobile, $studentName, $referenceNumber);
+
+            // Check if the SMS was sent successfully
+            if ($smsResponse['status'] === 'error') {
+                throw new Exception('Failed to send welcome SMS: ' . $smsResponse['message']);
+            }
+
             // Return success response with the new user's ID
             http_response_code(201); // Created successfully
-            echo json_encode(['message' => 'User created successfully', 'user_id' => $userId]);
+            echo json_encode([
+                'message' => 'User created successfully',
+                'user_id' => $userId,
+                'sms_status' => $smsResponse['status'],
+                'sms_message' => $smsResponse['message']
+            ]);
         } catch (Exception $e) {
             // Handle error
             http_response_code(400); // Bad Request

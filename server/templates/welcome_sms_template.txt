@@ -1,5 +1,5 @@
 Hello [STUDENT_NAME],
-You have successfully submitted the application
+You have successfully submitted the application.
 REF-[REFERENCE_NUMBER].
 
 Thank you,
