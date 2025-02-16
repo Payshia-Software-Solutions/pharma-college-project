@@ -1,7 +1,7 @@
 <?php
 // routes/SMSRoutes.php
 
-require_once '../controllers/SMSController.php';
+require_once './controllers/SMSController.php';
 
 // Define the authorization token
 $authToken = "2218|Ysh7ZLYM83rxJc4Reztir1OYD31UppbEmewtbK9p"; // Replace with your access token
