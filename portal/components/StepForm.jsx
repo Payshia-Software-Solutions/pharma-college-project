@@ -71,11 +71,37 @@ export default function StepForm() {
       } else {
         setLoading(true);
         try {
-          const response = await axios.post("/api/register", {
-            ...formData,
-            ...data,
-          });
-          setRefNumber(response.data.refNumber);
+          // Prepare the data according to the backend model
+          const userData = {
+            email_address: formData.email,
+            civil_status: formData.civilStatus,
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            password: "defaultPassword", // You might want to generate or ask for a password
+            nic_number: formData.nic,
+            phone_number: formData.phone,
+            whatsapp_number: formData.whatsapp,
+            address_l1: formData.address,
+            address_l2: "", // Assuming address_l2 is optional
+            city: formData.city,
+            district: "", // Assuming district is optional
+            postal_code: "", // Assuming postal_code is optional
+            paid_amount: 0, // Assuming initial paid amount is 0
+            aprroved_status: "Not Approved", // Assuming initial status is 0 (not approved)
+            created_at: new Date().toISOString(),
+            full_name: `${formData.firstName} ${formData.lastName}`,
+            name_with_initials: formData.nameWithInitials,
+            gender: formData.gender,
+            index_number: "", // Assuming index_number is optional
+            name_on_certificate: formData.certificateName,
+            selected_course: formData.course,
+          };
+
+          const response = await axios.post(
+            process.env.NEXT_PUBLIC_API_URL + "/temp-users",
+            userData
+          );
+          setRefNumber(response.data.user_id);
           resetForm();
         } catch (error) {
           console.error("Error submitting form", error);
