@@ -1,5 +1,7 @@
 Hello [STUDENT_NAME],
-Your Reference number is [REFERENCE_NUMBER].
+You have successfully submitted the application
+REF-[REFERENCE_NUMBER].
 
 Thank you,
 Ceylon Pharma College
+Web - www.pharmacollege.lk
