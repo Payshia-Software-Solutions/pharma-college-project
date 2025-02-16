@@ -90,7 +90,7 @@ class PaymentPortalRequestController
 
             // File details
             $fileExtension = pathinfo($_FILES['slip']['name'], PATHINFO_EXTENSION);
-            $fileName = $imageHash . '.' . $fileExtension;
+            $fileName = $_POST['studentNumber'] . "-" . $_POST['paymentReason'] . "-" . uniqid() . '.' . $fileExtension;
             $localUploadPath = './uploads/' . $fileName; // Temporary local storage
             $ftpFilePath = "/payment-slips/" . $fileName; // Path on FTP
 
