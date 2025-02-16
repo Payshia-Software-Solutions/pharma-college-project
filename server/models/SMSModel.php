@@ -16,7 +16,7 @@ class SMSModel
         $message = "Hello $studentName,\nYour Reference number is $referenceNumber.\n\nThank you,\nCeylon Pharma College";
 
         // Send SMS
-        return $this->sendSMS($mobile, 'Ceylon Pharma', $message);
+        return $this->sendSMS($mobile, 'Pharma C.', $message);
     }
 
     public function sendSMS($mobile, $senderId = 'Pharma C.', $message = "Waiting..!")
