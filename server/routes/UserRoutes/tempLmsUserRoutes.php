@@ -5,7 +5,7 @@ require_once './controllers/Users/templmsuserController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];
-$tempLmsUserController = new TempLmsUserController($pdo);
+$tempLmsUserController = new TempLmsUserController($pdo, $templatePath);
 
 // Define routes for TempLmsUser
 return [

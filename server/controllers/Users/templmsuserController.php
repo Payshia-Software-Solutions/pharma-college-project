@@ -1,6 +1,7 @@
 <?php
 
 require_once './models/Users/TempLmsUser.php';
+require_once './models/SMSModel.php';
 
 class TempLmsUserController
 {
