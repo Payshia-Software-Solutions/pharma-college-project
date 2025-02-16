@@ -3,11 +3,15 @@
 
 require_once './controllers/SMSController.php';
 
-// Define the authorization token
-$authToken = "2218|Ysh7ZLYM83rxJc4Reztir1OYD31UppbEmewtbK9p"; // Replace with your access token
+// Access environment variables
+$authToken = $_ENV['SMS_AUTH_TOKEN'];
+$senderId = $_ENV['SMS_SENDER_ID'];
+
+// Define the path to the template file
+$templatePath = __DIR__ . '/../templates/welcome_sms_template.txt';
 
 // Instantiate the SMSController
-$smsController = new SMSController($authToken);
+$smsController = new SMSController($authToken, $senderId, $templatePath);
 
 // Define the routes
 return [

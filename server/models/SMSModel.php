@@ -4,22 +4,41 @@
 class SMSModel
 {
     private $authToken;
+    private $senderId;
+    private $templatePath;
 
-    public function __construct($authToken)
+    public function __construct($authToken, $senderId, $templatePath)
     {
         $this->authToken = $authToken;
+        $this->senderId = $senderId;
+        $this->templatePath = $templatePath;
     }
 
     public function sendWelcomeSMS($mobile, $studentName, $referenceNumber)
     {
-        // SMS Template
-        $message = "Hello $studentName,\nYour Reference number is $referenceNumber.\n\nThank you,\nCeylon Pharma College";
+        // Load the template from the file
+        $template = file_get_contents($this->templatePath);
+        if (!$template) {
+            throw new Exception("Unable to load SMS template.");
+        }
+
+        // Replace placeholders with actual data
+        $message = str_replace(
+            ['[STUDENT_NAME]', '[REFERENCE_NUMBER]'],
+            [$studentName, $referenceNumber],
+            $template
+        );
+
+        // Ensure the message is within 160 characters
+        if (strlen($message) > 160) {
+            throw new Exception("SMS message exceeds 160 characters.");
+        }
 
         // Send SMS
-        return $this->sendSMS($mobile, 'Pharma C.', $message);
+        return $this->sendSMS($mobile, $this->senderId, $message);
     }
 
-    public function sendSMS($mobile, $senderId = 'Pharma C.', $message = "Waiting..!")
+    public function sendSMS($mobile, $senderId, $message)
     {
         $msgdata = [
             "recipient" => $mobile,
@@ -29,7 +48,6 @@ class SMSModel
 
         $curl = curl_init();
 
-        // Disable SSL verification if running locally without HTTPS
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 0);
 
@@ -54,8 +72,7 @@ class SMSModel
         if ($err) {
             return ['status' => 'error', 'message' => $err];
         } else {
-            $responseArray = json_decode($response, true);
-            return $responseArray;
+            return json_decode($response, true);
         }
     }
 }
