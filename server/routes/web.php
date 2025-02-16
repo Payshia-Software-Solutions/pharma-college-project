@@ -1,4 +1,11 @@
 <?php
+
+require_once './vendor/autoload.php';
+
+// Load the .env file
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
+
 // Set CORS headers for every response
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -18,6 +25,7 @@ error_reporting(E_ALL);
 // Display errors in the browser (for development)
 ini_set('display_errors', 1);
 // routes/web.php
+
 
 // Include route files
 $assignmentRoutes = require './routes/OtherRoutes/assignmentRoutes.php';
