@@ -86,6 +86,7 @@ export default function InternalStudentPayment() {
       const formDataToSend = new FormData();
       formDataToSend.append("studentNumber", formData.studentNumber);
       formDataToSend.append("paymentReason", formData.paymentReason);
+      formDataToSend.append("number_type", "ref_number");
       formDataToSend.append("amount", formData.amount);
       formDataToSend.append("reference", formData.reference);
       formDataToSend.append("bank", formData.bank);

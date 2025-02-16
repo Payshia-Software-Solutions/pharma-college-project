@@ -87,6 +87,7 @@ export default function EnhancedPaymentApp() {
       formDataToSend.append("studentNumber", formData.studentNumber);
       formDataToSend.append("paymentReason", formData.paymentReason);
       formDataToSend.append("amount", formData.amount);
+      formDataToSend.append("number_type", "student_number");
       formDataToSend.append("reference", formData.reference);
       formDataToSend.append("bank", formData.bank);
       formDataToSend.append("branch", formData.branch);

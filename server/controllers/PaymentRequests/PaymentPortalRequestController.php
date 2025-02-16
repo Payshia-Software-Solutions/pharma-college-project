@@ -57,7 +57,7 @@ class PaymentPortalRequestController
         // Extract data from $_POST
         $data = [
             'unique_number'     => $_POST['studentNumber'] ?? null,
-            'number_type'       => 'default',
+            'number_type'       => $_POST['number_type'] ?? null,
             'payment_reson'     => $_POST['paymentReason'] ?? null,
             'paid_amount'       => $_POST['amount'] ?? null,
             'payment_reference' => $_POST['reference'] ?? null,

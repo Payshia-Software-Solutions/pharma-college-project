@@ -197,11 +197,11 @@ export default function StepForm() {
                 <div className="text-green-600 text-center mb-4">
                   <p>Registration Successful!</p>
                   <p>
-                    Reference Number: <strong>{refNumber}</strong>
+                    Reference Number: REF<strong>{refNumber}</strong>
                   </p>
                 </div>
                 {/* Payment Button */}
-                <Link className="mt-5" href="/payment">
+                <Link className="mt-5" href="/payment/external-payment">
                   <button className="w-full bg-green-500 text-white p-4 rounded-lg hover:bg-green-600 transition-colors focus:ring-4 focus:ring-green-200 flex items-center justify-between">
                     <span className="text-lg font-semibold">
                       Continue to Payment
@@ -318,7 +318,7 @@ export default function StepForm() {
                                       key={city.id}
                                       className="p-3 hover:bg-gray-100 cursor-pointer transition-colors"
                                       onMouseDown={() => {
-                                        setValue("city", city.name_en);
+                                        setValue("city", city.id);
                                         setSearchQuery(city.name_en);
                                         setIsDropdownOpen(false);
                                       }}
