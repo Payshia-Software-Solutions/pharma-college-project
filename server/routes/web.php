@@ -102,6 +102,7 @@ $ECertificateRoutes = require './routes/ecertificates/ECertificateRoutes.php';
 $paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.php';
 
 $DpadRoutes = require './routes/Dpad/DpadRoutes.php';
+$SMSRoutes = require './routes/SMSRoutes.php';
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
 
 //      throw new Exception("paymentRequestRoutes is not an array");
@@ -188,7 +189,8 @@ $routes = array_merge(
     $DistrictsRoutes,
     $ECertificateRoutes,
     $paymentRequestRoutes,
-    $DpadRoutes
+    $DpadRoutes,
+    $SMSRoutes
 );
 
 
