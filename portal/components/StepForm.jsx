@@ -13,13 +13,6 @@ import Link from "next/link";
 import RegistrationSplashScreen from "./RegistrationSplashScreen";
 import { motion, AnimatePresence } from "framer-motion";
 
-// Course List
-const courses = [
-  { id: "web_dev", name: "Web Development" },
-  { id: "data_sci", name: "Data Science" },
-  { id: "mobile_dev", name: "Mobile Development" },
-];
-
 // Form Validation Schemas
 const formSchema = [
   z.object({
@@ -36,15 +29,15 @@ const formSchema = [
   z.object({
     gender: z.enum(["Male", "Female", "Other"]),
     nic: z.string().min(10, "NIC is required"),
-    dob: z.string(),
+    dob: z.string().min(2, "Required"),
   }),
   z.object({
     phone: z.string().min(10, "Enter a valid phone number"),
     email: z.string().email("Enter a valid email"),
-    whatsapp: z.string().optional(),
+    whatsapp: z.string().min(10, "Enter a valid phone number"),
   }),
   z.object({
-    course: z.string().min(2, "Select a course"),
+    course: z.string().min(1, "Select a course"),
   }),
 ];
 
@@ -52,10 +45,15 @@ export default function StepForm() {
   const { step, nextStep, prevStep, updateForm, formData, resetForm } =
     useFormStore();
   const [refNumber, setRefNumber] = useState(null);
+  // Add these state variables near your other useState declarations
+  const [cities, setCities] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const {
     register,
     handleSubmit,
+    setValue,
     watch,
     formState: { errors },
   } = useForm({
@@ -64,23 +62,29 @@ export default function StepForm() {
   });
 
   const onSubmit = async (data) => {
-    updateForm(data);
-    if (step < 5) {
-      nextStep();
-    } else {
-      setLoading(true);
-      try {
-        const response = await axios.post("/api/register", {
-          ...formData,
-          ...data,
-        });
-        setRefNumber(response.data.refNumber);
-        resetForm();
-      } catch (error) {
-        console.error("Error submitting form", error);
-      } finally {
-        setLoading(false);
+    try {
+      // Validate against current step schema
+      await formSchema[step - 1].parseAsync(data);
+      updateForm(data);
+      if (step < 5) {
+        nextStep();
+      } else {
+        setLoading(true);
+        try {
+          const response = await axios.post("/api/register", {
+            ...formData,
+            ...data,
+          });
+          setRefNumber(response.data.refNumber);
+          resetForm();
+        } catch (error) {
+          console.error("Error submitting form", error);
+        } finally {
+          setLoading(false);
+        }
       }
+    } catch (validationError) {
+      console.log("Validation errors:", validationError.errors);
     }
   };
 
@@ -92,6 +96,42 @@ export default function StepForm() {
     return () => clearTimeout(timer);
   }, []);
 
+  // Add this useEffect for fetching cities
+  useEffect(() => {
+    const fetchCities = async () => {
+      try {
+        const response = await fetch("https://api.pharmacollege.lk/cities");
+        const data = await response.json();
+        setCities(Object.values(data));
+      } catch (error) {
+        console.error("Error fetching cities:", error);
+      }
+    };
+
+    fetchCities();
+  }, []);
+  // Add this state near your other useState declarations
+  const [courses, setCourses] = useState([]);
+  const [coursesLoading, setCoursesLoading] = useState(true);
+
+  // Add this useEffect for fetching courses
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const response = await fetch(
+          "https://api.pharmacollege.lk/parent-main-course"
+        );
+        const data = await response.json();
+        setCourses(data);
+      } catch (error) {
+        console.error("Error fetching courses:", error);
+      } finally {
+        setCoursesLoading(false);
+      }
+    };
+
+    fetchCourses();
+  }, []);
   return (
     <div className="flex justify-center flex-col items-center h-screen">
       <RegistrationSplashScreen loading={loading} />
@@ -166,14 +206,6 @@ export default function StepForm() {
                       {step === 1 && (
                         <>
                           <div className="floating-input">
-                            <input {...register("firstName")} placeholder=" " />
-                            <label>First Name</label>
-                          </div>
-                          <div className="floating-input">
-                            <input {...register("lastName")} placeholder=" " />
-                            <label>Last Name</label>
-                          </div>
-                          <div className="floating-input">
                             <select
                               {...register("civilStatus")}
                               className="w-full"
@@ -186,6 +218,16 @@ export default function StepForm() {
                             </select>
                             <label>Civil Status</label>
                           </div>
+
+                          <div className="floating-input">
+                            <input {...register("firstName")} placeholder=" " />
+                            <label>First Name</label>
+                          </div>
+                          <div className="floating-input">
+                            <input {...register("lastName")} placeholder=" " />
+                            <label>Last Name</label>
+                          </div>
+
                           <div className="floating-input">
                             <input
                               {...register("nameWithInitials")}
@@ -210,9 +252,56 @@ export default function StepForm() {
                             <label>Address</label>
                           </div>
 
-                          <div className="floating-input">
-                            <input {...register("city")} placeholder=" " />
+                          <div className="floating-input relative">
+                            <input
+                              type="text"
+                              placeholder=" "
+                              value={searchQuery}
+                              onChange={(e) => {
+                                setSearchQuery(e.target.value);
+                                setIsDropdownOpen(true);
+                                setValue("city", e.target.value);
+                              }}
+                              onFocus={() => setIsDropdownOpen(true)}
+                              onBlur={() =>
+                                setTimeout(() => setIsDropdownOpen(false), 200)
+                              }
+                            />
                             <label>City</label>
+                            {errors.city && (
+                              <p className="text-red-500 text-sm mt-1">
+                                {errors.city.message}
+                              </p>
+                            )}
+
+                            {/* Dropdown List */}
+                            {isDropdownOpen && (
+                              <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto z-50">
+                                {cities
+                                  .filter(
+                                    (city) =>
+                                      city.name_en
+                                        ?.toLowerCase()
+                                        .includes(searchQuery.toLowerCase()) ||
+                                      city.name_si
+                                        ?.toLowerCase()
+                                        .includes(searchQuery.toLowerCase())
+                                  )
+                                  .map((city) => (
+                                    <div
+                                      key={city.id}
+                                      className="p-3 hover:bg-gray-100 cursor-pointer transition-colors"
+                                      onMouseDown={() => {
+                                        setValue("city", city.name_en);
+                                        setSearchQuery(city.name_en);
+                                        setIsDropdownOpen(false);
+                                      }}
+                                    >
+                                      {city.name_en} ({city.name_si})
+                                    </div>
+                                  ))}
+                              </div>
+                            )}
                           </div>
                         </>
                       )}
@@ -251,7 +340,7 @@ export default function StepForm() {
                           </div>
                           <div className="floating-input">
                             <input {...register("whatsapp")} placeholder=" " />
-                            <label>WhatsApp (Optional)</label>
+                            <label>WhatsApp</label>
                           </div>
                         </>
                       )}
@@ -259,19 +348,42 @@ export default function StepForm() {
                       {step === 5 && (
                         <>
                           <p>Select a Course:</p>
-                          {courses.map((course) => (
-                            <label
-                              key={course.id}
-                              className="course-card flex items-center p-4"
-                            >
-                              <input
-                                type="radio"
-                                value={course.id}
-                                {...register("course")}
-                              />
-                              <span className="ml-2">{course.name}</span>
-                            </label>
-                          ))}
+                          {coursesLoading ? (
+                            <div className="text-gray-500">
+                              Loading courses...
+                            </div>
+                          ) : courses.length > 0 ? (
+                            courses.map((course) => (
+                              <label
+                                key={course.id}
+                                className="course-card flex items-center p-4 border rounded-lg mb-3 hover:bg-gray-50 transition-colors"
+                              >
+                                <input
+                                  type="radio"
+                                  value={course.id}
+                                  {...register("course")}
+                                  className="mr-3"
+                                />
+                                <div>
+                                  <h3 className="font-semibold">
+                                    {course.course_name}
+                                  </h3>
+                                  <p className="text-sm text-gray-600">
+                                    Course Code: {course.course_code} |
+                                    Duration: {course.course_duration} months
+                                  </p>
+                                  <p className="text-sm text-gray-600 mt-1">
+                                    Course Fee: LKR{" "}
+                                    {course.course_fee?.toLocaleString()}
+                                  </p>
+                                </div>
+                              </label>
+                            ))
+                          ) : (
+                            <div className="text-red-500">
+                              No courses available
+                            </div>
+                          )}
                         </>
                       )}
 
