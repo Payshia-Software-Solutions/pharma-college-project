@@ -1,7 +1,7 @@
 <?php
 // routes/TempLmsUserRoutes.php
 
-require_once './controllers/TempLmsUserController.php';
+require_once './controllers/TempLmsUser/TempLmsUserController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo']; // Assuming $pdo is available in the global scope

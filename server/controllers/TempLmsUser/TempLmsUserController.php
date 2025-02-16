@@ -1,7 +1,7 @@
 <?php
 // controllers/TempLmsUserController.php
 
-require_once './models/TempLmsUser.php';
+require_once './models/TempLmsUser/TempLmsUser.php';
 
 class TempLmsUserController
 {
