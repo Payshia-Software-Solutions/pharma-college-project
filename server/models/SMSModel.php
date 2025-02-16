@@ -29,11 +29,6 @@ class SMSModel
             $template
         );
 
-        // Ensure the message is within 160 characters
-        if (strlen($message) > 160) {
-            throw new Exception("SMS message exceeds 160 characters.");
-        }
-
         // Send SMS
         return $this->sendSMS($mobile, $this->senderId, $message);
     }

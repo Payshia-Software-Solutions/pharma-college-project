@@ -22,7 +22,6 @@ class SMSController
                 return;
             }
 
-
             // Send SMS using the model
             $response = $this->smsModel->sendSMS($mobile, $senderId, $message);
 
