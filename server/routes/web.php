@@ -1,10 +1,5 @@
 <?php
 
-require_once './vendor/autoload.php';
-
-// Load the .env file
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->load();
 
 // Set CORS headers for every response
 header("Access-Control-Allow-Origin: *");
