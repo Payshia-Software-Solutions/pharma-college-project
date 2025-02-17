@@ -3,7 +3,7 @@ import React from "react";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { User, Users, ChevronRight, ArrowLeft } from "lucide-react";
+import { User, Users, ChevronRight, ArrowLeft, CreditCard } from "lucide-react";
 import SplashScreen from "./SplashScreen";
 
 const PaymentSelection = () => {
@@ -16,7 +16,11 @@ const PaymentSelection = () => {
   }, []);
   return (
     <div className="flex justify-center flex-col items-center h-screen">
-      <SplashScreen loading={loading} />
+      <SplashScreen
+        loading={loading}
+        splashTitle={`Payment Portal`}
+        icon={<CreditCard className="w-16 h-16" />}
+      />
 
       {/* ✅ Main Payment Portal (Visible after splash) */}
       {!loading && (
@@ -42,7 +46,7 @@ const PaymentSelection = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className="bg-green-100 p-3 rounded-full">
-                        <User className="h-6 w-6 text-green-600" />
+                        <User className="h-6 w-6 text-brand" />
                       </div>
                       <div>
                         <h2 className="text-base font-medium text-gray-800">
@@ -64,7 +68,7 @@ const PaymentSelection = () => {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-4">
                       <div className="bg-green-100 p-3 rounded-full">
-                        <Users className="h-6 w-6 text-green-600" />
+                        <Users className="h-6 w-6 text-brand" />
                       </div>
                       <div>
                         <h2 className="text-base font-medium text-gray-800">

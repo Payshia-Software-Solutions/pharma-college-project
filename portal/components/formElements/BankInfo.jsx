@@ -8,17 +8,34 @@ function BankInfo({ formData, updateFormData, setIsValid, setValue }) {
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [banks, setBanks] = useState([]);
+
   useEffect(() => {
     validateForm();
   }, [formData, file]);
+
+  useEffect(() => {
+    const fetchBanks = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/banks`
+        );
+        const data = await response.json();
+        console.log("Fetched banks:", data); // Debugging output
+        setBanks(Object.values(data));
+      } catch (error) {
+        console.error("Error fetching banks:", error);
+      }
+    };
+
+    fetchBanks();
+  }, []);
 
   const handleFileChange = (event) => {
     const selectedFile = event.target.files[0];
 
     if (selectedFile) {
-      // Validate file size (e.g., max 5MB)
       const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
       if (selectedFile.size > MAX_FILE_SIZE) {
         alert("File size exceeds the maximum limit of 5MB.");
@@ -28,11 +45,9 @@ function BankInfo({ formData, updateFormData, setIsValid, setValue }) {
         return;
       }
 
-      // Set file and update form data
       setFile(selectedFile);
       updateFormData("slip", selectedFile);
 
-      // Check if file is an image
       if (selectedFile.type.startsWith("image/")) {
         const reader = new FileReader();
         reader.onloadend = () => {
@@ -40,11 +55,9 @@ function BankInfo({ formData, updateFormData, setIsValid, setValue }) {
         };
         reader.readAsDataURL(selectedFile);
       } else {
-        // If not an image, clear the preview
         setPreview(null);
       }
     } else {
-      // Reset when no file is selected (if user removes the file)
       setFile(null);
       setPreview(null);
     }
@@ -56,8 +69,9 @@ function BankInfo({ formData, updateFormData, setIsValid, setValue }) {
       setIsValid(false);
       return;
     }
-    if (!formData.bank.trim()) {
-      setError("Bank name is required.");
+    if (!formData.bank || isNaN(formData.bank)) {
+      // Check if bank is a number
+      setError("Bank code is required and must be a valid.");
       setIsValid(false);
       return;
     }
@@ -79,25 +93,6 @@ function BankInfo({ formData, updateFormData, setIsValid, setValue }) {
     setError("");
     setIsValid(true);
   };
-
-  const [banks, setBanks] = useState([]);
-  // Add this useEffect for fetching cities
-  useEffect(() => {
-    const fetchBanks = async () => {
-      try {
-        const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/banks`
-        );
-        const data = await response.json();
-        console.log("Fetched banks:", data); // Debugging output
-        setBanks(Object.values(data));
-      } catch (error) {
-        console.error("Error fetching banks:", error);
-      }
-    };
-
-    fetchBanks();
-  }, []);
 
   return (
     <div className="space-y-4">
@@ -126,6 +121,9 @@ function BankInfo({ formData, updateFormData, setIsValid, setValue }) {
         </div>
 
         <div className="relative">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Bank
+          </label>
           <input
             type="text"
             className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
@@ -139,35 +137,32 @@ function BankInfo({ formData, updateFormData, setIsValid, setValue }) {
             onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
           />
 
-          {isDropdownOpen && banks.length > 0 && (
-            <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto z-50">
-              {banks
-                .filter(
-                  (bank) =>
+          {typeof window !== "undefined" &&
+            isDropdownOpen &&
+            banks.length > 0 && (
+              <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto z-50">
+                {banks
+                  .filter((bank) =>
                     bank.bank_name
                       ?.toLowerCase()
-                      .includes(searchQuery.toLowerCase()) ||
-                    bank.bank_code
-                      ?.toLowerCase()
                       .includes(searchQuery.toLowerCase())
-                )
-                .map((bank) => (
-                  <div
-                    key={bank.id}
-                    className="p-3 hover:bg-gray-100 cursor-pointer transition-colors"
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      setValue("bank", bank.bank_code);
-                      setValue("bankName", bank.bank_name);
-                      setSearchQuery(bank.bank_name);
-                      setIsDropdownOpen(false);
-                    }}
-                  >
-                    {bank.bank_name} ({bank.bank_code})
-                  </div>
-                ))}
-            </div>
-          )}
+                  )
+                  .map((bank) => (
+                    <div
+                      key={bank.id}
+                      className="p-3 hover:bg-gray-100 cursor-pointer transition-colors"
+                      onMouseDown={(e) => {
+                        e.preventDefault(); // Prevent input blur before selection
+                        setSearchQuery(bank.bank_name); // ✅ Set selected value in input
+                        updateFormData("bank", bank.bank_code); // ✅ Store bank code in form
+                        setIsDropdownOpen(false);
+                      }}
+                    >
+                      {bank.bank_name} ({bank.bank_code})
+                    </div>
+                  ))}
+              </div>
+            )}
         </div>
 
         <div>
