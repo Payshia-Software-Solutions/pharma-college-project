@@ -131,7 +131,7 @@ if (!file_exists($img_path) || !file_exists($font_path)) {
             imagejpeg($image, $save_path);
             imagedestroy($image);
 
-            $response_data["success"] = "Certificate generated successfully.";
+            $response_data["message"] = "Certificate generated successfully.";
             $response_data["certificate_image_name"] = $file_name;
             $response_data["certificate_path"] = $save_path;
         }

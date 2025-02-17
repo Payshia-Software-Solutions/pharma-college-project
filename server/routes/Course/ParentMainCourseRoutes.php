@@ -19,6 +19,9 @@ return [
     // Count courses by mode (Free or Paid)
     'GET /parent-main-course/get/count-by-mode' => [$parentMainCourseController, 'countCoursesByMode'],
 
+     // Retrieve a single course by course code
+     'GET /parent-main-course/code/{course_code}' => [$parentMainCourseController, 'getCourseByCourseCode'],
+
    // In routing file (assuming this is correct)
    'GET /parent-main-course/get/counts' => [$parentMainCourseController, 'countAllCourses'],
 
