@@ -1,4 +1,6 @@
 <?php
+
+
 // Set CORS headers for every response
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -18,6 +20,14 @@ error_reporting(E_ALL);
 // Display errors in the browser (for development)
 ini_set('display_errors', 1);
 // routes/web.php
+
+// Access environment variables
+$authToken = $_ENV['SMS_AUTH_TOKEN'];
+$senderId = $_ENV['SMS_SENDER_ID'];
+
+// Define the path to the template file
+$templatePath = __DIR__ . '/../templates/welcome_sms_template.txt';
+
 
 // Include route files
 $assignmentRoutes = require './routes/OtherRoutes/assignmentRoutes.php';
@@ -100,8 +110,15 @@ $ContactRoutes = require './routes/Contact/ContactRoutes.php';
 
 $DistrictsRoutes = require './routes/District/DistrictsRoutes.php';
 $ECertificateRoutes = require './routes/ecertificates/ECertificateRoutes.php';
+$paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.php';
 
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ContactRoutes.php
+
+$DpadRoutes = require './routes/Dpad/DpadRoutes.php';
+$SMSRoutes = require './routes/SMSRoutes.php';
+$bankRoutes = require './routes/bankRoutes.php';
+// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
+
 
 //      throw new Exception("paymentRequestRoutes is not an array");
 // }
@@ -187,6 +204,10 @@ $routes = array_merge(
     $DistrictsRoutes,
     $ECertificateRoutes,
     $ContactRoutes
+    $paymentRequestRoutes,
+    $DpadRoutes,
+    $SMSRoutes,
+    $bankRoutes
 );
 
 
@@ -235,8 +256,8 @@ foreach ($routes as $route => $handler) {
     // Convert route URI to regex (without query parameters){trackingNumber} student_number
     $routeRegex = str_replace(
 
-        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{course_code}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}','{value}','{course_code}','{studentId}','{tracking_number}','{index_number}','{provinceId}','{student_number}'],
-        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)','([a-zA-Z0-9_\-\/]+)',],
+        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{course_code}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}', '{value}', '{course_code}', '{studentId}', '{tracking_number}', '{index_number}', '{provinceId}', '{student_number}'],
+        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)',],
 
 
         $routeUri
