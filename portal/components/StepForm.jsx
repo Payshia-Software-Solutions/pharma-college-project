@@ -98,7 +98,7 @@ export default function StepForm() {
           };
 
           const response = await axios.post(
-            process.env.NEXT_PUBLIC_API_URL + "/temp-users",
+            `${process.env.NEXT_PUBLIC_API_URL}/temp-users`,
             userData
           );
           setRefNumber(response.data.user_id);
@@ -126,7 +126,9 @@ export default function StepForm() {
   useEffect(() => {
     const fetchCities = async () => {
       try {
-        const response = await fetch("https://api.pharmacollege.lk/cities");
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/cities`
+        );
         const data = await response.json();
         setCities(Object.values(data));
       } catch (error) {
@@ -145,7 +147,7 @@ export default function StepForm() {
     const fetchCourses = async () => {
       try {
         const response = await fetch(
-          "https://api.pharmacollege.lk/parent-main-course"
+          `${process.env.NEXT_PUBLIC_API_URL}/parent-main-course`
         );
         const data = await response.json();
         setCourses(data);
