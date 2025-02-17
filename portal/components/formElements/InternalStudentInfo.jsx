@@ -28,7 +28,7 @@ function InternalStudentInfo({ formData, updateFormData, setIsValid }) {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://api.pharmacollege.lk/userFullDetails/username/${studentNumber}`
+        `${process.env.NEXT_PUBLIC_API_URL}/userFullDetails/username/${studentNumber}`
       ); // Replace with actual API URL
       if (!response.ok) {
         throw new Error("Student not found");

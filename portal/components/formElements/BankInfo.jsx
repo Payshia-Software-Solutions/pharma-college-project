@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react";
 import { Upload, Building2 } from "lucide-react";
 
-function BankInfo({ formData, updateFormData, setIsValid }) {
+function BankInfo({ formData, updateFormData, setIsValid, setValue }) {
   const [file, setFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   useEffect(() => {
     validateForm();
   }, [formData, file]);
@@ -78,6 +80,25 @@ function BankInfo({ formData, updateFormData, setIsValid }) {
     setIsValid(true);
   };
 
+  const [banks, setBanks] = useState([]);
+  // Add this useEffect for fetching cities
+  useEffect(() => {
+    const fetchBanks = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/banks`
+        );
+        const data = await response.json();
+        console.log("Fetched banks:", data); // Debugging output
+        setBanks(Object.values(data));
+      } catch (error) {
+        console.error("Error fetching banks:", error);
+      }
+    };
+
+    fetchBanks();
+  }, []);
+
   return (
     <div className="space-y-4">
       <div className="bg-green-50 p-4 rounded-lg flex items-start space-x-3">
@@ -104,17 +125,49 @@ function BankInfo({ formData, updateFormData, setIsValid }) {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Bank Name
-          </label>
+        <div className="relative">
           <input
             type="text"
-            value={formData.bank}
-            onChange={(e) => updateFormData("bank", e.target.value)}
             className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
             placeholder="Enter bank name"
+            value={searchQuery}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              setIsDropdownOpen(true);
+            }}
+            onFocus={() => setIsDropdownOpen(true)}
+            onBlur={() => setTimeout(() => setIsDropdownOpen(false), 200)}
           />
+
+          {isDropdownOpen && banks.length > 0 && (
+            <div className="absolute top-full left-0 right-0 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto z-50">
+              {banks
+                .filter(
+                  (bank) =>
+                    bank.bank_name
+                      ?.toLowerCase()
+                      .includes(searchQuery.toLowerCase()) ||
+                    bank.bank_code
+                      ?.toLowerCase()
+                      .includes(searchQuery.toLowerCase())
+                )
+                .map((bank) => (
+                  <div
+                    key={bank.id}
+                    className="p-3 hover:bg-gray-100 cursor-pointer transition-colors"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      setValue("bank", bank.bank_code);
+                      setValue("bankName", bank.bank_name);
+                      setSearchQuery(bank.bank_name);
+                      setIsDropdownOpen(false);
+                    }}
+                  >
+                    {bank.bank_name} ({bank.bank_code})
+                  </div>
+                ))}
+            </div>
+          )}
         </div>
 
         <div>

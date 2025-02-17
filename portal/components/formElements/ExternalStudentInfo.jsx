@@ -31,8 +31,9 @@ function ExternalStudentInfo({ formData, updateFormData, setIsValid }) {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://qa-api.pharmacollege.lk/temp-users/${studentNumber}`
-      ); // Replace with actual API URL
+        `${process.env.NEXT_PUBLIC_API_URL}/temp-users/${studentNumber}`
+      );
+      // Replace with actual API URL
       if (!response.ok) {
         throw new Error("Application not found");
       }
