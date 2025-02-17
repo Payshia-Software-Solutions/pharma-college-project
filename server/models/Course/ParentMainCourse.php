@@ -42,6 +42,15 @@ class ParentMainCourse
         $stmt->execute(['slug' => $slug]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+
+    public function getCourseByCourseCode($course_code)
+{
+    $stmt = $this->pdo->prepare("SELECT * FROM parent_main_course WHERE course_code = :course_code");
+    $stmt->execute(['course_code' => $course_code]);
+    return $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
     
 
 

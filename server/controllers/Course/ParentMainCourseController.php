@@ -29,6 +29,19 @@ class ParentMainCourseController
         }
     }
 
+
+      // Get a single course by course_code
+      public function getCourseByCourseCode($course_code)
+      {
+          $course = $this->model->getCourseByCourseCode($course_code);
+          if ($course) {
+              echo json_encode($course);
+          } else {
+              http_response_code(404);
+              echo json_encode(['error' => 'Course not found']);
+          }
+      }
+
     // Create a new course record
     public function createCourse()
     {

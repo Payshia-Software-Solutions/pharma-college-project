@@ -105,16 +105,20 @@ $CertificateVerificationRoutes = require './routes/CertificationCenter/Certifica
 $CeylonPharmacyCriteria = require './routes/CertificateCenter/certificateRoutes.php';
 $DeliveryOrdersRoutes = require './routes/Orders/DeliveryOrdersRoutes.php';
 $UserCertificatePrintStatusRoutes = require './routes/UserCertificatePrintStatusRoutes/UserCertificatePrintStatusRoutes.php';
+$ContactRoutes = require './routes/Contact/ContactRoutes.php';
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes  DeliveryOrdersRoutes.php
 
 $DistrictsRoutes = require './routes/District/DistrictsRoutes.php';
 $ECertificateRoutes = require './routes/ecertificates/ECertificateRoutes.php';
 $paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.php';
 
+// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ContactRoutes.php
+
 $DpadRoutes = require './routes/Dpad/DpadRoutes.php';
 $SMSRoutes = require './routes/SMSRoutes.php';
 $bankRoutes = require './routes/bankRoutes.php';
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
+
 
 //      throw new Exception("paymentRequestRoutes is not an array");
 // }
@@ -199,6 +203,7 @@ $routes = array_merge(
     $DeliveryOrdersRoutes,
     $DistrictsRoutes,
     $ECertificateRoutes,
+    $ContactRoutes
     $paymentRequestRoutes,
     $DpadRoutes,
     $SMSRoutes,
