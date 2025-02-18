@@ -5,12 +5,18 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useFormStore } from "../store/formStore";
-import { ArrowRight, ArrowLeft, CheckCircle, User } from "lucide-react"; // Import icons from lucide-react
+import {
+  ArrowRight,
+  ArrowLeft,
+  CheckCircle,
+  User,
+  UserPlus,
+} from "lucide-react"; // Import icons from lucide-react
 // Import icons from lucid-react-icons
 
 import axios from "axios";
 import Link from "next/link";
-import RegistrationSplashScreen from "./RegistrationSplashScreen";
+import SplashScreen from "./SplashScreen";
 import { motion, AnimatePresence } from "framer-motion";
 
 // Form Validation Schemas
@@ -162,7 +168,11 @@ export default function StepForm() {
   }, []);
   return (
     <div className="flex justify-center flex-col items-center h-screen">
-      <RegistrationSplashScreen loading={loading} />
+      <SplashScreen
+        loading={loading}
+        splashTitle={`Registration Portal`}
+        icon={<UserPlus className="w-16 h-16" />}
+      />
 
       {/* ✅ Main Payment Portal (Visible after splash) */}
       {!loading && (
@@ -170,7 +180,7 @@ export default function StepForm() {
           {/* Header */}
           <header className="bg-white md:shadow-none shadow-lg p-4 flex items-center sticky top-0 z-50">
             <div className="flex items-center ml-2">
-              <User className="w-6 h-6 text-green-500 mr-2" />
+              <User className="w-6 h-6 text-brand mr-2" />
               <h1 className="text-lg font-semibold">Student Portal</h1>
             </div>
           </header>
@@ -204,7 +214,7 @@ export default function StepForm() {
                 </div>
                 {/* Payment Button */}
                 <Link className="mt-5" href="/payment/external-payment">
-                  <button className="w-full bg-green-500 text-white p-4 rounded-lg hover:bg-green-600 transition-colors focus:ring-4 focus:ring-green-200 flex items-center justify-between">
+                  <button className="w-full bg-brand text-white p-4 rounded-lg hover:bg-green-600 transition-colors focus:ring-4 focus:ring-green-200 flex items-center justify-between">
                     <span className="text-lg font-semibold">
                       Continue to Payment
                     </span>
@@ -419,7 +429,7 @@ export default function StepForm() {
                         {step > 1 && (
                           <button
                             type="button"
-                            className="btn bg-gray-400 rounded-md p-2 flex items-center justify-center w-1/2"
+                            className="btn bg-gray-400 text-white  rounded-md p-2 flex items-center justify-center w-1/2"
                             onClick={prevStep}
                           >
                             <ArrowLeft className="h-5 w-5 mr-2" />{" "}
@@ -432,7 +442,7 @@ export default function StepForm() {
                           type="submit"
                           className={`btn ${
                             step === 1 ? "w-full" : "w-1/2"
-                          } bg-green-500 text-white rounded-md p-2 flex items-center justify-center`}
+                          } bg-brand text-white rounded-md p-2 flex items-center justify-center`}
                         >
                           {step < 5 ? (
                             <>

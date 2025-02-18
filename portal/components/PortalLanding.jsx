@@ -1,7 +1,13 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import { UserPlus, CreditCard, User } from "lucide-react";
+import {
+  UserPlus,
+  CreditCard,
+  User,
+  GraduationCap,
+  ShieldCheck,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -10,34 +16,11 @@ const PortalLanding = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-green-50 to-pink-50 flex flex-col w-full lg:w-[60%] xl:w-[50%] lg:rounded-2xl mx-auto relative overflow-hidden shadow-xl pb-20">
       {/* Animated background elements */}
-      <div className="absolute inset-0 overflow-hidden">
-        {[...Array(3)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute bg-gradient-to-r from-green-200 to-green-200 rounded-full blur-2xl opacity-20"
-            style={{
-              width: `${Math.random() * 200 + 100}px`,
-              height: `${Math.random() * 200 + 100}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              scale: [1, 1.2, 1],
-              rotate: [0, 360],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              ease: "linear",
-            }}
-          />
-        ))}
-      </div>
 
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md p-6 flex items-center sticky top-0 z-50 shadow-sm">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-gradient-to-br from-green-600 to-green-600 rounded-lg shadow-lg">
+          <div className="p-2 bg-gradient-to-br from-brand to-green-600 rounded-lg shadow-lg">
             <User className="w-6 h-6 text-white" />
           </div>
           <h1 className="text-2xl font-bold bg-gradient-to-r from-green-600 to-green-600 bg-clip-text text-transparent">
@@ -68,14 +51,14 @@ const PortalLanding = () => {
 
       {/* Main Content */}
       <main className="flex-1 p-6 pb-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-4xl mx-auto">
           {/* Register Card */}
           <PortalCard
             href="/register"
             icon={<UserPlus className="w-8 h-8 text-white" />}
             title="Registration"
             description="Enroll in courses and manage your academic profile"
-            gradient="from-green-600 to-green-400"
+            gradient="from-brand to-green-400"
           />
 
           {/* Payment Card */}
@@ -84,7 +67,24 @@ const PortalLanding = () => {
             icon={<CreditCard className="w-8 h-8 text-white" />}
             title="Payments"
             description="Secure transactions for fees and university payments"
-            gradient="from-green-600 to-green-400"
+            gradient="from-brand to-green-400"
+          />
+
+          {/* Graduation Card */}
+          <PortalCard
+            href="/graduation"
+            icon={<GraduationCap className="w-8 h-8 text-white" />}
+            title="Graduation"
+            description="Register now for Pharma Achievers graduation"
+            gradient="from-brand to-green-400"
+          />
+          {/* Certificate Card */}
+          <PortalCard
+            href="/certification"
+            icon={<ShieldCheck className="w-8 h-8 text-white" />}
+            title="Certificate"
+            description="Order now your Pharma Achievers certificate"
+            gradient="from-brand to-green-400"
           />
         </div>
       </main>
@@ -104,18 +104,18 @@ const PortalCard = ({ href, icon, title, description, gradient }) => (
         <div
           className={`absolute inset-0 bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-10 transition-opacity`}
         />
-        <CardContent className="flex flex-col items-center p-8 space-y-4">
+        <CardContent className="flex flex-row items-center p-4 space-x-3">
+          {/* Left Side - Icon */}
           <div
-            className={`p-6 rounded-2xl bg-gradient-to-r ${gradient} shadow-lg`}
+            className={`p-5 rounded-2xl bg-gradient-to-r ${gradient} shadow-lg`}
           >
             {icon}
           </div>
-          <h3 className="text-2xl font-bold text-gray-800">{title}</h3>
-          <p className="text-gray-600 text-center text-sm leading-relaxed">
-            {description}
-          </p>
-          <div className="mt-4 px-6 py-2 bg-gradient-to-r from-green-50 to-green-50 rounded-full text-sm font-medium text-green-600">
-            Get Started →
+
+          {/* Right Side - Title and Description */}
+          <div className="flex flex-col justify-center">
+            <h3 className="text-xl font-bold text-gray-800">{title}</h3>
+            <p className="text-gray-600 text-sm">{description}</p>
           </div>
         </CardContent>
       </Card>
