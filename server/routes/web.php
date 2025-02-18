@@ -203,7 +203,7 @@ $routes = array_merge(
     $DeliveryOrdersRoutes,
     $DistrictsRoutes,
     $ECertificateRoutes,
-    $ContactRoutes
+    $ContactRoutes,
     $paymentRequestRoutes,
     $DpadRoutes,
     $SMSRoutes,
