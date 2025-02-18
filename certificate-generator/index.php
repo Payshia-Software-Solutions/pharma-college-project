@@ -109,7 +109,7 @@ if (!file_exists($img_path) || !file_exists($font_path)) {
         $options = new QROptions;
         $options->outputType = QRCode::OUTPUT_IMAGE_JPG;
         $options->eccLevel = QRCode::ECC_H;
-        $options->scale = 5;
+        $options->scale = 4;
 
         $qrCode = (new QRCode($options))->render($qr_text);
         $qrImage = imagecreatefromstring(base64_decode(str_replace('data:image/jpg;base64,', '', $qrCode)));
@@ -117,7 +117,17 @@ if (!file_exists($img_path) || !file_exists($font_path)) {
         if (!$qrImage) {
             $response_data["error"] = "Failed to generate QR code.";
         } else {
-            imagecopy($image, $qrImage, 50, 850, 0, 0, imagesx($qrImage), imagesy($qrImage));
+            $qr_x = 50;
+            $qr_y = 900;
+            imagecopy($image, $qrImage, $qr_x, $qr_y, 0, 0, imagesx($qrImage), imagesy($qrImage));
+        
+            // Add Student Number & Date below QR Code
+            $font_size_small = 20;
+            $date_text = "Date: " . date('Y-m-d');
+            $student_text = "Index Number: " . $student_id;
+        
+            imagettftext($image, $font_size_small, 0, $qr_x, $qr_y + imagesy($qrImage) + 30, $text_color, $font_path, $student_text);
+            imagettftext($image, $font_size_small, 0, $qr_x, $qr_y + imagesy($qrImage) + 60, $text_color, $font_path, $date_text);
 
             // Define filename and save path
             $file_name = "eCertificate-{$course_code}-{$student_id}-{$unique_number}.jpg";

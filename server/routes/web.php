@@ -204,6 +204,7 @@ $routes = array_merge(
     $DistrictsRoutes,
     $ECertificateRoutes,
     $ContactRoutes,
+    $paymentRequestRoutes,
     $DpadRoutes,
     $SMSRoutes,
     $bankRoutes
