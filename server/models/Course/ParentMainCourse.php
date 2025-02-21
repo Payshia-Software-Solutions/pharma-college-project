@@ -80,7 +80,7 @@ class ParentMainCourse
     // Update an existing course record by slug
     public function updateCourse($slug, $data)
     {
-        // Check if the course_name is being updated and regenerate the slug if needed
+      
         if (!empty($data['course_name'])) {
             $newSlug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $data['course_name'])));
             $data['slug'] = $this->generateUniqueSlug($newSlug);
@@ -116,6 +116,41 @@ class ParentMainCourse
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute($data);
     }
+
+
+
+    public function createSlugIfNotExists($course_code)
+    {
+        // Fetch the course by course_code
+        $stmt = $this->pdo->prepare("SELECT * FROM parent_main_course WHERE course_code = ?");
+        $stmt->execute([$course_code]);
+        $course = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+        if (!$course) {
+            return null;// Return null if course does not exist
+        }
+    
+        if (empty($course['slug'])) {
+            $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $course['course_name'])));
+    
+    
+            $slug = $this->generateUniqueSlug($slug);
+    
+            try {
+                $stmt = $this->pdo->prepare("UPDATE parent_main_course SET slug = ? WHERE course_code = ?");
+                $stmt->execute([$slug, $course_code]);
+            } catch (PDOException $e) {
+               
+                error_log("Failed to update slug: " . $e->getMessage());
+                return null;
+            }
+    
+            return $slug;
+        }
+    
+        return $course['slug']; 
+    }
+    
 
     // Delete a course record by slug
     public function deleteCourse($slug)
