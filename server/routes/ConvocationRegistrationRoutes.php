@@ -18,6 +18,11 @@ return [
     'GET /convocation-registrations/(\d+)/$' => function ($registration_id) use ($convocationRegistrationController) {
         return $convocationRegistrationController->getRegistration($registration_id);
     },
+    // GET a single registration by student number (alphanumeric)
+    'GET /convocation-registrations/check-duplicate/([A-Za-z0-9]+)/$' => function ($studentNumber) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->validateDuplicate($studentNumber);
+    },
+
 
     // GET a single registration by reference number (same as ID)
     'GET /convocation-registrations\?referenceNumber=[\d]+/$' => function () use ($convocationRegistrationController) {
