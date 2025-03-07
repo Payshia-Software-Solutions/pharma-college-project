@@ -187,6 +187,7 @@ class ConvocationRegistrationController
                 $data['payment_status'] ?? 'pending',
                 $data['payment_amount'] ?? null,
                 $data['registration_status'] ?? 'pending',
+                $data['hash_value'],
                 $paymentSlipPath // Pass FTP path to model (add this parameter if supported)
             );
 
