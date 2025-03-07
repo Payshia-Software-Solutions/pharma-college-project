@@ -46,7 +46,7 @@ export default function ActionButtons({
 
       {showSuccess && (
         <button
-          onClick={() => (window.location.href = "/dashboard")}
+          onClick={() => (window.location.href = "/")}
           className="w-full bg-brand text-white p-4 rounded-lg hover:bg-blue-600 transition-colors focus:ring-4 focus:ring-blue-200 disabled:opacity-50 flex items-center justify-center space-x-2"
         >
           <span>Go to Dashboard</span>

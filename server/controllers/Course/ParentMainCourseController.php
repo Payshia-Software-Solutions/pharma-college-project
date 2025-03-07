@@ -29,18 +29,30 @@ class ParentMainCourseController
         }
     }
 
+    // Get a single course by course_code
+    public function getCourseById($id)
+    {
+        $course = $this->model->getCourseById($id);
+        if ($course) {
+            echo json_encode($course);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Course not found']);
+        }
+    }
 
-      // Get a single course by course_code
-      public function getCourseByCourseCode($course_code)
-      {
-          $course = $this->model->getCourseByCourseCode($course_code);
-          if ($course) {
-              echo json_encode($course);
-          } else {
-              http_response_code(404);
-              echo json_encode(['error' => 'Course not found']);
-          }
-      }
+
+    // Get a single course by course_code
+    public function getCourseByCourseCode($course_code)
+    {
+        $course = $this->model->getCourseByCourseCode($course_code);
+        if ($course) {
+            echo json_encode($course);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Course not found']);
+        }
+    }
 
     // Create a new course record
     public function createCourse()
@@ -58,7 +70,7 @@ class ParentMainCourseController
         $courseCreated = $this->model->createCourse($data);
 
         if ($courseCreated) {
-        
+
             $slug = $this->model->createSlugIfNotExists($courseCode);
             echo json_encode(['message' => 'Course created successfully', 'slug' => $slug]);
         } else {
@@ -79,7 +91,7 @@ class ParentMainCourseController
         if (!empty($data['course_name'])) {
             $course = $this->model->getCourseBySlug($slug);
             if ($course) {
-                $newSlug = $this->model->createSlugIfNotExists($course['course_code']); 
+                $newSlug = $this->model->createSlugIfNotExists($course['course_code']);
                 echo json_encode(['message' => 'Course updated successfully', 'new_slug' => $newSlug]);
                 return;
             }
@@ -99,7 +111,7 @@ class ParentMainCourseController
             echo json_encode(['error' => 'Course not found or slug generation failed']);
         }
     }
-    
+
 
 
     // Delete a course record by slug
@@ -134,7 +146,7 @@ class ParentMainCourseController
         $courseCounts = $this->model->countCoursesByMode();
         echo json_encode($courseCounts);
     }
-  // count alll courses
+    // count alll courses
     public function countAllCourses()
     {
         $count = $this->model->countAllCourses();
