@@ -1,4 +1,6 @@
 import Link from "next/link";
+import React from "react";
+
 import { ArrowLeft } from "lucide-react";
 
 export default function Header({ currentStep, prevStep, steps }) {
@@ -7,7 +9,7 @@ export default function Header({ currentStep, prevStep, steps }) {
   return (
     <header className="bg-white md:shadow-none shadow-lg p-4 flex items-center sticky top-0 z-50">
       {currentStep === 1 ? (
-        <Link href={`/dashboard`}>
+        <Link href={`/`}>
           <button className="p-2 hover:bg-gray-100 rounded-full transition-colors">
             <ArrowLeft className="w-6 h-6" />
           </button>

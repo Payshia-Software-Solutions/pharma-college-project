@@ -1,3 +1,5 @@
+import React from "react";
+
 import CertificatePortal from "@/components/CertificatePortal";
 
 export const metadata = {

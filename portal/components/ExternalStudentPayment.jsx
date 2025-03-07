@@ -1,17 +1,16 @@
 "use client";
+import React from "react";
 
 import { useState, useEffect } from "react";
 
 import Image from "next/image";
 import {
   ArrowLeft,
-  Upload,
   CheckCircle,
   CreditCard,
   Building2,
   FileText,
   User,
-  DollarSign,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ExternalStudentInfo from "./formElements/ExternalStudentInfo";

@@ -117,16 +117,27 @@ class ConvocationRegistrationController
             $data = $_POST; // Form fields
             $file = $_FILES['payment_slip'] ?? null; // Uploaded file (matches frontend FormData key)
 
+            // Extract course_ids from $_POST (e.g., course_id[0], course_id[1], etc.)
+            $courseIds = [];
+            foreach ($_POST as $key => $value) {
+                if (preg_match('/^course_id\[(\d+)\]$/', $key, $matches)) {
+                    $courseIds[] = $value;
+                }
+            }
+
             // Required fields validation
             if (
                 !isset($data['student_number']) ||
-                !isset($data['course_id']) ||
+                empty($courseIds) || // Ensure at least one course_id is provided
                 !isset($data['package_id'])
             ) {
                 http_response_code(400);
                 echo json_encode(['error' => 'Missing required fields: student_number, course_id, package_id']);
                 return;
             }
+
+            // Convert course_ids array to a comma-separated string
+            $courseIdsString = implode(',', $courseIds);
 
             // Handle file upload if provided
             $paymentSlipPath = null;
@@ -139,15 +150,15 @@ class ConvocationRegistrationController
 
                 // Optional: Check for duplicate image (uncomment if needed)
                 /*
-                if ($this->isDuplicateImage($imageHash)) {
-                    http_response_code(409); // Conflict
-                    echo json_encode([
-                        'success' => false,
-                        'error' => 'Duplicate image detected. The same image has already been uploaded.'
-                    ]);
-                    return;
-                }
-                */
+            if ($this->isDuplicateImage($imageHash)) {
+                http_response_code(409); // Conflict
+                echo json_encode([
+                    'success' => false,
+                    'error' => 'Duplicate image detected. The same image has already been uploaded.'
+                ]);
+                return;
+            }
+            */
 
                 // File details
                 $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
@@ -181,13 +192,13 @@ class ConvocationRegistrationController
             // Create registration in the database
             $registration_id = $this->model->createRegistration(
                 $data['student_number'],
-                $data['course_id'],
+                $courseIdsString, // Pass comma-separated course IDs
                 $data['package_id'],
                 $data['event_id'] ?? null,
                 $data['payment_status'] ?? 'pending',
                 $data['payment_amount'] ?? null,
                 $data['registration_status'] ?? 'pending',
-                $data['hash_value'],
+                $data['hash_value'] ?? null,
                 $paymentSlipPath // Pass FTP path to model (add this parameter if supported)
             );
 
@@ -201,9 +212,13 @@ class ConvocationRegistrationController
         } else {
             // Fallback for JSON (if no file is sent)
             $data = json_decode(file_get_contents('php://input'), true);
+
+            // Extract course_ids from JSON data
+            $courseIds = isset($data['course_id']) ? (is_array($data['course_id']) ? $data['course_id'] : [$data['course_id']]) : [];
+
             if (
                 !isset($data['student_number']) ||
-                !isset($data['course_id']) ||
+                empty($courseIds) || // Ensure at least one course_id is provided
                 !isset($data['package_id'])
             ) {
                 http_response_code(400);
@@ -211,9 +226,12 @@ class ConvocationRegistrationController
                 return;
             }
 
+            // Convert course_ids array to a comma-separated string
+            $courseIdsString = implode(',', $courseIds);
+
             $registration_id = $this->model->createRegistration(
                 $data['student_number'],
-                $data['course_id'],
+                $courseIdsString, // Pass comma-separated course IDs
                 $data['package_id'],
                 $data['event_id'] ?? null,
                 $data['payment_status'] ?? 'pending',

@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
@@ -13,12 +14,13 @@ import PackageCustomizationStep from "@/components/Graduation/PackageCustomizati
 import ReviewStep from "@/components/Graduation/ReviewStep";
 import SuccessStep from "@/components/Graduation/SuccessStep";
 import ActionButtons from "@/components/Graduation/ActionButtons";
+import { User, Book, Package, FileText, GraduationCap } from "lucide-react";
 
 const steps = [
-  { id: 1, title: "Student Info", icon: "User" },
-  { id: 2, title: "Course Selection", icon: "Book" },
-  { id: 3, title: "Package Customization", icon: "Package" },
-  { id: 4, title: "Review & Submit", icon: "FileText" },
+  { id: 1, title: "Student Info", icon: User },
+  { id: 2, title: "Course Selection", icon: Book },
+  { id: 3, title: "Package Customization", icon: Package },
+  { id: 4, title: "Review & Submit", icon: FileText },
 ];
 
 export default function ConvocationPortal() {
@@ -30,7 +32,7 @@ export default function ConvocationPortal() {
   const [formData, setFormData] = useState({
     studentNumber: "",
     studentName: "",
-    course: { id: "", title: "" },
+    courses: [], // Changed from course: { id: "", title: "" }
     packageDetails: {
       parentSeatCount: 0,
       garland: false,
@@ -118,11 +120,13 @@ export default function ConvocationPortal() {
     if (
       !formData.studentNumber ||
       !formData.studentName ||
-      !formData.course.id ||
+      formData.courses.length === 0 || // Changed from !formData.course.id
       !formData.package_id ||
       !formData.paymentSlip
     ) {
-      alert("Please complete all required fields, including the payment slip.");
+      alert(
+        "Please complete all required fields, including the payment slip and at least one course."
+      );
       setIsLoading(false);
       return;
     }
@@ -130,7 +134,10 @@ export default function ConvocationPortal() {
     try {
       const submissionData = new FormData();
       submissionData.append("student_number", formData.studentNumber);
-      submissionData.append("course_id", formData.course.id);
+      submissionData.append("student_name", formData.studentName); // Added for clarity
+      formData.courses.forEach((course, index) => {
+        submissionData.append(`course_id[${index}]`, course.id); // Append multiple course IDs
+      });
       submissionData.append("package_id", formData.package_id);
       submissionData.append("payment_slip", formData.paymentSlip);
 
@@ -164,7 +171,7 @@ export default function ConvocationPortal() {
       <SplashScreen
         loading={splashLoading}
         splashTitle="Convocation Registration Portal"
-        icon={<div className="w-16 h-16" />}
+        icon={<GraduationCap className="w-16 h-16" />}
       />
 
       {!splashLoading && (

@@ -1,3 +1,5 @@
+import React from "react";
+
 import GraduationPortal from "@/components/GraduationPortal";
 
 export const metadata = {

@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 
 import { useState, useEffect } from "react"; // Added useEffect for better state management
 import { motion } from "framer-motion";
@@ -78,7 +79,7 @@ export default function StudentInfoStep({
     } else {
       setIsValid(false); // Invalid if studentNumber is empty or malformed
     }
-  }, [formData.studentNumber]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [formData.studentNumber]);
 
   // Masking functions
   const maskEmail = (email) =>
