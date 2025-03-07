@@ -128,7 +128,7 @@ class ConvocationRegistrationController
             // Required fields validation
             if (
                 !isset($data['student_number']) ||
-                empty($courseIds) || // Ensure at least one course_id is provided
+                empty($courseIds) || // Check if $courseIds array is empty
                 !isset($data['package_id'])
             ) {
                 http_response_code(400);
@@ -147,18 +147,6 @@ class ConvocationRegistrationController
                 // Generate SHA-256 hash of the image file (optional for duplicate checking)
                 $imageHash = hash_file('sha256', $fileTmpPath);
                 $data['hash_value'] = $imageHash;
-
-                // Optional: Check for duplicate image (uncomment if needed)
-                /*
-            if ($this->isDuplicateImage($imageHash)) {
-                http_response_code(409); // Conflict
-                echo json_encode([
-                    'success' => false,
-                    'error' => 'Duplicate image detected. The same image has already been uploaded.'
-                ]);
-                return;
-            }
-            */
 
                 // File details
                 $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
@@ -199,7 +187,7 @@ class ConvocationRegistrationController
                 $data['payment_amount'] ?? null,
                 $data['registration_status'] ?? 'pending',
                 $data['hash_value'] ?? null,
-                $paymentSlipPath // Pass FTP path to model (add this parameter if supported)
+                $paymentSlipPath // Pass FTP path to model
             );
 
             http_response_code(201);
@@ -218,7 +206,7 @@ class ConvocationRegistrationController
 
             if (
                 !isset($data['student_number']) ||
-                empty($courseIds) || // Ensure at least one course_id is provided
+                empty($courseIds) || // Check if courseIds array is empty
                 !isset($data['package_id'])
             ) {
                 http_response_code(400);
@@ -246,7 +234,6 @@ class ConvocationRegistrationController
             ]);
         }
     }
-
     // PUT update a registration
     public function updateRegistration($registration_id)
     {
