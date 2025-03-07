@@ -1,256 +1,206 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  GraduationCap,
-  Package,
-  ClipboardList,
-  CheckCircle,
-} from "lucide-react";
-import SplashScreen from "./SplashScreen";
-import Footer from "./Footer";
+import Image from "next/image";
+import { AnimatePresence } from "framer-motion";
+import SplashScreen from "@/components/SplashScreen";
+import Footer from "@/components/Footer";
+import Header from "@/components/Graduation/Header";
+import ProgressBar from "@/components/Graduation/ProgressBar";
+import StudentInfoStep from "@/components/Graduation/StudentInfoStep";
+import CourseSelectionStep from "@/components/Graduation/CourseSelectionStep";
+import PackageCustomizationStep from "@/components/Graduation/PackageCustomizationStep";
+import ReviewStep from "@/components/Graduation/ReviewStep";
+import SuccessStep from "@/components/Graduation/SuccessStep";
+import ActionButtons from "@/components/Graduation/ActionButtons";
 
+// Define steps for the convocation registration process
 const steps = [
-  { id: 1, title: "Enter Student Number", icon: GraduationCap },
-  { id: 2, title: "Eligibility Result", icon: CheckCircle },
-  { id: 3, title: "Package Selection", icon: Package },
-  { id: 4, title: "Review & Submit", icon: ClipboardList },
+  { id: 1, title: "Student Info", icon: "User" },
+  { id: 2, title: "Course Selection", icon: "Book" },
+  { id: 3, title: "Package Customization", icon: "Package" },
+  { id: 4, title: "Review & Submit", icon: "FileText" },
 ];
 
-export default function GraduationApplication() {
+export default function ConvocationPortal() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const [eligibilityStatus, setEligibilityStatus] = useState(null);
-  const [completionRates, setCompletionRates] = useState(null);
+  const [referenceNumber, setReferenceNumber] = useState("");
   const [formData, setFormData] = useState({
     studentNumber: "",
-    selectedPackage: null,
+    studentName: "",
+    course: "",
+    package: {
+      parentSeatCount: 0,
+      garland: false,
+      graduationCloth: false,
+      photoPackage: false,
+    },
+    package_id: "",
   });
+  const [isValid, setIsValid] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  const packages = [
-    {
-      id: 1,
-      name: "Basic Package",
-      price: 150,
-      includes: ["Gown Rental", "Certificate Holder"],
-    },
-    {
-      id: 2,
-      name: "Standard Package",
-      price: 250,
-      includes: ["Gown Rental", "Professional Photos", "Souvenir"],
-    },
-    {
-      id: 3,
-      name: "Premium Package",
-      price: 400,
-      includes: ["Custom Gown", "Full Photo Package", "VIP Seating"],
-    },
-  ];
+  // Simulate splash screen for 1.5 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500);
+    return () => clearTimeout(timer);
+  }, []);
 
-  const updateFormData = (field, value) =>
+  // Update form data
+  const updateFormData = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-
-  const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 4));
-  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
-
-  const checkEligibility = async () => {
-    // setIsLoading(true);
-    try {
-      // const response = await fetch(
-      //   `/api/eligibility/${formData.studentNumber}`
-      // );
-      // if (!response.ok) throw new Error("Failed to fetch data");
-
-      // const data = await response.json();
-      const data = {
-        eligible: true,
-        completionRates: 100, // Adjust as needed
-      };
-
-      if (data.eligible !== undefined) {
-        setEligibilityStatus(data.eligible);
-        setCompletionRates(data.completionRates);
-        nextStep(); // Move to the next step only if data is valid
-      } else {
-        alert("Invalid response from server");
-      }
-    } catch {
-      alert("Error checking eligibility");
-    } finally {
-      setIsLoading(false);
-    }
   };
 
+  // Update package details
+  const updatePackageData = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      package: { ...prev.package, [field]: value },
+    }));
+  };
+
+  // Navigate to the next step
+  const nextStep = () => {
+    if (!isValid) return;
+    setIsLoading(true);
+    setTimeout(() => {
+      setCurrentStep((prev) => Math.min(prev + 1, 4));
+      setIsLoading(false);
+    }, 500);
+  };
+
+  // Navigate to the previous step
+  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+
+  // Handle form submission
   const handleSubmit = async () => {
     setIsLoading(true);
+    setShowSuccess(false);
+
+    // Validate required fields
+    if (
+      !formData.studentNumber ||
+      !formData.studentName ||
+      !formData.course?.id || // Check course.id since course is an object
+      !formData.package || // Check if package object exists
+      !selectedPackage?.package_id // Ensure selectedPackage has a package_id
+    ) {
+      alert("Please complete all required fields.");
+      setIsLoading(false);
+      return;
+    }
+
     try {
-      const response = await fetch("/api/graduation-application", {
-        method: "POST",
-        body: JSON.stringify(formData),
-      });
-      if (response.ok) {
-        setShowSuccess(true);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            student_number: formData.studentNumber,
+            course_id: formData.course.id,
+            package_id: selectedPackage.package_id, // Use selectedPackage.package_id
+          }),
+        }
+      );
+
+      const responseBody = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          responseBody.error || "Registration failed. Please try again."
+        );
       }
-    } catch {
-      alert("Submission failed");
+
+      // Set reference_number from response (matches backend return)
+      setReferenceNumber(responseBody.reference_number);
+      setShowSuccess(true);
+    } catch (error) {
+      alert(error.message);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="flex flex-col items-center h-screen">
+    <div className="flex justify-center flex-col items-center h-screen">
       <SplashScreen
-        loading={isLoading}
-        splashTitle="Graduation Application Portal"
-        icon={<GraduationCap className="w-16 h-16" />}
+        loading={loading}
+        splashTitle={`Convocation Registration Portal`}
+        icon={<div className="w-16 h-16" />}
       />
-      <div className="w-full lg:w-1/2 bg-white shadow-lg rounded-lg p-6 mt-4">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentStep}
-            initial={{ opacity: 0, x: 50 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -50 }}
-            transition={{ duration: 0.3 }}
-          >
-            {showSuccess ? (
-              <div className="text-center p-8">
-                <CheckCircle className="w-16 h-16 text-green-500 mx-auto" />
-                <h2 className="text-2xl font-bold mt-4">
-                  Application Submitted!
-                </h2>
-                <p className="mt-4">
-                  Your graduation package application has been received.
-                </p>
-              </div>
-            ) : (
-              <>
-                {currentStep === 1 && (
-                  <div>
-                    <h3 className="text-xl font-semibold">
-                      Enter Student Number
-                    </h3>
-                    <input
-                      type="text"
-                      placeholder="Enter Student Number"
-                      className="w-full p-3 border rounded-lg mt-2"
-                      value={formData.studentNumber}
-                      onChange={(e) =>
-                        updateFormData("studentNumber", e.target.value)
-                      }
+
+      {!loading && (
+        <div className="h-screen lg:min-h-40 bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col w-full lg:w-[50%] lg:rounded-lg mx-auto relative overflow-auto pb-20">
+          {/* Header */}
+          <Header currentStep={currentStep} prevStep={prevStep} steps={steps} />
+
+          {/* Logo */}
+          <div className="bg-white flex justify-center items-center flex-col w-full pt-4">
+            <Image
+              src={`/logo.png`}
+              width={550}
+              alt="Logo of Ceylon Pharma College"
+              height={550}
+              className="w-[30%]"
+            />
+            <p className="text-xl font-bold">Convocation Registration Portal</p>
+          </div>
+
+          {/* Progress Bar */}
+          <ProgressBar steps={steps} currentStep={currentStep} />
+
+          {/* Main Content */}
+          <main className="flex-1 p-4">
+            <AnimatePresence mode="wait">
+              {showSuccess ? (
+                <SuccessStep referenceNumber={referenceNumber} />
+              ) : (
+                <>
+                  {currentStep === 1 && (
+                    <StudentInfoStep
+                      formData={formData}
+                      updateFormData={updateFormData}
+                      setIsValid={setIsValid}
                     />
-                    <button
-                      onClick={checkEligibility}
-                      disabled={!formData.studentNumber || isLoading}
-                      className="w-full bg-blue-600 text-white p-3 rounded-lg mt-4"
-                    >
-                      {isLoading ? "Checking..." : "Check Eligibility"}
-                    </button>
-                  </div>
-                )}
-                {currentStep === 2 && (
-                  <div>
-                    <h3 className="text-xl font-semibold">
-                      Eligibility Result
-                    </h3>
-                    {eligibilityStatus ? (
-                      <p className="text-green-500">Eligible for graduation</p>
-                    ) : (
-                      <p className="text-red-500">
-                        Not eligible for graduation
-                      </p>
-                    )}
-                    {completionRates && (
-                      <div className="mt-4 bg-gray-100 p-3 rounded-lg">
-                        <h4 className="font-semibold">Completion Rates:</h4>
-                        <p>
-                          Ceylon Pharmacy: {completionRates.ceylonPharmacy}%
-                        </p>
-                        <p>Pharma Hunter: {completionRates.pharmaHunter}%</p>
-                        <p>Due Balance: {completionRates.dueBalance}%</p>
-                      </div>
-                    )}
-                    <div className="flex justify-between mt-4">
-                      <button
-                        onClick={prevStep}
-                        className="bg-gray-400 text-white p-3 rounded-lg"
-                      >
-                        Back
-                      </button>
-                      <button
-                        onClick={nextStep}
-                        disabled={!eligibilityStatus}
-                        className="bg-blue-600 text-white p-3 rounded-lg"
-                      >
-                        Continue
-                      </button>
-                    </div>
-                  </div>
-                )}
-                {currentStep === 3 && (
-                  <div>
-                    <h3 className="text-xl font-semibold">
-                      Select Your Package
-                    </h3>
-                    {packages.map((pkg) => (
-                      <div
-                        key={pkg.id}
-                        className="p-4 border rounded-lg mt-2"
-                        onClick={() => updateFormData("selectedPackage", pkg)}
-                      >
-                        <h4 className="font-semibold">{pkg.name}</h4>
-                        <p>${pkg.price}</p>
-                      </div>
-                    ))}
-                    <div className="flex justify-between mt-4">
-                      <button
-                        onClick={prevStep}
-                        className="bg-gray-400 text-white p-3 rounded-lg"
-                      >
-                        Back
-                      </button>
-                      <button
-                        onClick={nextStep}
-                        disabled={!formData.selectedPackage}
-                        className="bg-blue-600 text-white p-3 rounded-lg"
-                      >
-                        Continue
-                      </button>
-                    </div>
-                  </div>
-                )}
-                {currentStep === 4 && (
-                  <div>
-                    <h3 className="text-xl font-semibold">Review & Submit</h3>
-                    <p>
-                      <strong>Student Number:</strong> {formData.studentNumber}
-                    </p>
-                    <p>
-                      <strong>Package:</strong> {formData.selectedPackage?.name}
-                    </p>
-                    <button
-                      onClick={prevStep}
-                      className="bg-gray-400 text-white p-3 rounded-lg mt-4"
-                    >
-                      Back
-                    </button>
-                    <button
-                      onClick={handleSubmit}
-                      className="w-full bg-green-600 text-white p-3 rounded-lg mt-4"
-                    >
-                      Submit
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-          </motion.div>
-        </AnimatePresence>
-      </div>
+                  )}
+                  {currentStep === 2 && (
+                    <CourseSelectionStep
+                      formData={formData}
+                      updateFormData={updateFormData}
+                      setIsValid={setIsValid}
+                    />
+                  )}
+                  {currentStep === 3 && (
+                    <PackageCustomizationStep
+                      formData={formData}
+                      updatePackageData={updatePackageData}
+                      setIsValid={setIsValid}
+                    />
+                  )}
+                  {currentStep === 4 && (
+                    <ReviewStep formData={formData} setIsValid={setIsValid} />
+                  )}
+                </>
+              )}
+            </AnimatePresence>
+
+            {/* Action Buttons */}
+            <ActionButtons
+              currentStep={currentStep}
+              showSuccess={showSuccess}
+              isValid={isValid}
+              isLoading={isLoading}
+              nextStep={nextStep}
+              handleSubmit={handleSubmit}
+            />
+          </main>
+        </div>
+      )}
+
+      <Footer />
     </div>
   );
 }

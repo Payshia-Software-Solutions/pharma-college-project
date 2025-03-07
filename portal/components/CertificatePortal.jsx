@@ -1,13 +1,9 @@
-"use client";
+'use client';
 
 import { useState, useEffect } from "react";
 import SplashScreen from "./SplashScreen";
 import {
-  ArrowRight,
-  ArrowLeft,
-  CheckCircle,
   User,
-  GraduationCap,
   ShieldCheck,
 } from "lucide-react"; // Import icons from lucide-react
 
@@ -21,6 +17,7 @@ function CertificatePortal() {
   }, []);
 
   return (
+      // eslint-disable-next-line react/react-in-jsx-scope
     <div className="flex justify-center flex-col items-center h-screen">
       <SplashScreen
         loading={loading}
