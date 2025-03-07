@@ -1,8 +1,6 @@
 "use client";
-import React from "react";
-
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
 import {
   Loader,
   FileText,
@@ -15,12 +13,12 @@ import {
 
 export default function SuccessStep({ referenceNumber }) {
   const [registration, setRegistration] = useState(null);
+  const [courses, setCourses] = useState([]);
   const [packages, setPackages] = useState([]);
-  const [courseName, setCourseName] = useState("Loading...");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch registration and package details
+  // Fetch registration details and related information
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -38,20 +36,38 @@ export default function SuccessStep({ referenceNumber }) {
         const regData = await regResponse.json();
         setRegistration(regData);
 
-        // Fetch course name using course_id from registration
-        const courseResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/parent-main-course/get-id/${regData.course_id}`,
-          {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          }
-        );
-        if (!courseResponse.ok)
-          throw new Error("Failed to fetch course details");
-        const courseData = await courseResponse.json();
-        setCourseName(courseData.course_name || "Unknown Course");
+        // Fetch course details for multiple course_ids
+        const courseIds = regData.course_ids
+          ? regData.course_ids.split(",")
+          : [];
 
-        // Fetch packages to get package name and price
+        if (courseIds.length > 0 && courseIds[0]) {
+          const fetchCourseDetails = async (courseIds) => {
+            const coursePromises = courseIds.map(async (id) => {
+              const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/parent-main-course/get-id/${id}`,
+                {
+                  method: "GET",
+                  headers: { "Content-Type": "application/json" },
+                }
+              );
+              if (!response.ok)
+                throw new Error(`Failed to fetch course ID: ${id}`);
+              return response.json();
+            });
+
+            return Promise.all(coursePromises);
+          };
+
+          try {
+            const courseData = await fetchCourseDetails(courseIds);
+            setCourses(courseData);
+          } catch (err) {
+            console.error("Error fetching course details:", err);
+          }
+        }
+
+        // Fetch packages
         const pkgResponse = await fetch(
           "https://qa-api.pharmacollege.lk/packages",
           {
@@ -74,7 +90,10 @@ export default function SuccessStep({ referenceNumber }) {
         setLoading(false);
       }
     };
-    fetchData();
+
+    if (referenceNumber) {
+      fetchData();
+    }
   }, [referenceNumber]);
 
   // Find selected package
@@ -124,6 +143,7 @@ export default function SuccessStep({ referenceNumber }) {
               {new Date(registration.registered_at).toLocaleString()}
             </p>
           </div>
+
           {/* Student Information */}
           <div className="space-y-2">
             <h3 className="text-lg font-medium flex items-center">
@@ -133,17 +153,33 @@ export default function SuccessStep({ referenceNumber }) {
             <p>
               <strong>Student Number:</strong> {registration.student_number}
             </p>
+            <p>
+              <strong>Name:</strong> {registration.student_name}
+            </p>
           </div>
+
           {/* Course Information */}
           <div className="space-y-2">
             <h3 className="text-lg font-medium flex items-center">
               <Book className="w-5 h-5 text-green-500 mr-2" />
-              Course
+              Courses
             </h3>
-            <p>
-              <strong>Course Name:</strong> {courseName}
-            </p>
+            {courses.length > 0 ? (
+              <ul className="list-disc list-inside space-y-1">
+                {courses.map((course, index) => (
+                  <li key={index} className="flex items-center">
+                    <span className="w-5 h-5 mr-2">📚</span>
+                    {course.course_name || `Course ID: ${course.id}`}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="flex items-center">
+                <span className="w-5 h-5 mr-2">📚</span>No courses selected
+              </p>
+            )}
           </div>
+
           {/* Package Information */}
           <div className="space-y-2">
             <h3 className="text-lg font-medium flex items-center">
@@ -158,6 +194,7 @@ export default function SuccessStep({ referenceNumber }) {
               <strong>Price:</strong> ${selectedPackage.price.toFixed(2)}
             </p>
           </div>
+
           {/* Payment Status */}
           <div className="space-y-2">
             <h3 className="text-lg font-medium flex items-center">
@@ -176,35 +213,8 @@ export default function SuccessStep({ referenceNumber }) {
                 {registration.payment_status}
               </span>
             </p>
-            {registration.payment_amount && (
-              <p>
-                <strong>Amount:</strong> $
-                {parseFloat(registration.payment_amount).toFixed(2)}
-              </p>
-            )}
           </div>
-          {/* Payment Slip */}
-          <div className="space-y-2">
-            <h3 className="text-lg font-medium flex items-center">
-              <Upload className="w-5 h-5 text-green-500 mr-2" />
-              Payment Slip
-            </h3>
-            {registration.image_path ? (
-              <div className="mt-2">
-                <img
-                  src={`http://content-provider.pharmacollege.lk${registration.image_path}`}
-                  alt="Payment Slip"
-                  className="max-w-full h-auto rounded-lg shadow-md"
-                />
 
-                <p className="text-sm text-gray-600 mt-1">
-                  Uploaded Slip: {registration.image_path.split("/").pop()}
-                </p>
-              </div>
-            ) : (
-              <p className="text-gray-600">No payment slip uploaded.</p>
-            )}
-          </div>
           {/* Footer Note */}
           <p className="text-sm text-gray-600 text-center border-t pt-4">
             Please keep this reference number ({registration.reference_number})
