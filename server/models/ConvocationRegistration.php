@@ -40,6 +40,14 @@ class ConvocationRegistration
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Validate duplicate registration
+    public function validateDuplicate($student_number)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE student_number = ? AND registration_status = 'pending'");
+        $stmt->execute([$student_number]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // Read a single registration by ID
     public function getRegistrationById($registration_id)
     {

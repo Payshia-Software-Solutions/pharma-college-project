@@ -148,6 +148,7 @@ export default function StudentInfoStep({
               <h1 className="font-medium text-xl mb-2 border-b text-gray-800">
                 Student Information
               </h1>
+
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <div>

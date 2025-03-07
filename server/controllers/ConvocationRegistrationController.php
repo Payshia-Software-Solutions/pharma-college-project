@@ -97,6 +97,18 @@ class ConvocationRegistrationController
         }
     }
 
+    // GET a single registration by ID
+    public function validateDuplicate($student_number)
+    {
+        $registration = $this->model->validateDuplicate($student_number);
+        if ($registration) {
+            echo json_encode($registration);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Registration not found']);
+        }
+    }
+
     // GET a single registration by reference number
     public function getRegistrationByReference($reference_number)
     {

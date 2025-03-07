@@ -18,8 +18,8 @@ import { User, Book, Package, FileText, GraduationCap } from "lucide-react";
 
 const steps = [
   { id: 1, title: "Student Info", icon: User },
-  { id: 2, title: "Course Selection", icon: Book },
-  { id: 3, title: "Package Customization", icon: Package },
+  { id: 2, title: "Course", icon: Book },
+  { id: 3, title: "Package", icon: Package },
   { id: 4, title: "Review & Submit", icon: FileText },
 ];
 
