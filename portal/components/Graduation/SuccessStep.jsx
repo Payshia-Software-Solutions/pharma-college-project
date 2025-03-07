@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -39,7 +40,7 @@ export default function SuccessStep({ referenceNumber }) {
 
         // Fetch course name using course_id from registration
         const courseResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/parent-main-course/${regData.course_id}`,
+          `${process.env.NEXT_PUBLIC_API_URL}/parent-main-course/get-id/${regData.course_id}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },

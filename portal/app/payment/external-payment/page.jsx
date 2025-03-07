@@ -1,3 +1,5 @@
+import React from "react";
+
 import ExternalStudentPayment from "@/components/ExternalStudentPayment";
 
 export const metadata = {

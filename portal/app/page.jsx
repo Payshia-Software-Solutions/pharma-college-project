@@ -1,3 +1,4 @@
+import React from "react";
 import PortalLanding from "@/components/PortalLanding";
 export const metadata = {
   title: "Student Portal",

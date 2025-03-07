@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -46,7 +47,7 @@ export default function ReviewStep({
     const isComplete =
       formData.studentNumber &&
       formData.studentName &&
-      formData.course?.id &&
+      formData.courses.length > 0 && // Changed from formData.course?.id
       formData.package_id &&
       paymentSlip; // Require payment slip
     setIsValid(isComplete);
@@ -143,12 +144,24 @@ export default function ReviewStep({
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-gray-800 flex items-center">
               <Book className="w-5 h-5 text-green-500 mr-2" />
-              Selected Course
+              Selected Courses
             </h3>
-            <p className="mt-2 text-gray-700 flex items-center">
-              <span className="w-5 h-5 mr-2">📚</span>
-              {formData.course?.title || "Not Selected"}
-            </p>
+            <div className="mt-2 text-gray-700">
+              {formData.courses.length > 0 ? (
+                <ul className="list-disc list-inside space-y-1">
+                  {formData.courses.map((course, index) => (
+                    <li key={index} className="flex items-center">
+                      <span className="w-5 h-5 mr-2">📚</span>
+                      {course.title}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="flex items-center">
+                  <span className="w-5 h-5 mr-2">📚</span>Not Selected
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Package Details */}

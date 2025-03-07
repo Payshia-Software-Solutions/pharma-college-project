@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
@@ -143,7 +144,7 @@ export default function PackageCustomizationStep({
                       {pkg.name}
                     </h3>
                     <span className="text-lg font-semibold text-blue-600">
-                      ${pkg.price.toFixed(2)}
+                      Rs {pkg.price.toFixed(2)}
                     </span>
                   </div>
                   <ul className="mt-2 text-sm text-gray-600 space-y-1">
