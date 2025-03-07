@@ -6,12 +6,78 @@ require_once './models/ConvocationRegistration.php';
 class ConvocationRegistrationController
 {
     private $model;
+    private $ftpConfig;
 
     public function __construct($pdo)
     {
         $this->model = new ConvocationRegistration($pdo);
+        $this->ftpConfig = include('./config/ftp.php');
     }
 
+
+    private function ensureDirectoryExists($ftp_conn, $dir)
+    {
+        $parts = explode('/', $dir);
+        $path = '';
+        foreach ($parts as $part) {
+            if (empty($part)) {
+                continue;
+            }
+            $path .= '/' . $part;
+            if (!@ftp_chdir($ftp_conn, $path)) {
+                if (!ftp_mkdir($ftp_conn, $path)) {
+                    throw new Exception("Could not create directory: $path on FTP server.");
+                }
+            }
+        }
+    }
+
+    private function uploadToFTP($localFile, $ftpFilePath)
+    {
+        ini_set('memory_limit', '256M'); // Increase to 256 MB or higher if needed
+        // FTP credentials from config
+        $ftp_server   = $this->ftpConfig['ftp_server'];
+        $ftp_username = $this->ftpConfig['ftp_username'];
+        $ftp_password = $this->ftpConfig['ftp_password'];
+
+        // Connect to FTP server
+        $ftp_conn = ftp_connect($ftp_server);
+        if (!$ftp_conn) {
+            error_log("FTP connection failed: $ftp_server");
+            return false;
+        }
+
+        // Login to FTP
+        if (!ftp_login($ftp_conn, $ftp_username, $ftp_password)) {
+            ftp_close($ftp_conn);
+            error_log("FTP login failed for user: $ftp_username");
+            return false;
+        }
+
+        // Enable passive mode
+        ftp_pasv($ftp_conn, true);
+
+
+        // Ensure that the target directory exists
+        try {
+            $this->ensureDirectoryExists($ftp_conn, dirname($ftpFilePath));
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            ftp_close($ftp_conn);
+            return;
+        }
+
+        // Upload file
+        if (!ftp_put($ftp_conn, $ftpFilePath, $localFile, FTP_BINARY)) {
+            ftp_close($ftp_conn);
+            error_log("Failed to upload: $localFile to $ftpFilePath");
+            return false;
+        }
+
+        // Close FTP connection
+        ftp_close($ftp_conn);
+        return true;
+    }
     // GET all registrations
     public function getRegistrations()
     {
@@ -49,7 +115,7 @@ class ConvocationRegistrationController
         // Check if the request is multipart/form-data
         if ($_SERVER['CONTENT_TYPE'] && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
             $data = $_POST; // Form fields
-            $file = $_FILES['payment_slip'] ?? null; // Uploaded file
+            $file = $_FILES['payment_slip'] ?? null; // Uploaded file (matches frontend FormData key)
 
             // Required fields validation
             if (
@@ -62,20 +128,57 @@ class ConvocationRegistrationController
                 return;
             }
 
-            // Handle payment slip file upload
+            // Handle file upload if provided
             $paymentSlipPath = null;
-            if ($file && $file['error'] === UPLOAD_ERR_OK) {
-                $uploadDir = 'uploads/payment_slips/'; // Ensure this directory exists and is writable
-                $fileName = uniqid() . '-' . basename($file['name']);
-                $paymentSlipPath = $uploadDir . $fileName;
+            if (!empty($file) && $file['error'] === UPLOAD_ERR_OK) {
+                $fileTmpPath = $file['tmp_name'];
 
-                if (!move_uploaded_file($file['tmp_name'], $paymentSlipPath)) {
+                // Generate SHA-256 hash of the image file (optional for duplicate checking)
+                $imageHash = hash_file('sha256', $fileTmpPath);
+                $data['hash_value'] = $imageHash;
+
+                // Optional: Check for duplicate image (uncomment if needed)
+                /*
+                if ($this->isDuplicateImage($imageHash)) {
+                    http_response_code(409); // Conflict
+                    echo json_encode([
+                        'success' => false,
+                        'error' => 'Duplicate image detected. The same image has already been uploaded.'
+                    ]);
+                    return;
+                }
+                */
+
+                // File details
+                $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                $fileName = $data['student_number'] . "-payment-" . uniqid() . '.' . $fileExtension;
+                $localUploadPath = './uploads/' . $fileName; // Temporary local storage
+                $ftpFilePath = "/payment-slips/" . $fileName; // Path on FTP server
+
+                // Ensure the local upload directory exists
+                if (!is_dir('./uploads/')) {
+                    mkdir('./uploads/', 0777, true);
+                }
+
+                // Move the file locally first
+                if (!move_uploaded_file($fileTmpPath, $localUploadPath)) {
+                    http_response_code(400);
+                    echo json_encode(['error' => 'File upload failed']);
+                    return;
+                }
+
+                // Upload to FTP server
+                if ($this->uploadToFTP($localUploadPath, $ftpFilePath)) {
+                    $paymentSlipPath = $ftpFilePath; // Store FTP path
+                    unlink($localUploadPath); // Remove local file after successful FTP upload
+                } else {
                     http_response_code(500);
-                    echo json_encode(['error' => 'Failed to upload payment slip']);
+                    echo json_encode(['error' => 'FTP upload failed']);
                     return;
                 }
             }
 
+            // Create registration in the database
             $registration_id = $this->model->createRegistration(
                 $data['student_number'],
                 $data['course_id'],
@@ -84,7 +187,7 @@ class ConvocationRegistrationController
                 $data['payment_status'] ?? 'pending',
                 $data['payment_amount'] ?? null,
                 $data['registration_status'] ?? 'pending',
-                $paymentSlipPath // Add this to your model if supported
+                $paymentSlipPath // Pass FTP path to model (add this parameter if supported)
             );
 
             http_response_code(201);
@@ -92,10 +195,10 @@ class ConvocationRegistrationController
                 'registration_id' => $registration_id,
                 'reference_number' => $registration_id,
                 'message' => 'Registration created successfully',
-                'payment_slip_path' => $paymentSlipPath // Optional
+                'payment_slip_path' => $paymentSlipPath // Optional: Return FTP path
             ]);
         } else {
-            // Fallback for JSON (current behavior)
+            // Fallback for JSON (if no file is sent)
             $data = json_decode(file_get_contents('php://input'), true);
             if (
                 !isset($data['student_number']) ||
