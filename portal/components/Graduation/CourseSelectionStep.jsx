@@ -8,24 +8,23 @@ export default function CourseSelectionStep({
   formData,
   updateFormData,
   setIsValid,
+  setStepLoading,
 }) {
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false); // Initial false to avoid flash
   const [error, setError] = useState(null);
 
   // Fetch courses from the API
   useEffect(() => {
     const fetchCourses = async () => {
       setLoading(true);
+      if (setStepLoading) setStepLoading(true); // Sync with parent
       try {
         const response = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/parent-main-course`,
           {
             method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              // Add any required headers (e.g., authorization) if needed
-            },
+            headers: { "Content-Type": "application/json" },
           }
         );
 
@@ -34,26 +33,39 @@ export default function CourseSelectionStep({
         }
 
         const data = await response.json();
-        console.log(data); // For debugging
-        // Map API data to { id, title }
         const formattedCourses = data.map((course) => ({
-          id: course.id || course.course_id, // Adjust based on API response
-          title: course.course_name || course.name, // Use course_name as per your API
+          id: course.id || course.course_id,
+          title: course.course_name || course.name,
         }));
-        // Add "Custom" option to the courses list
         formattedCourses.push({ id: "custom", title: "Custom" });
         setCourses(formattedCourses);
         setError(null);
+
+        // Restore previous selection if valid
+        if (formData.course?.id) {
+          const selected = formattedCourses.find(
+            (c) => c.id === formData.course.id
+          );
+          if (selected) {
+            updateFormData("course", selected);
+            setIsValid(true);
+          } else {
+            updateFormData("course", { id: "", title: "" });
+            setIsValid(false);
+          }
+        }
       } catch (err) {
         setError(err.message);
         setCourses([]);
+        setIsValid(false); // Invalidate on fetch error
       } finally {
         setLoading(false);
+        if (setStepLoading) setStepLoading(false);
       }
     };
 
     fetchCourses();
-  }, []); // Empty dependency array to fetch only once on mount
+  }, []); // Empty dependency array for one-time fetch
 
   // Handle course selection
   const handleCourseChange = (courseId) => {
@@ -63,14 +75,19 @@ export default function CourseSelectionStep({
         id: selectedCourse.id,
         title: selectedCourse.title,
       });
-      setIsValid(true); // Set as valid once a course is selected
+      setIsValid(true);
+    } else {
+      updateFormData("course", { id: "", title: "" });
+      setIsValid(false);
     }
   };
 
-  // Ensure validity is reset if no course is selected
+  // Initial validation check
   useEffect(() => {
-    setIsValid(!!formData.course?.id); // Valid only if a course ID is selected
-  }, [formData.course, setIsValid]);
+    if (!formData.course?.id && courses.length > 0) {
+      setIsValid(false); // No selection yet
+    }
+  }, [courses, formData.course, setIsValid]);
 
   return (
     <motion.div
@@ -81,6 +98,10 @@ export default function CourseSelectionStep({
       className="bg-white rounded-xl shadow-lg p-6 space-y-6"
     >
       <h2 className="text-xl font-semibold mb-4">Select Enrolled Course</h2>
+      <p className="text-sm text-gray-600">
+        Please select one course from the options below. Choose "Custom" if your
+        course is not listed.
+      </p>
 
       {loading && (
         <div className="flex items-center justify-center text-gray-600">
@@ -91,7 +112,7 @@ export default function CourseSelectionStep({
 
       {error && (
         <p className="text-red-500 text-sm mt-2">
-          {error}. Please try again later.
+          {error}. Please try again later or contact support.
         </p>
       )}
 
@@ -100,7 +121,9 @@ export default function CourseSelectionStep({
       )}
 
       {!loading && !error && courses.length > 0 && (
-        <div className="space-y-4">
+        <div className="space-y-4 overflow-y-auto">
+          {" "}
+          {/* Added scroll for long lists */}
           {courses.map((course) => (
             <label
               key={course.id}
@@ -117,13 +140,13 @@ export default function CourseSelectionStep({
                   value={course.id}
                   checked={formData.course?.id === course.id}
                   onChange={() => handleCourseChange(course.id)}
+                  disabled={loading} // Disable during fetch
                   className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
                 />
                 <div>
                   <h3 className="text-lg font-medium text-gray-800">
                     {course.title}
                   </h3>
-                  {/* Optionally add a description or more details here if API provides */}
                 </div>
               </div>
             </label>

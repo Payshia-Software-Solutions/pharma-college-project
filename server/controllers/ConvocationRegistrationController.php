@@ -46,32 +46,83 @@ class ConvocationRegistrationController
     // POST create a new registration (no reference_number in input)
     public function createRegistration()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
-        if (
-            !isset($data['student_number']) || !isset($data['course_id']) ||
-            !isset($data['package_id'])
-        ) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Missing required fields: student_number, course_id, package_id']);
-            return;
-        }
+        // Check if the request is multipart/form-data
+        if ($_SERVER['CONTENT_TYPE'] && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
+            $data = $_POST; // Form fields
+            $file = $_FILES['payment_slip'] ?? null; // Uploaded file
 
-        $registration_id = $this->model->createRegistration(
-            $data['student_number'],
-            $data['course_id'],
-            $data['package_id'],
-            $data['event_id'] ?? null,
-            $data['payment_status'] ?? 'pending',
-            $data['payment_amount'] ?? null,
-            $data['registration_status'] ?? 'pending'
-        );
-        http_response_code(201);
-        // Return registration_id as reference_number
-        echo json_encode([
-            'registration_id' => $registration_id,
-            'reference_number' => $registration_id,
-            'message' => 'Registration created successfully'
-        ]);
+            // Required fields validation
+            if (
+                !isset($data['student_number']) ||
+                !isset($data['course_id']) ||
+                !isset($data['package_id'])
+            ) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Missing required fields: student_number, course_id, package_id']);
+                return;
+            }
+
+            // Handle payment slip file upload
+            $paymentSlipPath = null;
+            if ($file && $file['error'] === UPLOAD_ERR_OK) {
+                $uploadDir = 'uploads/payment_slips/'; // Ensure this directory exists and is writable
+                $fileName = uniqid() . '-' . basename($file['name']);
+                $paymentSlipPath = $uploadDir . $fileName;
+
+                if (!move_uploaded_file($file['tmp_name'], $paymentSlipPath)) {
+                    http_response_code(500);
+                    echo json_encode(['error' => 'Failed to upload payment slip']);
+                    return;
+                }
+            }
+
+            $registration_id = $this->model->createRegistration(
+                $data['student_number'],
+                $data['course_id'],
+                $data['package_id'],
+                $data['event_id'] ?? null,
+                $data['payment_status'] ?? 'pending',
+                $data['payment_amount'] ?? null,
+                $data['registration_status'] ?? 'pending',
+                $paymentSlipPath // Add this to your model if supported
+            );
+
+            http_response_code(201);
+            echo json_encode([
+                'registration_id' => $registration_id,
+                'reference_number' => $registration_id,
+                'message' => 'Registration created successfully',
+                'payment_slip_path' => $paymentSlipPath // Optional
+            ]);
+        } else {
+            // Fallback for JSON (current behavior)
+            $data = json_decode(file_get_contents('php://input'), true);
+            if (
+                !isset($data['student_number']) ||
+                !isset($data['course_id']) ||
+                !isset($data['package_id'])
+            ) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Missing required fields: student_number, course_id, package_id']);
+                return;
+            }
+
+            $registration_id = $this->model->createRegistration(
+                $data['student_number'],
+                $data['course_id'],
+                $data['package_id'],
+                $data['event_id'] ?? null,
+                $data['payment_status'] ?? 'pending',
+                $data['payment_amount'] ?? null,
+                $data['registration_status'] ?? 'pending'
+            );
+            http_response_code(201);
+            echo json_encode([
+                'registration_id' => $registration_id,
+                'reference_number' => $registration_id,
+                'message' => 'Registration created successfully'
+            ]);
+        }
     }
 
     // PUT update a registration

@@ -14,7 +14,6 @@ import ReviewStep from "@/components/Graduation/ReviewStep";
 import SuccessStep from "@/components/Graduation/SuccessStep";
 import ActionButtons from "@/components/Graduation/ActionButtons";
 
-// Define steps for the convocation registration process
 const steps = [
   { id: 1, title: "Student Info", icon: "User" },
   { id: 2, title: "Course Selection", icon: "Book" },
@@ -25,84 +24,121 @@ const steps = [
 export default function ConvocationPortal() {
   const [currentStep, setCurrentStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
+  const [stepLoading, setStepLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [referenceNumber, setReferenceNumber] = useState("");
   const [formData, setFormData] = useState({
     studentNumber: "",
     studentName: "",
-    course: "",
-    package: {
+    course: { id: "", title: "" },
+    packageDetails: {
       parentSeatCount: 0,
       garland: false,
       graduationCloth: false,
       photoPackage: false,
     },
-    package_id: "",
+    package_id: null,
+    paymentSlip: null,
   });
   const [isValid, setIsValid] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [splashLoading, setSplashLoading] = useState(true);
+  const [packages, setPackages] = useState([]);
 
-  // Simulate splash screen for 1.5 seconds
+  // Fetch packages centrally
   useEffect(() => {
-    const timer = setTimeout(() => setLoading(false), 1500);
+    const fetchPackages = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/packages`
+        );
+        if (!response.ok) throw new Error("Failed to fetch packages");
+        const data = await response.json();
+        setPackages(
+          data
+            .map((pkg) => ({
+              package_id: pkg.package_id,
+              name: pkg.package_name,
+              price: parseFloat(pkg.price),
+              inclusions: {
+                parentSeatCount: pkg.parent_seat_count,
+                garland: !!pkg.garland,
+                graduationCloth: !!pkg.graduation_cloth,
+                photoPackage: !!pkg.photo_package,
+              },
+              isActive: !!pkg.is_active,
+            }))
+            .filter((pkg) => pkg.isActive)
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchPackages();
+  }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setSplashLoading(false), 1500);
     return () => clearTimeout(timer);
   }, []);
 
-  // Update form data
   const updateFormData = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  // Update package details
-  const updatePackageData = (field, value) => {
     setFormData((prev) => ({
       ...prev,
-      package: { ...prev.package, [field]: value },
+      [field]: value,
     }));
   };
 
-  // Navigate to the next step
-  const nextStep = () => {
-    if (!isValid) return;
+  const updatePackageData = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field === "packageDetails" ? "packageDetails" : field]: value,
+    }));
+  };
+
+  const navigateStep = (direction) => {
+    if (direction === "next" && (!isValid || stepLoading)) return;
     setIsLoading(true);
     setTimeout(() => {
-      setCurrentStep((prev) => Math.min(prev + 1, 4));
+      setCurrentStep((prev) =>
+        direction === "next"
+          ? Math.min(prev + 1, steps.length)
+          : Math.max(prev - 1, 1)
+      );
       setIsLoading(false);
     }, 500);
   };
 
-  // Navigate to the previous step
-  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+  const nextStep = () => navigateStep("next");
+  const prevStep = () => navigateStep("prev");
 
-  // Handle form submission
   const handleSubmit = async () => {
     setIsLoading(true);
     setShowSuccess(false);
 
-    // Validate required fields
     if (
       !formData.studentNumber ||
       !formData.studentName ||
-      !formData.course?.id || // Check course.id since course is an object
-      !formData.package || // Check if package object exists
-      !selectedPackage?.package_id // Ensure selectedPackage has a package_id
+      !formData.course.id ||
+      !formData.package_id ||
+      !formData.paymentSlip
     ) {
-      alert("Please complete all required fields.");
+      alert("Please complete all required fields, including the payment slip.");
       setIsLoading(false);
       return;
     }
 
     try {
+      const submissionData = new FormData();
+      submissionData.append("student_number", formData.studentNumber);
+      submissionData.append("course_id", formData.course.id);
+      submissionData.append("package_id", formData.package_id);
+      submissionData.append("payment_slip", formData.paymentSlip);
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            student_number: formData.studentNumber,
-            course_id: formData.course.id,
-            package_id: selectedPackage.package_id, // Use selectedPackage.package_id
-          }),
+          body: submissionData,
         }
       );
 
@@ -114,7 +150,6 @@ export default function ConvocationPortal() {
         );
       }
 
-      // Set reference_number from response (matches backend return)
       setReferenceNumber(responseBody.reference_number);
       setShowSuccess(true);
     } catch (error) {
@@ -127,32 +162,25 @@ export default function ConvocationPortal() {
   return (
     <div className="flex justify-center flex-col items-center h-screen">
       <SplashScreen
-        loading={loading}
-        splashTitle={`Convocation Registration Portal`}
+        loading={splashLoading}
+        splashTitle="Convocation Registration Portal"
         icon={<div className="w-16 h-16" />}
       />
 
-      {!loading && (
+      {!splashLoading && (
         <div className="h-screen lg:min-h-40 bg-gradient-to-br from-blue-50 to-purple-50 flex flex-col w-full lg:w-[50%] lg:rounded-lg mx-auto relative overflow-auto pb-20">
-          {/* Header */}
           <Header currentStep={currentStep} prevStep={prevStep} steps={steps} />
-
-          {/* Logo */}
           <div className="bg-white flex justify-center items-center flex-col w-full pt-4">
             <Image
-              src={`/logo.png`}
+              src="/logo.png"
               width={550}
-              alt="Logo of Ceylon Pharma College"
               height={550}
+              alt="Logo of Ceylon Pharma College"
               className="w-[30%]"
             />
             <p className="text-xl font-bold">Convocation Registration Portal</p>
           </div>
-
-          {/* Progress Bar */}
           <ProgressBar steps={steps} currentStep={currentStep} />
-
-          {/* Main Content */}
           <main className="flex-1 p-4">
             <AnimatePresence mode="wait">
               {showSuccess ? (
@@ -164,6 +192,7 @@ export default function ConvocationPortal() {
                       formData={formData}
                       updateFormData={updateFormData}
                       setIsValid={setIsValid}
+                      setStepLoading={setStepLoading}
                     />
                   )}
                   {currentStep === 2 && (
@@ -171,6 +200,7 @@ export default function ConvocationPortal() {
                       formData={formData}
                       updateFormData={updateFormData}
                       setIsValid={setIsValid}
+                      setStepLoading={setStepLoading}
                     />
                   )}
                   {currentStep === 3 && (
@@ -178,16 +208,21 @@ export default function ConvocationPortal() {
                       formData={formData}
                       updatePackageData={updatePackageData}
                       setIsValid={setIsValid}
+                      setStepLoading={setStepLoading}
+                      packages={packages}
                     />
                   )}
                   {currentStep === 4 && (
-                    <ReviewStep formData={formData} setIsValid={setIsValid} />
+                    <ReviewStep
+                      formData={formData}
+                      setIsValid={setIsValid}
+                      updateFormData={updateFormData}
+                      packages={packages}
+                    />
                   )}
                 </>
               )}
             </AnimatePresence>
-
-            {/* Action Buttons */}
             <ActionButtons
               currentStep={currentStep}
               showSuccess={showSuccess}
@@ -199,7 +234,6 @@ export default function ConvocationPortal() {
           </main>
         </div>
       )}
-
       <Footer />
     </div>
   );
