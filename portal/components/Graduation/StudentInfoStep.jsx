@@ -1,11 +1,18 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { User, Loader } from "lucide-react";
 
-function InternalStudentInfo({ formData, updateFormData, setIsValid }) {
+export default function StudentInfoStep({
+  formData,
+  updateFormData,
+  setIsValid,
+  verifyStudent, // We'll replace this with internal logic
+}) {
   const [error, setError] = useState("");
   const [studentInfo, setStudentInfo] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // Validate student number format (PA followed by at least 5 digits)
   const validateStudentNumber = (value) => {
     if (!value) {
       setError("Student number is required.");
@@ -24,25 +31,29 @@ function InternalStudentInfo({ formData, updateFormData, setIsValid }) {
     return true;
   };
 
+  // Fetch student details from API
   const fetchStudentDetails = async (studentNumber) => {
     setLoading(true);
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/userFullDetails/username/${studentNumber}`
-      ); // Replace with actual API URL
+      );
       if (!response.ok) {
         throw new Error("Student not found");
       }
       const data = await response.json();
       setStudentInfo(data);
+      updateFormData("studentName", `${data.first_name} ${data.last_name}`); // Update formData with full name
     } catch (error) {
       setStudentInfo(null);
       setError("Student not found. Please check the student number.");
+      setIsValid(false);
     } finally {
       setLoading(false);
     }
   };
 
+  // Handle input change
   const handleChange = (e) => {
     const value = e.target.value.toUpperCase();
     updateFormData("studentNumber", value);
@@ -53,23 +64,24 @@ function InternalStudentInfo({ formData, updateFormData, setIsValid }) {
     }
   };
 
+  // Handle input blur
   const handleBlur = () => {
     validateStudentNumber(formData.studentNumber);
   };
 
+  // Masking functions
   const maskEmail = (email) => {
     if (!email) return "N/A";
     const [name, domain] = email.split("@");
-
     if (name.length > 4) {
       return `${name.slice(0, 2)}***${name.slice(-2)}@${domain}`;
     }
-
     return `${name[0]}***@${domain}`;
   };
+
   const maskPhone = (phone) => {
     if (!phone) return "N/A";
-    return phone.replace(/\d(?=\d{4})/g, "*"); // Mask all but last two digits
+    return phone.replace(/\d(?=\d{4})/g, "*"); // Mask all but last 4 digits
   };
 
   const maskNIC = (nic) => {
@@ -78,8 +90,15 @@ function InternalStudentInfo({ formData, updateFormData, setIsValid }) {
   };
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, x: 50 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -50 }}
+      transition={{ duration: 0.3 }}
+      className="bg-white rounded-xl shadow-lg p-6 space-y-6"
+    >
       <div className="space-y-4">
+        {/* Header Section */}
         <div className="bg-green-50 p-4 rounded-lg flex items-start space-x-3">
           <User className="w-5 h-5 text-green-500 mt-0.5" />
           <div>
@@ -90,6 +109,7 @@ function InternalStudentInfo({ formData, updateFormData, setIsValid }) {
           </div>
         </div>
 
+        {/* Input Section */}
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -107,8 +127,7 @@ function InternalStudentInfo({ formData, updateFormData, setIsValid }) {
                     error
                       ? "border-red-500 focus:ring-red-500"
                       : "border-gray-300 focus:ring-green-500"
-                  }
-                `}
+                  }`}
                 placeholder="Enter Student number (e.g., PA-XXXXXX)"
               />
               <User className="w-5 h-5 text-gray-400 absolute right-3 top-3" />
@@ -116,6 +135,7 @@ function InternalStudentInfo({ formData, updateFormData, setIsValid }) {
             {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
           </div>
 
+          {/* Loading State */}
           {loading && (
             <div className="flex items-center text-green-600">
               <Loader className="w-5 h-5 animate-spin mr-2" />
@@ -123,71 +143,69 @@ function InternalStudentInfo({ formData, updateFormData, setIsValid }) {
             </div>
           )}
 
+          {/* Student Info Display */}
           {studentInfo && (
             <div>
-              <div className="bg-green-50 rounded-lg p-3 ">
-                {/* Contact Details */}
-                <div className="">
-                  <h1 className="font-medium text-xl mb-2 border-b text-gray-800">
-                    Student Information
-                  </h1>
-                  {/* Name */}
-                  <div className="group  mb-2 rounded-xl hover:bg-gray-50 hover:p-2 transition-all duration-300">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">
-                          Full Name
-                        </div>
-                        <div className="text-gray-700 font-medium group-hover:text-blue-600 transition-colors">
-                          {studentInfo.first_name} {studentInfo.last_name}
-                        </div>
+              <div className="bg-green-50 rounded-lg p-3">
+                <h1 className="font-medium text-xl mb-2 border-b text-gray-800">
+                  Student Information
+                </h1>
+                {/* Name */}
+                <div className="group mb-2 rounded-xl hover:bg-gray-50 hover:p-2 transition-all duration-300">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm text-gray-500 mb-1">
+                        Full Name
+                      </div>
+                      <div className="text-gray-700 font-medium group-hover:text-blue-600 transition-colors">
+                        {studentInfo.first_name} {studentInfo.last_name}
                       </div>
                     </div>
                   </div>
+                </div>
 
-                  {/* Email */}
-                  <div className="group  mb-2 rounded-xl hover:bg-gray-50 hover:p-2 transition-all duration-300">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">
-                          Email Address
-                        </div>
-                        <div className="text-gray-700 font-medium group-hover:text-blue-600 transition-colors">
-                          {maskEmail(studentInfo.e_mail)}
-                        </div>
+                {/* Email */}
+                <div className="group mb-2 rounded-xl hover:bg-gray-50 hover:p-2 transition-all duration-300">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm text-gray-500 mb-1">
+                        Email Address
                       </div>
-                      <span className="text-2xl">📧</span>
+                      <div className="text-gray-700 font-medium group-hover:text-blue-600 transition-colors">
+                        {maskEmail(studentInfo.e_mail)}
+                      </div>
                     </div>
+                    <span className="text-2xl">📧</span>
                   </div>
+                </div>
 
-                  {/* Phone */}
-                  <div className="group mb-2 rounded-xl hover:bg-gray-50 hover:p-2 transition-all duration-300">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">
-                          Phone Number
-                        </div>
-                        <div className="text-gray-700 font-medium group-hover:text-blue-600 transition-colors">
-                          {maskPhone(studentInfo.telephone_1)}
-                        </div>
+                {/* Phone */}
+                <div className="group mb-2 rounded-xl hover:bg-gray-50 hover:p-2 transition-all duration-300">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm text-gray-500 mb-1">
+                        Phone Number
                       </div>
-                      <span className="text-2xl">📱</span>
+                      <div className="text-gray-700 font-medium group-hover:text-blue-600 transition-colors">
+                        {maskPhone(studentInfo.telephone_1)}
+                      </div>
                     </div>
+                    <span className="text-2xl">📱</span>
                   </div>
+                </div>
 
-                  {/* NIC */}
-                  <div className="group mb-3 rounded-xl hover:bg-gray-50 hover:p-2 transition-all duration-300">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <div className="text-sm text-gray-500 mb-1">
-                          NIC Number
-                        </div>
-                        <div className="text-gray-700 font-medium group-hover:text-blue-600 transition-colors">
-                          {maskNIC(studentInfo.nic)}
-                        </div>
+                {/* NIC */}
+                <div className="group mb-3 rounded-xl hover:bg-gray-50 hover:p-2 transition-all duration-300">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="text-sm text-gray-500 mb-1">
+                        NIC Number
                       </div>
-                      <span className="text-2xl">🪪</span>
+                      <div className="text-gray-700 font-medium group-hover:text-blue-600 transition-colors">
+                        {maskNIC(studentInfo.nic)}
+                      </div>
                     </div>
+                    <span className="text-2xl">🪪</span>
                   </div>
                 </div>
               </div>
@@ -207,8 +225,6 @@ function InternalStudentInfo({ formData, updateFormData, setIsValid }) {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
-
-export default InternalStudentInfo;

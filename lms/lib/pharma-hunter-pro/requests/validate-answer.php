@@ -15,11 +15,12 @@ $userLevel = $_POST["userLevel"];
 
 $error = "";
 $savedAnswers = savedAnswersByUserMedicine($link, $loggedUser, $medicineId);
+$savedCorrectAnswers = savedCorrectAnswersByUserMedicine($link, $loggedUser, $medicineId);
 $Medicine = GetProMedicineByID($link, $medicineId);
 $Mark = $WrongCount = 0;
 $displayMessage =  $rackError = $dosageError = $categoryError = $drugError = '';
 
-$AttemptCount = count($savedAnswers);
+$AttemptCount = count($savedCorrectAnswers);
 // Validate Answer
 if ($Medicine[0]['rack_id'] == $racksId) {
     $Mark += 10;
@@ -55,7 +56,7 @@ if ($Medicine[0]['dosage_form_id'] == $dosageFormId) {
 
 if ($WrongCount == 0) {
     $AnswerStatus = "Correct";
-    if ($AttemptCount == 0) {
+    if ($Mark == 40) {
         $ScoreType = "Gem";
     } else {
         $ScoreType = "Coin";

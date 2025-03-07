@@ -172,13 +172,20 @@
                                 return isset($item['answer_status']) && $item['answer_status'] === 'In-Correct';
                             });
 
-                            if (count($correctItems) >= count($inCorrectItems)) {
-                                $gemCount = count($correctItems) - count($inCorrectItems);
-                                $coinCount = count($inCorrectItems);
-                            } else {
-                                $gemCount = 0;
-                                $coinCount = count($correctItems);
-                            }
+                            $gemArray = array_filter($correctItems, function ($item) {
+                                return isset($item['score']) && $item['score'] === '40';
+                            });
+
+                            $gemCount = count($gemArray);
+                            $coinCount = count($correctItems) - $gemCount;
+
+                            // if (count($correctItems) >= count($inCorrectItems)) {
+                            //     $gemCount = count($correctItems) - count($inCorrectItems);
+                            //     $coinCount = count($inCorrectItems);
+                            // } else {
+                            //     $gemCount = 0;
+                            //     $coinCount = count($correctItems);
+                            // }
 
 
                             $totalCoin += $coinCount;

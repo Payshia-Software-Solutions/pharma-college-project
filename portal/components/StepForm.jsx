@@ -330,7 +330,7 @@ export default function StepForm() {
                                       key={city.id}
                                       className="p-3 hover:bg-gray-100 cursor-pointer transition-colors"
                                       onMouseDown={() => {
-                                        setValue("city", city.id);
+                                        setValue("city", String(city.id));
                                         setSearchQuery(city.name_en);
                                         setIsDropdownOpen(false);
                                       }}
