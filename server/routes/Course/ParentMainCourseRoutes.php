@@ -13,6 +13,7 @@ return [
 
     'GET /parent-main-course/{slug}' => [$parentMainCourseController, 'getCourseBySlug'],
     'GET /parent-main-course/get-id/{id}' => [$parentMainCourseController, 'getCourseById'],
+    'GET /parent-main-course/get-list/get' => [$parentMainCourseController, 'getCoursesByIds'],
 
     'GET /parent-main-course/get/active' => [$parentMainCourseController, 'getActiveCourses'],
 

@@ -117,13 +117,12 @@ class ConvocationRegistrationController
             $data = $_POST; // Form fields
             $file = $_FILES['payment_slip'] ?? null; // Uploaded file (matches frontend FormData key)
 
-            // Extract course_ids from $_POST (e.g., course_id[0], course_id[1], etc.)
-            $courseIds = [];
-            foreach ($_POST as $key => $value) {
-                if (preg_match('/^course_id\[(\d+)\]$/', $key, $matches)) {
-                    $courseIds[] = $value;
-                }
-            }
+            // Extract course_ids directly from $_POST['course_id']
+            $courseIds = isset($data['course_id']) && is_array($data['course_id']) ? $data['course_id'] : [];
+
+            // Debugging: Log or output the incoming data
+            error_log("Received data: " . print_r($data, true)); // Log to PHP error log
+            error_log("Extracted courseIds: " . print_r($courseIds, true)); // Log courseIds array
 
             // Required fields validation
             if (
@@ -180,14 +179,14 @@ class ConvocationRegistrationController
             // Create registration in the database
             $registration_id = $this->model->createRegistration(
                 $data['student_number'],
-                $courseIdsString, // Pass comma-separated course IDs
+                $courseIdsString,
                 $data['package_id'],
                 $data['event_id'] ?? null,
                 $data['payment_status'] ?? 'pending',
                 $data['payment_amount'] ?? null,
                 $data['registration_status'] ?? 'pending',
                 $data['hash_value'] ?? null,
-                $paymentSlipPath // Pass FTP path to model
+                $paymentSlipPath
             );
 
             http_response_code(201);
@@ -195,18 +194,20 @@ class ConvocationRegistrationController
                 'registration_id' => $registration_id,
                 'reference_number' => $registration_id,
                 'message' => 'Registration created successfully',
-                'payment_slip_path' => $paymentSlipPath // Optional: Return FTP path
+                'payment_slip_path' => $paymentSlipPath
             ]);
         } else {
             // Fallback for JSON (if no file is sent)
             $data = json_decode(file_get_contents('php://input'), true);
-
-            // Extract course_ids from JSON data
             $courseIds = isset($data['course_id']) ? (is_array($data['course_id']) ? $data['course_id'] : [$data['course_id']]) : [];
+
+            // Debugging: Log or output the incoming data
+            error_log("Received JSON data: " . print_r($data, true));
+            error_log("Extracted courseIds: " . print_r($courseIds, true));
 
             if (
                 !isset($data['student_number']) ||
-                empty($courseIds) || // Check if courseIds array is empty
+                empty($courseIds) ||
                 !isset($data['package_id'])
             ) {
                 http_response_code(400);
@@ -214,12 +215,11 @@ class ConvocationRegistrationController
                 return;
             }
 
-            // Convert course_ids array to a comma-separated string
             $courseIdsString = implode(',', $courseIds);
 
             $registration_id = $this->model->createRegistration(
                 $data['student_number'],
-                $courseIdsString, // Pass comma-separated course IDs
+                $courseIdsString,
                 $data['package_id'],
                 $data['event_id'] ?? null,
                 $data['payment_status'] ?? 'pending',
@@ -234,6 +234,7 @@ class ConvocationRegistrationController
             ]);
         }
     }
+
     // PUT update a registration
     public function updateRegistration($registration_id)
     {

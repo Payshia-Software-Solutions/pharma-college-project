@@ -41,6 +41,42 @@ class ParentMainCourseController
         }
     }
 
+    public function getCoursesByIds()
+    {
+        // Get the ids query parameter
+        $ids = isset($_GET['ids']) ? $_GET['ids'] : '';
+
+        if (empty($ids)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'No course IDs provided']);
+            return;
+        }
+
+        // Split the comma-separated ids into an array
+        $idArray = explode(',', $ids);
+
+        // Fetch courses
+        $courses = $this->model->getCoursesByIds($idArray);
+
+        if ($courses === false) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to fetch courses']);
+            return;
+        }
+
+        // Format response
+        $response = array_map(function ($course) {
+            return [
+                'id' => $course['id'],
+                'course_name' => $course['course_name']
+            ];
+        }, $courses);
+
+        http_response_code(200);
+        header('Content-Type: application/json');
+        echo json_encode($response);
+    }
+
 
     // Get a single course by course_code
     public function getCourseByCourseCode($course_code)

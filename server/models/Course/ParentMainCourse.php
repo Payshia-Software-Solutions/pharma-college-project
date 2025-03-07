@@ -58,6 +58,26 @@ class ParentMainCourse
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getCoursesByIds($ids)
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        // Prepare the IN clause for the SQL query
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $sql = "SELECT id, course_name FROM parent_main_course WHERE id IN ($placeholders)";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($ids);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Query failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
 
 
 
