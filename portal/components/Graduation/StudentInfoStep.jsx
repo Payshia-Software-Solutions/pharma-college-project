@@ -13,6 +13,7 @@ export default function StudentInfoStep({
   const [error, setError] = useState("");
   const [studentInfo, setStudentInfo] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [duplicateRecords, setDuplicateRecords] = useState(null);
 
   // Validate student number format
   const validateStudentNumber = (value) => {
@@ -30,10 +31,42 @@ export default function StudentInfoStep({
     return true;
   };
 
+  // Check for duplicate registrations
+  const checkDuplicateRegistration = async (studentNumber) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations/check-duplicate/${studentNumber}`
+      );
+      if (!response.ok) {
+        throw new Error("Error checking duplicate registration");
+      }
+      const data = await response.json();
+      if (data.length > 0) {
+        setDuplicateRecords(data);
+        setIsValid(false);
+        setError("This student has already registered for convocation.");
+        return true;
+      }
+      setDuplicateRecords(null);
+      return false;
+    } catch (error) {
+      console.error("Error checking duplicate:", error);
+      setDuplicateRecords(null);
+      return false;
+    }
+  };
+
   // Fetch student details from API
   const fetchStudentDetails = async (studentNumber) => {
     setLoading(true);
     try {
+      // First check for duplicates
+      const hasDuplicates = await checkDuplicateRegistration(studentNumber);
+      if (hasDuplicates) {
+        setLoading(false);
+        return;
+      }
+
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/userFullDetails/username/${studentNumber}`
       );
@@ -43,7 +76,7 @@ export default function StudentInfoStep({
       const data = await response.json();
       setStudentInfo(data);
       updateFormData("studentName", `${data.first_name} ${data.last_name}`);
-      setIsValid(true); // Only set true on successful fetch
+      setIsValid(true);
     } catch (error) {
       setStudentInfo(null);
       setError("Student not found. Please check the student number.");
@@ -61,7 +94,8 @@ export default function StudentInfoStep({
       fetchStudentDetails(value);
     } else {
       setStudentInfo(null);
-      setIsValid(false); // Invalidate if format fails
+      setDuplicateRecords(null);
+      setIsValid(false);
     }
   };
 
@@ -71,13 +105,13 @@ export default function StudentInfoStep({
       formData.studentNumber &&
       validateStudentNumber(formData.studentNumber)
     ) {
-      if (!studentInfo) {
-        fetchStudentDetails(formData.studentNumber); // Fetch if valid but no info yet
-      } else {
-        setIsValid(true); // Valid if we already have studentInfo
+      if (!studentInfo && !duplicateRecords) {
+        fetchStudentDetails(formData.studentNumber);
+      } else if (studentInfo && !duplicateRecords) {
+        setIsValid(true);
       }
     } else {
-      setIsValid(false); // Invalid if studentNumber is empty or malformed
+      setIsValid(false);
     }
   }, [formData.studentNumber]);
 
@@ -195,6 +229,72 @@ export default function StudentInfoStep({
                     Please verify that this information is correct. If you
                     notice any discrepancies, contact student support
                     immediately.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {duplicateRecords && (
+            <div className="bg-red-50 rounded-lg p-3">
+              <h1 className="font-medium text-xl mb-2 border-b text-gray-800">
+                Existing Registration Found
+              </h1>
+              {duplicateRecords.map((record) => (
+                <div key={record.id} className="space-y-2">
+                  <div className="flex justify-between">
+                    <div>
+                      <div className="text-sm text-gray-500">
+                        Reference Number
+                      </div>
+                      <div className="text-gray-700 font-medium">
+                        {record.reference_number}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>
+                      <div className="text-sm text-gray-500">
+                        Registration Status
+                      </div>
+                      <div className="text-gray-700 font-medium">
+                        {record.registration_status}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>
+                      <div className="text-sm text-gray-500">
+                        Payment Status
+                      </div>
+                      <div className="text-gray-700 font-medium">
+                        {record.payment_status}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>
+                      <div className="text-sm text-gray-500">Registered At</div>
+                      <div className="text-gray-700 font-medium">
+                        {new Date(record.registered_at).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                  {record.image_path && (
+                    <div>
+                      <div className="text-sm text-gray-500">Payment Slip</div>
+                      <div className="text-gray-700 font-medium">Uploaded</div>
+                    </div>
+                  )}
+                </div>
+              ))}
+              <div className="mt-2 p-4 bg-orange-50 rounded-xl border border-orange-100">
+                <div className="flex items-start">
+                  <span className="text-xl mr-3">⚠️</span>
+                  <p className="text-sm text-orange-700">
+                    This student has already registered. Please contact support
+                    if you believe this is an error or if you need to modify the
+                    existing registration.
                   </p>
                 </div>
               </div>
