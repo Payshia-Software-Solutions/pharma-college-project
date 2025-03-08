@@ -1,0 +1,37 @@
+2025-03-08T14:06:42.349Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.live
+2025-03-08T14:06:43.202Z - Environment: production 
+2025-03-08T14:06:43.280Z - Server running on port 5000
+2025-03-08T14:07:03.588Z - ✅ Database synced successfully
+2025-03-08T14:11:55.638Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.live
+2025-03-08T14:11:56.984Z - Environment: production 
+2025-03-08T14:11:57.105Z - Server running on port 5000
+2025-03-08T14:11:57.109Z - Click to view: http://localhost:5000
+2025-03-08T14:12:18.460Z - ✅ Database synced successfully
+2025-03-08T14:13:58.343Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.live
+2025-03-08T14:13:59.072Z - Environment: production 
+2025-03-08T14:13:59.166Z - Server running on port 5000
+2025-03-08T14:13:59.168Z - Click to view (local): http://localhost:5000
+2025-03-08T14:13:59.169Z - Click to view (network): http://192.168.8.115:5000
+2025-03-08T14:14:21.007Z - ✅ Database synced successfully
+2025-03-08T14:14:47.175Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.live
+2025-03-08T14:14:47.885Z - Environment: production 
+2025-03-08T14:14:47.978Z - Server running on port 5000
+2025-03-08T14:14:47.979Z - Local: http://localhost:5000
+2025-03-08T14:14:47.980Z - Network: http://192.168.8.115:5000
+2025-03-08T14:15:13.853Z - ✅ Database synced successfully
+2025-03-08T14:16:22.944Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.live
+2025-03-08T14:16:23.754Z - Environment: production 
+2025-03-08T14:16:23.848Z - Server running on port 5000
+2025-03-08T14:16:23.849Z - 
+Local: http://localhost:5000
+2025-03-08T14:16:23.850Z - Network: http://192.168.8.115:5000
+2025-03-08T14:16:45.042Z - 
+✅ Database synced successfully
+2025-03-08T15:41:00.558Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.live
+2025-03-08T15:41:01.723Z - Environment: production 
+2025-03-08T15:41:01.850Z - Server running on port 5000
+2025-03-08T15:41:01.850Z - 
+Local: http://localhost:5000
+2025-03-08T15:41:01.851Z - Network: http://192.168.8.115:5000
+2025-03-08T15:41:22.963Z - 
+✅ Database synced successfully
