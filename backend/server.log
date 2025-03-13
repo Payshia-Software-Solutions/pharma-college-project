@@ -35,3 +35,163 @@ Local: http://localhost:5000
 2025-03-08T15:41:01.851Z - Network: http://192.168.8.115:5000
 2025-03-08T15:41:22.963Z - 
 ✅ Database synced successfully
+2025-03-08T15:45:15.371Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-08T15:45:16.841Z - Environment: development 
+2025-03-08T15:45:17.014Z - Server running on port 5000
+2025-03-08T15:45:17.016Z - 
+Local: http://localhost:5000
+2025-03-08T15:45:17.017Z - Network: http://192.168.8.115:5000
+2025-03-08T15:45:18.624Z - 
+✅ Database synced successfully
+2025-03-08T15:58:54.886Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-08T15:58:56.013Z - Environment: development 
+2025-03-08T15:58:56.117Z - Server running on port 5000
+2025-03-08T15:58:56.118Z - 
+Local: http://localhost:5000
+2025-03-08T15:58:56.121Z - Network: http://192.168.8.115:5000
+2025-03-08T15:58:58.059Z - 
+✅ Database synced successfully
+2025-03-08T16:14:21.996Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-08T16:14:23.267Z - Environment: development 
+2025-03-08T16:14:23.384Z - Server running on port 5000
+2025-03-08T16:14:23.385Z - 
+Local: http://localhost:5000
+2025-03-08T16:14:23.386Z - Network: http://192.168.8.115:5000
+2025-03-08T16:14:24.578Z - 
+✅ Database synced successfully
+2025-03-08T16:14:44.853Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-08T16:14:45.581Z - Environment: development 
+2025-03-08T16:14:45.665Z - Server running on port 5000
+2025-03-08T16:14:45.666Z - 
+Local: http://localhost:5000
+2025-03-08T16:14:45.666Z - Network: http://192.168.8.115:5000
+2025-03-08T16:14:46.602Z - 
+✅ Database synced successfully
+2025-03-08T16:15:30.662Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-08T16:15:31.366Z - Environment: development 
+2025-03-08T16:15:31.457Z - Server running on port 5000
+2025-03-08T16:15:31.458Z - 
+Local: http://localhost:5000
+2025-03-08T16:15:31.458Z - Network: http://192.168.8.115:5000
+2025-03-08T16:15:32.369Z - 
+✅ Database synced successfully
+2025-03-08T16:16:21.573Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-08T16:16:22.252Z - Environment: development 
+2025-03-08T16:16:22.339Z - Server running on port 5000
+2025-03-08T16:16:22.340Z - 
+Local: http://localhost:5000
+2025-03-08T16:16:22.341Z - Network: http://192.168.8.115:5000
+2025-03-08T16:16:23.270Z - 
+✅ Database synced successfully
+2025-03-08T16:25:18.881Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-08T16:25:20.172Z - Environment: development 
+2025-03-08T16:25:20.296Z - Server running on port 5000
+2025-03-08T16:25:20.297Z - 
+Local: http://localhost:5000
+2025-03-08T16:25:20.298Z - Network: http://192.168.8.115:5000
+2025-03-08T16:25:21.626Z - 
+✅ Database synced successfully
+2025-03-08T16:26:45.897Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-08T16:26:46.783Z - Environment: development 
+2025-03-08T16:26:46.877Z - Server running on port 5000
+2025-03-08T16:26:46.879Z - 
+Local: http://localhost:5000
+2025-03-08T16:26:46.880Z - Network: http://192.168.8.115:5000
+2025-03-08T16:26:47.791Z - 
+✅ Database synced successfully
+2025-03-09T17:23:58.752Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-09T17:23:59.287Z - Environment: development 
+2025-03-09T17:23:59.356Z - Server running on port 5000
+2025-03-09T17:23:59.357Z - 
+Local: http://localhost:5000
+2025-03-09T17:23:59.357Z - Network: http://192.168.8.115:5000
+2025-03-09T17:24:00.028Z - 
+✅ Database synced successfully
+2025-03-09T17:49:10.168Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-09T17:49:10.582Z - Environment: development 
+2025-03-09T17:49:10.622Z - Server running on port 5000
+2025-03-09T17:49:10.623Z - 
+Local: http://localhost:5000
+2025-03-09T17:49:10.623Z - Network: http://192.168.8.115:5000
+2025-03-09T17:49:11.336Z - 
+✅ Database synced successfully
+2025-03-09T17:50:45.660Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-09T17:50:45.953Z - Environment: development 
+2025-03-09T17:50:45.993Z - Server running on port 5000
+2025-03-09T17:50:45.994Z - 
+Local: http://localhost:5000
+2025-03-09T17:50:45.995Z - Network: http://192.168.8.115:5000
+2025-03-09T17:50:46.584Z - 
+✅ Database synced successfully
+2025-03-09T18:02:33.018Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-09T18:02:33.496Z - Environment: development 
+2025-03-09T18:02:33.557Z - Server running on port 5000
+2025-03-09T18:02:33.557Z - 
+Local: http://localhost:5000
+2025-03-09T18:02:33.558Z - Network: http://192.168.8.115:5000
+2025-03-09T18:02:34.489Z - 
+✅ Database synced successfully
+2025-03-09T18:20:26.213Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-09T18:20:26.688Z - Environment: development 
+2025-03-09T18:20:26.738Z - Server running on port 5000
+2025-03-09T18:20:26.739Z - 
+Local: http://localhost:5000
+2025-03-09T18:20:26.739Z - Network: http://192.168.8.115:5000
+2025-03-09T18:20:27.463Z - 
+✅ Database synced successfully
+2025-03-09T18:21:28.821Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-09T18:21:29.247Z - Environment: development 
+2025-03-09T18:21:29.301Z - Server running on port 5000
+2025-03-09T18:21:29.302Z - 
+Local: http://localhost:5000
+2025-03-09T18:21:29.303Z - Network: http://192.168.8.115:5000
+2025-03-09T18:21:29.912Z - 
+✅ Database synced successfully
+2025-03-09T18:23:34.868Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-09T18:23:35.314Z - Environment: development 
+2025-03-09T18:23:35.362Z - Server running on port 5000
+2025-03-09T18:23:35.362Z - 
+Local: http://localhost:5000
+2025-03-09T18:23:35.363Z - Network: http://192.168.8.115:5000
+2025-03-09T18:23:35.971Z - 
+✅ Database synced successfully
+2025-03-10T08:14:42.550Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-10T08:14:43.610Z - Environment: development 
+2025-03-10T08:14:43.712Z - Server running on port 5000
+2025-03-10T08:14:43.713Z - 
+Local: http://localhost:5000
+2025-03-10T08:14:43.714Z - Network: http://192.168.8.115:5000
+2025-03-10T08:14:44.801Z - 
+✅ Database synced successfully
+2025-03-10T11:38:34.459Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-10T11:38:35.929Z - Environment: development 
+2025-03-10T11:38:36.059Z - Server running on port 5000
+2025-03-10T11:38:36.060Z - 
+Local: http://localhost:5000
+2025-03-10T11:38:36.061Z - Network: http://192.168.8.115:5000
+2025-03-10T11:38:37.625Z - 
+✅ Database synced successfully
+2025-03-10T20:40:55.364Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-10T20:40:56.404Z - Environment: development 
+2025-03-10T20:40:56.511Z - Server running on port 5000
+2025-03-10T20:40:56.512Z - 
+Local: http://localhost:5000
+2025-03-10T20:40:56.513Z - Network: http://192.168.8.115:5000
+2025-03-10T20:40:57.933Z - 
+✅ Database synced successfully
+2025-03-11T06:56:22.665Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-11T06:56:23.123Z - Environment: development 
+2025-03-11T06:56:23.175Z - Server running on port 5000
+2025-03-11T06:56:23.175Z - 
+Local: http://localhost:5000
+2025-03-11T06:56:23.176Z - Network: http://192.168.8.115:5000
+2025-03-11T06:56:23.855Z - 
+✅ Database synced successfully
+2025-03-12T06:43:16.087Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-12T06:43:17.184Z - Environment: development 
+2025-03-12T06:43:17.326Z - Server running on port 5000
+2025-03-12T06:43:17.327Z - 
+Local: http://localhost:5000
+2025-03-12T06:43:17.328Z - Network: http://192.168.8.115:5000
+2025-03-12T06:43:18.601Z - 
+✅ Database synced successfully

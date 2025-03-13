@@ -1,4 +1,4 @@
-const { Course, Game, Evaluation } = require("../models/index");
+const { Course, Game, Evaluation, Batch } = require("../models/index");
 
 const courseController = {
   async createCourse(req, res) {
@@ -16,6 +16,7 @@ const courseController = {
         include: [
           { model: Game, as: "Games" },
           { model: Evaluation, as: "Evaluations" },
+          { model: Batch, as: "Batches" },
         ],
       });
       res.json(courses);
@@ -30,6 +31,7 @@ const courseController = {
         include: [
           { model: Game, as: "Games" },
           { model: Evaluation, as: "Evaluations" },
+          { model: Batch, as: "Batches" },
         ],
       });
       if (!course) return res.status(404).json({ error: "Course not found" });
@@ -63,14 +65,62 @@ const courseController = {
 
   async addGameToCourse(req, res) {
     try {
-      const { courseId, gameId } = req.body;
+      const { courseId, gameId, minQuantity } = req.body;
+
+      // Validate input
+      if (!courseId || !gameId) {
+        return res
+          .status(400)
+          .json({ error: "courseId and gameId are required" });
+      }
+
       const course = await Course.findByPk(courseId);
       const game = await Game.findByPk(gameId);
-      if (!course || !game)
+
+      if (!course || !game) {
         return res.status(404).json({ error: "Course or Game not found" });
-      await course.addGame(game);
-      res.status(200).json({ message: "Game added to course successfully" });
+      }
+
+      // Add game to course with minQuantity
+      await course.addGame(game, { through: { minQuantity } });
+
+      res.status(200).json({
+        message: "Game added to course successfully",
+        data: { courseId, gameId, minQuantity },
+      });
     } catch (error) {
+      console.error("Error in addGameToCourse:", error);
+      res.status(400).json({ error: error.message });
+    }
+  },
+
+  async removeGameFromCourse(req, res) {
+    try {
+      const { courseId, gameId } = req.body;
+
+      // Validate input
+      if (!courseId || !gameId) {
+        return res
+          .status(400)
+          .json({ error: "courseId and gameId are required" });
+      }
+
+      const course = await Course.findByPk(courseId);
+      const game = await Game.findByPk(gameId);
+
+      if (!course || !game) {
+        return res.status(404).json({ error: "Course or Game not found" });
+      }
+
+      // Remove game from course
+      await course.removeGame(game);
+
+      res.status(200).json({
+        message: "Game removed from course successfully",
+        data: { courseId, gameId },
+      });
+    } catch (error) {
+      console.error("Error in removeGameFromCourse:", error);
       res.status(400).json({ error: error.message });
     }
   },

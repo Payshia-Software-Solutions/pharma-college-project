@@ -3,9 +3,11 @@ const Game = require("./game");
 const Evaluation = require("./evaluation");
 const CourseGame = require("./courseGame");
 const Instructor = require("./instructor");
+const Batch = require("./batch");
 
 // Define relationships with onDelete: "RESTRICT"
 Course.hasMany(Evaluation, { foreignKey: "courseId", onDelete: "RESTRICT" });
+Course.hasMany(Batch, { foreignKey: "courseId", onDelete: "RESTRICT" });
 Evaluation.belongsTo(Course, { foreignKey: "courseId", onDelete: "RESTRICT" });
 
 Course.belongsToMany(Game, {
@@ -25,4 +27,5 @@ module.exports = {
   Evaluation,
   CourseGame,
   Instructor,
+  Batch
 };

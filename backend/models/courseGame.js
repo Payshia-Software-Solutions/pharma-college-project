@@ -27,7 +27,12 @@ const CourseGame = sequelize.define(
         key: "id",
       },
     },
-    is_active: {
+      minQuantity: { // Add this field
+          type: DataTypes.INTEGER,
+          allowNull: true, // Or false if it’s required
+          defaultValue: null,
+      },
+      is_active: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: true,
