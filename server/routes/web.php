@@ -30,7 +30,7 @@ $templatePath = __DIR__ . '/../templates/welcome_sms_template.txt';
 
 
 // Include route files
-$assignmentRoutes = require './routes/OtherRoutes/assignmentRoutes.php';
+$assignmentRoutes = require './routes/Assignment/AssignmentRoutes.php';
 $appointmentRoutes = require './routes/OtherRoutes/appointmentRoutes.php';
 // $eCertificateRoutes = require './routes/OtherRoutes/eCertificateRoutes.php';
 $courseAssignmentRoutes = require './routes/OtherRoutes/courseAssignmentRoutes.php';

@@ -48,6 +48,7 @@ const courseRoutes = require("./routes/courseRoutes");
 const gameRoutes = require("./routes/gameRoutes");
 const evaluationRoutes = require("./routes/evaluationRoutes");
 const instructorRoutes = require("./routes/instructorRoutes");
+const batchRoutes = require("./routes/batchRoutes");
 
 const app = express();
 
@@ -69,6 +70,7 @@ app.use(`/api/${apiVersion}/courses`, courseRoutes);
 app.use(`/api/${apiVersion}/games`, gameRoutes);
 app.use(`/api/${apiVersion}/evaluations`, evaluationRoutes);
 app.use(`/api/${apiVersion}/instructors`, instructorRoutes);
+app.use(`/api/${apiVersion}/batches`, batchRoutes);
 
 // Root route (optional)
 app.get("/", (req, res) =>
@@ -80,10 +82,10 @@ const getLocalIP = () => {
   const networkInterfaces = os.networkInterfaces();
   let localIP = "localhost"; // Fallback to localhost
   for (const interfaceName in networkInterfaces) {
-    for (const iface of networkInterfaces[interfaceName]) {
+    for (const face of networkInterfaces[interfaceName]) {
       // Check if it is an IPv4 address
-      if (iface.family === "IPv4" && !iface.internal) {
-        localIP = iface.address;
+      if (face.family === "IPv4" && !face.internal) {
+        localIP = face.address;
         break;
       }
     }

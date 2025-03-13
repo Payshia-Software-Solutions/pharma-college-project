@@ -7,6 +7,7 @@ router.get("/", courseController.getAllCourses);
 router.get("/:id", courseController.getCourse);
 router.put("/:id", courseController.updateCourse);
 router.delete("/:id", courseController.deleteCourse);
-router.post("/add-game", courseController.addGameToCourse); // POST /api/v2/courses/add-game
+router.post("/add-game", courseController.addGameToCourse);
+router.post("/remove-game", courseController.removeGameFromCourse); // POST /api/v2/courses/add-game
 
 module.exports = router;
