@@ -1,3 +1,5 @@
+import React from "react";
+
 import PaymentSelection from "@/components/PaymentSelection";
 
 export const metadata = {

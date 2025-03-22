@@ -1,3 +1,5 @@
+import React from "react";
+
 import StepForm from "@/components/StepForm";
 
 export const metadata = {

@@ -1,6 +1,12 @@
 "use client";
 import React from "react";
-import { Home, CreditCard, UserPlus } from "lucide-react";
+import {
+  Home,
+  CreditCard,
+  UserPlus,
+  GraduationCap,
+  ShieldCheck,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -8,13 +14,25 @@ const FloatingNavFullUnderline = () => {
   const pathname = usePathname();
 
   const tabs = [
-    { id: "payments", icon: CreditCard, label: "Payments", link: "/payment" },
-    { id: "home", icon: Home, label: "Home", link: "/" },
     {
       id: "registration",
       icon: UserPlus,
       label: "Registration",
       link: "/register",
+    },
+    { id: "payments", icon: CreditCard, label: "Payments", link: "/payment" },
+    { id: "home", icon: Home, label: "Home", link: "/" },
+    {
+      id: "graduation",
+      icon: GraduationCap,
+      label: "Graduation",
+      link: "/graduation",
+    },
+    {
+      id: "certification",
+      icon: ShieldCheck,
+      label: "Certificate",
+      link: "/certification",
     },
   ];
 
@@ -38,7 +56,7 @@ const FloatingNavFullUnderline = () => {
               >
                 <div
                   className={`relative flex items-center justify-center rounded-2xl ${
-                    isActive ? "bg-green-500 shadow-lg p-3 " : ""
+                    isActive ? "bg-brand shadow-lg p-3 " : ""
                   }`}
                 >
                   <Icon
@@ -53,13 +71,13 @@ const FloatingNavFullUnderline = () => {
                 </div>
                 <span
                   className={`text-xs mt-1 ${
-                    isActive ? "text-green-800 font-medium" : "text-gray-600"
+                    isActive ? "text-brand font-medium" : "text-gray-600"
                   }`}
                 >
                   {label}
                 </span>
                 {isActive && (
-                  <div className="absolute -bottom-2 left-0 right-0 h-1 bg-green-500 rounded-t-full" />
+                  <div className="absolute -bottom-2 left-0 right-0 h-1 bg-brand rounded-t-full" />
                 )}
               </div>
             </Link>

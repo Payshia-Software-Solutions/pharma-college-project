@@ -157,14 +157,14 @@ progress::-webkit-progress-bar {
 }
 
 progress::-webkit-progress-value {
-  background-color: #4caf50;
+  background-color: #3eaf9c;
   /* Green color */
   border-radius: 10px;
   /* Rounded corners */
 }
 
 progress::-moz-progress-bar {
-  background-color: #4caf50;
+  background-color: #3eaf9c;
   /* Green color */
   border-radius: 10px;
   /* Rounded corners */

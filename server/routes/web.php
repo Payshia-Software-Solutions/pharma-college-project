@@ -30,7 +30,7 @@ $templatePath = __DIR__ . '/../templates/welcome_sms_template.txt';
 
 
 // Include route files
-$assignmentRoutes = require './routes/OtherRoutes/assignmentRoutes.php';
+$assignmentRoutes = require './routes/Assignment/AssignmentRoutes.php';
 $appointmentRoutes = require './routes/OtherRoutes/appointmentRoutes.php';
 // $eCertificateRoutes = require './routes/OtherRoutes/eCertificateRoutes.php';
 $courseAssignmentRoutes = require './routes/OtherRoutes/courseAssignmentRoutes.php';
@@ -117,6 +117,9 @@ $paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.p
 $DpadRoutes = require './routes/Dpad/DpadRoutes.php';
 $SMSRoutes = require './routes/SMSRoutes.php';
 $bankRoutes = require './routes/bankRoutes.php';
+
+$ConvocationRegistrationRoutes = require './routes/ConvocationRegistrationRoutes.php';
+$PackageRoutes = require './routes/PackageRoutes.php';
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
 
 
@@ -207,7 +210,9 @@ $routes = array_merge(
     $paymentRequestRoutes,
     $DpadRoutes,
     $SMSRoutes,
-    $bankRoutes
+    $bankRoutes,
+    $ConvocationRegistrationRoutes,
+    $PackageRoutes
 );
 
 

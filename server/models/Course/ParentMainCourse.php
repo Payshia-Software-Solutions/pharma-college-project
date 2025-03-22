@@ -16,10 +16,9 @@ class ParentMainCourse
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         error_log("Count result: " . print_r($result, true));  // Log the result
         return $result['total'];
-        
     }
-    
-    
+
+
 
     // Fetch all records from the table
     public function getAllCourses()
@@ -44,14 +43,42 @@ class ParentMainCourse
     }
 
 
-    public function getCourseByCourseCode($course_code)
-{
-    $stmt = $this->pdo->prepare("SELECT * FROM parent_main_course WHERE course_code = :course_code");
-    $stmt->execute(['course_code' => $course_code]);
-    return $stmt->fetch(PDO::FETCH_ASSOC);
-}
+    public function getCourseById($id)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM parent_main_course WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
-    
+
+    public function getCourseByCourseCode($course_code)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM parent_main_course WHERE course_code = :course_code");
+        $stmt->execute(['course_code' => $course_code]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getCoursesByIds($ids)
+    {
+        if (empty($ids)) {
+            return [];
+        }
+
+        // Prepare the IN clause for the SQL query
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $sql = "SELECT id, course_name FROM parent_main_course WHERE id IN ($placeholders)";
+
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute($ids);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Query failed: " . $e->getMessage());
+            return false;
+        }
+    }
+
+
 
 
     // Create a new course record
@@ -61,7 +88,7 @@ class ParentMainCourse
 
         // Generate a slug from the course name
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $data['course_name'])));
-        
+
         // Ensure the slug is unique
         $data['slug'] = $this->generateUniqueSlug($slug);
 
@@ -78,44 +105,7 @@ class ParentMainCourse
     }
 
     // Update an existing course record by slug
-    // public function updateCourse($slug, $data)
-    // {
-      
-    //     if (!empty($data['course_name'])) {
-    //         $newSlug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $data['course_name'])));
-    //         $data['slug'] = $this->generateUniqueSlug($newSlug);
-    //     } else {
-    //         $data['slug'] = $slug;
-    //     }
 
-    //     $sql = "UPDATE parent_main_course SET 
-    //                 course_name = :course_name, 
-    //                 course_code = :course_code, 
-    //                 instructor_id = :instructor_id, 
-    //                 course_description = :course_description, 
-    //                 course_duration = :course_duration, 
-    //                 course_fee = :course_fee, 
-    //                 registration_fee = :registration_fee, 
-    //                 created_by = :created_by, 
-    //                 display = :display, 
-    //                 course_img = :course_img, 
-    //                 certification = :certification, 
-    //                 mini_description = :mini_description, 
-    //                 is_active = :is_active, 
-    //                 lecture_count = :lecture_count, 
-    //                 hours_per_lecture = :hours_per_lecture, 
-    //                 assessments = :assessments, 
-    //                 language = :language, 
-    //                 quizzes = :quizzes, 
-    //                 skill_level = :skill_level, 
-    //                 head_count = :head_count, 
-    //                 module_list = :module_list, 
-    //                 course_mode = :course_mode, 
-    //                 slug = :slug
-    //             WHERE slug = :slug";
-    //     $stmt = $this->pdo->prepare($sql);
-    //     $stmt->execute($data);
-    // }
 
     public function updateCourse($slug, $data)
 {
@@ -168,32 +158,32 @@ class ParentMainCourse
         $stmt = $this->pdo->prepare("SELECT * FROM parent_main_course WHERE course_code = ?");
         $stmt->execute([$course_code]);
         $course = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
         if (!$course) {
-            return null;// Return null if course does not exist
+            return null; // Return null if course does not exist
         }
-    
+
         if (empty($course['slug'])) {
             $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $course['course_name'])));
-    
-    
+
+
             $slug = $this->generateUniqueSlug($slug);
-    
+
             try {
                 $stmt = $this->pdo->prepare("UPDATE parent_main_course SET slug = ? WHERE course_code = ?");
                 $stmt->execute([$slug, $course_code]);
             } catch (PDOException $e) {
-               
+
                 error_log("Failed to update slug: " . $e->getMessage());
                 return null;
             }
-    
+
             return $slug;
         }
-    
-        return $course['slug']; 
+
+        return $course['slug'];
     }
-    
+
 
     // Delete a course record by slug
     public function deleteCourse($slug)
@@ -202,12 +192,12 @@ class ParentMainCourse
         $stmt->execute(['slug' => $slug]);
     }
 
-      // Delete a course record by ID
-      public function deleteCourseById($id)
-      {
-          $stmt = $this->pdo->prepare("DELETE FROM parent_main_course WHERE id = :id");
-          $stmt->execute(['id' => $id]);
-      }
+    // Delete a course record by ID
+    public function deleteCourseById($id)
+    {
+        $stmt = $this->pdo->prepare("DELETE FROM parent_main_course WHERE id = :id");
+        $stmt->execute(['id' => $id]);
+    }
     // Fetch courses by their active status
     public function getActiveCourses()
     {

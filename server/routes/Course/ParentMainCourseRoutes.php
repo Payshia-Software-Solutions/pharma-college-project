@@ -7,11 +7,13 @@ $parentMainCourseController = new ParentMainCourseController($pdo);
 
 // Define routes
 return [
- 
+
     'GET /parent-main-course' => [$parentMainCourseController, 'getAllCourses'],
 
 
     'GET /parent-main-course/{slug}' => [$parentMainCourseController, 'getCourseBySlug'],
+    'GET /parent-main-course/get-id/{id}' => [$parentMainCourseController, 'getCourseById'],
+    'GET /parent-main-course/get-list/get' => [$parentMainCourseController, 'getCoursesByIds'],
 
     'GET /parent-main-course/get/active' => [$parentMainCourseController, 'getActiveCourses'],
 
@@ -37,7 +39,7 @@ return [
 
     'DELETE /parent-main-course/{id}' => [$parentMainCourseController, 'deleteCourseById'],
 
- 
-'POST /parent-main-course/generate-slug/{course_code}' => [$parentMainCourseController, 'generateSlugByCourseCode'],
+
+    'POST /parent-main-course/generate-slug/{course_code}' => [$parentMainCourseController, 'generateSlugByCourseCode'],
 
 ];

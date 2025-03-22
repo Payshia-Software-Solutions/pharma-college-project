@@ -92,6 +92,7 @@ $pendingCount = ($MedicineCount * $CountAnswer) - count($correctAttempts);
 $totalGem = $totalCoin = 0;
 $AllSubmissionsByMedicine  = GetAllSubmissionsByMedicine($link, $loggedUser);
 $AllSubmissions = GetAllSubmissions($link, $loggedUser);
+$correctCount = $inCorrectCount = 0;
 foreach ($AllSubmissionsByMedicine as $submission) :
     $answer_medicineId = $submission['medicine_id'];
     $savedItems = array_filter($AllSubmissions, function ($item) use ($answer_medicineId) {
@@ -106,13 +107,23 @@ foreach ($AllSubmissionsByMedicine as $submission) :
         return isset($item['answer_status']) && $item['answer_status'] === 'In-Correct';
     });
 
-    if (count($correctItems) >= count($inCorrectItems)) {
-        $gemCount = count($correctItems) - count($inCorrectItems);
-        $coinCount = count($inCorrectItems);
-    } else {
-        $gemCount = 0;
-        $coinCount = count($correctItems);
-    }
+    $gemArray = array_filter($correctItems, function ($item) {
+        return isset($item['score']) && $item['score'] === '40';
+    });
+
+    $correctCount += count($correctItems);
+    $inCorrectCount += count($inCorrectItems);
+
+    $gemCount = count($gemArray);
+    $coinCount = count($correctItems) - $gemCount;
+
+    // if (count($correctItems) >= count($inCorrectItems)) {
+    //     $gemCount = count($correctItems) - count($inCorrectItems);
+    //     $coinCount = count($inCorrectItems);
+    // } else {
+    //     $gemCount = 0;
+    //     $coinCount = count($correctItems);
+    // }
 
 
     $totalCoin += $coinCount;
@@ -121,7 +132,16 @@ endforeach;
 
 $gemCount = $totalGem + intval($totalCoin / 50);
 $coinCount = $totalCoin  % 50;
+
+// echo "Total Score : " . $Score;
+// echo "\nCorrect : " . $correctCount;
+// echo "\nInCorrect : " . $inCorrectCount;
+// echo "\noverallGrade : " . $overallGrade;
+
+$successRate = ($correctCount / ($correctCount + $inCorrectCount)) * 100;
 ?>
+
+
 
 <style>
     .admin-card:hover {
@@ -184,10 +204,12 @@ $coinCount = $totalCoin  % 50;
                                 <h5 class="mb-0 mt-2">Setup</h5>
                             </button>
                         </div>
+
                     </div>
                 <?php } ?>
             </div>
         </div>
+
 
 
 
@@ -206,8 +228,8 @@ $coinCount = $totalCoin  % 50;
                             <div class="col-6 col-md-3 d-flex">
                                 <div class="card bg-light border-0 flex-fill clickable" onclick="GetStoredHistory()">
                                     <div class="card-body text-center">
-                                        <label for="stored_count">Stored Count</label>
-                                        <h2 class="mb-0 fw-bold"><?= count($correctAttempts) ?></h2>
+                                        <label for="stored_count">Success Rate</label>
+                                        <h2 class="mb-0 fw-bold"><?= number_format($successRate, 2) ?>%</h2>
                                     </div>
                                 </div>
                             </div>
@@ -224,19 +246,20 @@ $coinCount = $totalCoin  % 50;
                             <div class="col-6 col-md-3 d-flex">
                                 <div class="card bg-light border-0 flex-fill">
                                     <div class="card-body text-center">
-                                        <label for="stored_count">Gem Count</label>
-                                        <h2 class="mb-0 fw-bold"><?= $gemCount ?></h2>
+                                        <label for="stored_count">Correct</label>
+                                        <h2 class="mb-0 fw-bold"><?= $correctCount ?></h2>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-6 col-md-3 d-flex">
                                 <div class="card bg-light border-0 flex-fill">
                                     <div class="card-body text-center">
-                                        <label for="stored_count">Coin Count</label>
-                                        <h2 class="mb-0 fw-bold"><?= $coinCount ?></h2>
+                                        <label for="stored_count">InCorrect</label>
+                                        <h2 class="mb-0 fw-bold"><?= $inCorrectCount ?></h2>
                                     </div>
                                 </div>
                             </div>
+
 
                             <div class="col-12">
                                 <button type="button" onclick="GetStoredHistory()" class="btn btn-light btn-hover-light w-100"><i class="fa-solid fa-eye"></i> View Store</button>
@@ -247,6 +270,28 @@ $coinCount = $totalCoin  % 50;
                 </div>
             </div>
         </div>
+
+        <div class="row mt-3">
+            <div class="col-12">
+                <div class="alert alert-info shadow p-4 rounded-3">
+                    <div class="d-flex align-items-center">
+                        <i class="fas fa-exclamation-triangle text-warning fs-3 me-3 d-none d-md-inline"></i>
+                        <div>
+                            <h5 class="fw-bold mb-2">දැනුම්දීම</h5>
+                            <p class="mb-0">
+                                Gem සහ Coin වල ඇති වූ ගැටලුව හේතුවෙන් ලකුණු දීමේ පටිපාටිය වෙනස් කිරීමට සිදුවිය.
+                                මෙහිදී ඔබ විසින් සාර්ථකව සිදුකරනු ලබන තැන්පත් කිරීම් හා අසාර්ථක අවස්ථා වෙන වෙනම ගණනය කරනු ලබයි.
+                                එමගින් ඔබගේ සාර්ථක අනුපාතය (Success Rate) ගණනය කර ඇත.<br />
+                                <span class="fw-bold text-primary">ඉහල සාර්ථක අනුපාතයක් රඳවා ගන්න.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
 
 
         <div class="" id="inner-content">

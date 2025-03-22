@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { User, Loader } from "lucide-react";
 
@@ -76,6 +77,7 @@ function InternalStudentInfo({ formData, updateFormData, setIsValid }) {
     if (!nic) return "N/A";
     return nic.length > 4 ? `${nic.slice(0, 4)}***${nic.slice(-4)}` : nic;
   };
+
   return (
     <div>
       <div className="space-y-4">
