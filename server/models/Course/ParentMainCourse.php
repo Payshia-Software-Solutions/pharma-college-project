@@ -78,44 +78,87 @@ class ParentMainCourse
     }
 
     // Update an existing course record by slug
-    public function updateCourse($slug, $data)
-    {
+    // public function updateCourse($slug, $data)
+    // {
       
-        if (!empty($data['course_name'])) {
-            $newSlug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $data['course_name'])));
-            $data['slug'] = $this->generateUniqueSlug($newSlug);
-        } else {
-            $data['slug'] = $slug;
-        }
+    //     if (!empty($data['course_name'])) {
+    //         $newSlug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $data['course_name'])));
+    //         $data['slug'] = $this->generateUniqueSlug($newSlug);
+    //     } else {
+    //         $data['slug'] = $slug;
+    //     }
 
-        $sql = "UPDATE parent_main_course SET 
-                    course_name = :course_name, 
-                    course_code = :course_code, 
-                    instructor_id = :instructor_id, 
-                    course_description = :course_description, 
-                    course_duration = :course_duration, 
-                    course_fee = :course_fee, 
-                    registration_fee = :registration_fee, 
-                    created_by = :created_by, 
-                    display = :display, 
-                    course_img = :course_img, 
-                    certification = :certification, 
-                    mini_description = :mini_description, 
-                    is_active = :is_active, 
-                    lecture_count = :lecture_count, 
-                    hours_per_lecture = :hours_per_lecture, 
-                    assessments = :assessments, 
-                    language = :language, 
-                    quizzes = :quizzes, 
-                    skill_level = :skill_level, 
-                    head_count = :head_count, 
-                    module_list = :module_list, 
-                    course_mode = :course_mode, 
-                    slug = :slug
-                WHERE slug = :slug";
-        $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($data);
+    //     $sql = "UPDATE parent_main_course SET 
+    //                 course_name = :course_name, 
+    //                 course_code = :course_code, 
+    //                 instructor_id = :instructor_id, 
+    //                 course_description = :course_description, 
+    //                 course_duration = :course_duration, 
+    //                 course_fee = :course_fee, 
+    //                 registration_fee = :registration_fee, 
+    //                 created_by = :created_by, 
+    //                 display = :display, 
+    //                 course_img = :course_img, 
+    //                 certification = :certification, 
+    //                 mini_description = :mini_description, 
+    //                 is_active = :is_active, 
+    //                 lecture_count = :lecture_count, 
+    //                 hours_per_lecture = :hours_per_lecture, 
+    //                 assessments = :assessments, 
+    //                 language = :language, 
+    //                 quizzes = :quizzes, 
+    //                 skill_level = :skill_level, 
+    //                 head_count = :head_count, 
+    //                 module_list = :module_list, 
+    //                 course_mode = :course_mode, 
+    //                 slug = :slug
+    //             WHERE slug = :slug";
+    //     $stmt = $this->pdo->prepare($sql);
+    //     $stmt->execute($data);
+    // }
+
+    public function updateCourse($slug, $data)
+{
+    // Fetch the existing record
+    $existingCourse = $this->getCourseBySlug($slug);
+    if (!$existingCourse) {
+        throw new Exception("Course not found");
     }
+
+    // Merge existing data with new data (only update provided fields)
+    $updatedData = array_merge($existingCourse, $data);
+
+    $sql = "UPDATE parent_main_course SET 
+                course_name = :course_name, 
+                course_code = :course_code, 
+                instructor_id = :instructor_id, 
+                course_description = :course_description, 
+                course_duration = :course_duration, 
+                course_fee = :course_fee, 
+                registration_fee = :registration_fee, 
+                created_by = :created_by, 
+                display = :display, 
+                course_img = :course_img, 
+                certification = :certification, 
+                mini_description = :mini_description, 
+                is_active = :is_active, 
+                lecture_count = :lecture_count, 
+                hours_per_lecture = :hours_per_lecture, 
+                assessments = :assessments, 
+                language = :language, 
+                quizzes = :quizzes, 
+                skill_level = :skill_level, 
+                head_count = :head_count, 
+                module_list = :module_list, 
+                course_mode = :course_mode, 
+                slug = :slug
+            WHERE slug = :old_slug";
+
+    $stmt = $this->pdo->prepare($sql);
+    $updatedData['old_slug'] = $slug;
+    $stmt->execute($updatedData);
+}
+
 
 
 
