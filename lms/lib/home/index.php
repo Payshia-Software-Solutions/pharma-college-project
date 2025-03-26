@@ -41,15 +41,48 @@ if ($winPharmaLevelCount > 0) {
 $studentBalanceArray = GetStudentBalance($loggedUser);
 $studentBalance = $studentBalanceArray['studentBalance'];
 
+<<<<<<< Updated upstream
 
 
 
+=======
+// Get the response body as an array (if it's JSON)
+$notReceivedOrders = $response->toArray();
+>>>>>>> Stashed changes
 
 include './components/hi-user.php';
 include './components/image-slider.php';
 include './components/payment-status.php';
 include './components/default-course.php';
 include './components/banner.php'; ?>
+<<<<<<< Updated upstream
+=======
+
+<div class="row mt-4">
+    <div class="col-12">
+        <?php
+if (!empty($notReceivedOrders)) {
+    foreach ($notReceivedOrders as $selectedArray) {
+        ?>
+
+        <div class="col-md-4 pb-3">
+            <div class="card border-0 shadow-sm clickable other-card flex-fill"
+                onclick=" OrderConfirmation('<?= $selectedArray['id'] ?>')">
+                <div class="card-body">
+                    <img src="./lib/delivery/assets/images/<?= $selectedArray['icon'] ?>" class="icon">
+                    <h4 class="mb-0"><?= $selectedArray['delivery_title'] ?></h4>
+                    <h6 class="text-end mb-0"><?= number_format($selectedArray['value'], 2) ?></h6>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+}
+?>
+    </div>
+</div>
+
+>>>>>>> Stashed changes
 <div id="grade_values"></div>
 <?php
 // include './components/grade-values.php';
