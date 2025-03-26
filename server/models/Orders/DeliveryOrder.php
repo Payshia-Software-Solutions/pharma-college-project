@@ -110,6 +110,14 @@ class DeliveryOrder
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches all matching records
     }
 
+     // Get a delivery order by Index Number
+     public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus)
+     {
+         $stmt = $this->pdo->prepare("SELECT * FROM delivery_orders WHERE index_number = :index_number AND order_recived_status = :receivedStatus");
+         $stmt->execute(['index_number' => $index_number, 'receivedStatus' => $receivedStatus]);
+         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches all matching records
+     }
+
     public function getRecordByIndexNumberAndCourse($index_number, $courseCode)
     {
         $stmt = $this->pdo->prepare("

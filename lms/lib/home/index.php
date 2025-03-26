@@ -1,4 +1,15 @@
 <?php
+require '../../vendor/autoload.php';
+
+use Symfony\Component\HttpClient\HttpClient;
+
+$client = HttpClient::create();
+
+//for use env file data
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv->load();
 // error_reporting(E_ALL);
 // ini_set('display_errors', 1);
 
@@ -40,16 +51,18 @@ if ($winPharmaLevelCount > 0) {
 // Payments
 $studentBalanceArray = GetStudentBalance($loggedUser);
 $studentBalance = $studentBalanceArray['studentBalance'];
+$response = $client->request('GET', $_ENV["SERVER_URL"] . "/delivery_orders?indexNumber={$loggedUser}&receivedStatus=false");
 
-
-
-
-
+// Get the response body as an array (if it's JSON)
+$notReceivedOrders = $response->toArray();
+var_dump($notReceivedOrders);
 include './components/hi-user.php';
 include './components/image-slider.php';
 include './components/payment-status.php';
 include './components/default-course.php';
 include './components/banner.php'; ?>
+
+
 <div id="grade_values"></div>
 <?php
 // include './components/grade-values.php';
