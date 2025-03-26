@@ -1,4 +1,15 @@
 <?php
+require '../../vendor/autoload.php';
+
+use Symfony\Component\HttpClient\HttpClient;
+
+$client = HttpClient::create();
+
+//for use env file data
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv->load();
 // error_reporting(E_ALL);
 // ini_set('display_errors', 1);
 
@@ -40,23 +51,16 @@ if ($winPharmaLevelCount > 0) {
 // Payments
 $studentBalanceArray = GetStudentBalance($loggedUser);
 $studentBalance = $studentBalanceArray['studentBalance'];
+$response = $client->request('GET', $_ENV["SERVER_URL"] . "/delivery_orders?indexNumber={$loggedUser}&receivedStatus=false");
 
-<<<<<<< Updated upstream
-
-
-
-=======
 // Get the response body as an array (if it's JSON)
 $notReceivedOrders = $response->toArray();
->>>>>>> Stashed changes
-
 include './components/hi-user.php';
 include './components/image-slider.php';
 include './components/payment-status.php';
 include './components/default-course.php';
 include './components/banner.php'; ?>
-<<<<<<< Updated upstream
-=======
+
 
 <div class="row mt-4">
     <div class="col-12">
@@ -82,7 +86,7 @@ if (!empty($notReceivedOrders)) {
     </div>
 </div>
 
->>>>>>> Stashed changes
+
 <div id="grade_values"></div>
 <?php
 // include './components/grade-values.php';

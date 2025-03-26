@@ -212,7 +212,7 @@ $routes = array_merge(
     $SMSRoutes,
     $bankRoutes,
     $ConvocationRegistrationRoutes,
-    $PackageRoutes
+    $PackageRoutes,
 );
 
 

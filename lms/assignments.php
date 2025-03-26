@@ -61,7 +61,7 @@ include './include/site-data.php';
     <!-- End of Common scripts -->
 
     <!-- Custom Scripts -->
-    <script src="./lib/assignments/assets/js/scripts-1.0.1.js"></script>
+    <script src="./lib/assignments/assets/js/scripts-1.0.2.js"></script>
     <!-- End of Custom Scripts -->
 </body>
 

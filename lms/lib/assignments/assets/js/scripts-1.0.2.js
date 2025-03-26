@@ -113,7 +113,7 @@ function ViewHomeContent() {
   fetch_data();
 }
 
-function SaveSubmission(assignmentId) {
+function SaveSubmission(assignmentId, submissionTag) {
   var form = document.getElementById("submit-form");
 
   if (form.checkValidity()) {
@@ -123,6 +123,7 @@ function SaveSubmission(assignmentId) {
     formData.append("company_id", company_id);
     formData.append("CourseCode", CourseCode);
     formData.append("assignmentId", assignmentId);
+    formData.append("submissionTag", submissionTag);
 
     function fetch_data() {
       showOverlay();

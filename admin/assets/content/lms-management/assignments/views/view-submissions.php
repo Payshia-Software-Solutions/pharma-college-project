@@ -57,6 +57,7 @@ $submissionList = $submissions->fetchAllByAssignmentId($assignmentId);
                             <th>Student</th>
                             <th>Action</th>
                             <th>Grade</th>
+                            <th>Attempt</th>
                             <th>Status</th>
                         </tr>
                     </thead>
@@ -68,9 +69,11 @@ $submissionList = $submissions->fetchAllByAssignmentId($assignmentId);
                                 <td><?= $submission['created_by'] ?></td>
                                 <td>
                                     <button type="button" onclick="OpenSubmittedFiles('<?= $submission['assignment_id'] ?>', '<?= $submission['created_by'] ?>', '<?= $courseCode ?>')" class="btn btn-sm btn-dark"><i class="fa-solid fa-eye"></i></button>
+                                    <button type="button" onclick="ChangeStatus('<?= $submission['assignment_id'] ?>', '<?= $submission['created_by'] ?>', '<?= $courseCode ?>', 0)" class="btn btn-sm btn-danger">Resubmit</button>
                                     <button type="button" onclick="ChangeStatus('<?= $submission['assignment_id'] ?>', '<?= $submission['created_by'] ?>', '<?= $courseCode ?>', 0)" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
                                 </td>
                                 <td><?= $submission['grade'] ?></td>
+                                <td><?= $submission['submissionTag'] ?></td>
                                 <td><?= $submission['grade_status'] ?></td>
                             </tr>
                         <?php endforeach ?>

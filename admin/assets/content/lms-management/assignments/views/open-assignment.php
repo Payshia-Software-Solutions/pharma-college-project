@@ -118,6 +118,7 @@ $gradedList = $submissions->fetchAllGradedByAssignmentId($assignmentId);
                                             <th>Action</th>
                                             <th>Status</th>
                                             <th>Grade</th>
+                                            <th>Attempt</th>
                                             <th>Grade Status</th>
                                         </tr>
                                     </thead>
@@ -138,6 +139,8 @@ $gradedList = $submissions->fetchAllGradedByAssignmentId($assignmentId);
                                                 <td>
                                                     <?php if ($submission['is_active'] == 1) : ?>
                                                         <button type="button" onclick="OpenSubmittedFiles('<?= $submission['assignment_id'] ?>', '<?= $submission['created_by'] ?>', '<?= $courseCode ?>')" class="btn btn-sm btn-dark"><i class="fa-solid fa-eye"></i></button>
+                                                        
+                                  
                                                         <button type="button" onclick="ForceDeleteSubmission('<?= $submission['id'] ?>','<?= $courseCode ?>', '<?= $submission['assignment_id'] ?>')" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button>
                                                     <?php else : ?>
                                                         <button type="button" onclick="ChangeStatus('<?= $submission['assignment_id'] ?>', '<?= $submission['created_by'] ?>', '<?= $courseCode ?>', 1)" class="btn btn-sm btn-primary"><i class="fa-solid fa-check"></i> Reactive</button>
@@ -147,6 +150,8 @@ $gradedList = $submissions->fetchAllGradedByAssignmentId($assignmentId);
                                                     <span class="badge badge-<?= $activeBgColor ?> bg-<?= $activeBgColor ?>"><?= $activeGradeValue ?></span>
                                                 </td>
                                                 <td><?= $submission['grade'] ?></td>
+                                                
+                                                <td><?= $submission['submissionTag'] ?></td>
                                                 <td>
                                                     <span class="badge badge-<?= $bgColor ?> bg-<?= $bgColor ?>"><?= $gradeValue ?></span>
                                                 </td>

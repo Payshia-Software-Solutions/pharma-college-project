@@ -43,6 +43,20 @@ class DeliveryOrderController
             echo json_encode(['error' => 'No delivery orders found for the given index number']);
         }
     }
+
+    public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus){
+         // Remove the trailing slash if it exists
+         $index_number = rtrim($index_number, '/');
+         $receivedStatus = rtrim($receivedStatus, '/');
+    
+         $record = $this->model->getRecordByIndexNumberAndStatus($index_number, $receivedStatus);
+         if ($record) {
+             echo json_encode($record);
+         } else {
+             http_response_code(404);
+             echo json_encode(['error' => 'No delivery orders found for the given index number']);
+         }
+    }
     
     
 
