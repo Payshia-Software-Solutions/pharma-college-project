@@ -18,6 +18,7 @@ $userLevel = $_POST['UserLevel'];
 $loggedUser = $_POST['LoggedUser'];
 $CourseCode = $_POST['CourseCode'];
 $assignmentId = $_POST['assignmentId'];
+$submissionTag = $_POST['submissionTag'];
 
 $assignments = new Assignments($database);
 $submissions = new AssignmentSubmissions($database);
@@ -82,7 +83,8 @@ $updateData = [
     'updated_at' =>  date("Y-m-d H:i:s"),
     'file_list' =>  $fileListString, // Store the file list as a comma-separated string
     'grade' => 0,
-    'grade_status' => 0
+    'grade_status' => 0,
+    'submissionTag' => $submissionTag
 ];
 
 if ($submissions->add($updateData)) {

@@ -18,10 +18,13 @@ $userLevel = $_POST['UserLevel'];
 $loggedUser = $_POST['LoggedUser'];
 $assignmentId = $_POST['assignmentId'];
 
+$submissionTag = "1stAttempt";
+
 $assignments = new Assignments($database);
 $submissions = new AssignmentSubmissions($database);
 $assignmentArray = $assignments->fetchById($assignmentId);
 $submissionArray = $submissions->fetchAllByAssignmentIdAndUser($assignmentId, $loggedUser);
+$resubmissionArray = $submissions->fetchAllByAssignmentIdAndUserDeleted($assignmentId, $loggedUser);
 
 // Function to display assignment content based on file type
 function displayAssignmentContent($file_name)
@@ -128,7 +131,13 @@ $data = json_decode($response->getBody(), true);
         <?= displayAssignmentContent($file_name) ?>
     </div>
     <div class="col-12 col-md-6">
-        <?php if (count($submissionArray) == 0) : ?>
+        <?php if (count($submissionArray) == 0) :
+            if(!empty($resubmissionArray)){
+                $submissionTag = "resubmission";
+                ?>
+                <div class="alert alert-warning">Resubmission Link</div>
+                <?php
+            } ?>
             <div class="card shadow border-0 rounded-4">
                 <div class="card-body">
                     <h3 class="border-bottom">Submission Info</h3>
@@ -142,7 +151,7 @@ $data = json_decode($response->getBody(), true);
                                 <div id="preview"></div>
                             </div>
                             <div class="col-12 text-end">
-                                <button type="button" class="btn btn-dark w-100 btn-lg" onclick="SaveSubmission('<?= $assignmentId ?>')">Submit</button>
+                                <button type="button" class="btn btn-dark w-100 btn-lg" onclick="SaveSubmission('<?= $assignmentId ?>', '<?= $submissionTag ?>')">Submit</button>
                             </div>
                         </div>
 
@@ -154,6 +163,8 @@ $data = json_decode($response->getBody(), true);
                 <div class="card-body">
                     <h3 class="border-bottom">Submission Info</h3>
                     <?php
+                    
+                    
                     foreach ($submissionArray as $submission) :
                         $fileList = $submission['file_list'];
                         $fileList = explode(',', $fileList);
