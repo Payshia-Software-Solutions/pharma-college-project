@@ -33,8 +33,6 @@ $db = $database->getConnection();
 $Assignments = new Assignments($database);
 $AssignmentSubmissions = new AssignmentSubmissions($database);
 
-
-
 $loggedUser = $_POST['LoggedUser'];
 $courseCode = $_POST['defaultCourseCode'];
 
@@ -65,9 +63,9 @@ include './components/banner.php'; ?>
 <div class="row mt-4">
     <div class="col-12">
         <?php
-if (!empty($notReceivedOrders)) {
-    foreach ($notReceivedOrders as $selectedArray) {
-        ?>
+            if (!empty($notReceivedOrders)) {
+                foreach ($notReceivedOrders as $selectedArray) {
+                    ?>
 
         <div class="col-md-4 pb-3">
             <div class="card border-0 shadow-sm clickable other-card flex-fill"
@@ -80,9 +78,9 @@ if (!empty($notReceivedOrders)) {
             </div>
         </div>
         <?php
-    }
-}
-?>
+                }
+            }
+            ?>
     </div>
 </div>
 
