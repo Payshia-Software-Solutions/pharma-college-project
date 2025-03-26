@@ -111,12 +111,27 @@ class DeliveryOrder
     }
 
      // Get a delivery order by Index Number
-     public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus)
-     {
-         $stmt = $this->pdo->prepare("SELECT * FROM delivery_orders WHERE index_number = :index_number AND order_recived_status = :receivedStatus");
-         $stmt->execute(['index_number' => $index_number, 'receivedStatus' => $receivedStatus]);
-         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches all matching records
-     }
+     // Get a delivery order by Index Number, including the delivery title from the delivery_setting table
+public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus)
+{
+    $stmt = $this->pdo->prepare("
+        SELECT 
+            delivery_orders.*, 
+            delivery_setting.delivery_title
+        FROM 
+            delivery_orders
+        INNER JOIN 
+            delivery_setting ON delivery_orders.delivery_id = delivery_setting.id
+        WHERE 
+            delivery_orders.index_number = :index_number 
+            AND delivery_orders.order_recived_status = :receivedStatus
+    ");
+    
+    $stmt->execute(['index_number' => $index_number, 'receivedStatus' => $receivedStatus]);
+    
+    return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches all matching records with the delivery title
+}
+
 
     public function getRecordByIndexNumberAndCourse($index_number, $courseCode)
     {
