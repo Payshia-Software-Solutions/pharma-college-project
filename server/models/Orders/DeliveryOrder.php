@@ -110,7 +110,6 @@ class DeliveryOrder
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches all matching records
     }
 
-     // Get a delivery order by Index Number
      // Get a delivery order by Index Number, including the delivery title from the delivery_setting table
 public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus)
 {

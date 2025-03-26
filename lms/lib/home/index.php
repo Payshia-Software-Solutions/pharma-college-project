@@ -33,8 +33,6 @@ $db = $database->getConnection();
 $Assignments = new Assignments($database);
 $AssignmentSubmissions = new AssignmentSubmissions($database);
 
-
-
 $loggedUser = $_POST['LoggedUser'];
 $courseCode = $_POST['defaultCourseCode'];
 
@@ -55,12 +53,36 @@ $response = $client->request('GET', $_ENV["SERVER_URL"] . "/delivery_orders?inde
 
 // Get the response body as an array (if it's JSON)
 $notReceivedOrders = $response->toArray();
-var_dump($notReceivedOrders);
 include './components/hi-user.php';
 include './components/image-slider.php';
 include './components/payment-status.php';
 include './components/default-course.php';
 include './components/banner.php'; ?>
+
+
+<div class="row mt-4">
+    <div class="col-12">
+        <?php
+            if (!empty($notReceivedOrders)) {
+                foreach ($notReceivedOrders as $selectedArray) {
+                    ?>
+
+        <div class="col-md-4 pb-3">
+            <div class="card border-0 shadow-sm clickable other-card flex-fill"
+                onclick=" OrderConfirmation('<?= $selectedArray['id'] ?>')">
+                <div class="card-body">
+                    <img src="./lib/delivery/assets/images/<?= $selectedArray['icon'] ?>" class="icon">
+                    <h4 class="mb-0"><?= $selectedArray['delivery_title'] ?></h4>
+                    <h6 class="text-end mb-0"><?= number_format($selectedArray['value'], 2) ?></h6>
+                </div>
+            </div>
+        </div>
+        <?php
+                }
+            }
+            ?>
+    </div>
+</div>
 
 
 <div id="grade_values"></div>
