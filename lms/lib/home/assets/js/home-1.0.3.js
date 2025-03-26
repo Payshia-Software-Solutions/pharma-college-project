@@ -5,7 +5,7 @@ var company_id = document.getElementById('company_id').value
 var defaultCourseCode = document.getElementById('defaultCourseCode').value
 var addedInstructions = [];
 
-$(document).ready(function() {
+$(document).ready(function () {
     OpenIndex()
 })
 
@@ -44,7 +44,7 @@ function OpenIndex() {
                 defaultCourseCode: defaultCourseCode,
                 company_id: company_id
             },
-            success: function(data) {
+            success: function (data) {
                 $('#root').html(data)
                 SetDefaultCourse(0)
                 GetGradeComponent()
@@ -67,10 +67,62 @@ function GetGradeComponent() {
                 defaultCourseCode: defaultCourseCode,
                 company_id: company_id
             },
-            success: function(data) {
+            success: function (data) {
                 $('#grade_values').html(data)
             }
         })
     }
     fetch_data()
+}
+
+
+function UpdateOrderReceivedStatus(OrderId, OrderStatus) {
+    // Prepare the data to send
+    var formData = new FormData();
+    formData.append('id', OrderId);
+    formData.append('OrderStatus', OrderStatus);
+
+    // Define a function to make the API request
+    function fetch_data() {
+        showOverlay(); // Show loading overlay
+
+        $.ajax({
+            url: 'https://qa-api.pharmacollege.lk/delivery_orders/' + OrderId + '/', // API endpoint
+            method: 'PUT',
+            data: formData,
+            contentType: false,
+            processData: false,
+            success: function (data) {
+                var response = JSON.parse(data);
+                if (response.status === 'success') {
+                    var result = response.message;
+                    OpenAlert('success', 'Done!', result);
+                    // You can add additional logic here to update UI or take actions
+                } else {
+                    var result = response.message;
+                    OpenAlert('error', 'Error!', result);
+                }
+                hideOverlay(); // Hide loading overlay
+            },
+            error: function (xhr, status, error) {
+                hideOverlay(); // Hide loading overlay on error
+                OpenAlert('error', 'Error!', 'Failed to update order status. Please try again.');
+            }
+        });
+    }
+
+    // Show confirmation before making the API request
+    Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, update it!"
+    }).then((result) => {
+        if (result.isConfirmed) {
+            fetch_data(); // Call the fetch_data function if confirmed
+        }
+    });
 }
