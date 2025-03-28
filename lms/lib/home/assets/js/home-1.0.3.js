@@ -87,7 +87,7 @@ function UpdateOrderReceivedStatus(OrderId, OrderStatus) {
         showOverlay(); // Show loading overlay
 
         $.ajax({
-            url: 'https://qa-api.pharmacollege.lk/delivery_orders/' + OrderId + '/', // API endpoint
+            url: 'https://qa-api.pharmacollege.lk/delivery_orders/update-status/' + OrderId + '/', // API endpoint
             method: 'PUT',
             data: formData,
             contentType: false,
@@ -97,15 +97,14 @@ function UpdateOrderReceivedStatus(OrderId, OrderStatus) {
                 if (response.status === 'success') {
                     var result = response.message;
                     OpenAlert('success', 'Done!', result);
-                    // You can add additional logic here to update UI or take actions
                 } else {
                     var result = response.message;
                     OpenAlert('error', 'Error!', result);
                 }
-                hideOverlay(); // Hide loading overlay
+                hideOverlay();
             },
             error: function (xhr, status, error) {
-                hideOverlay(); // Hide loading overlay on error
+                hideOverlay();
                 OpenAlert('error', 'Error!', 'Failed to update order status. Please try again.');
             }
         });

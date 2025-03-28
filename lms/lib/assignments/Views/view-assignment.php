@@ -89,12 +89,12 @@ $data = json_decode($response->getBody(), true);
 // var_dump($data);
 ?>
 <style>
-    .thumbnail {
-        width: 100px;
-        height: 100px;
-        margin: 10px;
-        object-fit: cover;
-    }
+.thumbnail {
+    width: 100px;
+    height: 100px;
+    margin: 10px;
+    object-fit: cover;
+}
 </style>
 
 <div class="row mt-2 mb-5 g-3">
@@ -110,17 +110,21 @@ $data = json_decode($response->getBody(), true);
     </div>
 
     <div class="col-12 d-none d-md-block text-end">
-        <button class="btn btn-warning" type="button" onclick="ViewAssignment('<?= $assignmentId ?>')"><i class="fa-solid fa-rotate-back"></i> Reload</button>
-        <button class="btn btn-dark" type="button" onclick="OpenIndex()"><i class="fa-solid fa-arrow-left"></i> Back</button>
+        <button class="btn btn-warning" type="button" onclick="ViewAssignment('<?= $assignmentId ?>')"><i
+                class="fa-solid fa-rotate-back"></i> Reload</button>
+        <button class="btn btn-dark" type="button" onclick="OpenIndex()"><i class="fa-solid fa-arrow-left"></i>
+            Back</button>
     </div>
 
     <div class="col-12 d-block d-md-none">
         <div class="row g-2">
             <div class="col-6">
-                <button class="btn btn-warning w-100" type="button" onclick="ViewAssignment('<?= $assignmentId ?>')"><i class="fa-solid fa-rotate-back"></i> Reload</button>
+                <button class="btn btn-warning w-100" type="button" onclick="ViewAssignment('<?= $assignmentId ?>')"><i
+                        class="fa-solid fa-rotate-back"></i> Reload</button>
             </div>
             <div class="col-6">
-                <button class="btn btn-dark w-100" type="button" onclick="OpenIndex()"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                <button class="btn btn-dark w-100" type="button" onclick="OpenIndex()"><i
+                        class="fa-solid fa-arrow-left"></i> Back</button>
             </div>
         </div>
     </div>
@@ -135,34 +139,35 @@ $data = json_decode($response->getBody(), true);
             if(!empty($resubmissionArray)){
                 $submissionTag = "resubmission";
                 ?>
-                <div class="alert alert-warning">Resubmission Link</div>
-                <?php
+        <div class="alert alert-warning">Resubmission Link</div>
+        <?php
             } ?>
-            <div class="card shadow border-0 rounded-4">
-                <div class="card-body">
-                    <h3 class="border-bottom">Submission Info</h3>
-                    <form id="submit-form" action="" method="post" enctype="multipart/form-data">
-                        <div class="row g-3 mt-3">
-                            <div class="col-12">
-                                <label for="file">Choose files: (PDF & Images Only)</label>
-                                <input class="form-control" type="file" id="file" name="files[]" multiple>
-                                <p class="mt-2 text-muted bg-light p-2">Images එකකට වඩා ඇත්නම් ඒ සියල්ල එකවර තෝරන්න.</p>
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-body">
+                <h3 class="border-bottom">Submission Info</h3>
+                <form id="submit-form" action="" method="post" enctype="multipart/form-data">
+                    <div class="row g-3 mt-3">
+                        <div class="col-12">
+                            <label for="file">Choose files: (PDF & Images Only)</label>
+                            <input class="form-control" type="file" id="file" name="files[]" multiple required>
+                            <p class="mt-2 text-muted bg-light p-2">Images එකකට වඩා ඇත්නම් ඒ සියල්ල එකවර තෝරන්න.</p>
 
-                                <div id="preview"></div>
-                            </div>
-                            <div class="col-12 text-end">
-                                <button type="button" class="btn btn-dark w-100 btn-lg" onclick="SaveSubmission('<?= $assignmentId ?>', '<?= $submissionTag ?>')">Submit</button>
-                            </div>
+                            <div id="preview"></div>
                         </div>
+                        <div class="col-12 text-end">
+                            <button type="button" class="btn btn-dark w-100 btn-lg"
+                                onclick="SaveSubmission('<?= $assignmentId ?>', '<?= $submissionTag ?>')">Submit</button>
+                        </div>
+                    </div>
 
-                    </form>
-                </div>
+                </form>
             </div>
+        </div>
         <?php else : ?>
-            <div class="card shadow border-0 rounded-4">
-                <div class="card-body">
-                    <h3 class="border-bottom">Submission Info</h3>
-                    <?php
+        <div class="card shadow border-0 rounded-4">
+            <div class="card-body">
+                <h3 class="border-bottom">Submission Info</h3>
+                <?php
                     
                     
                     foreach ($submissionArray as $submission) :
@@ -170,34 +175,35 @@ $data = json_decode($response->getBody(), true);
                         $fileList = explode(',', $fileList);
                     ?>
 
-                        <div class="alert alert-warning">Submitted at <?= $submission['created_at'] ?></div>
-                        <div class="row g-2">
-                            <?php foreach ($fileList as $file) :
+                <div class="alert alert-warning">Submitted at <?= $submission['created_at'] ?></div>
+                <div class="row g-2">
+                    <?php foreach ($fileList as $file) :
                                 $file_extension = strtolower(pathinfo($file, PATHINFO_EXTENSION));
                                 $file_path = "./uploads/assignment-submissions/" . $assignmentId . "/" . $loggedUser . "/" . $file; ?>
-                                <?php if ($file_extension == 'pdf') : ?>
-                                    <div class="col-12">
-                                        <?= displaySubmissionContent($file, $assignmentId, $loggedUser); ?>
-                                        <a class="btn btn-light btn-sm w-100 my-2" href="<?= $file_path ?>" target="_blank">Download</a>
-                                    </div>
-                                <?php else : ?>
-                                    <div class="col-4"><?= displaySubmissionContent($file, $assignmentId, $loggedUser); ?>
-                                        <a class="btn btn-light btn-sm w-100 my-2" href="<?= $file_path ?>" target="_blank">Download</a>
-                                    </div>
-                                <?php endif ?>
-                            <?php endforeach ?>
-                        </div>
-                        <div class="card border-0 shadow-lg rounded-4">
-                            <div class="card-body">
-                                <h5 class="border-bottom">Your Grade</h5>
-                                <h3 class="mb-0"><?= $data['grade'] ?></h3>
-                                <div class="badge bg-<?= ($data['grade_status'] == 1 ? "primary" : "danger") ?>"><?= ($data['grade_status'] == 1 ? "Graded" : "Not Graded") ?></div>
-                            </div>
-                        </div>
-
-                    <?php endforeach; ?>
+                    <?php if ($file_extension == 'pdf') : ?>
+                    <div class="col-12">
+                        <?= displaySubmissionContent($file, $assignmentId, $loggedUser); ?>
+                        <a class="btn btn-light btn-sm w-100 my-2" href="<?= $file_path ?>" target="_blank">Download</a>
+                    </div>
+                    <?php else : ?>
+                    <div class="col-4"><?= displaySubmissionContent($file, $assignmentId, $loggedUser); ?>
+                        <a class="btn btn-light btn-sm w-100 my-2" href="<?= $file_path ?>" target="_blank">Download</a>
+                    </div>
+                    <?php endif ?>
+                    <?php endforeach ?>
                 </div>
+                <div class="card border-0 shadow-lg rounded-4">
+                    <div class="card-body">
+                        <h5 class="border-bottom">Your Grade</h5>
+                        <h3 class="mb-0"><?= $data['grade'] ?></h3>
+                        <div class="badge bg-<?= ($data['grade_status'] == 1 ? "primary" : "danger") ?>">
+                            <?= ($data['grade_status'] == 1 ? "Graded" : "Not Graded") ?></div>
+                    </div>
+                </div>
+
+                <?php endforeach; ?>
             </div>
+        </div>
 
         <?php endif ?>
 
@@ -206,25 +212,25 @@ $data = json_decode($response->getBody(), true);
     </div>
 </div>
 <script>
-    document.getElementById('file').addEventListener('change', function(event) {
-        const files = event.target.files;
-        const preview = document.getElementById('preview');
-        preview.innerHTML = ''; // Clear the preview
+document.getElementById('file').addEventListener('change', function(event) {
+    const files = event.target.files;
+    const preview = document.getElementById('preview');
+    preview.innerHTML = ''; // Clear the preview
 
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
 
-                reader.onload = function(e) {
-                    const img = document.createElement('img');
-                    img.src = e.target.result;
-                    img.className = 'thumbnail';
-                    preview.appendChild(img);
-                };
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.className = 'thumbnail';
+                preview.appendChild(img);
+            };
 
-                reader.readAsDataURL(file);
-            }
+            reader.readAsDataURL(file);
         }
-    });
+    }
+});
 </script>

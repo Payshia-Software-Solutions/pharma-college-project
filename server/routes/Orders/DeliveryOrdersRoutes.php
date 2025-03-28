@@ -76,7 +76,7 @@ return [
     // Update a delivery order by ID
     'PUT /delivery_orders/{id}/' => [$deliveryOrderController, 'updateRecord'],
 
-    'PUT /delivery_orders/update-status{id}/' => [$deliveryOrderController, 'updateOrderStatus'],
+    'PUT /delivery_orders/update-status/{id}/' => [$deliveryOrderController, 'updateOrderStatus'],
     
     // Delete a delivery order by ID
     'DELETE /delivery_orders/{id}/' => [$deliveryOrderController, 'deleteRecord'],
