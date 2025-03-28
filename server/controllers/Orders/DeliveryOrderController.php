@@ -103,10 +103,10 @@ class DeliveryOrderController
         if ($this->validateData($data)) {
             $success = $this->model->updateRecord($id, $data);
             if ($success) {
-                echo json_encode(['message' => 'Delivery order updated successfully']);
+                echo json_encode(['status'=> 'success', 'message' => 'Delivery order updated successfully']);
             } else {
                 http_response_code(500);
-                echo json_encode(['error' => 'Failed to update delivery order']);
+                echo json_encode(['status'=> 'success', 'message' => 'Failed to update delivery order']);
             }
         } else {
             http_response_code(400);
@@ -192,18 +192,18 @@ public function getRecordByCurrentStatus($current_status)
             
             // Return response based on the success of the operation
             if ($success) {
-                echo json_encode(['message' => 'Order status updated successfully']);
+                echo json_encode(['status'=> 'success', 'message' => 'Order status updated successfully']);
             } else {
                 http_response_code(500);
-                echo json_encode(['error' => 'Failed to update order status']);
+                echo json_encode(['status'=> 'error', 'message' => 'Failed to update order status']);
             }
         } else {
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid order status']);
+            echo json_encode(['status'=> 'error', 'message' => 'Invalid order status']);
         }
     } else {
         http_response_code(400);
-        echo json_encode(['error' => 'OrderStatus is required']);
+        echo json_encode(['status'=> 'error', 'message' => 'OrderStatus is required']);
     }
 }
 
