@@ -1,17 +1,16 @@
 "use client";
+import React from "react";
 
 import { useState, useEffect } from "react";
 
 import Image from "next/image";
 import {
   ArrowLeft,
-  Upload,
   CheckCircle,
   CreditCard,
   Building2,
   FileText,
   User,
-  DollarSign,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ExternalStudentInfo from "./formElements/ExternalStudentInfo";
@@ -104,7 +103,13 @@ export default function InternalStudentPayment() {
       if (!response.ok) {
         throw new Error("Payment submission failed. Please try again.");
       }
+      const responseBody = await response.json(); // Parse the response as JSON
 
+      if (responseBody && responseBody.reference) {
+        setPaymentReferenceNumber(responseBody.reference);
+      } else {
+        throw new Error("Payment reference not found in the response.");
+      }
       // Success - Show PaymentSuccess
       setShowSuccess(true);
     } catch (error) {
@@ -176,7 +181,11 @@ export default function InternalStudentPayment() {
 
   return (
     <div className="flex justify-center flex-col items-center h-screen">
-      <SplashScreen loading={loading} />
+      <SplashScreen
+        loading={loading}
+        splashTitle={`External Payment Portal`}
+        icon={<CreditCard className="w-16 h-16" />}
+      />
 
       {/* ✅ Main Payment Portal (Visible after splash) */}
       {!loading && (
@@ -199,7 +208,7 @@ export default function InternalStudentPayment() {
               </button>
             )}
             <div className="flex items-center ml-2">
-              <StepIcon className="w-6 h-6 text-green-500 mr-2" />
+              <StepIcon className="w-6 h-6 text-brand mr-2" />
               <h1 className="text-lg font-semibold">
                 {steps[currentStep - 1].title}
               </h1>
@@ -215,7 +224,7 @@ export default function InternalStudentPayment() {
               height={550}
               className="w-[30%] "
             ></Image>
-            <p className="text-3xl font-bold">Payment Portal</p>
+            <p className="text-xl font-bold">External Student Payment Portal</p>
           </div>
 
           {/* Progress Bar */}
@@ -245,7 +254,7 @@ export default function InternalStudentPayment() {
                 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 z-10
                 ${
                   currentStep >= step.id
-                    ? "bg-green-500 text-white scale-110"
+                    ? "bg-brand text-white scale-110"
                     : "bg-gray-200 text-gray-500"
                 }
               `}
@@ -256,7 +265,7 @@ export default function InternalStudentPayment() {
                   {/* Step Title */}
                   <span
                     className={`mt-2 text-xs font-medium transition-colors duration-300 text-center
-                ${currentStep >= step.id ? "text-green-500" : "text-gray-500"}
+                ${currentStep >= step.id ? "text-brand" : "text-gray-500"}
               `}
                   >
                     {step.title}
@@ -282,7 +291,7 @@ export default function InternalStudentPayment() {
                     paymentReference={paymentReferenceNumber}
                     amount={formData.amount}
                     date={new Date().toISOString()}
-                    method="Credit Card"
+                    method="Bank Transfer"
                   />
                 ) : (
                   <>
@@ -327,7 +336,7 @@ export default function InternalStudentPayment() {
                     <button
                       onClick={nextStep}
                       disabled={!isValid || isLoading}
-                      className="w-full bg-green-500 text-white p-4 rounded-lg hover:bg-green-600 transition-colors focus:ring-4 focus:ring-green-200 disabled:opacity-50 flex items-center justify-center space-x-2"
+                      className="w-full bg-brand text-white p-4 rounded-lg hover:bg-green-600 transition-colors focus:ring-4 focus:ring-green-200 disabled:opacity-50 flex items-center justify-center space-x-2"
                     >
                       {isLoading ? (
                         <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -345,7 +354,7 @@ export default function InternalStudentPayment() {
                     <button
                       onClick={handleSubmit}
                       disabled={!isValid || isLoading}
-                      className="w-full bg-green-500 text-white p-4 rounded-lg hover:bg-green-600 transition-colors focus:ring-4 focus:ring-green-200 disabled:opacity-50 flex items-center justify-center space-x-2"
+                      className="w-full bg-brand text-white p-4 rounded-lg hover:bg-green-600 transition-colors focus:ring-4 focus:ring-green-200 disabled:opacity-50 flex items-center justify-center space-x-2"
                     >
                       {isLoading ? (
                         <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -362,7 +371,7 @@ export default function InternalStudentPayment() {
                   {showSuccess && (
                     <button
                       onClick={() => (window.location.href = "/")} // Or use Next.js routing for better navigation
-                      className="w-full bg-green-500 text-white p-4 rounded-lg hover:bg-green-600 transition-colors focus:ring-4 focus:ring-blue-200 disabled:opacity-50 flex items-center justify-center space-x-2"
+                      className="w-full bg-brand text-white p-4 rounded-lg hover:bg-green-600 transition-colors focus:ring-4 focus:ring-blue-200 disabled:opacity-50 flex items-center justify-center space-x-2"
                     >
                       <span>Go to Back</span>
                     </button>

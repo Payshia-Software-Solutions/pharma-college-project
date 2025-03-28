@@ -11,3 +11,5 @@ client/web-admin
 client/web-admin-2.0
 
 server/config/database.php
+
+backend/node_modules

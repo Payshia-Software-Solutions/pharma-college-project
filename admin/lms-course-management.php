@@ -40,7 +40,7 @@ $SubPage = false;
         <div id="filler"></div>
     </div>
 
-    <div class="loading-popup" id="loading-popup"></div>
+    <?php include './include/popups.php' ?>
     <!-- Add Scripts -->
 
     <?php include './include/footer-scripts.php' ?>

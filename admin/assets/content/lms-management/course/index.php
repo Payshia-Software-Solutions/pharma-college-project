@@ -1,4 +1,15 @@
 <?php
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+// For use env file data
+use Dotenv\Dotenv;
+use Symfony\Component\HttpClient\HttpClient;
+
+// Load environment variables
+$dotenv = Dotenv::createImmutable(dirname(__DIR__, 4)); // Go up 5 directories
+$dotenv->load();
+
+
 require_once('../../../../include/config.php');
 include '../../../../include/function-update.php';
 include '../../../../include/lms-functions.php';
@@ -16,6 +27,14 @@ $CourseBatches = getLmsBatches();
 
 $ArrayCount = count($mainCourseList);
 $ActiveCount = $ArrayCount;
+
+
+// Initialize HTTP client
+$client = HttpClient::create();
+
+// Get all courses from the API and decode the response
+$response = $client->request('GET', "{$_ENV["MS_COURSE_SRL"]}/api/{$_ENV["API_VERSION"]}/courses");
+$courseData = $response->toArray();
 ?>
 
 <div class="row mt-5 mb-4">
@@ -41,14 +60,29 @@ $ActiveCount = $ArrayCount;
     <div class="col-md-4">
         <div class="row g-3">
             <div class="col-12">
+                <div class="table-title font-weight-bold mt-0">Functions</div>
+            </div>
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <ol>
+                            <li class=""><a href="javascript:vld(0)" onclick="OpenGames()">Games</a></li>
+                        </ol>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row g-3 mt-2">
+            <div class="col-12">
                 <div class="table-title font-weight-bold mt-0">Course List</div>
             </div>
             <?php
-            if (!empty($mainCourseList)) {
-                foreach ($mainCourseList as $SelectArray) {
+            if (!empty($courseData)) {
+                foreach ($courseData as $SelectArray) {
                     $active_status = "Deleted";
                     $color = "warning";
-                    if ($SelectArray['is_active'] == 1) {
+                    if ($SelectArray['isActive'] == 1) {
                         $active_status = "Active";
                         $color = "primary";
                     }
@@ -57,13 +91,14 @@ $ActiveCount = $ArrayCount;
                         <div class="card flex-fill">
                             <div class="card-body p-2 pb-2">
                                 <span class="badge mt-2 bg-<?= $color ?>"><?= $active_status ?></span>
-                                <h1 class="tutor-name mt-2 mb-0"><?= $SelectArray['course_name'] ?></h1>
-                                <p><?= $SelectArray['course_code'] ?></p>
+                                <h1 class="tutor-name mt-2 mb-0"><?= $SelectArray['courseName'] ?></h1>
+                                <p><?= $SelectArray['courseCode'] ?></p>
                                 <div class="text-end mt-3">
-                                    <button class="mt-0 mb-1 btn btn-sm btn-dark view-button" type="button" onclick="AddNewCourse ('<?= $SelectArray['course_code'] ?>')"><i class="fa-solid fa-pen-to-square"></i> Update</button>
+                                    <button class="mt-0 mb-1 btn btn-sm btn-dark view-button" type="button" onclick="AddNewCourse ('<?= $SelectArray['id'] ?>')"><i class="fa-solid fa-pen-to-square"></i> Update</button>
+                                    <button class="mt-0 mb-1 btn btn-sm btn-primary view-button" type="button" onclick="setupCourse ('<?= $SelectArray['id'] ?>')"><i class="fa-solid fa-gear"></i> Setup</button>
 
                                     <?php
-                                    if ($SelectArray['is_active'] == 1) {
+                                    if ($SelectArray['isActive'] == 1) {
                                         $active_status = "Active";
                                         $color = "primary";
                                     ?>
