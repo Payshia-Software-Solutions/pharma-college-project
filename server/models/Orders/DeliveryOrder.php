@@ -111,26 +111,34 @@ class DeliveryOrder
     }
 
      // Get a delivery order by Index Number, including the delivery title from the delivery_setting table
-public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus)
-{
-    $stmt = $this->pdo->prepare("
-        SELECT 
-            delivery_orders.*, 
-            delivery_setting.delivery_title,
-            delivery_setting.icon,
-        FROM 
-            delivery_orders
-        INNER JOIN 
-            delivery_setting ON delivery_orders.delivery_id = delivery_setting.id
-        WHERE 
-            delivery_orders.index_number = :index_number 
-            AND delivery_orders.order_recived_status = :receivedStatus
-    ");
-    
-    $stmt->execute(['index_number' => $index_number, 'receivedStatus' => $receivedStatus]);
-    
-    return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches all matching records with the delivery title
-}
+     public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus)
+     {
+         // Prepare the query
+         $stmt = $this->pdo->prepare("
+             SELECT 
+                 delivery_orders.*, 
+                 delivery_setting.id AS setting_id, 
+                 delivery_setting.course_id, 
+                 delivery_setting.delivery_title, 
+                 delivery_setting.is_active, 
+                 delivery_setting.icon, 
+                 delivery_setting.value
+             FROM 
+                 delivery_orders
+             INNER JOIN 
+                 delivery_setting ON delivery_orders.delivery_id = delivery_setting.id
+             WHERE 
+                 delivery_orders.index_number = :index_number 
+                 AND delivery_orders.order_recived_status = :receivedStatus
+         ");
+         
+         // Execute the query with the provided parameters
+         $stmt->execute(['index_number' => $index_number, 'receivedStatus' => $receivedStatus]);
+         
+         // Return the results as an associative array
+         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+     }
+     
 
 
     public function getRecordByIndexNumberAndCourse($index_number, $courseCode)
