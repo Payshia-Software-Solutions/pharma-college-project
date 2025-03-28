@@ -232,7 +232,7 @@ public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus)
 
         // Prepare the statement
         $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':status', $order_recived_status);
+        $stmt->bindParam(':order_recived_status', $order_recived_status);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
         // Execute the statement and return success/failure
