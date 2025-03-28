@@ -114,6 +114,11 @@ class DeliveryOrderController
         }
     }
 
+    
+
+
+
+
     // Delete a delivery order
     public function deleteRecord($id)
     {
@@ -169,6 +174,43 @@ public function getRecordByCurrentStatus($current_status)
         http_response_code(404);
         echo json_encode(['error' => 'No delivery orders found for the given current status']);
     }
+}
+
+ // Update order status
+ public function updateOrderStatus($id) {
+    // Get raw POST data
+    $data = json_decode(file_get_contents("php://input"), true);
+    
+    // Check if status and other required data is provided
+    if (isset($data['OrderStatus'])) {
+        $status = $data['OrderStatus'];
+
+        // Validate the status (optional)
+        if ($this->validateStatus($status)) {
+            // Call the model function to update the order status
+            $success = $this->model->updateOrderStatus($id, $status);
+            
+            // Return response based on the success of the operation
+            if ($success) {
+                echo json_encode(['message' => 'Order status updated successfully']);
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => 'Failed to update order status']);
+            }
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid order status']);
+        }
+    } else {
+        http_response_code(400);
+        echo json_encode(['error' => 'OrderStatus is required']);
+    }
+}
+
+// Optional: Validate the status (you can customize based on your logic)
+private function validateStatus($status) {
+    $validStatuses = ['Received', 'Pending', 'Shipped', 'Cancelled'];
+    return in_array($status, $validStatuses);
 }
 
 }
