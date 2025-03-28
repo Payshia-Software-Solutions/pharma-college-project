@@ -237,7 +237,7 @@ public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus)
 
             // Bind the parameters
             $stmt->bindParam(':order_recived_status', $order_recived_status);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            $stmt->bindParam(':id', $id);
 
             // Execute the statement
             $stmt->execute();
