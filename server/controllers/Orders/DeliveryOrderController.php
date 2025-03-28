@@ -177,39 +177,32 @@ public function getRecordByCurrentStatus($current_status)
 }
 
 // Update order status
-public function updateOrderStatus($id) {
-    // Get raw POST data
+// Update order status
+public function updateOrderStatus($id)
+{
+    // Get the data from the request (assuming the status is passed in the body as JSON)
     $data = json_decode(file_get_contents("php://input"), true);
-    
-    // Check if status and other required data is provided
-    if (isset($data['OrderStatus'])) {
-        $status = $data['OrderStatus'];
 
-        // Validate the status (optional)
-        if ($this->validateStatus($status)) {
-            // Call the model function to update the order status and get affected rows
-            $affectedRows = $this->model->updateOrderStatus($id, $status);
-            
-            // Return response based on the success of the operation
-            if ($affectedRows > 0) {
-                echo json_encode([
-                    'status' => 'success',
-                    'message' => 'Order status updated successfully',
-                    'affectedRows' => $affectedRows // Return the number of affected rows
-                ]);
-            } else {
-                http_response_code(500);
-                echo json_encode([
-                    'status' => 'error',
-                    'message' => 'Failed to update order status',
-                    'affectedRows' => $affectedRows // Return 0 if no rows were updated
-                ]);
-            }
+    // Check if the status is provided
+    if (isset($data['OrderStatus'])) {
+        $order_recived_status = $data['OrderStatus'];
+
+        // Call the model function to update the order status
+        $affectedRows = $this->model->updateOrderStatus($id, $order_recived_status);
+
+        // Return response based on the number of affected rows
+        if ($affectedRows > 0) {
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Order status updated successfully',
+                'affectedRows' => $affectedRows
+            ]);
         } else {
-            http_response_code(400);
+            http_response_code(500);
             echo json_encode([
                 'status' => 'error',
-                'message' => 'Invalid order status'
+                'message' => 'Failed to update order status',
+                'affectedRows' => $affectedRows
             ]);
         }
     } else {
@@ -220,6 +213,7 @@ public function updateOrderStatus($id) {
         ]);
     }
 }
+
 
 
 // Optional: Validate the status (you can customize based on your logic)
