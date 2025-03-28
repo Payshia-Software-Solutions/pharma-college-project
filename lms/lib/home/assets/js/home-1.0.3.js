@@ -75,12 +75,12 @@ function GetGradeComponent() {
     fetch_data()
 }
 
-
 function UpdateOrderReceivedStatus(OrderId, OrderStatus) {
-    // Prepare the data to send
-    var formData = new FormData();
-    formData.append('id', OrderId);
-    formData.append('OrderStatus', OrderStatus);
+    // Prepare the data to send as JSON
+    var requestData = {
+        id: OrderId,
+        OrderStatus: OrderStatus
+    };
 
     // Define a function to make the API request
     function fetch_data() {
@@ -89,17 +89,16 @@ function UpdateOrderReceivedStatus(OrderId, OrderStatus) {
         $.ajax({
             url: 'https://qa-api.pharmacollege.lk/delivery_orders/update-status/' + OrderId + '/', // API endpoint
             method: 'PUT',
-            data: formData,
-            contentType: false,
-            processData: false,
+            data: JSON.stringify(requestData), // Send data as JSON
+            contentType: 'application/json',  // Set content type to JSON
             success: function (data) {
                 var response = JSON.parse(data);
                 if (response.status === 'success') {
                     var result = response.message;
-                    OpenAlert('success', 'Done!', result);
+                    showNotification(result, 'success', 'Done!')
                 } else {
                     var result = response.message;
-                    OpenAlert('error', 'Error!', result);
+                    showNotification(result, 'error', 'Error!')
                 }
                 hideOverlay();
             },

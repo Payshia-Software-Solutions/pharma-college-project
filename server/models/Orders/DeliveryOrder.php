@@ -231,7 +231,7 @@ public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus)
         $query = "UPDATE delivery_orders SET order_recived_status = :order_recived_status WHERE id = :id";
 
         // Prepare the statement
-        $stmt = $this->db->prepare($query);
+        $stmt = $this->pdo->prepare($query);
         $stmt->bindParam(':status', $order_recived_status);
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
