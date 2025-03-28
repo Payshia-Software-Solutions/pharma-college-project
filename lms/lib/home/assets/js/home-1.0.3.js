@@ -91,8 +91,8 @@ function UpdateOrderReceivedStatus(OrderId, OrderStatus) {
             method: 'PUT',
             data: JSON.stringify(requestData), // Send data as JSON
             contentType: 'application/json',  // Set content type to JSON
-            success: function (data) {
-                var response = JSON.parse(data);
+            success: function (response) {
+                // var response = JSON.parse(data);
                 if (response.status === 'success') {
                     var result = response.message;
                     showNotification(result, 'success', 'Done!')
