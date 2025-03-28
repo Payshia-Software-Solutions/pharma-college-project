@@ -186,8 +186,7 @@ public function updateOrderStatus($id)
     // Check if the status is provided
     if (isset($data['OrderStatus'])) {
         $order_recived_status = $data['OrderStatus'];
-        echo $id .'<br>';
-        echo $order_recived_status;
+    
 
         // Call the model function to update the order status
         $affectedRows = $this->model->updateOrderStatus($id, $order_recived_status);
