@@ -96,6 +96,7 @@ function UpdateOrderReceivedStatus(OrderId, OrderStatus) {
                 if (response.status === 'success') {
                     var result = response.message;
                     showNotification(result, 'success', 'Done!')
+                    OpenIndex()
                 } else {
                     var result = response.message;
                     showNotification(result, 'error', 'Error!')
