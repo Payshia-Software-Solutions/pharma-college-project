@@ -225,21 +225,29 @@ public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus)
         }
     }
 
-     // Update order status by order ID
-    public function updateOrderStatus($id, $order_recived_status) {
-        // Update query to change the order status
-        $query = "UPDATE delivery_orders SET order_recived_status = :order_recived_status WHERE id = :id";
+    // Update the order received status only
+    public function updateOrderStatus($id, $order_recived_status)
+    {
+        try {
+            // Prepare the SQL query to update only the order_recived_status
+            $sql = "UPDATE delivery_orders SET order_recived_status = :order_recived_status WHERE id = :id";
 
-        // Prepare the statement
-        $stmt = $this->pdo->prepare($query);
-        $stmt->bindParam(':order_recived_status', $order_recived_status);
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+            // Prepare the statement
+            $stmt = $this->pdo->prepare($sql);
 
-        // Execute the statement
-        $stmt->execute();
+            // Bind the parameters
+            $stmt->bindParam(':order_recived_status', $order_recived_status);
+            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
 
-        // Return the number of affected rows
-        return $stmt->rowCount();
+            // Execute the statement
+            $stmt->execute();
+
+            // Return the number of affected rows
+            return $stmt->rowCount();
+        } catch (PDOException $e) {
+            // Return the error message if an exception occurs
+            return ['error' => $e->getMessage()];
+        }
     }
 
 }
