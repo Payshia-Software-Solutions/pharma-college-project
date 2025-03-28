@@ -116,7 +116,8 @@ public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus)
     $stmt = $this->pdo->prepare("
         SELECT 
             delivery_orders.*, 
-            delivery_setting.*
+            delivery_setting.delivery_title,
+            delivery_setting.icon,
         FROM 
             delivery_orders
         INNER JOIN 
