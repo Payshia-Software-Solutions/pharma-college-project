@@ -51,6 +51,28 @@ function OpenPackageModal() {
     fetch_data();
   }
 
+function OpenInactivePackageModal() {
+    var userTheme = $("#userTheme").val();
+    OpenPopupRight();
+    $("#loading-popup-right").html(InnerLoader);
+  
+    function fetch_data() {
+      $.ajax({
+        url: 'assets/content/lms-management/graduation/side-modals/inactive-packages-modal.php',
+        method: "POST",
+        data: {
+          LoggedUser: LoggedUser,
+          UserLevel: UserLevel,
+          userTheme: userTheme,
+          company_id: company_id,
+        },
+        success: function (data) {
+          $("#loading-popup-right").html(data);
+        },
+      });
+    }
+    fetch_data();
+  }
   
 function OpenPackageForm(packageId = 0) {
     OpenPopup();
@@ -208,14 +230,18 @@ function DeletePackage(packageId) {
     });
 }
 
-function InactivePackage(packageId) {
+function ChangePackageStatus(packageId, packageStatus = 1) {
+    var statusText = 'inactive'
+    if(packageStatus === 1 ){
+        statusText = 'active'
+    }
     // Confirm inactivation with SweetAlert
     Swal.fire({
         title: 'Are you sure?',
-        text: "This will mark the package as inactive. You can reactivate it later.",
+        text: "This will mark the package as "+statusText+". You can reactivate it later.",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Yes, mark as inactive!',
+        confirmButtonText: 'Yes, mark as '+statusText+'!',
         cancelButtonText: 'No, cancel!',
         reverseButtons: true
     }).then((result) => {
@@ -224,7 +250,7 @@ function InactivePackage(packageId) {
 
             // Prepare data to update is_active to 0 (inactive)
             const data = {
-                is_active: 0
+                is_active: packageStatus
             };
 
             // Send PUT request to update the package as inactive
@@ -240,7 +266,7 @@ function InactivePackage(packageId) {
                     // Successfully updated the package status
                     Swal.fire(
                         'Inactive!',
-                        'Your package has been marked as inactive.',
+                        'Your package has been marked as '+statusText+'.',
                         'success'
                     );
                     

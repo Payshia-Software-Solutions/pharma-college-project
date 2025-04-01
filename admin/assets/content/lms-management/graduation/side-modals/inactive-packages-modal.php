@@ -24,7 +24,7 @@ $graduationPackages = $response->toArray();
 <div class="loading-popup-content-right <?= htmlspecialchars($userTheme) ?>">
     <div class="row">
         <div class="col-6">
-            <h3 class="mb-0">Packages</h3>
+            <h3 class="mb-0">Inactive Packages</h3>
         </div>
 
         <div class="col-6 text-end">
@@ -42,13 +42,11 @@ $graduationPackages = $response->toArray();
 
     <div class="row g-3">
         <div class="col-12 text-end">
-            <button class="btn btn-info" onclick="OpenInactivePackageModal()"><i class="fa fa-pencil-alt"></i> Inactive
-                Packages</button>
             <button class="btn btn-dark" onclick="OpenPackageForm()"><i class="fa fa-plus"></i> New Package</button>
         </div>
         <div class="col-12">
             <div class="row g-2">
-                <?php foreach ($graduationPackages as $package) :  if ($package['is_active'] == 0) continue;
+                <?php foreach ($graduationPackages as $package) :  if ($package['is_active'] == 1) continue;
                 ?>
                     <div class="col-6">
                         <div class="card">
@@ -74,11 +72,13 @@ $graduationPackages = $response->toArray();
                                             </div>
                                         </div>
                                         <div class="col-12 text-end">
-
+                                            <button type="button" onclick="DeletePackage(<?= $package['package_id'] ?>)"
+                                                class="btn btn-sm btn-danger"><i class="fa fa-trash"></i>
+                                                Delete</button>
                                             <button type="button"
-                                                onclick="ChangePackageStatus(<?= $package['package_id'] ?>, 0)"
-                                                class="btn btn-sm btn-danger"><i class="fa fa-ban"></i>
-                                                Inactive</button>
+                                                onclick="ChangePackageStatus(<?= $package['package_id'] ?>, 1)"
+                                                class="btn btn-sm btn-warning"><i class="fa fa-check"></i>
+                                                Active</button>
                                             <button type="button" onclick="OpenPackageForm(<?= $package['package_id'] ?>)"
                                                 class="btn btn-sm btn-dark"><i class="fa fa-pencil-alt"></i>
                                                 Edit</button>
