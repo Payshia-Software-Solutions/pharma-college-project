@@ -53,4 +53,14 @@ class Package
         $stmt = $this->pdo->prepare("DELETE FROM packages WHERE package_id = ?");
         return $stmt->execute([$package_id]);
     }
+
+    public function updatePackageStatus($package_id, $is_active)
+    {
+        $sql = "UPDATE packages SET is_active = :is_active WHERE package_id = :package_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindParam(':is_active', $is_active, PDO::PARAM_INT);
+        $stmt->bindParam(':package_id', $package_id, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
 }

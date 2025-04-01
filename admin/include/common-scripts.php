@@ -1,82 +1,84 @@
 <!-- Add CSS -->
-<link rel="stylesheet" href="./vendor/twbs/bootstrap/dist/css/bootstrap.min.css" />
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 <link rel="stylesheet" href="./assets/css/styles.css" />
 
 <link rel="manifest" href="./manifest.json">
 <style>
-.submenu {
-    display: none;
-    padding-left: 20px;
-}
-
-.submenu li {
-    list-style: none;
-}
-
-.submenu-item {
-    display: flex;
-    align-items: center;
-    padding: 8px;
-}
-
-.submenu-icon {
-    margin-right: 10px;
-}
-
-.collapse-icon {
-    margin-left: auto;
-    margin-right: 10px;
-    /* Add margin to create spacing between link text and icon */
-}
-
-.nav-menu {
-    padding-bottom: 20px;
-}
-
-.nav-link {
-    display: flex;
-    align-items: center;
-}
-
-.submenu .nav-item .active {
-    background-color: #328bed !important;
-}
-
-.swal2-html-container input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-}
-
-.logged-details {
-    padding: 10px;
-    /* border-bottom: 1px solid grey; */
-}
-
-.logged-details p {
-    font-weight: 500;
-    margin-bottom: 0px;
-}
-
-.logged-details .hero-title-bar {
-    border-bottom: none !important;
-}
-
-.logged-details .sidebar-profile-image {
-    width: 50px;
-}
-
-.clickable {
-    cursor: pointer;
-}
+    .submenu {
+        display: none;
+        padding-left: 20px;
+    }
 
 
+    .submenu li {
+        list-style: none;
+    }
 
-#index-content {
-    margin-bottom: 15px;
-}
+    .submenu-item {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+    }
+
+    .submenu-icon {
+        margin-right: 10px;
+    }
+
+    .collapse-icon {
+        margin-left: auto;
+        margin-right: 10px;
+        /* Add margin to create spacing between link text and icon */
+    }
+
+    .nav-menu {
+        padding-bottom: 20px;
+    }
+
+    .nav-link {
+        display: flex;
+        align-items: center;
+    }
+
+    .submenu .nav-item .active {
+        background-color: #328bed !important;
+    }
+
+    .swal2-html-container input {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+
+    .logged-details {
+        padding: 10px;
+        /* border-bottom: 1px solid grey; */
+    }
+
+    .logged-details p {
+        font-weight: 500;
+        margin-bottom: 0px;
+    }
+
+    .logged-details .hero-title-bar {
+        border-bottom: none !important;
+    }
+
+    .logged-details .sidebar-profile-image {
+        width: 50px;
+    }
+
+    .clickable {
+        cursor: pointer;
+    }
+
+
+
+    #index-content {
+        margin-bottom: 15px;
+    }
 </style>
 
 <link rel="stylesheet" href="./node_modules/sweetalert2/dist/sweetalert2.min.css">
