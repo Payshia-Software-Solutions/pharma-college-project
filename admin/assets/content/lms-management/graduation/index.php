@@ -56,9 +56,7 @@ $packageBookings = $response->toArray();
 <div class="row g-2">
     <div class="col-md-8">
         <h5 class="table-title">Graduation Center</h5>
-        <?php
-        // outputArray($packageBookings); 
-        ?>
+
         <div class="card">
             <div class="card-body">
                 <div class="table-responsive">
@@ -147,7 +145,7 @@ $packageBookings = $response->toArray();
         <div class="card">
             <div class="card-body">
                 <ul class="mb-0">
-                    <li><a href="#" onclick="OpenPackageModal()">Create Packages</a></li>
+                    <li><a href="#" onclick="OpenPackageModal()">Packages</a></li>
                 </ul>
             </div>
         </div>
