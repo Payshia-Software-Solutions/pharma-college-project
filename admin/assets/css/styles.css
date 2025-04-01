@@ -1,5 +1,5 @@
 body {
-    /* background-color: #f0f3f4 !important; */
+    background-color: #f0f3f4 !important;
     padding: 5px;
 }
 
@@ -453,12 +453,12 @@ input:read-only {
 }
 
 .table {
-    margin-top: 15px;
+    /* margin-top: 15px; */
 }
 
 tr {
-    height: 55px !important;
-    background-color: #e0eefd !important;
+    /* height: 55px !important; */
+    /* background-color: #e0eefd !important; */
 }
 
 select {
