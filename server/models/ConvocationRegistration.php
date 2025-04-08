@@ -11,14 +11,14 @@ class ConvocationRegistration
     }
 
     // Create a new registration (reference_number set after insert)
-    public function createRegistration($student_number, $course_id, $package_id, $event_id = null, $payment_status = 'pending', $payment_amount = null, $registration_status = 'pending', $hash_value = null, $image_path = null)
+    public function createRegistration($student_number, $course_id, $package_id, $event_id = null, $payment_status = 'pending', $payment_amount = null, $registration_status = 'pending', $hash_value = null, $image_path = null, $additional_seats = null)
     {
         // Insert without reference_number initially
         $stmt = $this->pdo->prepare("
-            INSERT INTO convocation_registrations (student_number, course_id, package_id, event_id, payment_status, payment_amount, registration_status, hash_value, image_path)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO convocation_registrations (student_number, course_id, package_id, event_id, payment_status, payment_amount, registration_status, hash_value, image_path, additional_seats)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $stmt->execute([$student_number, $course_id, $package_id, $event_id, $payment_status, $payment_amount, $registration_status, $hash_value, $image_path]);
+        $stmt->execute([$student_number, $course_id, $package_id, $event_id, $payment_status, $payment_amount, $registration_status, $hash_value, $image_path, $additional_seats]);
 
         $registration_id = $this->pdo->lastInsertId();
 
@@ -36,9 +36,23 @@ class ConvocationRegistration
     // Read all registrations
     public function getAllRegistrations()
     {
-        $stmt = $this->pdo->query("SELECT * FROM convocation_registrations");
+        $sql = "SELECT cr.*, 
+                   p.package_name, 
+                   p.price, 
+                   p.parent_seat_count, 
+                   p.garland, 
+                   p.graduation_cloth, 
+                   p.photo_package, 
+                   p.is_active, 
+                   p.created_at AS package_created_at, 
+                   p.updated_at AS package_updated_at
+            FROM convocation_registrations cr
+            LEFT JOIN packages p ON cr.package_id = p.package_id";
+
+        $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
 
     // Validate duplicate registration
     public function validateDuplicate($student_number)

@@ -62,6 +62,28 @@ class PackageController
     public function updatePackage($package_id)
     {
         $data = json_decode(file_get_contents('php://input'), true);
+
+        // Check if the 'is_active' field is provided, and update only if specified
+        if (isset($data['is_active'])) {
+            // Validate the 'is_active' field to be a boolean (0 or 1)
+            if ($data['is_active'] !== 0 && $data['is_active'] !== 1) {
+                http_response_code(400);
+                echo json_encode(['error' => 'Invalid value for is_active. It must be 0 or 1.']);
+                return;
+            }
+
+            // Only update 'is_active' and return success
+            $success = $this->model->updatePackageStatus($package_id, $data['is_active']);
+            if ($success) {
+                echo json_encode(['message' => 'Package status updated successfully']);
+            } else {
+                http_response_code(404);
+                echo json_encode(['error' => 'Package not found or status update failed']);
+            }
+            return;
+        }
+
+        // Check for other required fields for normal package update
         if (
             !isset($data['package_name']) || !isset($data['price']) ||
             !isset($data['parent_seat_count']) || !isset($data['garland']) ||
@@ -72,6 +94,7 @@ class PackageController
             return;
         }
 
+        // Update the entire package when all fields are provided
         $success = $this->model->updatePackage(
             $package_id,
             $data['package_name'],
@@ -80,8 +103,9 @@ class PackageController
             $data['garland'],
             $data['graduation_cloth'],
             $data['photo_package'],
-            $data['is_active'] ?? true
+            $data['is_active'] ?? true // Default is true if not provided
         );
+
         if ($success) {
             echo json_encode(['message' => 'Package updated successfully']);
         } else {

@@ -3,6 +3,24 @@
 include __DIR__ . '/config.php';
 date_default_timezone_set("Asia/Colombo");
 
+
+function outputArray($array, $format = 'print_r') {
+    echo '<div class="col-md-8">';
+    echo '<h5 class="table-title">CertiGraduation Center</h5>';
+    echo '<pre>';
+
+    if ($format == 'json') {
+        // Output as JSON format
+        echo json_encode($array, JSON_PRETTY_PRINT);
+    } else {
+        // Default to print_r format
+        print_r($array);
+    }
+
+    echo '</pre>';
+    echo '</div>';
+}
+
 function generateQRCode($text)
 {
 
@@ -3860,70 +3878,78 @@ function renderForm($elementArray, $form_name)
 
     ob_start(); // Start output buffering
 ?>
-    <form action="#" id="<?= $form_name ?>" method="post">
-        <div class="row g-3">
-            <?php foreach ($elementArray as $element) :
+<form action="#" id="<?= $form_name ?>" method="post">
+    <div class="row g-3">
+        <?php foreach ($elementArray as $element) :
             ?>
-                <div class="<?= htmlspecialchars($element['class_list']) ?>">
-                    <?php
+        <div class="<?= htmlspecialchars($element['class_list']) ?>">
+            <?php
                     $elementName = htmlspecialchars($element['element_name']);
                     $camelCase = convertToCamelCase($elementName);
                     $snakeCase = convertToSnakeCase($elementName);
                     ?>
-                    <?php if ($element['element_type'] == 'select') : ?>
-
-                        <label for="<?= $snakeCase ?>"><?= $elementName ?></label>
-                        <select <?= $element['require_status'] ?> name="<?= $snakeCase ?>" id="<?= $snakeCase ?>">
-                            <?php foreach ($element['select_values'] as $data) : ?>
-                                <option value="<?= htmlspecialchars($data['id']) ?>" <?= ($data['id'] == $element['default_value']) ? 'selected' : '' ?>><?= htmlspecialchars($data['value']) ?></option>
-                            <?php endforeach; ?>
-                        </select>
-
-                    <?php elseif ($element['element_type'] == 'checkbox') : ?>
-                        <div class="border-bottom mb-2"></div>
-                        <label for="<?= $snakeCase ?>" class="mb-2"><?= $elementName ?></label>
-                        <div class="row g-2">
-                            <?php foreach ($element['select_values'] as $data) :
-                                $isChecked = in_array($data['id'], $element['default_value']) ? 'checked' : ''; ?>
-                                <div class="col-4 col-md-3">
-                                    <div class="form-check form-check-primary">
-                                        <label class="form-check-label">
-                                            <input type="checkbox" name="<?= $snakeCase ?>[]" id="<?= $snakeCase ?>" class="form-check-input" value="<?= $data['id']; ?>" <?= $isChecked ?>>
-                                            <?= $data['value']; ?>
-                                            <i class="input-helper"></i>
-                                        </label>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-
-                    <?php elseif ($element['element_type'] == 'file') :
-                        $tempName = 'temp' . $camelCase ?>
-                        <label for="<?= $snakeCase ?>"><?= $elementName ?></label>
-                        <input <?= $element['require_status'] ?> class="form-control" type="<?= $element['element_type'] ?>" value="<?= htmlspecialchars($$camelCase) ?>" name="<?= $snakeCase ?>" id="<?= $snakeCase ?>" placeholder="<?= $elementName ?>">
-
-                        <!-- Temp File -->
-                        <input class="form-control" type="hidden" value="<?= $tempName ?>" name="temp_<?= $snakeCase ?>" id="temp_<?= $snakeCase ?>" placeholder="<?= $elementName ?>">
-
-                    <?php else : ?>
-                        <label for="<?= $snakeCase ?>"><?= $elementName ?></label>
-                        <input <?= $element['require_status'] ?> class="form-control" type="<?= $element['element_type'] ?>" value="<?= htmlspecialchars($$camelCase) ?>" name="<?= $snakeCase ?>" id="<?= $snakeCase ?>" placeholder="<?= $elementName ?>">
-                    <?php endif; ?>
-                </div>
-            <?php endforeach; ?>
-
-        </div>
-
-
-    </form>
-
-    <script>
-        <?php foreach ($elementArray as $element) : ?>
             <?php if ($element['element_type'] == 'select') : ?>
-                $('#<?= convertToSnakeCase($element['element_name']) ?>').select2();
+
+            <label for="<?= $snakeCase ?>"><?= $elementName ?></label>
+            <select <?= $element['require_status'] ?> name="<?= $snakeCase ?>" id="<?= $snakeCase ?>">
+                <?php foreach ($element['select_values'] as $data) : ?>
+                <option value="<?= htmlspecialchars($data['id']) ?>"
+                    <?= ($data['id'] == $element['default_value']) ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($data['value']) ?></option>
+                <?php endforeach; ?>
+            </select>
+
+            <?php elseif ($element['element_type'] == 'checkbox') : ?>
+            <div class="border-bottom mb-2"></div>
+            <label for="<?= $snakeCase ?>" class="mb-2"><?= $elementName ?></label>
+            <div class="row g-2">
+                <?php foreach ($element['select_values'] as $data) :
+                                $isChecked = in_array($data['id'], $element['default_value']) ? 'checked' : ''; ?>
+                <div class="col-4 col-md-3">
+                    <div class="form-check form-check-primary">
+                        <label class="form-check-label">
+                            <input type="checkbox" name="<?= $snakeCase ?>[]" id="<?= $snakeCase ?>"
+                                class="form-check-input" value="<?= $data['id']; ?>" <?= $isChecked ?>>
+                            <?= $data['value']; ?>
+                            <i class="input-helper"></i>
+                        </label>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+
+            <?php elseif ($element['element_type'] == 'file') :
+                        $tempName = 'temp' . $camelCase ?>
+            <label for="<?= $snakeCase ?>"><?= $elementName ?></label>
+            <input <?= $element['require_status'] ?> class="form-control" type="<?= $element['element_type'] ?>"
+                value="<?= htmlspecialchars($$camelCase) ?>" name="<?= $snakeCase ?>" id="<?= $snakeCase ?>"
+                placeholder="<?= $elementName ?>">
+
+            <!-- Temp File -->
+            <input class="form-control" type="hidden" value="<?= $tempName ?>" name="temp_<?= $snakeCase ?>"
+                id="temp_<?= $snakeCase ?>" placeholder="<?= $elementName ?>">
+
+            <?php else : ?>
+            <label for="<?= $snakeCase ?>"><?= $elementName ?></label>
+            <input <?= $element['require_status'] ?> class="form-control" type="<?= $element['element_type'] ?>"
+                value="<?= htmlspecialchars($$camelCase) ?>" name="<?= $snakeCase ?>" id="<?= $snakeCase ?>"
+                placeholder="<?= $elementName ?>">
             <?php endif; ?>
+        </div>
         <?php endforeach; ?>
-    </script>
+
+    </div>
+
+
+</form>
+
+<script>
+<?php foreach ($elementArray as $element) : ?>
+<?php if ($element['element_type'] == 'select') : ?>
+$('#<?= convertToSnakeCase($element['element_name']) ?>').select2();
+<?php endif; ?>
+<?php endforeach; ?>
+</script>
 <?php
     $output = ob_get_clean(); // Get the buffered output and clean the buffer
     return $output;
@@ -3987,8 +4013,10 @@ function ReturnTextInput($elementName, $requiredStatus, $classList, $defaultValu
 
     ob_start(); // Start output buffering
 ?>
-    <label for="<?= $snakeCase ?>"><?= $elementName ?></label>
-    <input <?= $requiredStatus ?> <?= $readOnlyStatus ?> class="<?= $classList ?>" type="text" value="<?= htmlspecialchars($$camelCase) ?>" name="<?= $snakeCase ?>" id="<?= $snakeCase ?>" placeholder="<?= $elementName ?>">
+<label for="<?= $snakeCase ?>"><?= $elementName ?></label>
+<input <?= $requiredStatus ?> <?= $readOnlyStatus ?> class="<?= $classList ?>" type="text"
+    value="<?= htmlspecialchars($$camelCase) ?>" name="<?= $snakeCase ?>" id="<?= $snakeCase ?>"
+    placeholder="<?= $elementName ?>">
 
 <?php
     $output = ob_get_clean(); // Get the buffered output and clean the buffer
@@ -4007,8 +4035,9 @@ function ReturnNumberInput($elementName, $requiredStatus, $classList, $defaultVa
 
     ob_start(); // Start output buffering
 ?>
-    <label for="<?= $snakeCase ?>"><?= $elementName ?></label>
-    <input <?= $requiredStatus ?> class="<?= $classList ?>" type="text" value="<?= htmlspecialchars($$camelCase) ?>" name="<?= $snakeCase ?>" id="<?= $snakeCase ?>" placeholder="<?= $elementName ?>">
+<label for="<?= $snakeCase ?>"><?= $elementName ?></label>
+<input <?= $requiredStatus ?> class="<?= $classList ?>" type="text" value="<?= htmlspecialchars($$camelCase) ?>"
+    name="<?= $snakeCase ?>" id="<?= $snakeCase ?>" placeholder="<?= $elementName ?>">
 
 <?php
     $output = ob_get_clean(); // Get the buffered output and clean the buffer
@@ -4026,8 +4055,9 @@ function ReturnDateInput($elementName, $requiredStatus, $classList, $defaultValu
 
     ob_start(); // Start output buffering
 ?>
-    <label for="<?= $snakeCase ?>"><?= $elementName ?></label>
-    <input <?= $requiredStatus ?> class="<?= $classList ?>" type="date" value="<?= htmlspecialchars($$camelCase) ?>" name="<?= $snakeCase ?>" id="<?= $snakeCase ?>" placeholder="<?= $elementName ?>">
+<label for="<?= $snakeCase ?>"><?= $elementName ?></label>
+<input <?= $requiredStatus ?> class="<?= $classList ?>" type="date" value="<?= htmlspecialchars($$camelCase) ?>"
+    name="<?= $snakeCase ?>" id="<?= $snakeCase ?>" placeholder="<?= $elementName ?>">
 
 <?php
     $output = ob_get_clean(); // Get the buffered output and clean the buffer
@@ -4045,25 +4075,25 @@ function ReturnSelectInput($elementName, $requiredStatus, $classList, $dataList,
 
     ob_start(); // Start output buffering
 ?>
-    <label for="<?= $snakeCase ?>"><?= $elementName ?></label>
-    <select <?= $requiredStatus ?> name="<?= $snakeCase ?>" id="<?= $snakeCase ?>" class="<?= $classList ?>">
-        <option value="">Select <?= $elementName ?></option>
-        <?php foreach ($dataList as $data) : ?>
-            <option value="<?= htmlspecialchars($data['id']) ?>" <?= ($data['id'] == $defaultValue) ? 'selected' : '' ?>>
-                <?php if (is_array($data['value'])) : ?>
-                    <?php foreach ($data['value'] as $value) : ?>
-                        <?= htmlspecialchars($value) ?>
-                    <?php endforeach; ?>
-                <?php else : ?>
-                    <?= htmlspecialchars($data['value']) ?>
-                <?php endif ?>
-            </option>
+<label for="<?= $snakeCase ?>"><?= $elementName ?></label>
+<select <?= $requiredStatus ?> name="<?= $snakeCase ?>" id="<?= $snakeCase ?>" class="<?= $classList ?>">
+    <option value="">Select <?= $elementName ?></option>
+    <?php foreach ($dataList as $data) : ?>
+    <option value="<?= htmlspecialchars($data['id']) ?>" <?= ($data['id'] == $defaultValue) ? 'selected' : '' ?>>
+        <?php if (is_array($data['value'])) : ?>
+        <?php foreach ($data['value'] as $value) : ?>
+        <?= htmlspecialchars($value) ?>
         <?php endforeach; ?>
-    </select>
+        <?php else : ?>
+        <?= htmlspecialchars($data['value']) ?>
+        <?php endif ?>
+    </option>
+    <?php endforeach; ?>
+</select>
 
-    <script>
-        $('#<?= $snakeCase ?>').select2();
-    </script>
+<script>
+$('#<?= $snakeCase ?>').select2();
+</script>
 
 <?php
     $output = ob_get_clean(); // Get the buffered output and clean the buffer
@@ -4082,11 +4112,13 @@ function ReturnFileInput($elementName, $requiredStatus, $classList, $defaultValu
     $tempName = 'temp' . $camelCase;
     ob_start(); // Start output buffering
 ?>
-    <label for="<?= $snakeCase ?>"><?= $elementName ?></label>
-    <input <?= $requiredStatus ?> class="<?= $classList ?>" type="file" value="<?= htmlspecialchars($$camelCase) ?>" name="<?= $snakeCase ?>" id="<?= $snakeCase ?>" placeholder="<?= $elementName ?>">
+<label for="<?= $snakeCase ?>"><?= $elementName ?></label>
+<input <?= $requiredStatus ?> class="<?= $classList ?>" type="file" value="<?= htmlspecialchars($$camelCase) ?>"
+    name="<?= $snakeCase ?>" id="<?= $snakeCase ?>" placeholder="<?= $elementName ?>">
 
-    <!-- Temp File -->
-    <input class="form-control" type="hidden" value="<?= $defaultValue ?>" name="temp_<?= $snakeCase ?>" id="temp_<?= $snakeCase ?>" placeholder="<?= $elementName ?>">
+<!-- Temp File -->
+<input class="form-control" type="hidden" value="<?= $defaultValue ?>" name="temp_<?= $snakeCase ?>"
+    id="temp_<?= $snakeCase ?>" placeholder="<?= $elementName ?>">
 
 
 <?php
