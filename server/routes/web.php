@@ -118,6 +118,8 @@ $paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.p
 $DpadRoutes = require './routes/Dpad/DpadRoutes.php';
 $SMSRoutes = require './routes/SMSRoutes.php';
 $bankRoutes = require './routes/bankRoutes.php';
+$ConvocationRegistrationRoutes  = require './routes/ConvocationRegistrationRoutes.php';
+$PackageRoutes  = require './routes/PackageRoutes.php';
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
 
 
@@ -210,7 +212,7 @@ $routes = array_merge(
     $SMSRoutes,
     $bankRoutes,
 
-    $EventsPageRoutes
+    $EventsPageRoutes,
 
     $ConvocationRegistrationRoutes,
     $PackageRoutes,
