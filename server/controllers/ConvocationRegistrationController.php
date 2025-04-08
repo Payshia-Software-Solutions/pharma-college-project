@@ -198,7 +198,8 @@ class ConvocationRegistrationController
                 $data['payment_amount'] ?? null,
                 $data['registration_status'] ?? 'pending',
                 $data['hash_value'] ?? null,
-                $paymentSlipPath
+                $paymentSlipPath,
+                $data['additional_seats'] ?? null,
             );
 
             http_response_code(201);
@@ -236,7 +237,8 @@ class ConvocationRegistrationController
                 $data['event_id'] ?? null,
                 $data['payment_status'] ?? 'pending',
                 $data['payment_amount'] ?? null,
-                $data['registration_status'] ?? 'pending'
+                $data['registration_status'] ?? 'pending',
+                $data['additional_seats'] ?? null,
             );
             http_response_code(201);
             echo json_encode([

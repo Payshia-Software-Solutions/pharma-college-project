@@ -32,12 +32,13 @@ export default function ConvocationPortal() {
   const [formData, setFormData] = useState({
     studentNumber: "",
     studentName: "",
-    courses: [], // Changed from course: { id: "", title: "" }
+    courses: [],
     packageDetails: {
       parentSeatCount: 0,
       garland: false,
       graduationCloth: false,
       photoPackage: false,
+      additionalSeats:null,
     },
     package_id: null,
     paymentSlip: null,

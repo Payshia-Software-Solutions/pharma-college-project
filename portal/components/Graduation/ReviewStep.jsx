@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import {
@@ -23,12 +22,13 @@ export default function ReviewStep({
   updateFormData,
   packages = [],
 }) {
-  const [loading] = useState(false); // No fetching here if packages are passed
+  const [loading] = useState(false);
   const [error] = useState(null);
-  const [paymentSlip, setPaymentSlip] = useState(null); // Store uploaded file
-  const [dragActive, setDragActive] = useState(false); // For drag-and-drop styling
+  const [paymentSlip, setPaymentSlip] = useState(null);
+  const [dragActive, setDragActive] = useState(false);
 
-  // Find the selected package based on formData.package_id
+  const ADDITIONAL_SEAT_COST = 500;
+
   const selectedPackage = packages.find(
     (pkg) => pkg.package_id === formData.package_id
   ) || {
@@ -39,24 +39,30 @@ export default function ReviewStep({
       garland: false,
       graduationCloth: false,
       photoPackage: false,
+      additionalSeats: 0,
     },
   };
 
-  // Validate all required fields, including payment slip
+  const calculateTotalAmount = () => {
+    const basePrice = selectedPackage.price;
+    const additionalSeats = formData.packageDetails?.additionalSeats || 0;
+    const additionalCost = additionalSeats * ADDITIONAL_SEAT_COST;
+    return basePrice + additionalCost;
+  };
+
   useEffect(() => {
     const isComplete =
       formData.studentNumber &&
       formData.studentName &&
-      formData.courses.length > 0 && // Changed from formData.course?.id
+      formData.courses.length > 0 &&
       formData.package_id &&
-      paymentSlip; // Require payment slip
+      paymentSlip;
     setIsValid(isComplete);
     if (paymentSlip) {
-      updateFormData("paymentSlip", paymentSlip); // Update formData in parent
+      updateFormData("paymentSlip", paymentSlip);
     }
   }, [formData, paymentSlip, setIsValid, updateFormData]);
 
-  // Handle file drop or selection
   const handleFileChange = (files) => {
     const file = files[0];
     if (
@@ -72,7 +78,6 @@ export default function ReviewStep({
     }
   };
 
-  // Drag-and-drop handlers
   const handleDragOver = (e) => {
     e.preventDefault();
     setDragActive(true);
@@ -121,7 +126,6 @@ export default function ReviewStep({
 
       {!loading && !error && (
         <div className="space-y-6">
-          {/* Student Information */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-gray-800 flex items-center">
               <User className="w-5 h-5 text-green-500 mr-2" />
@@ -140,7 +144,6 @@ export default function ReviewStep({
             </div>
           </div>
 
-          {/* Course Selection */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-gray-800 flex items-center">
               <Book className="w-5 h-5 text-green-500 mr-2" />
@@ -164,7 +167,6 @@ export default function ReviewStep({
             </div>
           </div>
 
-          {/* Package Details */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-gray-800 flex items-center">
               <PackageIcon className="w-5 h-5 text-green-500 mr-2" />
@@ -177,7 +179,19 @@ export default function ReviewStep({
               </p>
               <p className="flex items-center">
                 <DollarSign className="w-5 h-5 text-blue-500 mr-2" />
-                <strong>Price:</strong> ${selectedPackage.price.toFixed(2)}
+                <strong>Base Price:</strong> Rs {selectedPackage.price.toFixed(2)}
+              </p>
+              <p className="flex items-center">
+                <Users className="w-5 h-5 text-blue-500 mr-2" />
+                <strong>Additional Seats:</strong>{" "}
+                {formData.packageDetails?.additionalSeats || 0} (Rs{" "}
+                {(formData.packageDetails?.additionalSeats || 0) * ADDITIONAL_SEAT_COST}
+                .00)
+              </p>
+              <p className="flex items-center">
+                <DollarSign className="w-5 h-5 text-blue-500 mr-2" />
+                <strong>Total Payable Amount:</strong> Rs{" "}
+                {calculateTotalAmount().toFixed(2)}
               </p>
               <div className="mt-2">
                 <p className="font-medium text-gray-700">Inclusions:</p>
@@ -205,7 +219,6 @@ export default function ReviewStep({
             </div>
           </div>
 
-          {/* Payment Slip Upload */}
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-gray-800 flex items-center">
               <Upload className="w-5 h-5 text-green-500 mr-2" />
