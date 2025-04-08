@@ -106,6 +106,7 @@ $CeylonPharmacyCriteria = require './routes/CertificateCenter/certificateRoutes.
 $DeliveryOrdersRoutes = require './routes/Orders/DeliveryOrdersRoutes.php';
 $UserCertificatePrintStatusRoutes = require './routes/UserCertificatePrintStatusRoutes/UserCertificatePrintStatusRoutes.php';
 $ContactRoutes = require './routes/Contact/ContactRoutes.php';
+$EventsPageRoutes = require './routes/EventsPageRoutes.php';
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes  DeliveryOrdersRoutes.php
 
 $DistrictsRoutes = require './routes/District/DistrictsRoutes.php';
@@ -117,9 +118,6 @@ $paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.p
 $DpadRoutes = require './routes/Dpad/DpadRoutes.php';
 $SMSRoutes = require './routes/SMSRoutes.php';
 $bankRoutes = require './routes/bankRoutes.php';
-
-$ConvocationRegistrationRoutes = require './routes/ConvocationRegistrationRoutes.php';
-$PackageRoutes = require './routes/PackageRoutes.php';
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
 
 
@@ -211,8 +209,12 @@ $routes = array_merge(
     $DpadRoutes,
     $SMSRoutes,
     $bankRoutes,
+
+    $EventsPageRoutes
+
     $ConvocationRegistrationRoutes,
     $PackageRoutes,
+
 );
 
 
