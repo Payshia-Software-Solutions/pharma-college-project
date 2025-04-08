@@ -27,6 +27,32 @@ return [
         return $deliveryOrderController->getRecordByIndexNumber($indexNumber);
     },
 
+    'GET /delivery_orders\?indexNumber=[\w]+&receivedStatus=[\w]+/$' => function () use ($deliveryOrderController) {
+    // Access query parameters using $_GET
+    $indexNumber = isset($_GET['indexNumber']) ? $_GET['indexNumber'] : null;
+    $receivedStatus = isset($_GET['receivedStatus']) 
+    ? ($_GET['receivedStatus'] == 'true' ? 'Received' : 'Not Received')  // Check if receivedStatus is 'true'
+    : 'Not Received';  // Default to 'Not Received' if not provided
+
+    // Validate parameters
+    if (!$indexNumber) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Missing required parameters. indexNumber is required for this API']);
+        return;
+    }
+
+    // Optionally, validate the receivedStatus if needed
+    if (!in_array($receivedStatus, ['Received', 'Not Received', 'Shipped'])) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Invalid receivedStatus value.']);
+        return;
+    }
+
+    // Call the controller method with both parameters
+    return $deliveryOrderController->getRecordByIndexNumberAndStatus($indexNumber, $receivedStatus);
+},
+
+
     // Get a delivery order by Tracking Number
     'GET /delivery_orders\?trackingNumber=[\w]+/$' => function () use ($deliveryOrderController) {
         // Access query parameters using $_GET
@@ -50,6 +76,8 @@ return [
     // Update a delivery order by ID
     'PUT /delivery_orders/{id}/' => [$deliveryOrderController, 'updateRecord'],
 
+    'PUT /delivery_orders/update-status/{id}/' => [$deliveryOrderController, 'updateOrderStatus'],
+    
     // Delete a delivery order by ID
     'DELETE /delivery_orders/{id}/' => [$deliveryOrderController, 'deleteRecord'],
 

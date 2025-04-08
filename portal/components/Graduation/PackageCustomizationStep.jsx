@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Loader } from "lucide-react";
@@ -14,8 +13,18 @@ export default function PackageCustomizationStep({
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [additionalSeats, setAdditionalSeats] = useState(
+    formData.packageDetails?.additionalSeats || 0
+  );
 
-  // Fetch packages from API (runs once on mount)
+  const ADDITIONAL_SEAT_COST = 500;
+
+  // Sync additionalSeats with formData when it changes
+  useEffect(() => {
+    setAdditionalSeats(formData.packageDetails?.additionalSeats || 0);
+  }, [formData.packageDetails]);
+
+  // Fetch packages
   useEffect(() => {
     const fetchPackages = async () => {
       setLoading(true);
@@ -58,34 +67,59 @@ export default function PackageCustomizationStep({
       }
     };
     fetchPackages();
-  }, [setStepLoading]); // Only re-run if setStepLoading changes (rare)
+  }, [setStepLoading]);
 
-  // Validate and restore selection (runs when packages or formData.package_id changes)
+  // Validate selection
   useEffect(() => {
     if (packages.length > 0) {
       const isSelected = packages.some(
         (pkg) => pkg.package_id === formData.package_id
       );
       if (formData.package_id && isSelected) {
-        const selected = packages.find(
-          (p) => p.package_id === formData.package_id
-        );
-        updatePackageData("packageDetails", { ...selected.inclusions }); // Restore details
         setIsValid(true);
       } else if (formData.package_id && !isSelected) {
-        updatePackageData("package_id", null); // Clear invalid selection
+        updatePackageData("package_id", null);
         setIsValid(false);
       } else {
-        setIsValid(false); // No selection yet
+        setIsValid(false);
       }
     }
   }, [formData.package_id, packages, updatePackageData, setIsValid]);
 
-  // Handle package selection
   const handlePackageSelect = (pkg) => {
     updatePackageData("package_id", pkg.package_id);
-    updatePackageData("packageDetails", { ...pkg.inclusions });
+    updatePackageData("packageDetails", {
+      ...pkg.inclusions,
+      additionalSeats: additionalSeats,
+    });
     setIsValid(true);
+  };
+
+  const handleAdditionalSeatsChange = (e) => {
+    const value = Math.max(0, parseInt(e.target.value) || 0);
+    setAdditionalSeats(value);
+    if (formData.package_id) {
+      const selectedPackage = packages.find(
+        (p) => p.package_id === formData.package_id
+      );
+      if (selectedPackage) {
+        updatePackageData("packageDetails", {
+          ...selectedPackage.inclusions,
+          additionalSeats: value,
+        });
+      }
+    }
+  };
+
+  const calculateTotalAmount = () => {
+    if (!formData.package_id) return 0;
+    const selectedPackage = packages.find(
+      (pkg) => pkg.package_id === formData.package_id
+    );
+    if (!selectedPackage) return 0;
+    const basePrice = selectedPackage.price;
+    const additionalCost = additionalSeats * ADDITIONAL_SEAT_COST;
+    return basePrice + additionalCost;
   };
 
   return (
@@ -165,6 +199,43 @@ export default function PackageCustomizationStep({
           ))}
         </div>
       )}
+
+      <div className="mt-6">
+        <label className="block text-sm font-medium text-gray-700">
+          Additional Parent Seats
+        </label>
+        <input
+          type="number"
+          min="0"
+          value={additionalSeats}
+          onChange={handleAdditionalSeatsChange}
+          className="mt-1 p-3 block w-full rounded-md border border-gray-800 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          placeholder="Enter number of additional seats"
+        />
+        <p className="mt-1 text-sm text-gray-500">
+          Add extra parent seats beyond the package inclusion (Rs {ADDITIONAL_SEAT_COST} per seat).
+        </p>
+      </div>
+
+      <div className="mt-6">
+        <div className="flex justify-between items-center">
+          <span className="text-lg font-medium text-gray-800">
+            Total Payable Amount:
+          </span>
+          <span className="text-lg font-semibold text-blue-600">
+            Rs {calculateTotalAmount().toFixed(2)}
+          </span>
+        </div>
+        {formData.package_id && (
+          <p className="mt-1 text-sm text-gray-500">
+            (Base Price: Rs{" "}
+            {packages
+              .find((pkg) => pkg.package_id === formData.package_id)
+              ?.price.toFixed(2)}{" "}
+            + Additional Seats Cost: Rs {(additionalSeats * ADDITIONAL_SEAT_COST).toFixed(2)})
+          </p>
+        )}
+      </div>
 
       {!formData.package_id && !loading && !error && packages.length > 0 && (
         <p className="text-red-500 text-sm mt-2">

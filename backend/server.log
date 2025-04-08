@@ -195,3 +195,11 @@ Local: http://localhost:5000
 2025-03-12T06:43:17.328Z - Network: http://192.168.8.115:5000
 2025-03-12T06:43:18.601Z - 
 ✅ Database synced successfully
+2025-03-28T15:00:35.186Z - Loading environment variables from: C:\xampp\htdocs\pharma-college-project\backend\.env.local
+2025-03-28T15:00:36.252Z - Environment: development
+2025-03-28T15:00:36.387Z - Server running on port 5000
+2025-03-28T15:00:36.389Z - 
+Local: http://localhost:5000
+2025-03-28T15:00:36.390Z - Network: http://192.168.188.155:5000
+2025-03-28T15:00:37.559Z - 
+✅ Database synced successfully

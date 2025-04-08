@@ -43,6 +43,20 @@ class DeliveryOrderController
             echo json_encode(['error' => 'No delivery orders found for the given index number']);
         }
     }
+
+    public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus){
+         // Remove the trailing slash if it exists
+         $index_number = rtrim($index_number, '/');
+         $receivedStatus = rtrim($receivedStatus, '/');
+    
+         $record = $this->model->getRecordByIndexNumberAndStatus($index_number, $receivedStatus);
+         if ($record) {
+             echo json_encode($record);
+         } else {
+             http_response_code(404);
+             echo json_encode(['error' => 'No delivery orders found for the given index number']);
+         }
+    }
     
     
 
@@ -89,16 +103,21 @@ class DeliveryOrderController
         if ($this->validateData($data)) {
             $success = $this->model->updateRecord($id, $data);
             if ($success) {
-                echo json_encode(['message' => 'Delivery order updated successfully']);
+                echo json_encode(['status'=> 'success', 'message' => 'Delivery order updated successfully']);
             } else {
                 http_response_code(500);
-                echo json_encode(['error' => 'Failed to update delivery order']);
+                echo json_encode(['status'=> 'success', 'message' => 'Failed to update delivery order']);
             }
         } else {
             http_response_code(400);
             echo json_encode(['error' => 'Invalid data']);
         }
     }
+
+    
+
+
+
 
     // Delete a delivery order
     public function deleteRecord($id)
@@ -155,6 +174,53 @@ public function getRecordByCurrentStatus($current_status)
         http_response_code(404);
         echo json_encode(['error' => 'No delivery orders found for the given current status']);
     }
+}
+
+// Update order status
+// Update order status
+public function updateOrderStatus($id)
+{
+    // Get the data from the request (assuming the status is passed in the body as JSON)
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    // Check if the status is provided
+    if (isset($data['OrderStatus'])) {
+        $order_recived_status = $data['OrderStatus'];
+    
+
+        // Call the model function to update the order status
+        $affectedRows = $this->model->updateOrderStatus($id, $order_recived_status);
+
+        // Return response based on the number of affected rows
+        if ($affectedRows > 0) {
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Order status updated successfully',
+                'affectedRows' => $affectedRows
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Failed to update order status',
+                'affectedRows' => $affectedRows
+            ]);
+        }
+    } else {
+        http_response_code(400);
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'OrderStatus is required'
+        ]);
+    }
+}
+
+
+
+// Optional: Validate the status (you can customize based on your logic)
+private function validateStatus($status) {
+    $validStatuses = ['Received', 'Pending', 'Shipped', 'Cancelled'];
+    return in_array($status, $validStatuses);
 }
 
 }

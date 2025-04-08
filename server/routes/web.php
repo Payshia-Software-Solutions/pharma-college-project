@@ -209,7 +209,12 @@ $routes = array_merge(
     $DpadRoutes,
     $SMSRoutes,
     $bankRoutes,
+
     $EventsPageRoutes
+
+    $ConvocationRegistrationRoutes,
+    $PackageRoutes,
+
 );
 
 
