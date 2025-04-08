@@ -141,6 +141,7 @@ export default function ConvocationPortal() {
       });
       submissionData.append("package_id", formData.package_id);
       submissionData.append("payment_slip", formData.paymentSlip);
+      submissionData.append("payment_slip", formData.packageDetails.additionalSeats);
 
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations`,

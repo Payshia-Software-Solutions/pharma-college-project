@@ -199,7 +199,7 @@ class ConvocationRegistrationController
                 $data['registration_status'] ?? 'pending',
                 $data['hash_value'] ?? null,
                 $paymentSlipPath,
-                $data['additional_seats'] ?? null,
+                $data['additional_seats'] ?? 0,
             );
 
             http_response_code(201);
