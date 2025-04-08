@@ -16,7 +16,7 @@ class ConvocationRegistration
         // Insert without reference_number initially
         $stmt = $this->pdo->prepare("
             INSERT INTO convocation_registrations (student_number, course_id, package_id, event_id, payment_status, payment_amount, registration_status, hash_value, image_path, additional_seats)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, additional_seats)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
         $stmt->execute([$student_number, $course_id, $package_id, $event_id, $payment_status, $payment_amount, $registration_status, $hash_value, $image_path, $additional_seats]);
 
