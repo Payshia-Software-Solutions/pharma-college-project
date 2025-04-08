@@ -9,6 +9,8 @@ $eventsPageController = new EventsPageController($pdo);
 return [
 
     'GET /events-page' => [$eventsPageController, 'getAllEvents'],
+
+    
     'GET /events-page/latest' => [$eventsPageController, 'getLastThreeEvents'],
 
     'GET /events-page/{slug}' => [$eventsPageController, 'getEventBySlug'],

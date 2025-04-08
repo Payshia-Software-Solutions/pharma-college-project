@@ -208,7 +208,8 @@ $routes = array_merge(
     $paymentRequestRoutes,
     $DpadRoutes,
     $SMSRoutes,
-    $bankRoutes
+    $bankRoutes,
+    $EventsPageRoutes
 );
 
 
