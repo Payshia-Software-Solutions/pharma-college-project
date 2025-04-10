@@ -25,5 +25,5 @@ return [
 
     'DELETE /events-page/{slug}' => [$eventsPageController, 'deleteEvent'],
 
-    'DELETE /events-page/{id}' => [$eventsPageController, 'deleteEventById'],
+    // 'DELETE /events-page/delete/{id}' => [$eventsPageController, 'deleteEventById'],
 ];
