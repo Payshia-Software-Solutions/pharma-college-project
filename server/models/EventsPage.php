@@ -31,13 +31,29 @@ class EventsPage
         $data['created_at'] = date('Y-m-d H:i:s');
         $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $data['title'])));
         $data['slug'] = $this->generateUniqueSlug($slug);
-
-        $sql = "INSERT INTO events_page (event_date, label, title, mini_description, description, slug, phone, image_url, created_at) 
-                VALUES (:event_date, :label, :title, :mini_description, :description, :slug, :phone, :image_url, :created_at)";
+    
+        // Make sure only the required keys are passed
+        $cleanData = [
+            'event_date' => $data['event_date'] ?? null,
+            'label' => $data['label'] ?? '',
+            'title' => $data['title'],
+            'mini_description' => $data['mini_description'] ?? '',
+            'description' => $data['description'] ?? '',
+            'slug' => $data['slug'],
+            'phone' => $data['phone'] ?? '',
+            'image_url' => $data['image_url'] ?? '',
+            'created_at' => $data['created_at']
+        ];
+    
+        $sql = "INSERT INTO events_page 
+            (event_date, label, title, mini_description, description, slug, phone, image_url, created_at) 
+            VALUES 
+            (:event_date, :label, :title, :mini_description, :description, :slug, :phone, :image_url, :created_at)";
         
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($data);
+        return $stmt->execute($cleanData);
     }
+    
 
     // Update an event
     public function updateEvent($slug, $data)
@@ -70,6 +86,7 @@ class EventsPage
     {
         $stmt = $this->pdo->prepare("DELETE FROM events_page WHERE slug = :slug");
         $stmt->execute(['slug' => $slug]);
+        return $stmt->rowCount(); // returns number of deleted rows
     }
 
     // Fetch events by date
