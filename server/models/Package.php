@@ -42,26 +42,22 @@ class Package
             return []; // Return empty if no course IDs
         }
 
-        // Create placeholders for the IN clause
-        $placeholders = implode(',', array_fill(0, count($courseIds), '?'));
+        // Generate FIND_IN_SET placeholders
+        $conditions = array_fill(0, count($courseIds), 'FIND_IN_SET(?, p.courses)');
+        $whereClause = implode(' OR ', $conditions);
 
-        // Prepare the SQL query to match courses
         $sql = "
-    SELECT DISTINCT p.* 
-    FROM packages p
-    WHERE 
-    " . implode(" OR ", array_map(function ($courseId) {
-            return "FIND_IN_SET(?, p.courses)";
-        }, $courseIds)) . "
-    ";
+            SELECT DISTINCT p.* 
+            FROM packages p
+            WHERE $whereClause
+        ";
 
-        // Prepare and execute the statement
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute(array_merge($courseIds, $courseIds)); // Bind parameters for the placeholders
+        $stmt->execute($courseIds); // Use courseIds once, not twice!
 
-        // Return the results
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
 
 
     // Update a package
