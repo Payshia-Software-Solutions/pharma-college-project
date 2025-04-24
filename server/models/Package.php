@@ -36,6 +36,29 @@ class Package
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getPackagesByCourseIds(array $courseIds)
+    {
+        if (empty($courseIds)) {
+            return []; // Return empty if no course IDs
+        }
+
+        // Create placeholders for the IN clause
+        $placeholders = implode(',', array_fill(0, count($courseIds), '?'));
+
+        $sql = "
+        SELECT DISTINCT p.* 
+        FROM packages p
+        INNER JOIN package_courses pc ON p.package_id = pc.package_id
+        WHERE pc.course_id IN ($placeholders)
+    ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($courseIds);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
     // Update a package
     public function updatePackage($package_id, $package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active, $courses)
     {

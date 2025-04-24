@@ -30,7 +30,10 @@ $courseResponse = $client->request('GET', "{$_ENV["MS_COURSE_SRL"]}/api/{$_ENV["
 $courseData = $courseResponse->toArray();
 
 // Assume the package already includes selected course IDs if provided (e.g. from $graduationPackage['courses'])
-$selectedCourses = $graduationPackage['courses'] ?? [];
+$selectedCourses = isset($graduationPackage['courses'])
+    ? explode(',', $graduationPackage['courses'])
+    : [];
+
 
 ?>
 
@@ -104,14 +107,14 @@ $selectedCourses = $graduationPackage['courses'] ?? [];
                         <label class="form-label">Available Courses</label>
                         <div class="d-flex flex-wrap gap-3">
                             <?php foreach ($courseData as $course): ?>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="courses[]"
-                                    id="course_<?= $course['id'] ?>" value="<?= $course['id'] ?>"
-                                    <?= in_array($course['id'], $selectedCourses) ? 'checked' : '' ?>>
-                                <label class="form-check-label" for="course_<?= $course['id'] ?>">
-                                    <?= htmlspecialchars($course['courseName']) ?>
-                                </label>
-                            </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="courses[]"
+                                        id="course_<?= $course['id'] ?>" value="<?= $course['id'] ?>"
+                                        <?= in_array($course['id'], $selectedCourses) ? 'checked' : '' ?>>
+                                    <label class="form-check-label" for="course_<?= $course['id'] ?>">
+                                        <?= htmlspecialchars($course['courseName']) ?>
+                                    </label>
+                                </div>
                             <?php endforeach; ?>
                         </div>
                     </div>

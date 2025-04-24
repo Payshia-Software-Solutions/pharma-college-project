@@ -19,6 +19,11 @@ return [
         return $packageController->getPackage($package_id);
     },
 
+    // GET packages by selected course IDs
+    'GET /packages/by-courses$' => function () use ($packageController) {
+        return $packageController->getPackagesByCourseIds();
+    },
+
     // POST create a new package
     'POST /packages/$' => function () use ($packageController) {
         return $packageController->createPackage();
