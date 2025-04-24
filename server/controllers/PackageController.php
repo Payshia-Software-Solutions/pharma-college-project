@@ -31,6 +31,34 @@ class PackageController
         }
     }
 
+    // GET packages by course IDs
+    public function getPackagesByCourseIds()
+    {
+        // Get and sanitize query param
+        $courseIdsParam = $_GET['course_ids'] ?? '';
+
+        if (empty($courseIdsParam)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'No course IDs provided']);
+            return;
+        }
+
+        // Convert comma-separated string to array of integers
+        $courseIds = array_filter(array_map('intval', explode(',', $courseIdsParam)));
+
+        if (empty($courseIds)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid course ID format']);
+            return;
+        }
+
+        // Call model to get packages
+        $packages = $this->model->getPackagesByCourseIds($courseIds);
+
+        echo json_encode($packages);
+    }
+
+
     // POST create a new package
     public function createPackage()
     {

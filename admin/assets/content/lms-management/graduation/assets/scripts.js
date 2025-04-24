@@ -97,7 +97,6 @@ function OpenPackageForm(packageId = 0) {
 
 
   function SavePackage(packageId) {
-    // Cache form values
     const packageName = document.getElementById("package_name").value.trim();
     const price = document.getElementById("price").value;
     const parentSeatCount = document.getElementById("parent_seat_count").value;
@@ -105,11 +104,11 @@ function OpenPackageForm(packageId = 0) {
     const graduationCloth = document.getElementById("graduation_cloth").checked ? 1 : 0;
     const photoPackage = document.getElementById("photo_package").value;
 
-    // Collect selected course IDs
+    // Collect selected course IDs and convert to comma-separated string
     const selectedCourses = Array.from(document.querySelectorAll("input[name='courses[]']:checked"))
-        .map(input => parseInt(input.value));
+        .map(input => input.value)
+        .join(",");
 
-    // Validation helper
     const validateField = (value, message) => {
         if (!value || isNaN(value) || parseFloat(value) <= 0) {
             OpenAlert("error", message, "");
@@ -118,7 +117,6 @@ function OpenPackageForm(packageId = 0) {
         return true;
     };
 
-    // Validate
     if (!packageName) {
         OpenAlert("error", "Package Name is required", "");
         return;
@@ -129,7 +127,6 @@ function OpenPackageForm(packageId = 0) {
 
     showOverlay();
 
-    // Data to send
     const data = {
         package_name: packageName,
         price: parseFloat(price),
@@ -137,7 +134,7 @@ function OpenPackageForm(packageId = 0) {
         garland,
         graduation_cloth: graduationCloth,
         photo_package: parseInt(photoPackage),
-        courses: selectedCourses  // Include selected course IDs
+        courses: selectedCourses  // now a string like "1,3,5"
     };
 
     const method = packageId === 0 ? "POST" : "PUT";
@@ -170,6 +167,7 @@ function OpenPackageForm(packageId = 0) {
         OpenAlert("error", "Error saving package", error.message);
     });
 }
+    
 
 
 
