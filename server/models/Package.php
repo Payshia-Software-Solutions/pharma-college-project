@@ -11,13 +11,13 @@ class Package
     }
 
     // Create a new package
-    public function createPackage($package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active = true)
+    public function createPackage($package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active = true, $courses)
     {
         $stmt = $this->pdo->prepare("
-            INSERT INTO packages (package_name, price, parent_seat_count, garland, graduation_cloth, photo_package, is_active)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO packages (package_name, price, parent_seat_count, garland, graduation_cloth, photo_package, is_active, courses)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $stmt->execute([$package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active]);
+        $stmt->execute([$package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active, $courses]);
         return $this->pdo->lastInsertId();
     }
 
@@ -37,14 +37,14 @@ class Package
     }
 
     // Update a package
-    public function updatePackage($package_id, $package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active)
+    public function updatePackage($package_id, $package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active, $courses)
     {
         $stmt = $this->pdo->prepare("
             UPDATE packages 
-            SET package_name = ?, price = ?, parent_seat_count = ?, garland = ?, graduation_cloth = ?, photo_package = ?, is_active = ?
+            SET package_name = ?, price = ?, parent_seat_count = ?, garland = ?, graduation_cloth = ?, photo_package = ?, is_active = ?, courses= ?
             WHERE package_id = ?
         ");
-        return $stmt->execute([$package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active, $package_id]);
+        return $stmt->execute([$package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active, $courses, $package_id]);
     }
 
     // Delete a package

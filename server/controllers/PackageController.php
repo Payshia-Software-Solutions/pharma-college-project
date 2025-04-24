@@ -52,7 +52,8 @@ class PackageController
             $data['garland'],
             $data['graduation_cloth'],
             $data['photo_package'],
-            $data['is_active'] ?? true
+            $data['is_active'] ?? true,
+            $data['courses'],
         );
         http_response_code(201);
         echo json_encode(['package_id' => $package_id, 'message' => 'Package created successfully']);
@@ -103,7 +104,8 @@ class PackageController
             $data['garland'],
             $data['graduation_cloth'],
             $data['photo_package'],
-            $data['is_active'] ?? true // Default is true if not provided
+            $data['is_active'] ?? true, // Default is true if not provided
+            $data['courses'],
         );
 
         if ($success) {

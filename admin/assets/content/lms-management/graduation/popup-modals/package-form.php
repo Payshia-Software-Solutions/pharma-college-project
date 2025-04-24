@@ -5,22 +5,33 @@ require __DIR__ . '/../../../../../vendor/autoload.php';
 use Dotenv\Dotenv;
 use Symfony\Component\HttpClient\HttpClient;
 
+// Load environment variables
+$dotenv = Dotenv::createImmutable(dirname(__DIR__, 5));
+$dotenv->load();
+
 // Get the POST Variables
 $packageId = $_POST['packageId'];
 
-if (isset($packageId) && $packageId != 0) {
+// Initialize HTTP client
+$client = HttpClient::create();
 
+if (isset($packageId) && $packageId != 0) {
     // Load environment variables
     $dotenv = Dotenv::createImmutable(dirname(__DIR__, 5));
     $dotenv->load();
-
-    // Initialize HTTP client
-    $client = HttpClient::create();
 
     // Fetch certificate order data from API
     $response = $client->request('GET', $_ENV["SERVER_URL"] . '/packages/' . $packageId);
     $graduationPackage = $response->toArray();
 }
+
+// Get all courses from the API and decode the response
+$courseResponse = $client->request('GET', "{$_ENV["MS_COURSE_SRL"]}/api/{$_ENV["API_VERSION"]}/courses");
+$courseData = $courseResponse->toArray();
+
+// Assume the package already includes selected course IDs if provided (e.g. from $graduationPackage['courses'])
+$selectedCourses = $graduationPackage['courses'] ?? [];
+
 ?>
 
 <div class="loading-popup-content">
@@ -87,6 +98,25 @@ if (isset($packageId) && $packageId != 0) {
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label class="form-label">Available Courses</label>
+                        <div class="d-flex flex-wrap gap-3">
+                            <?php foreach ($courseData as $course): ?>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="courses[]"
+                                    id="course_<?= $course['id'] ?>" value="<?= $course['id'] ?>"
+                                    <?= in_array($course['id'], $selectedCourses) ? 'checked' : '' ?>>
+                                <label class="form-check-label" for="course_<?= $course['id'] ?>">
+                                    <?= htmlspecialchars($course['courseName']) ?>
+                                </label>
+                            </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                </div>
+
 
                 <div class="row">
                     <div class="col-12 d-flex justify-content-end">
