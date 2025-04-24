@@ -30,8 +30,19 @@ export default function PackageCustomizationStep({
       setLoading(true);
       if (setStepLoading) setStepLoading(true);
       try {
+        // Check if courses are selected
+        const courseIds = formData.courses
+          ? formData.courses.map((course) => course.id).join(",")
+          : "";
+        console.log(courseIds);
+        if (!courseIds) {
+          setError("No courses selected.");
+          setLoading(false);
+          return;
+        }
+
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/packages`,
+          `${process.env.NEXT_PUBLIC_API_URL}/packages/by-courses?course_ids=${courseIds}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -213,7 +224,8 @@ export default function PackageCustomizationStep({
           placeholder="Enter number of additional seats"
         />
         <p className="mt-1 text-sm text-gray-500">
-          Add extra parent seats beyond the package inclusion (Rs {ADDITIONAL_SEAT_COST} per seat).
+          Add extra parent seats beyond the package inclusion (Rs{" "}
+          {ADDITIONAL_SEAT_COST} per seat).
         </p>
       </div>
 
@@ -232,7 +244,8 @@ export default function PackageCustomizationStep({
             {packages
               .find((pkg) => pkg.package_id === formData.package_id)
               ?.price.toFixed(2)}{" "}
-            + Additional Seats Cost: Rs {(additionalSeats * ADDITIONAL_SEAT_COST).toFixed(2)})
+            + Additional Seats Cost: Rs{" "}
+            {(additionalSeats * ADDITIONAL_SEAT_COST).toFixed(2)})
           </p>
         )}
       </div>
