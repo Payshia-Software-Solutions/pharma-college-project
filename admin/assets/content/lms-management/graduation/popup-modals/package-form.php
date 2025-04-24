@@ -26,7 +26,7 @@ if (isset($packageId) && $packageId != 0) {
 }
 
 // Get all courses from the API and decode the response
-$courseResponse = $client->request('GET', "{$_ENV["MS_COURSE_SRL"]}/api/{$_ENV["API_VERSION"]}/courses");
+$courseResponse = $client->request('GET', "{$_ENV["SERVER_URL"]}/parent-main-course");
 $courseData = $courseResponse->toArray();
 
 // Assume the package already includes selected course IDs if provided (e.g. from $graduationPackage['courses'])
@@ -112,7 +112,7 @@ $selectedCourses = isset($graduationPackage['courses'])
                                         id="course_<?= $course['id'] ?>" value="<?= $course['id'] ?>"
                                         <?= in_array($course['id'], $selectedCourses) ? 'checked' : '' ?>>
                                     <label class="form-check-label" for="course_<?= $course['id'] ?>">
-                                        <?= htmlspecialchars($course['courseName']) ?>
+                                        <?= htmlspecialchars($course['course_name']) ?>
                                     </label>
                                 </div>
                             <?php endforeach; ?>

@@ -45,15 +45,21 @@ class Package
         // Create placeholders for the IN clause
         $placeholders = implode(',', array_fill(0, count($courseIds), '?'));
 
+        // Prepare the SQL query to match courses
         $sql = "
-        SELECT DISTINCT p.* 
-        FROM packages p
-        WHERE courses IN ($placeholders)
+    SELECT DISTINCT p.* 
+    FROM packages p
+    WHERE 
+    " . implode(" OR ", array_map(function ($courseId) {
+            return "FIND_IN_SET(?, p.courses)";
+        }, $courseIds)) . "
     ";
 
+        // Prepare and execute the statement
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute($courseIds);
+        $stmt->execute(array_merge($courseIds, $courseIds)); // Bind parameters for the placeholders
 
+        // Return the results
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
