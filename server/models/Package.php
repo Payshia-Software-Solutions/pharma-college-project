@@ -11,7 +11,7 @@ class Package
     }
 
     // Create a new package
-    public function createPackage($package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active = true, $courses)
+    public function createPackage($package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $courses, $is_active = true)
     {
         $stmt = $this->pdo->prepare("
             INSERT INTO packages (package_name, price, parent_seat_count, garland, graduation_cloth, photo_package, is_active, courses)
@@ -48,8 +48,7 @@ class Package
         $sql = "
         SELECT DISTINCT p.* 
         FROM packages p
-        INNER JOIN package_courses pc ON p.package_id = pc.package_id
-        WHERE pc.course_id IN ($placeholders)
+        WHERE courses IN ($placeholders)
     ";
 
         $stmt = $this->pdo->prepare($sql);
@@ -60,7 +59,7 @@ class Package
 
 
     // Update a package
-    public function updatePackage($package_id, $package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active, $courses)
+    public function updatePackage($package_id, $package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $courses, $is_active)
     {
         $stmt = $this->pdo->prepare("
             UPDATE packages 
