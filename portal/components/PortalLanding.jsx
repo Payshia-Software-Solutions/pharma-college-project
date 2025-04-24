@@ -7,6 +7,7 @@ import {
   User,
   GraduationCap,
   ShieldCheck,
+  Phone,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
@@ -14,9 +15,7 @@ import { cn } from "@/lib/utils";
 
 const PortalLanding = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-green-50 to-pink-50 flex flex-col w-full lg:w-[60%] xl:w-[50%] lg:rounded-2xl mx-auto relative overflow-hidden shadow-xl pb-20">
-      {/* Animated background elements */}
-
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-green-50 to-pink-50 lg:bg-white lg:from-white lg:via-white lg:to-white flex flex-col w-full lg:w-[100%] xl:w-[100%] lg:rounded-2xl mx-auto relative overflow-hidden shadow-xl lg:shadow-none pb-20">
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md p-6 flex items-center sticky top-0 z-50 shadow-sm">
         <div className="flex items-center space-x-3">
@@ -84,6 +83,14 @@ const PortalLanding = () => {
             icon={<ShieldCheck className="w-8 h-8 text-white" />}
             title="Certificate"
             description="Order now your Pharma Achievers certificate"
+            gradient="from-brand to-green-400"
+          />
+          {/* Certificate Card */}
+          <PortalCard
+            href="/contact"
+            icon={<Phone className="w-8 h-8 text-white" />}
+            title="Contact"
+            description="Contact our staff & get assist!"
             gradient="from-brand to-green-400"
           />
         </div>

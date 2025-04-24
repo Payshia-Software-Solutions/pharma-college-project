@@ -105,7 +105,11 @@ function OpenPackageForm(packageId = 0) {
     const graduationCloth = document.getElementById("graduation_cloth").checked ? 1 : 0;
     const photoPackage = document.getElementById("photo_package").value;
 
-    // Validation helper function
+    // Collect selected course IDs
+    const selectedCourses = Array.from(document.querySelectorAll("input[name='courses[]']:checked"))
+        .map(input => parseInt(input.value));
+
+    // Validation helper
     const validateField = (value, message) => {
         if (!value || isNaN(value) || parseFloat(value) <= 0) {
             OpenAlert("error", message, "");
@@ -114,7 +118,7 @@ function OpenPackageForm(packageId = 0) {
         return true;
     };
 
-    // Validate fields
+    // Validate
     if (!packageName) {
         OpenAlert("error", "Package Name is required", "");
         return;
@@ -125,7 +129,7 @@ function OpenPackageForm(packageId = 0) {
 
     showOverlay();
 
-    // Prepare data
+    // Data to send
     const data = {
         package_name: packageName,
         price: parseFloat(price),
@@ -133,15 +137,14 @@ function OpenPackageForm(packageId = 0) {
         garland,
         graduation_cloth: graduationCloth,
         photo_package: parseInt(photoPackage),
+        courses: selectedCourses  // Include selected course IDs
     };
 
-    // Determine the method (POST or PUT)
     const method = packageId === 0 ? "POST" : "PUT";
     const url = packageId === 0 
         ? "https://qa-api.pharmacollege.lk/packages" 
         : `https://qa-api.pharmacollege.lk/packages/${packageId}`;
 
-    // Send data via the appropriate method (POST or PUT)
     fetch(url, {
         method: method,
         headers: {
@@ -151,27 +154,23 @@ function OpenPackageForm(packageId = 0) {
     })
     .then(response => {
         if (response.status === (method === "POST" ? 201 : 200)) {
-            // Parse the response as JSON if the status is successful
             return response.json();
         } else {
-            // If the status is not successful, throw an error
             throw new Error(`Failed to save package. Status: ${response.status}`);
         }
     })
     .then(result => {
         hideOverlay();
         OpenPackageModal();
-        ClosePopUP()
-
-        // Assuming the server response contains a `message` field
-        const successMessage = result.message || "Package saved successfully!";
-        OpenAlert("success", "Done!", successMessage);
+        ClosePopUP();
+        OpenAlert("success", "Done!", result.message || "Package saved successfully!");
     })
     .catch(error => {
         hideOverlay();
         OpenAlert("error", "Error saving package", error.message);
     });
 }
+
 
 
 function DeletePackage(packageId) {

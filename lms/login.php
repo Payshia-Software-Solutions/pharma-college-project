@@ -40,7 +40,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validate credentials
     if (empty($username_err) && empty($password_err)) {
         // Prepare a select statement
-        $sql = "SELECT id, username, status, password, `batch_lock` FROM users WHERE username = ?";
+        $sql = "SELECT id, username, status, password, `batch_lock`, `temp_password` FROM users WHERE username = ?";
 
         if ($stmt = mysqli_prepare($link, $sql)) {
 
@@ -58,33 +58,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Check if username exists, if yes then verify password
                 if (mysqli_stmt_num_rows($stmt) == 1) {
                     // Bind result variables
-                    mysqli_stmt_bind_result($stmt, $id, $username, $status, $hashed_password, $batch_lock);
+                    mysqli_stmt_bind_result($stmt, $id, $username, $status, $hashed_password, $batch_lock, $temp_password);
                     if (mysqli_stmt_fetch($stmt)) {
+                        // Check if temp_password is null
+                        if ($temp_password === null) {
+                            // Password is correct and other conditions are met
+                            if (password_verify($password, $hashed_password)) {
+                                if ($status == "Active") {
+                                    if ($batch_lock == "Active") {
+                                        // Check if the password is still "defaultpassword"
+                                        if (password_verify("defaultpassword", $hashed_password)) {
+                                            // Redirect to change password page if the password is still "defaultpassword"
+                                            session_start();
+                                            $_SESSION["id"] = $id;
+                                            header("location: change-password.php");
+                                            exit;
+                                        } else {
+                                            // Password is correct, so start a new session
+                                            session_start();
+                                            $_SESSION["loggedin"] = true;
+                                            $_SESSION["id"] = $id;
+                                            $_SESSION["username"] = $username;
 
-                        if (password_verify($password, $hashed_password)) {
-                            if ($status == "Active") {
-                                if ($batch_lock == "Active") {
-                                    // Password is correct, so start a new session
-                                    session_start();
-
-                                    // Store data in session variables
-                                    $_SESSION["loggedin"] = true;
-                                    $_SESSION["id"] = $id;
-                                    $_SESSION["username"] = $username;
-
-                                    // Login to Index
-                                    header("location: index?user=$username");
+                                            // Redirect to the index page
+                                            header("location: index?user=$username");
+                                            exit;
+                                        }
+                                    } else {
+                                        // Batch is locked
+                                        $error = "Your Batch is Closed";
+                                    }
                                 } else {
-                                    // Display an error message if password is not valid 
-                                    $error = "Your Batch is Closed";
+                                    // Account is deactivated
+                                    $error = "Due to an unfinished payment, your account has been immediately deactivated.";
                                 }
                             } else {
-                                // Display an error message if password is not valid 
-                                $error = "Due to an unfinished payment, your account has been immediately deactivated.";
+                                // Invalid password
+                                $error = "Wrong Password! Please enter correct Password.";
                             }
                         } else {
-                            // Display an error message if password is not valid
-                            $error = "Wrong Password! Please enter correct Password.";
+                            // Redirect to change password page if the password is still "defaultpassword"
+                            session_start();
+                            $_SESSION["id"] = $id;
+                            header("location: change-password.php");
+                            exit;
                         }
                     } else {
                         $error = "Due to an unfinished payment, your account has been immediately deactivated.";
