@@ -19,10 +19,19 @@ return [
         return $packageController->getPackage($package_id);
     },
 
-    // GET packages by selected course IDs
-    'GET /packages/by-courses$' => function () use ($packageController) {
-        return $packageController->getPackagesByCourseIds();
+    // GET packages by selected course IDs (course_ids=1,2,3)
+    'GET /packages/by-courses\?course_ids=([\d,]+)/$' => function () use ($packageController) {
+        $course_ids = isset($_GET['course_ids']) ? explode(',', $_GET['course_ids']) : [];
+
+        if (empty($course_ids)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing or invalid course_ids parameter']);
+            return;
+        }
+
+        return $packageController->getPackagesByCourseIds($course_ids);
     },
+
 
     // POST create a new package
     'POST /packages/$' => function () use ($packageController) {
