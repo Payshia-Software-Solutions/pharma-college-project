@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -29,6 +30,7 @@
     --chart-5: 27 87% 67%;
     --radius: 0.5rem
   }
+
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
@@ -56,11 +58,148 @@
     --chart-5: 340 75% 55%
   }
 }
+
 @layer base {
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* Floating Input Styles */
+.floating-input {
+  position: relative;
+  width: 100%;
+}
+
+.floating-input input,
+.floating-input select {
+  width: 100%;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  background: white;
+  font-size: 16px;
+}
+
+.floating-input label {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  background: white;
+  padding: 0 5px;
+  transition: all 0.2s ease-in-out;
+  font-size: 14px;
+  color: #999;
+}
+
+.floating-input input:focus+label,
+.floating-input input:not(:placeholder-shown)+label,
+.floating-input select:focus+label,
+.floating-input select:not(:placeholder-shown)+label {
+  top: 5px;
+  font-size: 12px;
+  color: #333;
+}
+
+/* Course Card Styles */
+.course-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: white;
+  padding: 10px;
+  border: 2px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.course-card input[type="radio"] {
+  width: 16px;
+  height: 16px;
+}
+
+.course-card:hover {
+  border-color: #007bff;
+}
+
+.course-card input[type="radio"]:checked+span {
+  font-weight: bold;
+  color: #007bff;
+}
+
+/* Style the progress bar container */
+progress {
+  width: 100%;
+  /* Full width */
+  height: 20px;
+  /* Height of the progress bar */
+  appearance: none;
+  /* Remove default styling */
+  border-radius: 10px;
+  /* Rounded corners */
+  background-color: #f3f3f3;
+  /* Light gray background */
+}
+
+/* Style the progress value (the bar itself) */
+progress::-webkit-progress-bar {
+  background-color: #f3f3f3;
+  /* Light gray */
+  border-radius: 10px;
+  /* Rounded corners */
+}
+
+progress::-webkit-progress-value {
+  background-color: #3eaf9c;
+  /* Green color */
+  border-radius: 10px;
+  /* Rounded corners */
+}
+
+progress::-moz-progress-bar {
+  background-color: #3eaf9c;
+  /* Green color */
+  border-radius: 10px;
+  /* Rounded corners */
+}
+
+
+/* Optional: Styling the text inside (if you want to add text, not supported natively in most browsers) */
+progress::-webkit-progress-value::after {
+  content: attr(value) "%";
+  position: absolute;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  width: 100%;
+  left: 0;
+}
+
+/* Disable text selection for all elements */
+* {
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+/Edge */
+  user-select: none;
+  /* Standard */
+}
+
+/* Exception for elements that should allow selection */
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-user-select: text !important;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
 }

@@ -18,6 +18,7 @@ $userLevel = $_POST['UserLevel'];
 $loggedUser = $_POST['LoggedUser'];
 $CourseCode = $_POST['CourseCode'];
 $assignmentId = $_POST['assignmentId'];
+$submissionTag = $_POST['submissionTag'];
 
 $assignments = new Assignments($database);
 $submissions = new AssignmentSubmissions($database);
@@ -64,32 +65,34 @@ if (isset($_FILES['files'])) {
             $image_result = array('status' => 'error', 'message' => "Error with file $fileName: $fileError.");
         }
     }
+
+        // Convert the file list to a comma-separated string
+        $fileListString = implode(',', $fileList);
+
+
+        // Update an employee
+        $updateData = [
+            'assignment_id' => $assignmentId,
+            'course_code' => $CourseCode,
+            'created_by' => $loggedUser,
+            'created_at' =>  date("Y-m-d H:i:s"),
+            'is_active' =>  1,
+            'updated_at' =>  date("Y-m-d H:i:s"),
+            'file_list' =>  $fileListString, // Store the file list as a comma-separated string
+            'grade' => 0,
+            'grade_status' => 0,
+            'submissionTag' => $submissionTag
+        ];
+
+        if ($submissions->add($updateData)) {
+            $error = array('status' => 'success', 'message' => 'Submission saved successfully.');
+        } else {
+            $error = array('status' => 'error', 'message' => 'Failed to Insert Assignment.' . $assignments->getLastError());
+        }
 } else {
-    $image_result = array('status' => 'error', 'message' => "No files uploaded.");
+    $error = array('status' => 'error', 'message' => "No files uploaded.");
 }
 
-// Convert the file list to a comma-separated string
-$fileListString = implode(',', $fileList);
-
-
-// Update an employee
-$updateData = [
-    'assignment_id' => $assignmentId,
-    'course_code' => $CourseCode,
-    'created_by' => $loggedUser,
-    'created_at' =>  date("Y-m-d H:i:s"),
-    'is_active' =>  1,
-    'updated_at' =>  date("Y-m-d H:i:s"),
-    'file_list' =>  $fileListString, // Store the file list as a comma-separated string
-    'grade' => 0,
-    'grade_status' => 0
-];
-
-if ($submissions->add($updateData)) {
-    $error = array('status' => 'success', 'message' => 'Submission saved successfully.');
-} else {
-    $error = array('status' => 'error', 'message' => 'Failed to Insert Assignment.' . $assignments->getLastError());
-}
 
 echo json_encode($error);
 // echo json_encode($image_result);

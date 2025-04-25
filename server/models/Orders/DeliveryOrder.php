@@ -110,6 +110,37 @@ class DeliveryOrder
         return $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetches all matching records
     }
 
+     // Get a delivery order by Index Number, including the delivery title from the delivery_setting table
+     public function getRecordByIndexNumberAndStatus($index_number, $receivedStatus)
+     {
+         // Prepare the query
+         $stmt = $this->pdo->prepare("
+             SELECT 
+                 delivery_orders.*, 
+                 delivery_setting.id AS setting_id, 
+                 delivery_setting.course_id, 
+                 delivery_setting.delivery_title, 
+                 delivery_setting.is_active, 
+                 delivery_setting.icon, 
+                 delivery_setting.value
+             FROM 
+                 delivery_orders
+             INNER JOIN 
+                 delivery_setting ON delivery_orders.delivery_id = delivery_setting.id
+             WHERE 
+                 delivery_orders.index_number = :index_number 
+                 AND delivery_orders.order_recived_status = :receivedStatus
+         ");
+         
+         // Execute the query with the provided parameters
+         $stmt->execute(['index_number' => $index_number, 'receivedStatus' => $receivedStatus]);
+         
+         // Return the results as an associative array
+         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+     }
+     
+
+
     public function getRecordByIndexNumberAndCourse($index_number, $courseCode)
     {
         $stmt = $this->pdo->prepare("
@@ -202,4 +233,30 @@ class DeliveryOrder
             return ['error' => $e->getMessage()];
         }
     }
+
+    // Update the order received status only
+    public function updateOrderStatus($id, $order_recived_status)
+    {
+        try {
+            // Prepare the SQL query to update only the order_recived_status
+            $sql = "UPDATE delivery_orders SET order_recived_status = :order_recived_status WHERE id = :id";
+
+            // Prepare the statement
+            $stmt = $this->pdo->prepare($sql);
+
+            // Bind the parameters
+            $stmt->bindParam(':order_recived_status', $order_recived_status);
+            $stmt->bindParam(':id', $id);
+
+            // Execute the statement
+            $stmt->execute();
+
+            // Return the number of affected rows
+            return $stmt->rowCount();
+        } catch (PDOException $e) {
+            // Return the error message if an exception occurs
+            return ['error' => $e->getMessage()];
+        }
+    }
+
 }

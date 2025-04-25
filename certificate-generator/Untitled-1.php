@@ -1,18 +1,19 @@
 <?php
 header("Content-Type: application/json");
 
-// Load the .env file
+// Load dependencies
 require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/config/ftp.php';
 
 use Dotenv\Dotenv;
 use chillerlan\QRCode\{QRCode, QROptions};
 
-// Initialize the Dotenv instance
+// Initialize environment variables
 $dotenv = Dotenv::createImmutable(__DIR__);
 $dotenv->load();
 
-// Access the API_URL from the .env file
 $api_url = $_ENV['API_URL'];
+$ftp_config = require __DIR__ . '/config/ftp.php';
 
 // Check if student_id and course_code are provided
 if (!isset($_GET['student_id']) || !isset($_GET['course_code'])) {
@@ -120,7 +121,7 @@ if (!$qrImage) {
 }
 
 // Merge QR Code into Certificate
-imagecopy($image, $qrImage, 50, 980, 0, 0, imagesx($qrImage), imagesy($qrImage));
+imagecopy($image, $qrImage, 50, 850, 0, 0, imagesx($qrImage), imagesy($qrImage));
 
 // Define filename and save path
 $file_name = "eCertificate-{$course_code}-{$student_id}-{$unique_number}.jpg";
@@ -136,7 +137,60 @@ $save_path = $folder_path . "/" . $file_name;
 imagejpeg($image, $save_path);
 imagedestroy($image);
 
-// --- 🔹 POST Certificate Details to Database ---
+// Load FTP credentials
+$ftp_server = $ftp_config['ftp_server'];
+$ftp_username = $ftp_config['ftp_username'];
+$ftp_password = $ftp_config['ftp_password'];
+$ftp_port = $ftp_config['ftp_port'];
+
+// Define FTP target path
+$ftp_target_dir = '/content-provider/certificates/e-certificate/' . $student_id . '/';
+$ftp_target_file = $ftp_target_dir . $file_name;
+
+// Establish FTP connection
+$conn_id = ftp_connect($ftp_server, $ftp_port);
+if (!$conn_id) {
+    echo json_encode(["error" => "Could not connect to FTP server."]);
+    exit;
+}
+
+// Login to FTP
+if (!ftp_login($conn_id, $ftp_username, $ftp_password)) {
+    echo json_encode(["error" => "FTP login failed."]);
+    ftp_close($conn_id);
+    exit;
+}
+
+// Enable passive mode
+ftp_pasv($conn_id, true);
+
+// Ensure FTP directory exists
+function ensureFtpDirExists($conn_id, $ftp_target_dir) {
+    $dirs = explode('/', trim($ftp_target_dir, '/'));
+    $path = '';
+    foreach ($dirs as $dir) {
+        $path .= '/' . $dir;
+        if (!@ftp_chdir($conn_id, $path)) {
+            ftp_mkdir($conn_id, $path);
+        }
+    }
+    ftp_chdir($conn_id, '/'); // Reset to root
+}
+ensureFtpDirExists($conn_id, $ftp_target_dir);
+
+// Upload the file
+$ftp_upload_success = ftp_put($conn_id, $ftp_target_file, $save_path, FTP_BINARY);
+
+if ($ftp_upload_success) {
+    echo json_encode(["success" => "Certificate uploaded to FTP!", "ftp_path" => $ftp_target_file]);
+} else {
+    echo json_encode(["error" => "FTP upload failed."]);
+}
+
+// Close FTP connection
+ftp_close($conn_id);
+
+// --- POST Certificate Details to Database ---
 $post_data = [
     "student_number" => $student_id,
     "course_code" => $course_code,
@@ -156,16 +210,11 @@ $response = curl_exec($ch);
 $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 curl_close($ch);
 
-$response_data = json_decode($response, true);
-
 // Send Final Response
-if ($http_code == 200 || $http_code == 201 || (isset($response_data['message']) && $response_data['message'] === "Certificate created successfully")) {
-    echo json_encode([
-        "success" => "Certificate generated and saved!",
-        "image_name" => $file_name
-    ]);
+if ($ftp_upload_success && ($http_code == 200 || $http_code == 201)) {
+    echo json_encode(["success" => "Certificate generated, saved, and uploaded!", "image_name" => $file_name]);
 } else {
-    echo json_encode(["error" => "Failed to save certificate details.", "response" => $response_data]);
+    echo json_encode(["error" => "Failed to upload certificate."]);
 }
 
 ?>

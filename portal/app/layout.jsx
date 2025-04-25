@@ -1,5 +1,8 @@
+import React from "react";
+
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import FloatingNavFullUnderline from "@/components/FloatingNavFullUnderline";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -11,11 +14,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
-  title: "Payment Portal",
-  description: "Payment Portal",
-};
-
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
@@ -23,6 +21,7 @@ export default function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {children}
+        <FloatingNavFullUnderline />
       </body>
     </html>
   );

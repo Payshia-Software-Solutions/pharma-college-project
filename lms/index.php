@@ -98,7 +98,7 @@ $pageId = 1;
     <!-- End of Common scripts -->
 
     <!-- Custom Scripts -->
-    <script src="./lib/home/assets/js/home-1.0.2.js"></script>
+    <script src="./lib/home/assets/js/home-1.0.3.js"></script>
     <!-- End of Custom Scripts -->
 </body>
 

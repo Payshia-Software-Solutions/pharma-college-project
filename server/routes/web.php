@@ -1,4 +1,6 @@
 <?php
+
+
 // Set CORS headers for every response
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
@@ -19,8 +21,16 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 // routes/web.php
 
+// Access environment variables
+$authToken = $_ENV['SMS_AUTH_TOKEN'];
+$senderId = $_ENV['SMS_SENDER_ID'];
+
+// Define the path to the template file
+$templatePath = __DIR__ . '/../templates/welcome_sms_template.txt';
+
+
 // Include route files
-$assignmentRoutes = require './routes/OtherRoutes/assignmentRoutes.php';
+$assignmentRoutes = require './routes/Assignment/AssignmentRoutes.php';
 $appointmentRoutes = require './routes/OtherRoutes/appointmentRoutes.php';
 // $eCertificateRoutes = require './routes/OtherRoutes/eCertificateRoutes.php';
 $courseAssignmentRoutes = require './routes/OtherRoutes/courseAssignmentRoutes.php';
@@ -95,14 +105,24 @@ $CertificateVerificationRoutes = require './routes/CertificationCenter/Certifica
 $CeylonPharmacyCriteria = require './routes/CertificateCenter/certificateRoutes.php';
 $DeliveryOrdersRoutes = require './routes/Orders/DeliveryOrdersRoutes.php';
 $UserCertificatePrintStatusRoutes = require './routes/UserCertificatePrintStatusRoutes/UserCertificatePrintStatusRoutes.php';
-// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes  DeliveryOrdersRoutes.php
+$ContactRoutes = require './routes/Contact/ContactRoutes.php';
+$EventsPageRoutes = require './routes/EventsPageRoutes.php';
+$TestimonialRoutes = require './routes/TestimonialRoutes.php';
+// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes  TestimonialRoutes.php
 
 $DistrictsRoutes = require './routes/District/DistrictsRoutes.php';
 $ECertificateRoutes = require './routes/ecertificates/ECertificateRoutes.php';
 $paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.php';
 
+// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ContactRoutes.php
+
 $DpadRoutes = require './routes/Dpad/DpadRoutes.php';
+$SMSRoutes = require './routes/SMSRoutes.php';
+$bankRoutes = require './routes/bankRoutes.php';
+$ConvocationRegistrationRoutes  = require './routes/ConvocationRegistrationRoutes.php';
+$PackageRoutes  = require './routes/PackageRoutes.php';
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
+
 
 //      throw new Exception("paymentRequestRoutes is not an array");
 // }
@@ -187,8 +207,24 @@ $routes = array_merge(
     $DeliveryOrdersRoutes,
     $DistrictsRoutes,
     $ECertificateRoutes,
+    $ContactRoutes,
     $paymentRequestRoutes,
-    $DpadRoutes
+    $DpadRoutes,
+    $SMSRoutes,
+    $bankRoutes,
+
+    $EventsPageRoutes,
+
+    $TestimonialRoutes,
+
+
+    $EventsPageRoutes,
+
+
+    $ConvocationRegistrationRoutes,
+    $PackageRoutes,
+
+
 );
 
 

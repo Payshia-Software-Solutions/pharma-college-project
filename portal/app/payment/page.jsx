@@ -1,9 +1,16 @@
-import EnhancedPaymentApp from "@/components/EnhancedPaymentApp";
+import React from "react";
+
+import PaymentSelection from "@/components/PaymentSelection";
+
+export const metadata = {
+  title: "Payment Portal",
+  description: "Payment Portal",
+};
 
 export default function Home() {
   return (
     <div className="">
-      <EnhancedPaymentApp />
+      <PaymentSelection />
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { CreditCard, Wallet, Building2, GraduationCap } from "lucide-react";
+import { Wallet, Building2, GraduationCap } from "lucide-react";
 
-const SplashScreen = ({ loading }) => {
+const SplashScreen = ({ loading, splashTitle, icon }) => {
   const iconProps = {
     strokeWidth: 1.5,
     className: "w-8 h-8",
@@ -56,7 +56,7 @@ const SplashScreen = ({ loading }) => {
   return (
     <>
       {loading && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-green-500 to-green-700 text-white z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-gradient-to-br from-brand to-brand_light text-white z-50">
           {/* Main Content Container */}
           <div className="flex flex-col items-center justify-center space-y-8 p-8">
             {/* Logo Container */}
@@ -68,7 +68,7 @@ const SplashScreen = ({ loading }) => {
 
               {/* Pulsing icon */}
               <div className="relative flex h-32 w-32 items-center justify-center animate-pulse">
-                <CreditCard className="w-16 h-16" />
+                {icon}
               </div>
             </div>
 
@@ -77,9 +77,7 @@ const SplashScreen = ({ loading }) => {
               <h1 className="text-3xl font-bold tracking-tight">
                 Ceylon Pharma College
               </h1>
-              <p className="text-xl font-medium text-green-100">
-                Payment Portal
-              </p>
+              <p className="text-xl font-medium text-white">{splashTitle}</p>
             </div>
 
             {/* Loading Bar */}
@@ -88,7 +86,7 @@ const SplashScreen = ({ loading }) => {
             </div>
 
             {/* Feature Icons */}
-            <div className="flex space-x-8 text-green-100">
+            <div className="flex space-x-8 text-white">
               <div className="flex flex-col items-center space-y-2 animate-fade-in">
                 <Wallet {...iconProps} />
                 <span className="text-sm">Secure</span>

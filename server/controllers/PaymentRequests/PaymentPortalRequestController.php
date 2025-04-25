@@ -57,7 +57,7 @@ class PaymentPortalRequestController
         // Extract data from $_POST
         $data = [
             'unique_number'     => $_POST['studentNumber'] ?? null,
-            'number_type'       => 'default',
+            'number_type'       => $_POST['number_type'] ?? null,
             'payment_reson'     => $_POST['paymentReason'] ?? null,
             'paid_amount'       => $_POST['amount'] ?? null,
             'payment_reference' => $_POST['reference'] ?? null,
@@ -79,18 +79,18 @@ class PaymentPortalRequestController
             $data['hash_value'] = $imageHash;
 
             // Check if the image already exists in the database
-            if ($this->isDuplicateImage($imageHash)) {
-                http_response_code(409); // Conflict
-                echo json_encode([
-                    'success' => false,
-                    'error'   => 'Duplicate image detected. The same image has already been uploaded.'
-                ]);
-                return;
-            }
+            // if ($this->isDuplicateImage($imageHash)) {
+            //     http_response_code(409); // Conflict
+            //     echo json_encode([
+            //         'success' => false,
+            //         'error'   => 'Duplicate image detected. The same image has already been uploaded.'
+            //     ]);
+            //     return;
+            // }
 
             // File details
             $fileExtension = pathinfo($_FILES['slip']['name'], PATHINFO_EXTENSION);
-            $fileName = $imageHash . '.' . $fileExtension;
+            $fileName = $_POST['studentNumber'] . "-" . $_POST['paymentReason'] . "-" . uniqid() . '.' . $fileExtension;
             $localUploadPath = './uploads/' . $fileName; // Temporary local storage
             $ftpFilePath = "/payment-slips/" . $fileName; // Path on FTP
 
