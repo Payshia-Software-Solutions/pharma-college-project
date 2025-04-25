@@ -6,10 +6,12 @@ require_once './models/Package.php';
 class PackageController
 {
     private $model;
+    private $ftpConfig;
 
     public function __construct($pdo)
     {
         $this->model = new Package($pdo);
+        $this->ftpConfig = include('./config/ftp.php'); // Load FTP configuration
     }
 
     // GET all packages
@@ -18,6 +20,84 @@ class PackageController
         $packages = $this->model->getAllPackages();
         echo json_encode($packages);
     }
+
+    private function ensureDirectoryExists($ftp_conn, $dir)
+    {
+        $parts = explode('/', $dir);
+        $path = '';
+        foreach ($parts as $part) {
+            if (empty($part)) {
+                continue;
+            }
+            $path .= '/' . $part;
+            if (!@ftp_chdir($ftp_conn, $path)) {
+                if (!ftp_mkdir($ftp_conn, $path)) {
+                    throw new Exception("Could not create directory: $path on FTP server.");
+                }
+            }
+        }
+    }
+
+    private function uploadImageToFTP($file)
+    {
+        try {
+            ini_set('memory_limit', '256M');
+
+            // FTP configuration
+            $ftp_server = $this->ftpConfig['ftp_server'];
+            $ftp_username = $this->ftpConfig['ftp_username'];
+            $ftp_password = $this->ftpConfig['ftp_password'];
+            $ftp_target_dir = '/content-provider/uploads/package-images/';
+
+            // Check file upload
+            if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+                throw new Exception("Invalid file upload.");
+            }
+
+            // Create local temp directory
+            $tempDir = './tmp';
+            if (!is_dir($tempDir)) {
+                mkdir($tempDir, 0777, true);
+            }
+
+            // Move uploaded file to temp folder
+            $tempPath = $tempDir . '/' . basename($file['name']);
+            if (!move_uploaded_file($file['tmp_name'], $tempPath)) {
+                throw new Exception("Failed to move uploaded file to temporary directory.");
+            }
+
+            // Connect to FTP
+            $ftp_conn = ftp_connect($ftp_server);
+            if (!$ftp_conn) {
+                throw new Exception("Could not connect to FTP server.");
+            }
+
+            // Login to FTP
+            if (!ftp_login($ftp_conn, $ftp_username, $ftp_password)) {
+                ftp_close($ftp_conn);
+                throw new Exception("Could not login to FTP server.");
+            }
+
+            // Ensure target directory exists
+            $this->ensureDirectoryExists($ftp_conn, $ftp_target_dir);
+
+            // Upload file
+            $remoteFilePath = $ftp_target_dir . basename($file['name']);
+            if (!ftp_put($ftp_conn, $remoteFilePath, $tempPath, FTP_BINARY)) {
+                throw new Exception("Failed to upload image to FTP: $remoteFilePath");
+            }
+
+            // Clean up
+            unlink($tempPath);
+            ftp_close($ftp_conn);
+
+            return ['status' => 'success', 'message' => 'Image uploaded successfully.', 'path' => basename($file['name'])];
+        } catch (Exception $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
+    }
+
+
 
     // GET a single package by ID
     public function getPackage($package_id)
@@ -60,89 +140,155 @@ class PackageController
 
 
     // POST create a new package
+    // public function createPackage()
+    // {
+    //     $data = json_decode(file_get_contents('php://input'), true);
+    //     if (
+    //         !isset($data['package_name']) || !isset($data['price']) ||
+    //         !isset($data['parent_seat_count']) || !isset($data['garland']) ||
+    //         !isset($data['graduation_cloth']) || !isset($data['photo_package'])
+    //     ) {
+    //         http_response_code(400);
+    //         echo json_encode(['error' => 'Missing required fields']);
+    //         return;
+    //     }
+
+    //     $package_id = $this->model->createPackage(
+    //         $data['package_name'],
+    //         $data['price'],
+    //         $data['parent_seat_count'],
+    //         $data['garland'],
+    //         $data['graduation_cloth'],
+    //         $data['photo_package'],
+    //         $data['courses'],
+    //         $data['is_active'] ?? true,
+    //     );
+    //     http_response_code(201);
+    //     echo json_encode(['package_id' => $package_id, 'message' => 'Package created successfully']);
+    // }
+
     public function createPackage()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
-        if (
-            !isset($data['package_name']) || !isset($data['price']) ||
-            !isset($data['parent_seat_count']) || !isset($data['garland']) ||
-            !isset($data['graduation_cloth']) || !isset($data['photo_package'])
-        ) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Missing required fields']);
-            return;
+        // Validate required POST fields
+        $requiredFields = ['package_name', 'price', 'parent_seat_count', 'garland', 'graduation_cloth', 'photo_package'];
+        foreach ($requiredFields as $field) {
+            if (!isset($_POST[$field])) {
+                http_response_code(400);
+                echo json_encode(['error' => "Missing required field: $field"]);
+                return;
+            }
         }
 
+        // Handle file upload via FTP
+        $coverImagePath = null;
+        if (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
+            // Call the FTP upload function
+            $uploadResult = $this->uploadImageToFTP($_FILES['cover_image']);
+
+            // Check if upload was successful
+            if ($uploadResult['status'] === 'error') {
+                http_response_code(500);
+                echo json_encode(['error' => $uploadResult['message']]);
+                return;
+            }
+
+            // If successful, use the path returned from the FTP upload
+            $coverImagePath = $uploadResult['path']; // This is the FTP path to the uploaded file
+        }
+
+        // Parse optional fields
+        $courses = isset($_POST['courses']) ? $_POST['courses'] : '';
+        $isActive = isset($_POST['is_active']) ? filter_var($_POST['is_active'], FILTER_VALIDATE_BOOLEAN) : true;
+
+        // Call model to insert data
         $package_id = $this->model->createPackage(
-            $data['package_name'],
-            $data['price'],
-            $data['parent_seat_count'],
-            $data['garland'],
-            $data['graduation_cloth'],
-            $data['photo_package'],
-            $data['courses'],
-            $data['is_active'] ?? true,
+            $_POST['package_name'],
+            floatval($_POST['price']),
+            intval($_POST['parent_seat_count']),
+            intval($_POST['garland']),
+            intval($_POST['graduation_cloth']),
+            intval($_POST['photo_package']),
+            $courses,
+            $isActive,
+            $coverImagePath // Include the FTP image path in the DB if supported
         );
+
         http_response_code(201);
-        echo json_encode(['package_id' => $package_id, 'message' => 'Package created successfully']);
+        echo json_encode([
+            'package_id' => $package_id,
+            'message' => 'Package created successfully',
+            'cover_image' => $coverImagePath
+        ]);
     }
+
 
     // PUT update a package
     public function updatePackage($package_id)
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        // Handle file upload via FTP
+        $coverImagePath = null;
+        if (isset($_FILES['cover_image']) && $_FILES['cover_image']['error'] === UPLOAD_ERR_OK) {
+            // Call the FTP upload function
+            $uploadResult = $this->uploadImageToFTP($_FILES['cover_image']);
 
-        // Check if the 'is_active' field is provided, and update only if specified
-        if (isset($data['is_active'])) {
-            // Validate the 'is_active' field to be a boolean (0 or 1)
-            if ($data['is_active'] !== 0 && $data['is_active'] !== 1) {
+            // Check if upload was successful
+            if ($uploadResult['status'] === 'error') {
+                http_response_code(500);
+                echo json_encode(['error' => $uploadResult['message']]);
+                return;
+            }
+
+            // If successful, use the path returned from the FTP upload
+            $coverImagePath = $uploadResult['path']; // This is the FTP path to the uploaded file
+        }
+        // Handle is_active toggle
+        if (isset($_POST['is_active']) && !isset($_POST['package_name'])) {
+            $isActive = $_POST['is_active'];
+            if ($isActive !== "0" && $isActive !== "1") {
                 http_response_code(400);
                 echo json_encode(['error' => 'Invalid value for is_active. It must be 0 or 1.']);
                 return;
             }
 
-            // Only update 'is_active' and return success
-            $success = $this->model->updatePackageStatus($package_id, $data['is_active']);
-            if ($success) {
-                echo json_encode(['message' => 'Package status updated successfully']);
-            } else {
-                http_response_code(404);
-                echo json_encode(['error' => 'Package not found or status update failed']);
+            $success = $this->model->updatePackageStatus($package_id, intval($isActive));
+            echo json_encode(
+                $success
+                    ? ['message' => 'Package status updated successfully']
+                    : ['error' => 'Package not found or status update failed']
+            );
+            return;
+        }
+
+        // Check required fields
+        $required = ['package_name', 'price', 'parent_seat_count', 'garland', 'graduation_cloth', 'photo_package'];
+        foreach ($required as $field) {
+            if (!isset($_POST[$field])) {
+                http_response_code(400);
+                echo json_encode(['error' => "Missing required field: $field"]);
+                return;
             }
-            return;
         }
 
-        // Check for other required fields for normal package update
-        if (
-            !isset($data['package_name']) || !isset($data['price']) ||
-            !isset($data['parent_seat_count']) || !isset($data['garland']) ||
-            !isset($data['graduation_cloth']) || !isset($data['photo_package'])
-        ) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Missing required fields']);
-            return;
-        }
-
-        // Update the entire package when all fields are provided
         $success = $this->model->updatePackage(
             $package_id,
-            $data['package_name'],
-            $data['price'],
-            $data['parent_seat_count'],
-            $data['garland'],
-            $data['graduation_cloth'],
-            $data['photo_package'],
-            $data['courses'],
-            $data['is_active'] ?? true, // Default is true if not provided
+            $_POST['package_name'],
+            floatval($_POST['price']),
+            intval($_POST['parent_seat_count']),
+            intval($_POST['garland']),
+            intval($_POST['graduation_cloth']),
+            intval($_POST['photo_package']),
+            $_POST['courses'] ?? '',
+            isset($_POST['is_active']) ? filter_var($_POST['is_active'], FILTER_VALIDATE_BOOLEAN) : true,
+            $coverImagePath // new image path if updated
         );
 
-        if ($success) {
-            echo json_encode(['message' => 'Package updated successfully']);
-        } else {
-            http_response_code(404);
-            echo json_encode(['error' => 'Package not found or update failed']);
-        }
+        echo json_encode(
+            $success
+                ? ['message' => 'Package updated successfully']
+                : ['error' => 'Package not found or update failed']
+        );
     }
+
 
     // DELETE a package
     public function deletePackage($package_id)

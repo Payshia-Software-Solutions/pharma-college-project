@@ -48,7 +48,8 @@ $selectedCourses = isset($graduationPackage['courses'])
     <div class="row">
         <div class="col-12">
             <h4 class="mb-3 border-bottom pb-2">Package Info</h4>
-            <form action="#" method="POST">
+            <form action="#" method="POST" enctype="multipart/form-data">
+
                 <div class="row">
                     <!-- Left column -->
                     <div class="col-md-6 mb-3">
@@ -86,7 +87,7 @@ $selectedCourses = isset($graduationPackage['courses'])
                 </div>
 
                 <div class="row">
-                    <div class="col-12 d-flex justify-content-start gap-4">
+                    <div class="col-6 d-flex justify-content-start gap-4">
                         <div class="mb-3 form-check">
                             <input type="checkbox" class="form-check-input" id="graduation_cloth"
                                 name="graduation_cloth" value="1"
@@ -100,6 +101,11 @@ $selectedCourses = isset($graduationPackage['courses'])
                             <label class="form-check-label" for="garland">Garland</label>
                         </div>
                     </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="cover_image" class="form-label">Package Cover Image</label>
+                        <input type="file" class="form-control" id="cover_image" name="cover_image" accept="image/*">
+                    </div>
+
                 </div>
 
                 <div class="row">

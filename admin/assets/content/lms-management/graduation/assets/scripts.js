@@ -103,8 +103,7 @@ function OpenPackageForm(packageId = 0) {
     const garland = document.getElementById("garland").checked ? 1 : 0;
     const graduationCloth = document.getElementById("graduation_cloth").checked ? 1 : 0;
     const photoPackage = document.getElementById("photo_package").value;
-
-    // Collect selected course IDs and convert to comma-separated string
+    const coverImageInput = document.getElementById("cover_image"); // NEW
     const selectedCourses = Array.from(document.querySelectorAll("input[name='courses[]']:checked"))
         .map(input => input.value)
         .join(",");
@@ -127,46 +126,49 @@ function OpenPackageForm(packageId = 0) {
 
     showOverlay();
 
-    const data = {
-        package_name: packageName,
-        price: parseFloat(price),
-        parent_seat_count: parseInt(parentSeatCount),
-        garland,
-        graduation_cloth: graduationCloth,
-        photo_package: parseInt(photoPackage),
-        courses: selectedCourses  // now a string like "1,3,5"
-    };
+    // 📦 Prepare FormData for file + fields
+    const formData = new FormData();
+    formData.append("package_name", packageName);
+    formData.append("price", parseFloat(price));
+    formData.append("parent_seat_count", parseInt(parentSeatCount));
+    formData.append("garland", garland);
+    formData.append("graduation_cloth", graduationCloth);
+    formData.append("photo_package", parseInt(photoPackage));
+    formData.append("courses", selectedCourses);
 
-    const method = packageId === 0 ? "POST" : "PUT";
-    const url = packageId === 0 
-        ? "https://qa-api.pharmacollege.lk/packages" 
-        : `https://qa-api.pharmacollege.lk/packages/${packageId}`;
+    // 📸 Append cover image if selected
+    if (coverImageInput.files.length > 0) {
+        formData.append("cover_image", coverImageInput.files[0]);
+    }
+
+    const method = packageId === 0 ? "POST" : "POST"; // Use POST even for update when using FormData
+    const url = packageId === 0
+        ? "http://localhost/pharma-college-project/server/packages"
+        : `http://localhost/pharma-college-project/server/packages/${packageId}`;
 
     fetch(url, {
         method: method,
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
+        body: formData
     })
-    .then(response => {
-        if (response.status === (method === "POST" ? 201 : 200)) {
-            return response.json();
-        } else {
-            throw new Error(`Failed to save package. Status: ${response.status}`);
-        }
-    })
-    .then(result => {
-        hideOverlay();
-        OpenPackageModal();
-        ClosePopUP();
-        OpenAlert("success", "Done!", result.message || "Package saved successfully!");
-    })
-    .catch(error => {
-        hideOverlay();
-        OpenAlert("error", "Error saving package", error.message);
-    });
+        .then(response => {
+            if (response.status === 200 || response.status === 201) {
+                return response.json();
+            } else {
+                throw new Error(`Failed to save package. Status: ${response.status}`);
+            }
+        })
+        .then(result => {
+            hideOverlay();
+            OpenPackageModal();
+            ClosePopUP();
+            OpenAlert("success", "Done!", result.message || "Package saved successfully!");
+        })
+        .catch(error => {
+            hideOverlay();
+            OpenAlert("error", "Error saving package", error.message);
+        });
 }
+
     
 
 
