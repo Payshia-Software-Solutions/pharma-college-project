@@ -10,14 +10,18 @@ class Package
         $this->pdo = $pdo;
     }
 
-    // Create a new package
-    public function createPackage($package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $courses, $is_active = true)
+    public function createPackage($package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $courses, $is_active = true, $cover_image = null)
     {
+        // Prepare the SQL statement to insert the package data
         $stmt = $this->pdo->prepare("
-            INSERT INTO packages (package_name, price, parent_seat_count, garland, graduation_cloth, photo_package, is_active, courses)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-        $stmt->execute([$package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active, $courses]);
+        INSERT INTO packages (package_name, price, parent_seat_count, garland, graduation_cloth, photo_package, is_active, courses, cover_image)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ");
+
+        // Execute the query with the provided values, including the cover image path
+        $stmt->execute([$package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active, $courses, $cover_image]);
+
+        // Return the ID of the last inserted row
         return $this->pdo->lastInsertId();
     }
 
@@ -59,17 +63,47 @@ class Package
     }
 
 
-
     // Update a package
-    public function updatePackage($package_id, $package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $courses, $is_active)
+    public function updatePackage($package_id, $package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $courses, $is_active, $cover_image = null)
     {
-        $stmt = $this->pdo->prepare("
+        if ($cover_image) {
+            $stmt = $this->pdo->prepare("
             UPDATE packages 
-            SET package_name = ?, price = ?, parent_seat_count = ?, garland = ?, graduation_cloth = ?, photo_package = ?, is_active = ?, courses= ?
+            SET package_name = ?, price = ?, parent_seat_count = ?, garland = ?, graduation_cloth = ?, photo_package = ?, is_active = ?, courses = ?, cover_image = ?
             WHERE package_id = ?
         ");
-        return $stmt->execute([$package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active, $courses, $package_id]);
+            return $stmt->execute([
+                $package_name,
+                $price,
+                $parent_seat_count,
+                $garland,
+                $graduation_cloth,
+                $photo_package,
+                $is_active,
+                $courses,
+                $cover_image,
+                $package_id
+            ]);
+        } else {
+            $stmt = $this->pdo->prepare("
+            UPDATE packages 
+            SET package_name = ?, price = ?, parent_seat_count = ?, garland = ?, graduation_cloth = ?, photo_package = ?, is_active = ?, courses = ?
+            WHERE package_id = ?
+        ");
+            return $stmt->execute([
+                $package_name,
+                $price,
+                $parent_seat_count,
+                $garland,
+                $graduation_cloth,
+                $photo_package,
+                $is_active,
+                $courses,
+                $package_id
+            ]);
+        }
     }
+
 
     // Delete a package
     public function deletePackage($package_id)

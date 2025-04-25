@@ -43,6 +43,13 @@ return [
         return $packageController->updatePackage($package_id);
     },
 
+
+    // PUT update a package
+    'POST /packages/(\d+)/$' => function ($package_id) use ($packageController) {
+        return $packageController->updatePackage($package_id);
+    },
+
+
     // DELETE a package
     'DELETE /packages/(\d+)/$' => function ($package_id) use ($packageController) {
         return $packageController->deletePackage($package_id);
