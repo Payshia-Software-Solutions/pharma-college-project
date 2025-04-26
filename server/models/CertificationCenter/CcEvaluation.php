@@ -522,8 +522,11 @@ class CcEvaluation extends DeliveryOrder
                 $row['deliveryOrders'] = $deliveryOrders;
                 $row['certificateRecords'] = $certificateRecords;
 
+                $criteriaIds = [];
 
-                $criteriaIds = array_map('trim', explode(',', $row['criteria_list']));
+                if (!empty($row['criteria_list'])) {
+                    $criteriaIds = array_map('trim', explode(',', $row['criteria_list']));
+                }
 
                 if (!empty($criteriaIds)) {
                     $placeholders = implode(',', array_fill(0, count($criteriaIds), '?'));
