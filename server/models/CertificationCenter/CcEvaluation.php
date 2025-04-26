@@ -533,10 +533,58 @@ class CcEvaluation extends DeliveryOrder
                     $criteriaStmt = $this->pdo->prepare("SELECT * FROM `cc_criteria_list` WHERE id IN ($placeholders)");
                     $criteriaStmt->execute($criteriaIds);
                     $criteriaList = $criteriaStmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    foreach ($criteriaList as &$criteria) {
+                        $criteriaResult = [
+                            'completed' => false,
+                            'currentValue' => 0,
+                            'requiredValue' => (int) ($criteria['moq'] ?? 0)
+                        ];
+
+                        switch ((int) $criteria['id']) {
+                            case 1: // Pharmer Hunter Game
+                                $criteriaResult['currentValue'] = (int) ($row['pharma_hunter']['correctCount'] ?? 0);
+                                break;
+
+                            case 2: // Ceylon Pharmacy
+                                $criteriaResult['currentValue'] = (int) ($row['ceylon_pharmacy']['recoveredCount'] ?? 0);
+                                break;
+
+                            case 3: // Assignment 01
+                                $criteriaResult['currentValue'] = isset($row['assignment_grades']['assignments'][0]['grade']) ? (float) $row['assignment_grades']['assignments'][0]['grade'] : 0;
+                                break;
+
+                            case 4: // Assignment 02
+                                $criteriaResult['currentValue'] = isset($row['assignment_grades']['assignments'][1]['grade']) ? (float) $row['assignment_grades']['assignments'][1]['grade'] : 0;
+                                break;
+
+                            case 5: // Assignment 03
+                                $criteriaResult['currentValue'] = isset($row['assignment_grades']['assignments'][2]['grade']) ? (float) $row['assignment_grades']['assignments'][2]['grade'] : 0;
+                                break;
+
+                            case 6: // Due Payments
+                                $criteriaResult['currentValue'] = (float) ($this->studentBalance['studentBalance'] ?? 0);
+                                break;
+                        }
+
+                        if ((int) $criteria['id'] === 6) {
+                            // For Due Payments, check if balance is zero
+                            $criteriaResult['completed'] = ($criteriaResult['currentValue'] <= 0);
+                        } else {
+                            $criteriaResult['completed'] = ($criteriaResult['currentValue'] >= $criteriaResult['requiredValue']);
+                        }
+
+                        $criteria['evaluation'] = $criteriaResult;
+                    }
+                    unset($criteria); // important to unset reference
+
+
+                    // ✅ Then attach evaluated criteria list
                     $row['criteria_details'] = $criteriaList;
                 } else {
                     $row['criteria_details'] = [];
                 }
+
 
                 // Add the updated row to the result array
                 $ArrayResult[$row['course_code']] = $row;
