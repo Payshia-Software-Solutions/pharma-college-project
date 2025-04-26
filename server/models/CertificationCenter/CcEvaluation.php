@@ -521,6 +521,31 @@ class CcEvaluation extends DeliveryOrder
                 $row['deliveryOrders'] = $deliveryOrders;
                 $row['certificateRecords'] = $certificateRecords;
 
+                // New part: Add criteria details
+                if (!empty($row['parent_course_id'])) {
+                    $parentStmt = $this->pdo->prepare("SELECT `criteria_list` FROM `parent_main_course` WHERE `id` = ?");
+                    $parentStmt->execute([$row['parent_course_id']]);
+                    $parentCourse = $parentStmt->fetch(PDO::FETCH_ASSOC);
+
+                    if ($parentCourse && !empty($parentCourse['criteria_list'])) {
+                        $criteriaIds = json_decode($parentCourse['criteria_list'], true);
+
+                        if (!empty($criteriaIds)) {
+                            $placeholders = implode(',', array_fill(0, count($criteriaIds), '?'));
+                            $criteriaStmt = $this->pdo->prepare("SELECT * FROM `cc_criteria_list` WHERE id IN ($placeholders)");
+                            $criteriaStmt->execute($criteriaIds);
+                            $criteriaDetails = $criteriaStmt->fetchAll(PDO::FETCH_ASSOC);
+                            $row['criteria_details'] = $criteriaDetails;
+                        } else {
+                            $row['criteria_details'] = [];
+                        }
+                    } else {
+                        $row['criteria_details'] = [];
+                    }
+                } else {
+                    $row['criteria_details'] = [];
+                }
+
                 // Add the updated row to the result array
                 $ArrayResult[$row['course_code']] = $row;
             }
