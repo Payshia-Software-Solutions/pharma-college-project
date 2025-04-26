@@ -37,6 +37,7 @@ export default function CourseSelectionStep({
         const data = await response.json();
         const enrollments = data.studentEnrollments || {};
 
+        console.log(enrollments);
         // Extract parent_course_id and parent_course_name
         const formattedCourses = Object.values(enrollments).map(
           (enrollment) => ({

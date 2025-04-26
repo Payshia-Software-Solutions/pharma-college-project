@@ -15,6 +15,9 @@ import {
   Loader,
   Upload,
 } from "lucide-react";
+import StudentInfoCard from "./ReviewComponents/StudentInfo";
+import SelectedCoursesCard from "./ReviewComponents/SelectedCoursesCard";
+import SelectedPackageCard from "./ReviewComponents/SelectedPackageCard";
 
 export default function ReviewStep({
   formData,
@@ -126,98 +129,16 @@ export default function ReviewStep({
 
       {!loading && !error && (
         <div className="space-y-6">
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-gray-800 flex items-center">
-              <User className="w-5 h-5 text-green-500 mr-2" />
-              Student Information
-            </h3>
-            <div className="mt-2 space-y-2 text-gray-700">
-              <p className="flex items-center">
-                <span className="w-5 h-5 mr-2">📍</span>
-                <strong>Student Number:</strong>{" "}
-                {formData.studentNumber || "Not Provided"}
-              </p>
-              <p className="flex items-center">
-                <span className="w-5 h-5 mr-2">👤</span>
-                <strong>Name:</strong> {formData.studentName || "Not Provided"}
-              </p>
-            </div>
-          </div>
+          <StudentInfoCard formData={formData} />
 
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-gray-800 flex items-center">
-              <Book className="w-5 h-5 text-green-500 mr-2" />
-              Selected Courses
-            </h3>
-            <div className="mt-2 text-gray-700">
-              {formData.courses.length > 0 ? (
-                <ul className="list-disc list-inside space-y-1">
-                  {formData.courses.map((course, index) => (
-                    <li key={index} className="flex items-center">
-                      <span className="w-5 h-5 mr-2">📚</span>
-                      {course.title}
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="flex items-center">
-                  <span className="w-5 h-5 mr-2">📚</span>Not Selected
-                </p>
-              )}
-            </div>
-          </div>
+          <SelectedCoursesCard formData={formData} />
 
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-gray-800 flex items-center">
-              <PackageIcon className="w-5 h-5 text-green-500 mr-2" />
-              Selected Package
-            </h3>
-            <div className="mt-2 space-y-2 text-gray-700">
-              <p className="flex items-center">
-                <span className="w-5 h-5 mr-2">🎁</span>
-                <strong>Package:</strong> {selectedPackage.name}
-              </p>
-              <p className="flex items-center">
-                <DollarSign className="w-5 h-5 text-blue-500 mr-2" />
-                <strong>Base Price:</strong> Rs {selectedPackage.price.toFixed(2)}
-              </p>
-              <p className="flex items-center">
-                <Users className="w-5 h-5 text-blue-500 mr-2" />
-                <strong>Additional Seats:</strong>{" "}
-                {formData.packageDetails?.additionalSeats || 0} (Rs{" "}
-                {(formData.packageDetails?.additionalSeats || 0) * ADDITIONAL_SEAT_COST}
-                .00)
-              </p>
-              <p className="flex items-center">
-                <DollarSign className="w-5 h-5 text-blue-500 mr-2" />
-                <strong>Total Payable Amount:</strong> Rs{" "}
-                {calculateTotalAmount().toFixed(2)}
-              </p>
-              <div className="mt-2">
-                <p className="font-medium text-gray-700">Inclusions:</p>
-                <ul className="mt-1 space-y-1 text-gray-600">
-                  <li className="flex items-center">
-                    <Users className="w-4 h-4 text-gray-500 mr-2" />
-                    Parent Seats: {selectedPackage.inclusions.parentSeatCount}
-                  </li>
-                  <li className="flex items-center">
-                    <Flower className="w-4 h-4 text-gray-500 mr-2" />
-                    Garland: {selectedPackage.inclusions.garland ? "Yes" : "No"}
-                  </li>
-                  <li className="flex items-center">
-                    <GraduationCap className="w-4 h-4 text-gray-500 mr-2" />
-                    Graduation Cloth:{" "}
-                    {selectedPackage.inclusions.graduationCloth ? "Yes" : "No"}
-                  </li>
-                  <li className="flex items-center">
-                    <Camera className="w-4 h-4 text-gray-500 mr-2" />
-                    Photo Package:{" "}
-                    {selectedPackage.inclusions.photoPackage ? "Yes" : "No"}
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+          <SelectedPackageCard
+            formData={formData}
+            selectedPackage={selectedPackage}
+            calculateTotalAmount={calculateTotalAmount}
+            ADDITIONAL_SEAT_COST={ADDITIONAL_SEAT_COST}
+          />
 
           <div className="bg-gray-50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-gray-800 flex items-center">

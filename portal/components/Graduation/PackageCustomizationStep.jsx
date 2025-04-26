@@ -108,9 +108,10 @@ export default function PackageCustomizationStep({
     setIsValid(true);
   };
 
-  const handleAdditionalSeatsChange = (e) => {
-    const value = Math.max(0, parseInt(e.target.value) || 0);
+  const handleAdditionalSeatsChange = (seats) => {
+    const value = Math.max(0, seats); // Ensure non-negative value
     setAdditionalSeats(value);
+
     if (formData.package_id) {
       const selectedPackage = packages.find(
         (p) => p.package_id === formData.package_id
@@ -119,6 +120,22 @@ export default function PackageCustomizationStep({
         updatePackageData("packageDetails", {
           ...selectedPackage.inclusions,
           additionalSeats: value,
+        });
+      }
+    }
+  };
+
+  const handleClearAdditionalSeats = () => {
+    setAdditionalSeats(0); // Reset the additional seats to 0
+
+    if (formData.package_id) {
+      const selectedPackage = packages.find(
+        (p) => p.package_id === formData.package_id
+      );
+      if (selectedPackage) {
+        updatePackageData("packageDetails", {
+          ...selectedPackage.inclusions,
+          additionalSeats: 0, // Update package data with 0 additional seats
         });
       }
     }
@@ -232,14 +249,29 @@ export default function PackageCustomizationStep({
         <label className="block text-sm font-medium text-gray-700">
           Additional Parent Seats
         </label>
-        <input
-          type="number"
-          min="0"
-          value={additionalSeats}
-          onChange={handleAdditionalSeatsChange}
-          className="mt-1 p-3 block w-full rounded-md border border-gray-800 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-          placeholder="Enter number of additional seats"
-        />
+        <div className="mt-2 flex space-x-4">
+          {[1, 2, 3].map((seats) => (
+            <button
+              key={seats}
+              onClick={() => handleAdditionalSeatsChange(seats)} // Call with seat value
+              className={`px-4 py-2 rounded-md text-white font-semibold ${
+                additionalSeats === seats
+                  ? "bg-blue-500 hover:bg-blue-600"
+                  : "bg-gray-300 hover:bg-gray-400"
+              } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50`}
+            >
+              {seats}
+            </button>
+          ))}
+
+          {/* Clear Button */}
+          <button
+            onClick={() => handleClearAdditionalSeats()}
+            className="px-4 py-2 rounded-md text-white bg-red-500 hover:bg-red-600 font-semibold focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+          >
+            Clear
+          </button>
+        </div>
         <p className="mt-1 text-sm text-gray-500">
           Add extra parent seats beyond the package inclusion (Rs{" "}
           {ADDITIONAL_SEAT_COST} per seat).
