@@ -489,7 +489,8 @@ class CcEvaluation extends DeliveryOrder
                     sc.`enrollment_key`, 
                     sc.`created_at`, 
                     c.`course_name` as `batch_name`,
-                    c.`parent_course_id` as `parent_course_id`
+                    c.`parent_course_id` as `parent_course_id`,
+                    c.`criteria_list` as `criteria_list`
                 FROM 
                     `student_course` AS sc
                 INNER JOIN 
@@ -521,27 +522,15 @@ class CcEvaluation extends DeliveryOrder
                 $row['deliveryOrders'] = $deliveryOrders;
                 $row['certificateRecords'] = $certificateRecords;
 
-                // New part: Add criteria details
-                if (!empty($row['parent_course_id'])) {
-                    $parentStmt = $this->pdo->prepare("SELECT `criteria_list` FROM `parent_main_course` WHERE `id` = ?");
-                    $parentStmt->execute([$row['parent_course_id']]);
-                    $parentCourse = $parentStmt->fetch(PDO::FETCH_ASSOC);
 
-                    if ($parentCourse && !empty($parentCourse['criteria_list'])) {
-                        $criteriaIds = json_decode($parentCourse['criteria_list'], true);
+                $criteriaIds = json_decode($row['criteria_list'], true);
 
-                        if (!empty($criteriaIds)) {
-                            $placeholders = implode(',', array_fill(0, count($criteriaIds), '?'));
-                            $criteriaStmt = $this->pdo->prepare("SELECT * FROM `cc_criteria_list` WHERE id IN ($placeholders)");
-                            $criteriaStmt->execute($criteriaIds);
-                            $criteriaDetails = $criteriaStmt->fetchAll(PDO::FETCH_ASSOC);
-                            $row['criteria_details'] = $criteriaDetails;
-                        } else {
-                            $row['criteria_details'] = [];
-                        }
-                    } else {
-                        $row['criteria_details'] = [];
-                    }
+                if (!empty($criteriaIds)) {
+                    $placeholders = implode(',', array_fill(0, count($criteriaIds), '?'));
+                    $criteriaStmt = $this->pdo->prepare("SELECT * FROM `cc_criteria_list` WHERE id IN ($placeholders)");
+                    $criteriaStmt->execute($criteriaIds);
+                    $criteriaList = $criteriaStmt->fetchAll(PDO::FETCH_ASSOC);
+                    $row['criteria_details'] = $criteriaList;
                 } else {
                     $row['criteria_details'] = [];
                 }
