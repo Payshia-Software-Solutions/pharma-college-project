@@ -483,25 +483,25 @@ class CcEvaluation extends DeliveryOrder
         try {
             $studentId = $this->GetLmsStudentsByUserName($userName)['student_id'];
             $sql = "SELECT 
-                    sc.`id`, 
-                    sc.`course_code`, 
-                    sc.`student_id`, 
-                    sc.`enrollment_key`, 
-                    sc.`created_at`, 
-                    c.`course_name` as `batch_name`,
-                    c.`parent_course_id` as `parent_course_id`,
-                    c.`criteria_list` as `criteria_list`
-                FROM 
-                    `student_course` AS sc
-                INNER JOIN 
-                    `course` AS c 
-                ON 
-                    sc.`course_code` = c.`course_code`
-                WHERE 
-                    sc.`student_id` LIKE ?
-                ORDER BY 
-                    sc.`id` DESC
-            ";
+                sc.`id`, 
+                sc.`course_code`, 
+                sc.`student_id`, 
+                sc.`enrollment_key`, 
+                sc.`created_at`, 
+                c.`course_name` as `batch_name`,
+                c.`parent_course_id` as `parent_course_id`,
+                c.`criteria_list` as `criteria_list`
+            FROM 
+                `student_course` AS sc
+            INNER JOIN 
+                `course` AS c 
+            ON 
+                sc.`course_code` = c.`course_code`
+            WHERE 
+                sc.`student_id` LIKE ?
+            ORDER BY 
+                sc.`id` DESC
+        ";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([$studentId]);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -578,13 +578,33 @@ class CcEvaluation extends DeliveryOrder
                     }
                     unset($criteria); // important to unset reference
 
+                    // 🌟 Now after evaluating all criteria, check eligibility
+                    $allCriteriaCompleted = true;
+                    $failedCriteriaReasons = [];
 
-                    // ✅ Then attach evaluated criteria list
+                    foreach ($criteriaList as $criteria) {
+                        if (empty($criteria['evaluation']['completed']) || $criteria['evaluation']['completed'] !== true) {
+                            $allCriteriaCompleted = false;
+                            $reason = "Failed criteria ID {$criteria['id']}";
+                            if (!empty($criteria['list_name'])) {
+                                $reason .= " ({$criteria['list_name']})";
+                            }
+                            $failedCriteriaReasons[] = $reason;
+                        }
+                    }
+
+                    $row['certificate_eligibility'] = $allCriteriaCompleted;
+
+                    if (!$allCriteriaCompleted) {
+                        $row['certificate_eligibility_reasons'] = $failedCriteriaReasons;
+                    }
+
                     $row['criteria_details'] = $criteriaList;
                 } else {
                     $row['criteria_details'] = [];
+                    $row['certificate_eligibility'] = false;
+                    $row['certificate_eligibility_reasons'] = ["No criteria available"];
                 }
-
 
                 // Add the updated row to the result array
                 $ArrayResult[$row['course_code']] = $row;
