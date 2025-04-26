@@ -568,6 +568,9 @@ class CcEvaluation extends DeliveryOrder
                             case 6: // Due Payments
                                 $criteriaResult['currentValue'] = (float) ($this->studentBalance['studentBalance'] ?? 0);
                                 break;
+                            case 7: // Pharmer Hunter Pro
+                                $criteriaResult['currentValue'] = (int) ($row['pharma_hunter_pro']['results']['correctCount'] ?? 0);
+                                break;
                         }
 
                         if ((int) $criteria['id'] === 6) {

@@ -1,7 +1,6 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
 import { Loader } from "lucide-react";
 
 export default function CourseSelectionStep({
@@ -11,20 +10,20 @@ export default function CourseSelectionStep({
   setStepLoading,
 }) {
   const [courses, setCourses] = useState([]);
-  const [loading, setLoading] = useState(false); // Initial false to avoid flash
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [selectedCourses, setSelectedCourses] = useState(
-    formData.courses || [] // Initialize with existing selected courses or empty array
+    formData.courses || []
   );
 
-  // Fetch courses from the API
   useEffect(() => {
     const fetchCourses = async () => {
       setLoading(true);
-      if (setStepLoading) setStepLoading(true); // Sync with parent
+      if (setStepLoading) setStepLoading(true);
+
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/parent-main-course`,
+          `${process.env.NEXT_PUBLIC_API_URL}/get-student-full-info?loggedUser=${formData.studentNumber}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -36,23 +35,34 @@ export default function CourseSelectionStep({
         }
 
         const data = await response.json();
-        const formattedCourses = data.map((course) => ({
-          id: course.id || course.course_id,
-          title: course.course_name || course.name,
-        }));
-        // Removed the "Custom" option
-        setCourses(formattedCourses);
+        const enrollments = data.studentEnrollments || {};
+
+        // Extract parent_course_id and parent_course_name
+        const formattedCourses = Object.values(enrollments).map(
+          (enrollment) => ({
+            id: enrollment.parent_course_id,
+            title: enrollment.parent_course_name,
+          })
+        );
+
+        // Remove duplicate courses (in case multiple enrollments under same parent course)
+        const uniqueCourses = formattedCourses.filter(
+          (course, index, self) =>
+            index === self.findIndex((c) => c.id === course.id)
+        );
+
+        setCourses(uniqueCourses);
         setError(null);
 
         // Restore previous selections if valid
         if (formData.courses && formData.courses.length > 0) {
-          const validSelections = formattedCourses.filter((course) =>
+          const validSelections = uniqueCourses.filter((course) =>
             formData.courses.some((selected) => selected.id === course.id)
           );
           if (validSelections.length > 0) {
             setSelectedCourses(validSelections);
             updateFormData("courses", validSelections);
-            setIsValid(true); // Valid if at least one course is selected
+            setIsValid(true);
           } else {
             setSelectedCourses([]);
             updateFormData("courses", []);
@@ -60,10 +70,10 @@ export default function CourseSelectionStep({
           }
         }
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "An error occurred");
         setCourses([]);
         setSelectedCourses([]);
-        setIsValid(false); // Invalidate on fetch error
+        setIsValid(false);
       } finally {
         setLoading(false);
         if (setStepLoading) setStepLoading(false);
@@ -71,30 +81,28 @@ export default function CourseSelectionStep({
     };
 
     fetchCourses();
-  }, []); // Empty dependency array for one-time fetch
+  }, []); // One-time fetch on mount
 
-  // Handle course selection
   const handleCourseChange = (courseId) => {
     const selectedCourse = courses.find((course) => course.id === courseId);
     let updatedCourses;
+
     if (selectedCourses.some((course) => course.id === courseId)) {
-      // Remove course if already selected
       updatedCourses = selectedCourses.filter(
         (course) => course.id !== courseId
       );
     } else {
-      // Add course if not selected
       updatedCourses = [...selectedCourses, selectedCourse];
     }
+
     setSelectedCourses(updatedCourses);
     updateFormData("courses", updatedCourses);
-    setIsValid(updatedCourses.length > 0); // Valid if at least one course is selected
+    setIsValid(updatedCourses.length > 0);
   };
 
-  // Initial validation check
   useEffect(() => {
     if (selectedCourses.length === 0 && courses.length > 0) {
-      setIsValid(false); // No selection yet
+      setIsValid(false);
     }
   }, [courses, selectedCourses, setIsValid]);
 
@@ -130,8 +138,6 @@ export default function CourseSelectionStep({
 
       {!loading && !error && courses.length > 0 && (
         <div className="space-y-4 overflow-y-auto">
-          {" "}
-          {/* Added max-height for scroll */}
           {courses.map((course) => (
             <label
               key={course.id}
@@ -143,12 +149,12 @@ export default function CourseSelectionStep({
             >
               <div className="flex items-center space-x-3">
                 <input
-                  type="checkbox" // Changed to checkbox for multiple selection
+                  type="checkbox"
                   name="course"
                   value={course.id}
                   checked={selectedCourses.some((c) => c.id === course.id)}
                   onChange={() => handleCourseChange(course.id)}
-                  disabled={loading} // Disable during fetch
+                  disabled={loading}
                   className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
                 />
                 <div>

@@ -230,50 +230,40 @@ function DeletePackage(packageId) {
 }
 
 function ChangePackageStatus(packageId, packageStatus = 1) {
-    var statusText = 'inactive'
-    if(packageStatus === 1 ){
-        statusText = 'active'
+    var statusText = 'inactive';
+    if (packageStatus === 1) {
+        statusText = 'active';
     }
-    // Confirm inactivation with SweetAlert
+
     Swal.fire({
         title: 'Are you sure?',
-        text: "This will mark the package as "+statusText+". You can reactivate it later.",
+        text: "This will mark the package as " + statusText + ". You can reactivate it later.",
         icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: 'Yes, mark as '+statusText+'!',
+        confirmButtonText: 'Yes, mark as ' + statusText + '!',
         cancelButtonText: 'No, cancel!',
         reverseButtons: true
     }).then((result) => {
         if (result.isConfirmed) {
-            showOverlay();  // Optionally show a loading spinner
+            showOverlay();
 
-            // Prepare data to update is_active to 0 (inactive)
-            const data = {
-                is_active: packageStatus
-            };
+            // 📦 Prepare FormData instead of JSON
+            const formData = new FormData();
+            formData.append('is_active', packageStatus);
 
-            // Send PUT request to update the package as inactive
             fetch(`https://qa-api.pharmacollege.lk/packages/${packageId}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+                method: 'POST', // 🔥 Changed to POST
+                body: formData
             })
             .then(response => {
-                if (response.status === 200) {
-                    // Successfully updated the package status
+                if (response.status === 200 || response.status === 201) {
                     Swal.fire(
-                        'Inactive!',
-                        'Your package has been marked as '+statusText+'.',
+                        'Done!',
+                        'Your package has been marked as ' + statusText + '.',
                         'success'
                     );
-                    
                     OpenPackageModal();
-                    // You can refresh the package list or update the UI here
-                    // Optionally hide any relevant modal or refresh the package list
                 } else {
-                    // If inactivation fails
                     throw new Error(`Failed to update package. Status: ${response.status}`);
                 }
             })
@@ -285,10 +275,9 @@ function ChangePackageStatus(packageId, packageStatus = 1) {
                 );
             })
             .finally(() => {
-                hideOverlay();  // Hide loading spinner (if any)
+                hideOverlay();
             });
         } else {
-            // Action canceled
             Swal.fire(
                 'Cancelled',
                 'Your package is still active :)',
