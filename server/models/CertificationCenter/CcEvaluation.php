@@ -489,6 +489,7 @@ class CcEvaluation extends DeliveryOrder
                     sc.`enrollment_key`, 
                     sc.`created_at`, 
                     c.`course_name` as `batch_name`
+                    c.`parent_course_id` as `parent_course_id`
                 FROM 
                     `student_course` AS sc
                 INNER JOIN 

@@ -143,8 +143,8 @@ function OpenPackageForm(packageId = 0) {
 
     const method = packageId === 0 ? "POST" : "POST"; // Use POST even for update when using FormData
     const url = packageId === 0
-        ? "http://localhost/pharma-college-project/server/packages"
-        : `http://localhost/pharma-college-project/server/packages/${packageId}`;
+        ? "https://qa-api.pharmacollege.lk/packages"
+        : `https://qa-api.pharmacollege.lk/packages/${packageId}`;
 
     fetch(url, {
         method: method,

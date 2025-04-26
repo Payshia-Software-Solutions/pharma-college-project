@@ -3,6 +3,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
 import { Loader } from "lucide-react";
+import Image from "next/image";
 
 export default function PackageCustomizationStep({
   formData,
@@ -63,6 +64,7 @@ export default function PackageCustomizationStep({
               photoPackage: !!pkg.photo_package,
             },
             isActive: !!pkg.is_active,
+            coverImage: pkg.cover_image,
           }))
           .filter((pkg) => pkg.isActive);
 
@@ -133,6 +135,7 @@ export default function PackageCustomizationStep({
     return basePrice + additionalCost;
   };
 
+  console.log(packages);
   return (
     <motion.div
       initial={{ opacity: 0, x: 50 }}
@@ -173,7 +176,7 @@ export default function PackageCustomizationStep({
                   : "border-gray-300 hover:bg-gray-50"
               }`}
             >
-              <div className="flex items-center space-x-3">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 space-y-4 sm:space-y-0">
                 <input
                   type="radio"
                   name="package"
@@ -183,27 +186,41 @@ export default function PackageCustomizationStep({
                   disabled={loading}
                   className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
                 />
-                <div className="flex-1">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-medium text-gray-800">
-                      {pkg.name}
-                    </h3>
-                    <span className="text-lg font-semibold text-blue-600">
-                      Rs {pkg.price.toFixed(2)}
-                    </span>
+
+                <div className="flex flex-col sm:flex-row gap-4 w-full">
+                  <div className="sm:w-32 w-full">
+                    <Image
+                      src={`https://content-provider.pharmacollege.lk/content-provider/uploads/package-images/${pkg.coverImage}`}
+                      alt={pkg.name}
+                      width={200}
+                      height={200}
+                      className="w-full h-auto object-cover rounded-lg border"
+                    />
                   </div>
-                  <ul className="mt-2 text-sm text-gray-600 space-y-1">
-                    <li>Parent Seats: {pkg.inclusions.parentSeatCount}</li>
-                    <li>Garland: {pkg.inclusions.garland ? "Yes" : "No"}</li>
-                    <li>
-                      Graduation Cloth:{" "}
-                      {pkg.inclusions.graduationCloth ? "Yes" : "No"}
-                    </li>
-                    <li>
-                      Photo Package:{" "}
-                      {pkg.inclusions.photoPackage ? "Yes" : "No"}
-                    </li>
-                  </ul>
+
+                  <div className="flex-1 space-y-2">
+                    <div className="flex justify-between items-center flex-wrap">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-800">
+                        {pkg.name}
+                      </h3>
+                      <span className="text-sm sm:text-base font-semibold text-blue-600">
+                        Rs {pkg.price.toFixed(2)}
+                      </span>
+                    </div>
+
+                    <ul className="text-sm text-gray-600 grid grid-cols-2 gap-x-4 gap-y-1">
+                      <li>Parent Seats: {pkg.inclusions.parentSeatCount}</li>
+                      <li>Garland: {pkg.inclusions.garland ? "Yes" : "No"}</li>
+                      <li>
+                        Graduation Cloth:{" "}
+                        {pkg.inclusions.graduationCloth ? "Yes" : "No"}
+                      </li>
+                      <li>
+                        Photo Package:{" "}
+                        {pkg.inclusions.photoPackage ? "Yes" : "No"}
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </label>
