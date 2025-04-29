@@ -212,7 +212,7 @@ $routes = array_merge(
     $DpadRoutes,
     $SMSRoutes,
     $bankRoutes,
-
+    $studentCourseRoutes,
     $EventsPageRoutes,
 
     $TestimonialRoutes,
