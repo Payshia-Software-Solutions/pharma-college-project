@@ -36,7 +36,7 @@ $appointmentRoutes = require './routes/OtherRoutes/appointmentRoutes.php';
 $courseAssignmentRoutes = require './routes/OtherRoutes/courseAssignmentRoutes.php';
 $courseAssignmentSubmissionRoutes = require './routes/OtherRoutes/courseAssignmentSubmissionRoutes.php';
 $reportRoutes = require './routes/OtherRoutes/reportRoutes.php';
-// $studentCourseRoutes = require './routes/OtherRoutes/studentCourseRoutes.php';
+$studentCourseRoutes = require './routes/OtherRoutes/studentCourseRoutes.php';
 $userRoutes = require './routes/UserRoutes/userRoutes.php';
 $userFullDetailsRoutes = require './routes/UserRoutes/userFullDetailsRoutes.php';
 $companyRoutes = require './routes/OtherRoutes/companyRoutes.php';
@@ -212,7 +212,7 @@ $routes = array_merge(
     $DpadRoutes,
     $SMSRoutes,
     $bankRoutes,
-
+    $studentCourseRoutes,
     $EventsPageRoutes,
 
     $TestimonialRoutes,

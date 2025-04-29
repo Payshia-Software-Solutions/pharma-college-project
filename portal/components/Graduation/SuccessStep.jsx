@@ -115,7 +115,7 @@ export default function SuccessStep({ referenceNumber }) {
           <CourseDetails registration={registration} allCourses={allCourses} />
           <PackageDetails
             selectedPackage={selectedPackage}
-            allCourses={allCourses}
+            registration={registration}
           />
           <PaymentStatus registration={registration} />
           <PaymentSlip registration={registration} />

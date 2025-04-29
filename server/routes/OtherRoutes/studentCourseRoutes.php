@@ -1,11 +1,11 @@
 <?php
 // routes/studentCourseRoutes.php
 
-require_once './controllers/StudentCourseController.php';
+require_once './controllers/BaseStudentCourseController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];
-$studentCourseController = new StudentCourseController($pdo);
+$studentCourseController = new BaseStudentCourseController($pdo);
 
 // Define student course routes
 return [

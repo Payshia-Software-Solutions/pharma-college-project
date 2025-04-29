@@ -12,7 +12,7 @@ export default function ActionButtons({
 }) {
   return (
     <div className="mt-6">
-      {currentStep < 4 && !showSuccess ? (
+      {currentStep < 5 && !showSuccess ? (
         <button
           onClick={nextStep}
           disabled={!isValid || isLoading}
@@ -29,7 +29,7 @@ export default function ActionButtons({
         </button>
       ) : null}
 
-      {currentStep === 4 && !showSuccess && (
+      {currentStep === 5 && !showSuccess && (
         <button
           onClick={handleSubmit}
           disabled={!isValid || isLoading}

@@ -488,18 +488,23 @@ class CcEvaluation extends DeliveryOrder
                     sc.`student_id`, 
                     sc.`enrollment_key`, 
                     sc.`created_at`, 
-                    c.`course_name` as `batch_name`
+                    c.`course_name` AS `batch_name`,
+                    c.`parent_course_id` AS `parent_course_id`,
+                    c.`criteria_list` AS `criteria_list`,
+                    p.`course_name` AS `parent_course_name`
                 FROM 
                     `student_course` AS sc
                 INNER JOIN 
                     `course` AS c 
-                ON 
-                    sc.`course_code` = c.`course_code`
+                    ON sc.`course_code` = c.`course_code`
+                LEFT JOIN 
+                    `parent_main_course` AS p 
+                    ON c.`parent_course_id` = p.`id`
                 WHERE 
                     sc.`student_id` LIKE ?
                 ORDER BY 
                     sc.`id` DESC
-            ";
+        ";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([$studentId]);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -519,6 +524,93 @@ class CcEvaluation extends DeliveryOrder
                 $row['assignment_grades'] = $assignmentGrades;
                 $row['deliveryOrders'] = $deliveryOrders;
                 $row['certificateRecords'] = $certificateRecords;
+
+                $criteriaIds = [];
+
+                if (!empty($row['criteria_list'])) {
+                    $criteriaIds = array_map('trim', explode(',', $row['criteria_list']));
+                }
+
+                if (!empty($criteriaIds)) {
+                    $placeholders = implode(',', array_fill(0, count($criteriaIds), '?'));
+                    $criteriaStmt = $this->pdo->prepare("SELECT * FROM `cc_criteria_list` WHERE id IN ($placeholders)");
+                    $criteriaStmt->execute($criteriaIds);
+                    $criteriaList = $criteriaStmt->fetchAll(PDO::FETCH_ASSOC);
+
+                    foreach ($criteriaList as &$criteria) {
+                        $criteriaResult = [
+                            'completed' => false,
+                            'currentValue' => 0,
+                            'requiredValue' => (int) ($criteria['moq'] ?? 0)
+                        ];
+
+                        switch ((int) $criteria['id']) {
+                            case 1: // Pharmer Hunter Game
+                                $criteriaResult['currentValue'] = (int) ($row['pharma_hunter']['correctCount'] ?? 0);
+                                break;
+
+                            case 2: // Ceylon Pharmacy
+                                $criteriaResult['currentValue'] = (int) ($row['ceylon_pharmacy']['recoveredCount'] ?? 0);
+                                break;
+
+                            case 3: // Assignment 01
+                                $criteriaResult['currentValue'] = isset($row['assignment_grades']['assignments'][0]['grade']) ? (float) $row['assignment_grades']['assignments'][0]['grade'] : 0;
+                                break;
+
+                            case 4: // Assignment 02
+                                $criteriaResult['currentValue'] = isset($row['assignment_grades']['assignments'][1]['grade']) ? (float) $row['assignment_grades']['assignments'][1]['grade'] : 0;
+                                break;
+
+                            case 5: // Assignment 03
+                                $criteriaResult['currentValue'] = isset($row['assignment_grades']['assignments'][2]['grade']) ? (float) $row['assignment_grades']['assignments'][2]['grade'] : 0;
+                                break;
+
+                            case 6: // Due Payments
+                                $criteriaResult['currentValue'] = (float) ($this->studentBalance['studentBalance'] ?? 0);
+                                break;
+                            case 7: // Pharmer Hunter Pro
+                                $criteriaResult['currentValue'] = (int) ($row['pharma_hunter_pro']['results']['correctCount'] ?? 0);
+                                break;
+                        }
+
+                        if ((int) $criteria['id'] === 6) {
+                            // For Due Payments, check if balance is zero
+                            $criteriaResult['completed'] = ($criteriaResult['currentValue'] <= 0);
+                        } else {
+                            $criteriaResult['completed'] = ($criteriaResult['currentValue'] >= $criteriaResult['requiredValue']);
+                        }
+
+                        $criteria['evaluation'] = $criteriaResult;
+                    }
+                    unset($criteria); // important to unset reference
+
+                    // 🌟 Now after evaluating all criteria, check eligibility
+                    $allCriteriaCompleted = true;
+                    $failedCriteriaReasons = [];
+
+                    foreach ($criteriaList as $criteria) {
+                        if (empty($criteria['evaluation']['completed']) || $criteria['evaluation']['completed'] !== true) {
+                            $allCriteriaCompleted = false;
+                            $reason = "Failed criteria ID {$criteria['id']}";
+                            if (!empty($criteria['list_name'])) {
+                                $reason .= " ({$criteria['list_name']})";
+                            }
+                            $failedCriteriaReasons[] = $reason;
+                        }
+                    }
+
+                    $row['certificate_eligibility'] = $allCriteriaCompleted;
+
+                    if (!$allCriteriaCompleted) {
+                        $row['certificate_eligibility_reasons'] = $failedCriteriaReasons;
+                    }
+
+                    $row['criteria_details'] = $criteriaList;
+                } else {
+                    $row['criteria_details'] = [];
+                    $row['certificate_eligibility'] = false;
+                    $row['certificate_eligibility_reasons'] = ["No criteria available"];
+                }
 
                 // Add the updated row to the result array
                 $ArrayResult[$row['course_code']] = $row;

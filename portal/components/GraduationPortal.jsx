@@ -14,13 +14,17 @@ import PackageCustomizationStep from "@/components/Graduation/PackageCustomizati
 import ReviewStep from "@/components/Graduation/ReviewStep";
 import SuccessStep from "@/components/Graduation/SuccessStep";
 import ActionButtons from "@/components/Graduation/ActionButtons";
+import CertificateDeliveryStep from "@/components/Graduation/CertificateDeliveryStep";
+import AddressStep from "@/components/Graduation/AddressStep";
+
 import { User, Book, Package, FileText, GraduationCap } from "lucide-react";
 
 const steps = [
   { id: 1, title: "Student Info", icon: User },
   { id: 2, title: "Course", icon: Book },
-  { id: 3, title: "Package", icon: Package },
-  { id: 4, title: "Review & Submit", icon: FileText },
+  { id: 3, title: "Certificate Delivery", icon: GraduationCap }, // New step
+  { id: 4, title: "Package", icon: Package },
+  { id: 5, title: "Review & Submit", icon: FileText },
 ];
 
 export default function ConvocationPortal() {
@@ -29,6 +33,16 @@ export default function ConvocationPortal() {
   const [stepLoading, setStepLoading] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [referenceNumber, setReferenceNumber] = useState("");
+  const [deliveryMethod, setDeliveryMethod] = useState(null); // For Convocation or Courier
+
+  const [address, setAddress] = useState({
+    line1: "",
+    line2: "",
+    city: "",
+    district: "",
+    phoneNumber: "",
+  });
+
   const [formData, setFormData] = useState({
     studentNumber: "",
     studentName: "",
@@ -38,7 +52,7 @@ export default function ConvocationPortal() {
       garland: false,
       graduationCloth: false,
       photoPackage: false,
-      additionalSeats:null,
+      additionalSeats: null,
     },
     package_id: null,
     paymentSlip: null,
@@ -132,24 +146,31 @@ export default function ConvocationPortal() {
       return;
     }
 
-    try {
-      const submissionData = new FormData();
-      submissionData.append("student_number", formData.studentNumber);
-      submissionData.append("student_name", formData.studentName); // Added for clarity
-      formData.courses.forEach((course, index) => {
-        submissionData.append(`course_id[${index}]`, course.id); // Append multiple course IDs
-      });
-      submissionData.append("package_id", formData.package_id);
-      submissionData.append("payment_slip", formData.paymentSlip);
-      submissionData.append("additional_seats", formData.packageDetails.additionalSeats);
+    const submissionData = new FormData();
+    submissionData.append("student_number", formData.studentNumber);
+    submissionData.append("student_name", formData.studentName); // Added for clarity
+    formData.courses.forEach((course, index) => {
+      submissionData.append(`course_id[${index}]`, course.id); // Append multiple course IDs
+    });
+    submissionData.append("package_id", formData.package_id);
+    submissionData.append("payment_slip", formData.paymentSlip);
+    submissionData.append(
+      "additional_seats",
+      formData.packageDetails.additionalSeats
+    );
 
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations`,
-        {
-          method: "POST",
-          body: submissionData,
-        }
-      );
+    try {
+      // Determine the correct API URL based on the delivery method
+      const apiUrl =
+        formData.deliveryMethod === "By Courier"
+          ? `${process.env.NEXT_PUBLIC_API_URL}/courier-registrations`
+          : `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations`;
+
+      // Make the appropriate API call
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        body: submissionData,
+      });
 
       const responseBody = await response.json();
 
@@ -213,6 +234,23 @@ export default function ConvocationPortal() {
                     />
                   )}
                   {currentStep === 3 && (
+                    <CertificateDeliveryStep
+                      deliveryMethod={deliveryMethod}
+                      setDeliveryMethod={setDeliveryMethod}
+                      setIsValid={setIsValid}
+                      setStepLoading={setStepLoading}
+                    />
+                  )}
+
+                  {currentStep === 4 && deliveryMethod === "By Courier" && (
+                    <AddressStep
+                      address={address}
+                      setAddress={setAddress}
+                      setIsValid={setIsValid}
+                    />
+                  )}
+
+                  {currentStep === 4 && deliveryMethod !== "By Courier" && (
                     <PackageCustomizationStep
                       formData={formData}
                       updatePackageData={updatePackageData}
@@ -221,12 +259,14 @@ export default function ConvocationPortal() {
                       packages={packages}
                     />
                   )}
-                  {currentStep === 4 && (
+                  {currentStep === 5 && (
                     <ReviewStep
                       formData={formData}
                       setIsValid={setIsValid}
                       updateFormData={updateFormData}
                       packages={packages}
+                      address={address}
+                      deliveryMethod={deliveryMethod}
                     />
                   )}
                 </>

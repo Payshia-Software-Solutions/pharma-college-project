@@ -50,46 +50,50 @@ $graduationPackages = $response->toArray();
             <div class="row g-2">
                 <?php foreach ($graduationPackages as $package) :  if ($package['is_active'] == 0) continue;
                 ?>
-                    <div class="col-6">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4><?= $package['package_name'] ?></h3>
-                                    <div class="row g-2">
-                                        <div class="col-6 col-md-4">
-                                            <div class="rounded-3 p-2 bg-light shadow-none">
-                                                <h5>Rate</h5>
-                                                <p class="mb-0 fw-bold">LKR <?= $package['price'] ?></p>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-4">
-                                            <div class="rounded-3 p-2 bg-light shadow-none">
-                                                <h5>Parent Seats</h5>
-                                                <p class="mb-0 fw-bold"><?= $package['parent_seat_count'] ?></p>
-                                            </div>
-                                        </div>
-                                        <div class="col-6 col-md-4">
-                                            <div class="rounded-3 p-2 bg-light shadow-none">
-                                                <h5>Garland</h5>
-                                                <p class="mb-0 fw-bold"><?= $package['garland'] ?></p>
-                                            </div>
-                                        </div>
-                                        <div class="col-12 text-end">
+                <div class="col-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4><?= $package['package_name'] ?></h3>
+                                <img class="w-50"
+                                    src="https://content-provider.pharmacollege.lk/content-provider/uploads/package-images/<?= $package['cover_image'] ?>"
+                                    alt="">
 
-                                            <button type="button"
-                                                onclick="ChangePackageStatus(<?= $package['package_id'] ?>, 0)"
-                                                class="btn btn-sm btn-danger"><i class="fa fa-ban"></i>
-                                                Inactive</button>
-                                            <button type="button" onclick="OpenPackageForm(<?= $package['package_id'] ?>)"
-                                                class="btn btn-sm btn-dark"><i class="fa fa-pencil-alt"></i>
-                                                Edit</button>
-
+                                <div class="row g-2">
+                                    <div class="col-6 col-md-4">
+                                        <div class="rounded-3 p-2 bg-light shadow-none">
+                                            <h5>Rate</h5>
+                                            <p class="mb-0 fw-bold">LKR <?= $package['price'] ?></p>
                                         </div>
                                     </div>
+                                    <div class="col-6 col-md-4">
+                                        <div class="rounded-3 p-2 bg-light shadow-none">
+                                            <h5>Parent Seats</h5>
+                                            <p class="mb-0 fw-bold"><?= $package['parent_seat_count'] ?></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-6 col-md-4">
+                                        <div class="rounded-3 p-2 bg-light shadow-none">
+                                            <h5>Garland</h5>
+                                            <p class="mb-0 fw-bold"><?= $package['garland'] ?></p>
+                                        </div>
+                                    </div>
+                                    <div class="col-12 text-end">
+
+                                        <button type="button"
+                                            onclick="ChangePackageStatus(<?= $package['package_id'] ?>, 0)"
+                                            class="btn btn-sm btn-danger"><i class="fa fa-ban"></i>
+                                            Inactive</button>
+                                        <button type="button" onclick="OpenPackageForm(<?= $package['package_id'] ?>)"
+                                            class="btn btn-sm btn-dark"><i class="fa fa-pencil-alt"></i>
+                                            Edit</button>
+
+                                    </div>
+                                </div>
 
 
-                            </div>
                         </div>
                     </div>
+                </div>
                 <?php endforeach ?>
             </div>
         </div>

@@ -1,13 +1,13 @@
 <?php
 
-require_once './models/StudentCourse.php';
-class StudentCourseController
+require_once './models/BaseStudentCourse.php';
+class BaseStudentCourseController
 {
     private $model;
 
     public function __construct($pdo)
     {
-        $this->model = new StudentCourse($pdo);
+        $this->model = new BaseStudentCourse($pdo);
     }
 
     public function getAllEnrollments()

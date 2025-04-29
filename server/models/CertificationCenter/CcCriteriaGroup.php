@@ -10,12 +10,36 @@ class CcCriteriaGroup
         $this->pdo = $pdo;
     }
 
+    // public function getAllCriteriaGroups()
+    // {
+    //     $stmt = $this->pdo->prepare("SELECT * FROM `cc_criteria_group`");
+    //     $stmt->execute();
+    //     return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // }
+
     public function getAllCriteriaGroups()
     {
         $stmt = $this->pdo->prepare("SELECT * FROM `cc_criteria_group`");
         $stmt->execute();
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $groups = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($groups as &$group) {
+            $criteriaIds = json_decode($group['criteria_group'], true);
+
+            if (!empty($criteriaIds)) {
+                $placeholders = implode(',', array_fill(0, count($criteriaIds), '?'));
+                $criteriaStmt = $this->pdo->prepare("SELECT * FROM `cc_criteria_list` WHERE id IN ($placeholders)");
+                $criteriaStmt->execute($criteriaIds);
+                $criteriaList = $criteriaStmt->fetchAll(PDO::FETCH_ASSOC);
+                $group['criteria_details'] = $criteriaList;
+            } else {
+                $group['criteria_details'] = [];
+            }
+        }
+
+        return $groups;
     }
+
 
     public function getCriteriaGroupById($id)
     {
