@@ -5,6 +5,8 @@ import { useState, useEffect } from "react"; // Added useEffect for better state
 import { motion } from "framer-motion";
 import { User, Loader } from "lucide-react";
 
+import { useSearchParams } from "next/navigation";
+
 export default function StudentInfoStep({
   formData,
   updateFormData,
@@ -14,6 +16,16 @@ export default function StudentInfoStep({
   const [studentInfo, setStudentInfo] = useState(null);
   const [loading, setLoading] = useState(false);
   const [duplicateRecords, setDuplicateRecords] = useState(null);
+
+  const searchParams = useSearchParams();
+  const getStudentNumber = searchParams.get("studentNumber");
+
+  // Use useEffect to update formData with the student number from URL if available
+  useEffect(() => {
+    if (getStudentNumber) {
+      updateFormData("studentNumber", getStudentNumber);
+    }
+  }, [getStudentNumber, updateFormData]);
 
   // Validate student number format
   const validateStudentNumber = (value) => {
@@ -38,6 +50,10 @@ export default function StudentInfoStep({
         `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations/check-duplicate/${studentNumber}`
       );
       if (!response.ok) {
+        if (response.status === 404) {
+          // Handle 404 without logging an error
+          return false;
+        }
         throw new Error("Error checking duplicate registration");
       }
       const data = await response.json();
@@ -50,7 +66,10 @@ export default function StudentInfoStep({
       setDuplicateRecords(null);
       return false;
     } catch (error) {
-      console.error("Error checking duplicate:", error);
+      // Only log if it's not a 404
+      if (error.message !== "Error checking duplicate registration") {
+        console.error("Error checking duplicate:", error);
+      }
       setDuplicateRecords(null);
       return false;
     }
@@ -121,10 +140,11 @@ export default function StudentInfoStep({
       ? `${email.slice(0, 2)}***${email.slice(-2)}@${email.split("@")[1]}`
       : "N/A";
   const maskPhone = (phone) =>
-    phone ? phone.replace(/\d(?=\d{4})/g, "*") : "N/A";
+    phone ? phone.replace(/\d(?=\d{3})/g, "*") : "N/A";
+
   const maskNIC = (nic) =>
     nic && nic.length > 4
-      ? `${nic.slice(0, 4)}***${nic.slice(-4)}`
+      ? `${nic.slice(0, 2)}***${nic.slice(-2)}`
       : nic || "N/A";
 
   return (
@@ -288,6 +308,7 @@ export default function StudentInfoStep({
                   )}
                 </div>
               ))}
+
               <div className="mt-2 p-4 bg-orange-50 rounded-xl border border-orange-100">
                 <div className="flex items-start">
                   <span className="text-xl mr-3">⚠️</span>

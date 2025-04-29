@@ -15,6 +15,8 @@ export default function CourseSelectionStep({
   const [selectedCourses, setSelectedCourses] = useState(
     formData.courses || []
   );
+  const [courseEligibility, setCourseEligibility] = useState({});
+  const [eligibilityReasons, setEligibilityReasons] = useState({});
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -42,6 +44,10 @@ export default function CourseSelectionStep({
           (enrollment) => ({
             id: enrollment.parent_course_id,
             title: enrollment.parent_course_name,
+            certificateEligibility: enrollment.certificate_eligibility,
+            certificateEligibilityReasons:
+              enrollment.certificate_eligibility_reasons || [],
+            criteriaDetails: enrollment.criteria_details || [],
           })
         );
 
@@ -51,7 +57,24 @@ export default function CourseSelectionStep({
             index === self.findIndex((c) => c.id === course.id)
         );
 
+        // Check eligibility of each course and track eligibility reasons
+        const eligibility = {};
+        const reasons = {};
+
+        uniqueCourses.forEach((course) => {
+          eligibility[course.id] = course.certificateEligibility;
+
+          if (!course.certificateEligibility) {
+            reasons[course.id] =
+              course.certificateEligibilityReasons.length > 0
+                ? course.certificateEligibilityReasons
+                : ["No criteria met for eligibility"];
+          }
+        });
+
         setCourses(uniqueCourses);
+        setCourseEligibility(eligibility);
+        setEligibilityReasons(reasons);
         setError(null);
 
         // Restore previous selections if valid
@@ -122,7 +145,7 @@ export default function CourseSelectionStep({
       {loading && (
         <div className="flex items-center justify-center text-gray-600">
           <Loader className="w-6 h-6 animate-spin mr-2" />
-          Loading courses...
+          Verifing your Course Results...
         </div>
       )}
 
@@ -154,13 +177,25 @@ export default function CourseSelectionStep({
                   value={course.id}
                   checked={selectedCourses.some((c) => c.id === course.id)}
                   onChange={() => handleCourseChange(course.id)}
-                  disabled={loading}
+                  disabled={loading || !courseEligibility[course.id]} // Disable if not eligible
                   className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500"
                 />
                 <div>
                   <h3 className="text-lg font-medium text-gray-800">
                     {course.title}
                   </h3>
+                  {!courseEligibility[course.id] && (
+                    <div>
+                      <span className="text-sm text-gray-500">
+                        (Not eligible)
+                      </span>
+                      <ul className="text-sm text-red-500 mt-2">
+                        {eligibilityReasons[course.id]?.map((reason, idx) => (
+                          <li key={idx}>{reason}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
                 </div>
               </div>
             </label>

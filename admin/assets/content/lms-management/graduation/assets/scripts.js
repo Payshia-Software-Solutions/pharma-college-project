@@ -122,7 +122,6 @@ function OpenPackageForm(packageId = 0) {
     }
     if (!validateField(price, "Please enter a valid price")) return;
     if (!validateField(parentSeatCount, "Please enter a valid parent seat count")) return;
-    if (!validateField(photoPackage, "Please enter a valid photo package count")) return;
 
     showOverlay();
 
