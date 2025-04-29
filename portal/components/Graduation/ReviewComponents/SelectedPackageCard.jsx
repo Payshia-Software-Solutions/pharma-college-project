@@ -88,7 +88,7 @@ export default function SelectedPackageCard({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
             <div className="flex items-center py-1">
               <Users className="w-4 h-4 text-gray-500 mr-2" />
-              <span className="text-gray-700">Parent Seats: </span>
+              <span className="text-gray-700">Seats: </span>
               <span className="ml-1 font-medium">
                 {inclusions.parentSeatCount || 0}
               </span>
@@ -113,7 +113,7 @@ export default function SelectedPackageCard({
                   <X className="w-4 h-4 text-red-500" />
                 )}
               </div>
-              <span className="text-gray-700">Graduation Cloth</span>
+              <span className="text-gray-700">Graduation Cloak</span>
             </div>
 
             <div className="flex items-center py-1">
@@ -124,7 +124,7 @@ export default function SelectedPackageCard({
                   <X className="w-4 h-4 text-red-500" />
                 )}
               </div>
-              <span className="text-gray-700">Photo Package</span>
+              <span className="text-gray-700">Scroll</span>
             </div>
           </div>
         </div>

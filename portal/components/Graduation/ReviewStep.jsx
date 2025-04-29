@@ -1,29 +1,19 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
-import {
-  User,
-  Book,
-  Package as PackageIcon,
-  Users,
-  Flower,
-  GraduationCap,
-  Camera,
-  DollarSign,
-  FileText,
-  Loader,
-  Upload,
-} from "lucide-react";
+import { FileText, Loader, Upload } from "lucide-react";
 import StudentInfoCard from "./ReviewComponents/StudentInfo";
 import SelectedCoursesCard from "./ReviewComponents/SelectedCoursesCard";
 import SelectedPackageCard from "./ReviewComponents/SelectedPackageCard";
+import CourierAddressCard from "./ReviewComponents/CourierAddressCard";
 
 export default function ReviewStep({
   formData,
   setIsValid,
   updateFormData,
   packages = [],
+  deliveryMethod,
+  address, // Add address prop to ReviewStep
 }) {
   const [loading] = useState(false);
   const [error] = useState(null);
@@ -58,13 +48,15 @@ export default function ReviewStep({
       formData.studentNumber &&
       formData.studentName &&
       formData.courses.length > 0 &&
-      formData.package_id &&
-      paymentSlip;
+      (deliveryMethod === "Convocation Ceremony"
+        ? formData.package_id
+        : true) &&
+      (deliveryMethod === "Convocation Ceremony" ? paymentSlip : true); // Only require payment slip for Convocation Ceremony
     setIsValid(isComplete);
     if (paymentSlip) {
       updateFormData("paymentSlip", paymentSlip);
     }
-  }, [formData, paymentSlip, setIsValid, updateFormData]);
+  }, [formData, paymentSlip, setIsValid, updateFormData, deliveryMethod]);
 
   const handleFileChange = (files) => {
     const file = files[0];
@@ -130,68 +122,78 @@ export default function ReviewStep({
       {!loading && !error && (
         <div className="space-y-6">
           <StudentInfoCard formData={formData} />
-
           <SelectedCoursesCard formData={formData} />
 
-          <SelectedPackageCard
-            formData={formData}
-            selectedPackage={selectedPackage}
-            calculateTotalAmount={calculateTotalAmount}
-            ADDITIONAL_SEAT_COST={ADDITIONAL_SEAT_COST}
-          />
+          {/* Conditionally render Payment Slip upload if "Convocation Ceremony" is selected */}
+          {deliveryMethod === "Convocation Ceremony" && (
+            <>
+              <SelectedPackageCard
+                formData={formData}
+                selectedPackage={selectedPackage}
+                calculateTotalAmount={calculateTotalAmount}
+                ADDITIONAL_SEAT_COST={ADDITIONAL_SEAT_COST}
+              />
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h3 className="text-lg font-medium text-gray-800 flex items-center">
+                  <Upload className="w-5 h-5 text-green-500 mr-2" />
+                  Payment Slip
+                </h3>
+                <div
+                  className={`mt-2 border-2 border-dashed rounded-lg p-6 text-center ${
+                    dragActive
+                      ? "border-blue-500 bg-blue-50"
+                      : "border-gray-300"
+                  }`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  {paymentSlip ? (
+                    <div>
+                      <p className="text-gray-700">
+                        Uploaded: <strong>{paymentSlip.name}</strong>
+                      </p>
+                      <button
+                        onClick={() => setPaymentSlip(null)}
+                        className="mt-2 text-red-500 hover:underline"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+                      <p className="text-gray-600">
+                        Drag and drop your payment slip here, or
+                      </p>
+                      <label className="mt-2 inline-block cursor-pointer text-blue-500 hover:underline">
+                        click to upload
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,application/pdf"
+                          onChange={handleInputChange}
+                          className="hidden"
+                        />
+                      </label>
+                      <p className="text-sm text-gray-500 mt-1">
+                        (Accepted: JPEG, PNG, PDF)
+                      </p>
+                    </div>
+                  )}
+                </div>
+                {!paymentSlip && (
+                  <p className="text-red-500 text-sm mt-2">
+                    Please upload a payment slip to proceed.
+                  </p>
+                )}
+              </div>
+            </>
+          )}
 
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="text-lg font-medium text-gray-800 flex items-center">
-              <Upload className="w-5 h-5 text-green-500 mr-2" />
-              Payment Slip
-            </h3>
-            <div
-              className={`mt-2 border-2 border-dashed rounded-lg p-6 text-center ${
-                dragActive ? "border-blue-500 bg-blue-50" : "border-gray-300"
-              }`}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-            >
-              {paymentSlip ? (
-                <div>
-                  <p className="text-gray-700">
-                    Uploaded: <strong>{paymentSlip.name}</strong>
-                  </p>
-                  <button
-                    onClick={() => setPaymentSlip(null)}
-                    className="mt-2 text-red-500 hover:underline"
-                  >
-                    Remove
-                  </button>
-                </div>
-              ) : (
-                <div>
-                  <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                  <p className="text-gray-600">
-                    Drag and drop your payment slip here, or
-                  </p>
-                  <label className="mt-2 inline-block cursor-pointer text-blue-500 hover:underline">
-                    click to upload
-                    <input
-                      type="file"
-                      accept="image/jpeg,image/png,application/pdf"
-                      onChange={handleInputChange}
-                      className="hidden"
-                    />
-                  </label>
-                  <p className="text-sm text-gray-500 mt-1">
-                    (Accepted: JPEG, PNG, PDF)
-                  </p>
-                </div>
-              )}
-            </div>
-            {!paymentSlip && (
-              <p className="text-red-500 text-sm mt-2">
-                Please upload a payment slip to proceed.
-              </p>
-            )}
-          </div>
+          {/* Conditionally render address information if "By Courier" is selected */}
+          {deliveryMethod === "By Courier" && (
+            <CourierAddressCard address={address} />
+          )}
         </div>
       )}
     </motion.div>
