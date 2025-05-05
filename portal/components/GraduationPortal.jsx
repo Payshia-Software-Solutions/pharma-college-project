@@ -56,6 +56,8 @@ export default function ConvocationPortal() {
     },
     package_id: null,
     paymentSlip: null,
+    session: null,
+    deliveryMethod: null,
   });
   const [isValid, setIsValid] = useState(false);
   const [splashLoading, setSplashLoading] = useState(true);
@@ -137,7 +139,9 @@ export default function ConvocationPortal() {
       !formData.studentName ||
       formData.courses.length === 0 || // Changed from !formData.course.id
       !formData.package_id ||
-      !formData.paymentSlip
+      !formData.paymentSlip ||
+      !formData.deliveryMethod ||
+      (formData.deliveryMethod === "Convocation Ceremony" && !formData.session)
     ) {
       alert(
         "Please complete all required fields, including the payment slip and at least one course."
@@ -158,12 +162,21 @@ export default function ConvocationPortal() {
       "additional_seats",
       formData.packageDetails.additionalSeats
     );
+    submissionData.append("deliveryMethod", formData.deliveryMethod);
+    submissionData.append("session", formData.session);
+
+    // Add address data to FormData
+    submissionData.append("address_line1", address.line1);
+    submissionData.append("address_line2", address.line2 || ""); // Optional field
+    submissionData.append("city", address.city);
+    submissionData.append("district", address.district);
+    submissionData.append("phone_number", address.phoneNumber);
 
     try {
       // Determine the correct API URL based on the delivery method
       const apiUrl =
         formData.deliveryMethod === "By Courier"
-          ? `${process.env.NEXT_PUBLIC_API_URL}/courier-registrations`
+          ? `${process.env.NEXT_PUBLIC_API_URL}/certificate-orders`
           : `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations`;
 
       // Make the appropriate API call
@@ -235,30 +248,32 @@ export default function ConvocationPortal() {
                   )}
                   {currentStep === 3 && (
                     <CertificateDeliveryStep
-                      deliveryMethod={deliveryMethod}
-                      setDeliveryMethod={setDeliveryMethod}
-                      setIsValid={setIsValid}
-                      setStepLoading={setStepLoading}
-                    />
-                  )}
-
-                  {currentStep === 4 && deliveryMethod === "By Courier" && (
-                    <AddressStep
-                      address={address}
-                      setAddress={setAddress}
-                      setIsValid={setIsValid}
-                    />
-                  )}
-
-                  {currentStep === 4 && deliveryMethod !== "By Courier" && (
-                    <PackageCustomizationStep
                       formData={formData}
-                      updatePackageData={updatePackageData}
+                      setFormData={setFormData}
                       setIsValid={setIsValid}
                       setStepLoading={setStepLoading}
-                      packages={packages}
                     />
                   )}
+                  {/* {alert(deliveryMethod)} */}
+                  {currentStep === 4 &&
+                    formData.deliveryMethod === "By Courier" && (
+                      <AddressStep
+                        address={address}
+                        setAddress={setAddress}
+                        setIsValid={setIsValid}
+                      />
+                    )}
+
+                  {currentStep === 4 &&
+                    formData.deliveryMethod !== "By Courier" && (
+                      <PackageCustomizationStep
+                        formData={formData}
+                        updatePackageData={updatePackageData}
+                        setIsValid={setIsValid}
+                        setStepLoading={setStepLoading}
+                        packages={packages}
+                      />
+                    )}
                   {currentStep === 5 && (
                     <ReviewStep
                       formData={formData}

@@ -45,18 +45,9 @@ export default function ReviewStep({
 
   useEffect(() => {
     const isComplete =
-      formData.studentNumber &&
-      formData.studentName &&
-      formData.courses.length > 0 &&
-      (deliveryMethod === "Convocation Ceremony"
-        ? formData.package_id
-        : true) &&
-      (deliveryMethod === "Convocation Ceremony" ? paymentSlip : true); // Only require payment slip for Convocation Ceremony
+      formData.deliveryMethod === "Convocation Ceremony" ? paymentSlip : true; // Only require payment slip for Convocation Ceremony
     setIsValid(isComplete);
-    if (paymentSlip) {
-      updateFormData("paymentSlip", paymentSlip);
-    }
-  }, [formData, paymentSlip, setIsValid, updateFormData, deliveryMethod]);
+  }, [formData, paymentSlip, setIsValid, updateFormData]);
 
   const handleFileChange = (files) => {
     const file = files[0];
@@ -125,7 +116,7 @@ export default function ReviewStep({
           <SelectedCoursesCard formData={formData} />
 
           {/* Conditionally render Payment Slip upload if "Convocation Ceremony" is selected */}
-          {deliveryMethod === "Convocation Ceremony" && (
+          {formData.deliveryMethod === "Convocation Ceremony" && (
             <>
               <SelectedPackageCard
                 formData={formData}
@@ -191,7 +182,7 @@ export default function ReviewStep({
           )}
 
           {/* Conditionally render address information if "By Courier" is selected */}
-          {deliveryMethod === "By Courier" && (
+          {formData.deliveryMethod === "By Courier" && (
             <CourierAddressCard address={address} />
           )}
         </div>

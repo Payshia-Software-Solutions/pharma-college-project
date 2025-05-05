@@ -3,15 +3,33 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 
 const CertificateDeliveryStep = ({
-  deliveryMethod,
-  setDeliveryMethod,
+  formData,
+  setFormData,
   setIsValid,
+  setStepLoading,
 }) => {
   useEffect(() => {
-    setIsValid(!!deliveryMethod);
-  }, [deliveryMethod, setIsValid]);
+    setIsValid(
+      !!formData.deliveryMethod &&
+        (formData.deliveryMethod !== "Convocation Ceremony" || formData.session)
+    );
+  }, [formData.deliveryMethod, formData.session, setIsValid]);
 
-  const [loading, setLoading] = useState(false);
+  const handleDeliveryMethodChange = (method) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      deliveryMethod: method,
+      session: method === "Convocation Ceremony" ? prevState.session : null, // Clear session if not Convocation Ceremony
+    }));
+  };
+
+  const handleSessionChange = (session) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      session,
+    }));
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 50 }}
@@ -23,45 +41,54 @@ const CertificateDeliveryStep = ({
       <h2 className="text-2xl font-semibold text-center mb-6">
         Select Certificate Delivery Method
       </h2>
-      {loading ? (
-        <div className="flex justify-center items-center">
-          <svg
-            className="animate-spin h-8 w-8 text-blue-600"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-          >
-            <circle cx="12" cy="12" r="10" strokeWidth="4" />
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M4 12a8 8 0 118 8"
-            />
-          </svg>
-        </div>
-      ) : (
-        <div className="flex space-x-4">
-          <button
-            onClick={() => setDeliveryMethod("Convocation Ceremony")}
-            className={`${
-              deliveryMethod === "Convocation Ceremony"
-                ? "bg-blue-600 text-white border-blue-700"
-                : "bg-gray-200 text-gray-700"
-            } py-3 px-4 rounded-lg border transition-all duration-300 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/2`}
-          >
-            Convocation Ceremony
-          </button>
-          <button
-            onClick={() => setDeliveryMethod("By Courier")}
-            className={`${
-              deliveryMethod === "By Courier"
-                ? "bg-blue-600 text-white border-blue-700"
-                : "bg-gray-200 text-gray-700"
-            } py-3 px-4 rounded-lg border transition-all duration-300 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/2`}
-          >
-            By Courier
-          </button>
+      <div className="flex space-x-4">
+        <button
+          onClick={() => handleDeliveryMethodChange("Convocation Ceremony")}
+          className={`${
+            formData.deliveryMethod === "Convocation Ceremony"
+              ? "bg-blue-600 text-white border-blue-700"
+              : "bg-gray-200 text-gray-700"
+          } py-3 px-4 rounded-lg border transition-all duration-300 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/2`}
+        >
+          Convocation Ceremony
+        </button>
+        <button
+          onClick={() => handleDeliveryMethodChange("By Courier")}
+          className={`${
+            formData.deliveryMethod === "By Courier"
+              ? "bg-blue-600 text-white border-blue-700"
+              : "bg-gray-200 text-gray-700"
+          } py-3 px-4 rounded-lg border transition-all duration-300 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/2`}
+        >
+          By Courier
+        </button>
+      </div>
+
+      {formData.deliveryMethod === "Convocation Ceremony" && (
+        <div className="mt-6 space-y-4">
+          <h3 className="text-lg font-semibold text-center">Select Session</h3>
+          <div className="flex space-x-4 justify-center">
+            <button
+              onClick={() => handleSessionChange("Session 1")}
+              className={`${
+                formData.session === "Session 1"
+                  ? "bg-blue-600 text-white border-blue-700"
+                  : "bg-gray-200 text-gray-700"
+              } py-3 px-4 rounded-lg border transition-all duration-300 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/2`}
+            >
+              Session 1
+            </button>
+            <button
+              onClick={() => handleSessionChange("Session 2")}
+              className={`${
+                formData.session === "Session 2"
+                  ? "bg-blue-600 text-white border-blue-700"
+                  : "bg-gray-200 text-gray-700"
+              } py-3 px-4 rounded-lg border transition-all duration-300 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/2`}
+            >
+              Session 2
+            </button>
+          </div>
         </div>
       )}
     </motion.div>
