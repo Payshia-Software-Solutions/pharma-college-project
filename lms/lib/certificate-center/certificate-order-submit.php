@@ -28,8 +28,6 @@ $response = $client->request('POST', $_ENV["SERVER_URL"] . '/cc_certificate_orde
         'Content-Type' => 'application/json',
     ],
     'json' => [
-
-
         'created_by' => $LoggedUser,
         'created_at' => $timeDate,
         'updated_at' => $timeDate,

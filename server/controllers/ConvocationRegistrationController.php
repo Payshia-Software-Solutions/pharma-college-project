@@ -124,6 +124,7 @@ class ConvocationRegistrationController
     // POST create a new registration (no reference_number in input)
     public function createRegistration()
     {
+        $paymentSlipPath = '';
         // Check if the request is multipart/form-data
         if ($_SERVER['CONTENT_TYPE'] && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
             $data = $_POST; // Form fields
@@ -200,6 +201,7 @@ class ConvocationRegistrationController
                 $data['hash_value'] ?? null,
                 $paymentSlipPath,
                 $data['additional_seats'] ?? 0,
+                $data['session'] ?? 1
             );
 
             http_response_code(201);
@@ -238,7 +240,10 @@ class ConvocationRegistrationController
                 $data['payment_status'] ?? 'pending',
                 $data['payment_amount'] ?? null,
                 $data['registration_status'] ?? 'pending',
-                $data['additional_seats'] ?? null,
+                $data['hash_value'] ?? null,
+                $paymentSlipPath,
+                $data['additional_seats'] ?? 0,
+                $data['session'] ?? 1
             );
             http_response_code(201);
             echo json_encode([

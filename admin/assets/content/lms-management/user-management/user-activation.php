@@ -1,9 +1,18 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+require_once '../../../../vendor/autoload.php';
+
+
+use Symfony\Component\HttpClient\HttpClient;
+
+$client = HttpClient::create();
+
+
 require_once('../../../../include/config.php');
 include '../../../../include/function-update.php';
 include '../../../../include/lms-functions.php';
-include '../../../../include/sms-API.php';
-include '../../../../include/email-API.php';
+// include '../../../../include/email-API.php';
 
 $CourseBatches = getLmsBatches();
 $cityList = GetCities($link);
@@ -64,10 +73,11 @@ $enrollKey = "ForceAdmin";
 $accountCreateResult = CreateNewLmsUser($generatedUserId, $first_name, $last_name, $generatedUserName, $password, $createUserLevel, $LoggedUser, $account_status, $civil_status, $phone_number, $email_address, $batchCode);
 
 $submitArray = json_decode($accountCreateResult);
+$tempPassword = $submitArray->tempPassword;
 $status = $submitArray->status;
 
 if ($status == 'success') {
-    $fullDetailsCreateResult = CreateNewLmsUserFullDetails($updateKey, $generatedUserId, $first_name, $last_name, $gender, $generatedUserName, $password, $createUserLevel, $LoggedUser, $account_status, $civil_status, $phone_number, $email_address, $batchCode, $address_l1, $address_l2, $city, $whatsapp_number, $nic_number, $districtId, $postalCode, $full_name, $name_with_initials, $name_on_certificate, $birth_day, $update_by);
+    $fullDetailsCreateResult = CreateNewLmsUserFullDetails(0, $generatedUserId, $first_name, $last_name, $gender, $generatedUserName, $password, $createUserLevel, $LoggedUser, $account_status, $civil_status, $phone_number, $email_address, $batchCode, $address_l1, $address_l2, $city, $whatsapp_number, $nic_number, $districtId, $postalCode, $full_name, $name_with_initials, $name_on_certificate, $birth_day, $update_by);
 }
 
 
@@ -96,12 +106,40 @@ $smsTemplate = file_get_contents($smsTemplateFilePath);
 $smsMessage = str_replace('{{FIRST_NAME}}', $first_name, $smsTemplate);
 $smsMessage = str_replace('{{COURSE_NAME}}', $CourseBatches[$studentBatch]['course_name'], $smsMessage);
 $smsMessage = str_replace('{{GENERATED_USER_NAME}}', $generatedUserName, $smsMessage);
+$smsMessage = str_replace('{{TEMP_PASSWORD}}', $tempPassword, $smsMessage);
 
 // Format phone number
 $phone_number = '0' . $phone_number;
 
 // Send SMS
-$smsResult = SentSMS($phone_number, 'Pharma C.', $smsMessage);
+// $smsResult = SentSMS($phone_number, 'Pharma C.', $smsMessage);
+
+
+try {
+    $response = $client->request('POST', 'https://api.pharmacollege.lk/send-sms', [
+        'json' => [
+            'mobile' => $phone_number,
+            'senderId' => 'Pharma C.',
+            'message' => $smsMessage,
+        ],
+    ]);
+
+    $statusCode = $response->getStatusCode();
+    $content = $response->toArray();
+
+    // Handle the response
+    $smsResult = [
+        'status' => 'success',
+        'code' => $statusCode,
+        'response' => $content,
+    ];
+} catch (\Exception $e) {
+    // Handle error
+    $smsResult = [
+        'status' => 'error',
+        'message' => $e->getMessage(),
+    ];
+}
 
 
 
@@ -123,5 +161,5 @@ $mailBodyHtml = str_replace('{{FULL_NAME}}', $fullName, $mailBodyHtml);
 $mailBodyHtml = str_replace('{{USER_NAME}}', $generatedUserName, $mailBodyHtml);
 $mailBodyHtml = str_replace('{{YEAR}}', date('Y'), $mailBodyHtml);
 
-$mailResult = sentEmail($fullName, $toAddress, $fromAddress, $mailSubject, $mailBodyHtml);
+// $mailResult = sentEmail($fullName, $toAddress, $fromAddress, $mailSubject, $mailBodyHtml);
 echo $userUpdateStatus;
