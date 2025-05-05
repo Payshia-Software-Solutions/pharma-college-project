@@ -51,22 +51,32 @@ class CertificateOrderController
     {
         $data = $_POST; // Form fields
 
-        // Required fields validation
-        if (
-            !isset($data['created_by']) ||
-            !isset($data['course_code']) ||
-            !isset($data['mobile']) ||
-            !isset($data['address_line1']) ||
-            !isset($data['address_line2']) ||
-            !isset($data['city_id']) ||
-            !isset($data['type']) ||
-            !isset($data['payment']) ||
-            !isset($data['package_id']) ||
-            !isset($data['certificate_id']) ||
-            !isset($data['certificate_status'])
-        ) {
+        $requiredFields = [
+            'created_by',
+            'course_code',
+            'mobile',
+            'address_line1',
+            'address_line2',
+            'city_id',
+            'type',
+            'payment',
+            'package_id',
+            'certificate_id',
+            'certificate_status'
+        ];
+
+        // Check for missing fields
+        $missingFields = [];
+
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field])) {
+                $missingFields[] = $field;
+            }
+        }
+
+        if (!empty($missingFields)) {
             http_response_code(400);
-            echo json_encode(['error' => 'Missing required fields']);
+            echo json_encode(['error' => 'Missing required fields', 'missing_fields' => $missingFields]);
             return;
         }
 
