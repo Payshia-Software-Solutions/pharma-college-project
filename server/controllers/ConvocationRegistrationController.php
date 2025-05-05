@@ -85,6 +85,18 @@ class ConvocationRegistrationController
         echo json_encode($registrations);
     }
 
+    public function getCountsBySessions()
+    {
+        $registrations = $this->model->getCountsBySessions();
+        echo json_encode($registrations);
+    }
+
+
+    public function getAdditionalSeatsCountsBySessions($sessionId)
+    {
+        $registrations = $this->model->getAdditionalSeatsCountsBySessions($sessionId);
+        echo json_encode($registrations);
+    }
     // GET a single registration by ID
     public function getRegistration($registration_id)
     {

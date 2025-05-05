@@ -210,7 +210,70 @@ export default function PackageCustomizationStep({
     return basePrice + additionalCost;
   };
 
-  console.log(packages);
+  const [convocation, setConvocation] = useState(null);
+  const [sessionAdditionalSeat, setsessionAdditionalSeat] = useState([]);
+
+  // Fetch convocation data and session registrations
+  useEffect(() => {
+    const fetchConvocation = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}convocations/1`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch convocation data");
+        }
+        const data = await response.json();
+        setConvocation(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setStepLoading(false);
+      }
+    };
+
+    const fetchRegistrations = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}convocation-registrations/get-additional-seats-by-sessions/${formData.session}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch session registrations");
+        }
+        const data = await response.json();
+        setsessionAdditionalSeat(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setStepLoading(false);
+      }
+    };
+
+    fetchConvocation();
+    fetchRegistrations();
+  }, [setStepLoading]);
+
+  const getRemainingSeats = () => {
+    if (!convocation || sessionAdditionalSeat.length === 0) return 0;
+
+    if (sessionAdditionalSeat.total_additional_seats) {
+      const remainingSeats = Math.max(
+        0,
+        convocation.parent_seats - sessionAdditionalSeat.total_additional_seats
+      );
+
+      // Check if remaining seats are 0 or negative
+      if (remainingSeats <= 0) {
+        setIsValid(false); // Set form validity to false when no seats are available
+      }
+
+      return remainingSeats;
+    }
+
+    // Default case if session not found
+    return convocation.parent_seats;
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 50 }}
@@ -430,6 +493,7 @@ export default function PackageCustomizationStep({
               Add extra parent seats beyond the package inclusion (Rs{" "}
               {ADDITIONAL_SEAT_COST} per seat).
             </p>
+            <p>{getRemainingSeats()}</p>
           </div>
 
           <div className="mt-6">

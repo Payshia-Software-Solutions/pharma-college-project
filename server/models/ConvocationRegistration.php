@@ -31,6 +31,20 @@ class ConvocationRegistration
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getCountsBySessions()
+    {
+        $stmt = $this->pdo->prepare("SELECT `session`, COUNT(registration_id) AS `sessionCounts` FROM convocation_registrations GROUP BY `session`");
+        $stmt->execute([]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAdditionalSeatsCountsBySessions($sessionId)
+    {
+        $stmt = $this->pdo->prepare("SELECT SUM(additional_seats) AS `total_additional_seats` FROM convocation_registrations WHERE `session` = ?");
+        $stmt->execute([$sessionId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
 
     // Create a new registration (reference_number set after insert)
     public function createRegistration($student_number, $course_id, $package_id, $event_id = null, $payment_status = 'pending', $payment_amount = null, $registration_status = 'pending', $hash_value = null, $image_path = null, $additional_seats = null, $session = 1)
