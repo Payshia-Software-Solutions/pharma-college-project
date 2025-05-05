@@ -108,8 +108,7 @@ $UserCertificatePrintStatusRoutes = require './routes/UserCertificatePrintStatus
 $ContactRoutes = require './routes/Contact/ContactRoutes.php';
 $EventsPageRoutes = require './routes/EventsPageRoutes.php';
 $EmailRoutes = require './routes/EmailRoutes.php';
-// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes  DeliveryOrdersRoutes.php
-
+$TestimonialRoutes = require './routes/TestimonialRoutes.php';
 $DistrictsRoutes = require './routes/District/DistrictsRoutes.php';
 $ECertificateRoutes = require './routes/ecertificates/ECertificateRoutes.php';
 $paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.php';
@@ -216,9 +215,12 @@ $routes = array_merge(
     $studentCourseRoutes,
     $EventsPageRoutes,
     $EmailRoutes,
+    $TestimonialRoutes,
+    $EventsPageRoutes,
     $ConvocationRegistrationRoutes,
     $PackageRoutes,
     $CertificateOrderRoutes
+
 
 );
 
