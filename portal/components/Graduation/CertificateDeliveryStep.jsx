@@ -15,6 +15,31 @@ const CertificateDeliveryStep = ({
     );
   }, [formData.deliveryMethod, formData.session, setIsValid]);
 
+  const [convocation, setConvocation] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchConvocation = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}convocations/1`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch convocation data");
+        }
+        const data = await response.json();
+        setConvocation(data);
+        console.log(convocation);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setStepLoading(false);
+      }
+    };
+
+    fetchConvocation();
+  }, []);
+
   const handleDeliveryMethodChange = (method) => {
     setFormData((prevState) => ({
       ...prevState,
@@ -67,6 +92,7 @@ const CertificateDeliveryStep = ({
       {formData.deliveryMethod === "Convocation Ceremony" && (
         <div className="mt-6 space-y-4">
           <h3 className="text-lg font-semibold text-center">Select Session</h3>
+
           <div className="flex space-x-4 justify-center">
             <button
               onClick={() => handleSessionChange("Session 1")}
@@ -76,7 +102,7 @@ const CertificateDeliveryStep = ({
                   : "bg-gray-200 text-gray-700"
               } py-3 px-4 rounded-lg border transition-all duration-300 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/2`}
             >
-              Session 1
+              Session 1<p>10.00 - 12.00</p>
             </button>
             <button
               onClick={() => handleSessionChange("Session 2")}
@@ -86,7 +112,7 @@ const CertificateDeliveryStep = ({
                   : "bg-gray-200 text-gray-700"
               } py-3 px-4 rounded-lg border transition-all duration-300 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/2`}
             >
-              Session 2
+              Session 2<p>12.30 - 2.30</p>
             </button>
           </div>
         </div>
