@@ -14,6 +14,15 @@ return [
         return $convocationRegistrationController->getRegistrations();
     },
 
+    'GET /convocation-registrations/get-counts-by-sessions/$' => function () use ($convocationRegistrationController) {
+        return $convocationRegistrationController->getCountsBySessions();
+    },
+    'GET /convocation-registrations/get-additional-seats-by-sessions/(\d+)/$' => function ($sessionId) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->getAdditionalSeatsCountsBySessions($sessionId);
+    },
+
+
+
     // GET a single registration by ID
     'GET /convocation-registrations/(\d+)/$' => function ($registration_id) use ($convocationRegistrationController) {
         return $convocationRegistrationController->getRegistration($registration_id);
