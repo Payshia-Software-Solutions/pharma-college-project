@@ -138,8 +138,10 @@ export default function ConvocationPortal() {
       !formData.studentNumber ||
       !formData.studentName ||
       formData.courses.length === 0 || // Changed from !formData.course.id
-      !formData.package_id ||
-      !formData.paymentSlip ||
+      (formData.deliveryMethod === "Convocation Ceremony" &&
+        !formData.package_id) ||
+      (formData.deliveryMethod === "Convocation Ceremony" &&
+        !formData.paymentSlip) ||
       !formData.deliveryMethod ||
       (formData.deliveryMethod === "Convocation Ceremony" && !formData.session)
     ) {
@@ -164,13 +166,18 @@ export default function ConvocationPortal() {
     );
     submissionData.append("deliveryMethod", formData.deliveryMethod);
     submissionData.append("session", formData.session);
-
-    // Add address data to FormData
     submissionData.append("address_line1", address.line1);
     submissionData.append("address_line2", address.line2 || ""); // Optional field
     submissionData.append("city", address.city);
     submissionData.append("district", address.district);
-    submissionData.append("phone_number", address.phoneNumber);
+    submissionData.append("mobile", address.phoneNumber);
+    submissionData.append("created_by", address.phoneNumber);
+    submissionData.append("type", address.phoneNumber);
+    submissionData.append("payment", address.phoneNumber);
+    submissionData.append("package_id", address.phoneNumber);
+    submissionData.append("certificate_id", address.phoneNumber);
+    submissionData.append("certificate_status", address.phoneNumber);
+    submissionData.append("course_code", address.phoneNumber);
 
     try {
       // Determine the correct API URL based on the delivery method
