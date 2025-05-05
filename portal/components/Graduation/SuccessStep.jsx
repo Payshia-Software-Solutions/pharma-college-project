@@ -1,4 +1,3 @@
-// SuccessStep.js
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Loader, FileText } from "lucide-react";
@@ -23,14 +22,17 @@ export default function SuccessStep({ referenceNumber, deliveryMethod }) {
     const fetchData = async () => {
       setLoading(true);
       try {
+        // Conditional API endpoints based on deliveryMethod
+        const registrationUrl =
+          deliveryMethod === "By Courier"
+            ? `${process.env.NEXT_PUBLIC_API_URL}/certificate-orders/${referenceNumber}`
+            : `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations/${referenceNumber}`;
+
         const [regResponse, pkgResponse, courseResponse] = await Promise.all([
-          fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations/${referenceNumber}`,
-            {
-              method: "GET",
-              headers: { "Content-Type": "application/json" },
-            }
-          ),
+          fetch(registrationUrl, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }),
           fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -73,7 +75,7 @@ export default function SuccessStep({ referenceNumber, deliveryMethod }) {
     };
 
     fetchData();
-  }, [referenceNumber]);
+  }, [referenceNumber, deliveryMethod]); // Add deliveryMethod to dependency array
 
   const selectedPackage = registration
     ? packages.find((pkg) => pkg.package_id === registration.package_id) || {
@@ -107,9 +109,12 @@ export default function SuccessStep({ referenceNumber, deliveryMethod }) {
           {error}. Unable to load receipt details.
         </p>
       )}
+
       {!loading && !error && registration && allCourses.length > 0 && (
         <>
           <RegistrationHeader registration={registration} />
+
+          {/* Conditionally render content based on the delivery method */}
           {deliveryMethod === "By Courier" ? (
             <>
               <span>
@@ -122,6 +127,8 @@ export default function SuccessStep({ referenceNumber, deliveryMethod }) {
                 Please keep this reference number safe for tracking your
                 delivery.
               </span>
+              <br />
+              <FooterNote registration={registration} />
             </>
           ) : (
             <>
