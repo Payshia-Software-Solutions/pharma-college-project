@@ -12,7 +12,7 @@ import PaymentStatus from "./SuccessComponents/PaymentStatus";
 import PaymentSlip from "./SuccessComponents/PaymentSlip";
 import FooterNote from "./SuccessComponents/FooterNote";
 
-export default function SuccessStep({ referenceNumber }) {
+export default function SuccessStep({ referenceNumber, deliveryMethod }) {
   const [registration, setRegistration] = useState(null);
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -82,7 +82,6 @@ export default function SuccessStep({ referenceNumber }) {
       }
     : { name: "Loading...", price: 0 };
 
-  console.log("allCourses in render:", allCourses);
   return (
     <motion.div
       initial={{ opacity: 0, x: 50 }}
@@ -111,15 +110,35 @@ export default function SuccessStep({ referenceNumber }) {
       {!loading && !error && registration && allCourses.length > 0 && (
         <>
           <RegistrationHeader registration={registration} />
-          <StudentDetails registration={registration} />
-          <CourseDetails registration={registration} allCourses={allCourses} />
-          <PackageDetails
-            selectedPackage={selectedPackage}
-            registration={registration}
-          />
-          <PaymentStatus registration={registration} />
-          <PaymentSlip registration={registration} />
-          <FooterNote registration={registration} />
+          {deliveryMethod === "By Courier" ? (
+            <>
+              <span>
+                Your certificate will be delivered to the address provided.
+              </span>
+              <br />
+              <span>Reference Number: {referenceNumber}</span>
+              <br />
+              <span>
+                Please keep this reference number safe for tracking your
+                delivery.
+              </span>
+            </>
+          ) : (
+            <>
+              <StudentDetails registration={registration} />
+              <CourseDetails
+                registration={registration}
+                allCourses={allCourses}
+              />
+              <PackageDetails
+                selectedPackage={selectedPackage}
+                registration={registration}
+              />
+              <PaymentStatus registration={registration} />
+              <PaymentSlip registration={registration} />
+              <FooterNote registration={registration} />
+            </>
+          )}
         </>
       )}
     </motion.div>

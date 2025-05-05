@@ -99,7 +99,7 @@ class CertificateOrderController
 
         http_response_code(201);
         echo json_encode([
-            'order_id' => $order_id,
+            'reference_number' => $order_id,
             'message' => 'Order created successfully',
         ]);
     }
