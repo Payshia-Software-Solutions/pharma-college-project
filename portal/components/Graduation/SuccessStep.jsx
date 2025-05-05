@@ -112,8 +112,6 @@ export default function SuccessStep({ referenceNumber, deliveryMethod }) {
 
       {!loading && !error && registration && allCourses.length > 0 && (
         <>
-          <RegistrationHeader registration={registration} />
-
           {/* Conditionally render content based on the delivery method */}
           {deliveryMethod === "By Courier" ? (
             <>
@@ -132,6 +130,7 @@ export default function SuccessStep({ referenceNumber, deliveryMethod }) {
             </>
           ) : (
             <>
+              <RegistrationHeader registration={registration} />
               <StudentDetails registration={registration} />
               <CourseDetails
                 registration={registration}

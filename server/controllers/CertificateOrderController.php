@@ -53,7 +53,6 @@ class CertificateOrderController
 
         $requiredFields = [
             'created_by',
-            'course_code',
             'mobile',
             'address_line1',
             'address_line2',
@@ -80,10 +79,16 @@ class CertificateOrderController
             return;
         }
 
+        // Extract course_ids directly from $_POST['course_id']
+        $courseIds = isset($data['course_id']) && is_array($data['course_id']) ? $data['course_id'] : [];
+        // Convert course_ids array to a comma-separated string
+        $courseIdsString = implode(',', $courseIds);
+
+
         // Create certificate order in the database
         $order_id = $this->model->createOrder(
             $data['created_by'],
-            $data['course_code'],
+            $courseIdsString,
             $data['mobile'],
             $data['address_line1'],
             $data['address_line2'],
