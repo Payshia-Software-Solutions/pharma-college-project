@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Loader, FileText } from "lucide-react";
+import { CheckCircle, Truck, Copy, Calendar } from "lucide-react";
 
 // Import other components
 import RegistrationHeader from "./SuccessComponents/RegistrationHeader";
@@ -10,6 +11,7 @@ import PackageDetails from "./SuccessComponents/PackageDetails";
 import PaymentStatus from "./SuccessComponents/PaymentStatus";
 import PaymentSlip from "./SuccessComponents/PaymentSlip";
 import FooterNote from "./SuccessComponents/FooterNote";
+import CertificateConfirmation from "./SuccessComponents/CertificateConfirmation";
 
 export default function SuccessStep({ referenceNumber, deliveryMethod }) {
   const [registration, setRegistration] = useState(null);
@@ -115,18 +117,7 @@ export default function SuccessStep({ referenceNumber, deliveryMethod }) {
           {/* Conditionally render content based on the delivery method */}
           {deliveryMethod === "By Courier" ? (
             <>
-              <span>
-                Your certificate will be delivered to the address provided.
-              </span>
-              <br />
-              <span>Reference Number: {referenceNumber}</span>
-              <br />
-              <span>
-                Please keep this reference number safe for tracking your
-                delivery.
-              </span>
-              <br />
-              <FooterNote registration={registration} />
+              <CertificateConfirmation referenceNumber={referenceNumber} />
             </>
           ) : (
             <>

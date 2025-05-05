@@ -18,13 +18,13 @@ class CertificateOrder
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     // Create a new certificate order
-    public function createOrder($created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active)
+    public function createOrder($created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active)
     {
         $stmt = $this->pdo->prepare("
-            INSERT INTO cc_certificate_order (created_by, course_code, mobile, address_line1, address_line2, city_id, type, payment, package_id, certificate_id, certificate_status, cod_amount, is_active)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO cc_certificate_order (created_by, course_code, mobile, address_line1, address_line2, city_id,district, type, payment, package_id, certificate_id, certificate_status, cod_amount, is_active)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
         ");
-        $stmt->execute([$created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active]);
+        $stmt->execute([$created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active]);
 
         $order_id = $this->pdo->lastInsertId();
         return $order_id;
@@ -49,14 +49,14 @@ class CertificateOrder
     }
 
     // Update a certificate order
-    public function updateOrder($order_id, $created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active)
+    public function updateOrder($order_id, $created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active)
     {
         $stmt = $this->pdo->prepare("
             UPDATE cc_certificate_order 
-            SET created_by = ?, course_code = ?, mobile = ?, address_line1 = ?, address_line2 = ?, city_id = ?, type = ?, payment = ?, package_id = ?, certificate_id = ?, certificate_status = ?, cod_amount = ?, is_active = ?
+            SET created_by = ?, course_code = ?, mobile = ?, address_line1 = ?, address_line2 = ?, city_id = ?,district=?, type = ?, payment = ?, package_id = ?, certificate_id = ?, certificate_status = ?, cod_amount = ?, is_active = ?
             WHERE id = ?
         ");
-        return $stmt->execute([$created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active, $order_id]);
+        return $stmt->execute([$created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active, $order_id]);
     }
 
     // Delete a certificate order

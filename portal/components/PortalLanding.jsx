@@ -77,14 +77,7 @@ const PortalLanding = () => {
             description="Register now for Pharma Achievers graduation"
             gradient="from-brand to-green-400"
           />
-          {/* Certificate Card */}
-          <PortalCard
-            href="/certification"
-            icon={<ShieldCheck className="w-8 h-8 text-white" />}
-            title="Certificate"
-            description="Order now your Pharma Achievers certificate"
-            gradient="from-brand to-green-400"
-          />
+
           {/* Certificate Card */}
           <PortalCard
             href="/contact"
