@@ -171,13 +171,12 @@ export default function ConvocationPortal() {
     submissionData.append("city_id", address.city);
     submissionData.append("district", address.district);
     submissionData.append("mobile", address.phoneNumber);
-    submissionData.append("created_by", address.phoneNumber);
-    submissionData.append("type", address.phoneNumber);
-    submissionData.append("payment", address.phoneNumber);
-    submissionData.append("package_id", address.phoneNumber);
-    submissionData.append("certificate_id", address.phoneNumber);
-    submissionData.append("certificate_status", address.phoneNumber);
-    submissionData.append("course_code", address.phoneNumber);
+    submissionData.append("created_by", formData.studentNumber);
+    submissionData.append("type", 1);
+    submissionData.append("payment", 0);
+    submissionData.append("package_id", 0);
+    submissionData.append("certificate_id", 0);
+    submissionData.append("certificate_status", "Pending");
 
     try {
       // Determine the correct API URL based on the delivery method
