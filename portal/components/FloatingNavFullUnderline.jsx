@@ -28,12 +28,6 @@ const FloatingNavFullUnderline = () => {
       label: "Graduation",
       link: "/graduation",
     },
-    {
-      id: "certification",
-      icon: ShieldCheck,
-      label: "Certificate",
-      link: "/certification",
-    },
   ];
 
   return (

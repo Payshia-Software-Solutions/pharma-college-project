@@ -22,9 +22,9 @@ import { User, Book, Package, FileText, GraduationCap } from "lucide-react";
 const steps = [
   { id: 1, title: "Student Info", icon: User },
   { id: 2, title: "Course", icon: Book },
-  { id: 3, title: "Certificate Delivery", icon: GraduationCap }, // New step
+  { id: 3, title: "Delivery", icon: GraduationCap }, // New step
   { id: 4, title: "Package", icon: Package },
-  { id: 5, title: "Review & Submit", icon: FileText },
+  { id: 5, title: "Review", icon: FileText },
 ];
 
 export default function ConvocationPortal() {
@@ -134,20 +134,46 @@ export default function ConvocationPortal() {
     setIsLoading(true);
     setShowSuccess(false);
 
-    if (
-      !formData.studentNumber ||
-      !formData.studentName ||
-      formData.courses.length === 0 || // Changed from !formData.course.id
-      (formData.deliveryMethod === "Convocation Ceremony" &&
-        !formData.package_id) ||
-      (formData.deliveryMethod === "Convocation Ceremony" &&
-        !formData.paymentSlip) ||
-      !formData.deliveryMethod ||
-      (formData.deliveryMethod === "Convocation Ceremony" && !formData.session)
-    ) {
-      alert(
-        "Please complete all required fields, including the payment slip and at least one course."
-      );
+    if (!formData.studentNumber) {
+      alert("Please enter the student number.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!formData.studentName) {
+      alert("Please enter the student name.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (formData.courses.length === 0) {
+      alert("Please select at least one course.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (formData.deliveryMethod === "Convocation Ceremony") {
+      if (!formData.package_id) {
+        alert("Please select a package for the convocation ceremony.");
+        setIsLoading(false);
+        return;
+      }
+
+      if (!formData.paymentSlip) {
+        alert("Please upload the payment slip for the convocation ceremony.");
+        setIsLoading(false);
+        return;
+      }
+
+      if (!formData.session) {
+        alert("Please select a session for the convocation ceremony.");
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    if (!formData.deliveryMethod) {
+      alert("Please select a delivery method.");
       setIsLoading(false);
       return;
     }
