@@ -168,7 +168,7 @@ export default function ConvocationPortal() {
     submissionData.append("session", formData.session);
     submissionData.append("address_line1", address.line1);
     submissionData.append("address_line2", address.line2 || ""); // Optional field
-    submissionData.append("city", address.city);
+    submissionData.append("city_id", address.city);
     submissionData.append("district", address.district);
     submissionData.append("mobile", address.phoneNumber);
     submissionData.append("created_by", address.phoneNumber);
@@ -234,7 +234,10 @@ export default function ConvocationPortal() {
           <main className="flex-1 p-4">
             <AnimatePresence mode="wait">
               {showSuccess ? (
-                <SuccessStep referenceNumber={referenceNumber} />
+                <SuccessStep
+                  referenceNumber={referenceNumber}
+                  deliveryMethod={formData.deliveryMethod}
+                />
               ) : (
                 <>
                   {currentStep === 1 && (
