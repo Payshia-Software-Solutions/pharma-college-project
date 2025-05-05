@@ -49,97 +49,49 @@ class CertificateOrderController
     // POST create a new certificate order (no id in input)
     public function createOrder()
     {
-        $paymentReceiptPath = '';
-        // Check if the request is multipart/form-data
-        if ($_SERVER['CONTENT_TYPE'] && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
-            $data = $_POST; // Form fields
-            $file = $_FILES['payment_receipt'] ?? null; // Uploaded file (matches frontend FormData key)
+        $data = $_POST; // Form fields
 
-            // Required fields validation
-            if (
-                !isset($data['created_by']) ||
-                !isset($data['course_code']) ||
-                !isset($data['mobile']) ||
-                !isset($data['address_line1']) ||
-                !isset($data['address_line2']) ||
-                !isset($data['city_id']) ||
-                !isset($data['type']) ||
-                !isset($data['payment']) ||
-                !isset($data['package_id']) ||
-                !isset($data['certificate_id']) ||
-                !isset($data['certificate_status'])
-            ) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Missing required fields']);
-                return;
-            }
-
-            // Create certificate order in the database
-            $order_id = $this->model->createOrder(
-                $data['created_by'],
-                $data['course_code'],
-                $data['mobile'],
-                $data['address_line1'],
-                $data['address_line2'],
-                $data['city_id'],
-                $data['type'],
-                $data['payment'],
-                $data['package_id'],
-                $data['certificate_id'],
-                $data['certificate_status'],
-                $data['cod_amount'] ?? 0,
-                $data['is_active'] ?? 1
-            );
-
-            http_response_code(201);
-            echo json_encode([
-                'order_id' => $order_id,
-                'message' => 'Order created successfully',
-                'payment_receipt_path' => $paymentReceiptPath
-            ]);
-        } else {
-            // Fallback for JSON (if no file is sent)
-            $data = json_decode(file_get_contents('php://input'), true);
-
-            if (
-                !isset($data['created_by']) ||
-                !isset($data['course_code']) ||
-                !isset($data['mobile']) ||
-                !isset($data['address_line1']) ||
-                !isset($data['address_line2']) ||
-                !isset($data['city_id']) ||
-                !isset($data['type']) ||
-                !isset($data['payment']) ||
-                !isset($data['package_id']) ||
-                !isset($data['certificate_id']) ||
-                !isset($data['certificate_status'])
-            ) {
-                http_response_code(400);
-                echo json_encode(['error' => 'Missing required fields']);
-                return;
-            }
-
-            $order_id = $this->model->createOrder(
-                $data['created_by'],
-                $data['course_code'],
-                $data['mobile'],
-                $data['address_line1'],
-                $data['address_line2'],
-                $data['city_id'],
-                $data['type'],
-                $data['payment'],
-                $data['package_id'],
-                $data['certificate_id'],
-                $data['certificate_status'],
-                $data['cod_amount'] ?? 0,
-                $data['is_active'] ?? 1
-            );
-            http_response_code(201);
-            echo json_encode([
-                'order_id' => $order_id,
-                'message' => 'Order created successfully'
-            ]);
+        // Required fields validation
+        if (
+            !isset($data['created_by']) ||
+            !isset($data['course_code']) ||
+            !isset($data['mobile']) ||
+            !isset($data['address_line1']) ||
+            !isset($data['address_line2']) ||
+            !isset($data['city_id']) ||
+            !isset($data['type']) ||
+            !isset($data['payment']) ||
+            !isset($data['package_id']) ||
+            !isset($data['certificate_id']) ||
+            !isset($data['certificate_status'])
+        ) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required fields']);
+            return;
         }
+
+        // Create certificate order in the database
+        $order_id = $this->model->createOrder(
+            $data['created_by'],
+            $data['course_code'],
+            $data['mobile'],
+            $data['address_line1'],
+            $data['address_line2'],
+            $data['city_id'],
+            $data['type'],
+            $data['payment'],
+            $data['package_id'],
+            $data['certificate_id'],
+            $data['certificate_status'],
+            $data['cod_amount'] ?? 0,
+            $data['is_active'] ?? 1
+        );
+
+        http_response_code(201);
+        echo json_encode([
+            'order_id' => $order_id,
+            'message' => 'Order created successfully',
+        ]);
     }
 
     // PUT update a certificate order
