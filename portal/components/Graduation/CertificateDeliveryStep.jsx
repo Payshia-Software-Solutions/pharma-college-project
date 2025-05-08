@@ -148,7 +148,7 @@ const CertificateDeliveryStep = ({
         <div className="mt-6 space-y-4">
           <h3 className="text-lg font-semibold text-center">Select Session</h3>
 
-          <div className="flex space-x-4 justify-center">
+          <div className="flex flex-col md:flex-row md:space-x-4 justify-center gap-4 md:gap-0">
             <button
               onClick={() => handleSessionChange(1)}
               disabled={getRemainingSeats(1) === 0} // Disable button if no seats left
@@ -156,7 +156,7 @@ const CertificateDeliveryStep = ({
                 formData.session === 1
                   ? "bg-blue-600 text-white border-blue-700"
                   : "bg-gray-200 text-gray-700"
-              } py-3 px-4 rounded-lg border transition-all duration-300 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/2 ${
+              } py-3 px-4 rounded-lg border transition-all duration-300 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-1/2 ${
                 getRemainingSeats(1) === 0
                   ? "cursor-not-allowed opacity-50"
                   : ""
@@ -165,6 +165,7 @@ const CertificateDeliveryStep = ({
               Session 1<p>Time: 10.00 - 12.00</p>
               <p>Remaining: {getRemainingSeats(1)}</p>
             </button>
+
             <button
               onClick={() => handleSessionChange(2)}
               disabled={getRemainingSeats(2) === 0} // Disable button if no seats left
@@ -172,7 +173,7 @@ const CertificateDeliveryStep = ({
                 formData.session === 2
                   ? "bg-blue-600 text-white border-blue-700"
                   : "bg-gray-200 text-gray-700"
-              } py-3 px-4 rounded-lg border transition-all duration-300 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-1/2 ${
+              } py-3 px-4 rounded-lg border transition-all duration-300 hover:bg-blue-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-full md:w-1/2 ${
                 getRemainingSeats(2) === 0
                   ? "cursor-not-allowed opacity-50"
                   : ""

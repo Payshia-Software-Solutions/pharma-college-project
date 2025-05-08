@@ -349,7 +349,11 @@ export default function PackageCustomizationStep({
                       {/* Student Seats Card */}
                       <div className="bg-gray-50 p-4 rounded-lg text-center shadow-sm">
                         <div className="text-gray-600 mb-2 flex justify-center">
-                          <ChairIcon />
+                          <Image
+                            src={`/icons/chair.png`}
+                            width={40}
+                            height={40}
+                          />
                         </div>
                         <h3 className="font-medium text-gray-700">
                           Student Seat
@@ -374,7 +378,11 @@ export default function PackageCustomizationStep({
                               : "text-gray-400"
                           } mb-2 flex justify-center`}
                         >
-                          <StarIcon />
+                          <Image
+                            src={`/icons/necklace.png`}
+                            width={40}
+                            height={40}
+                          />
                         </div>
                         <h3 className="font-medium text-gray-700">Garland</h3>
                         <p
@@ -403,10 +411,14 @@ export default function PackageCustomizationStep({
                               : "text-gray-400"
                           } mb-2 flex justify-center`}
                         >
-                          <GraduationCapIcon />
+                          <Image
+                            src={`/icons/graduation-hat.png`}
+                            width={40}
+                            height={40}
+                          />
                         </div>
                         <h3 className="font-medium text-gray-700">
-                          Graduation Cloak
+                          Graduation Hat
                         </h3>
                         <p
                           className={`text-sm font-medium ${
@@ -436,7 +448,11 @@ export default function PackageCustomizationStep({
                               : "text-gray-400"
                           } mb-2 flex justify-center`}
                         >
-                          <ScrollIcon />
+                          <Image
+                            src={`/icons/curled.png`}
+                            width={40}
+                            height={40}
+                          />
                         </div>
                         <h3 className="font-medium text-gray-700">Scroll</h3>
                         <p
@@ -467,19 +483,25 @@ export default function PackageCustomizationStep({
               Additional Seats
             </label>
             <div className="mt-2 flex space-x-4">
-              {[1, 2, 3, 4].map((seats) => (
-                <button
-                  key={seats}
-                  onClick={() => handleAdditionalSeatsChange(seats)} // Call with seat value
-                  className={`px-4 py-2 rounded-md text-white font-semibold ${
-                    additionalSeats === seats
-                      ? "bg-blue-500 hover:bg-blue-600"
-                      : "bg-gray-300 hover:bg-gray-400"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50`}
-                >
-                  {seats}
-                </button>
-              ))}
+              {[1, 2, 3, 4].map((seats) => {
+                const remainingSeats = getRemainingSeats(); // Get remaining seats or balance
+                const isDisabled = remainingSeats < seats; // Disable if remaining balance is less than the seats
+
+                return (
+                  <button
+                    key={seats}
+                    onClick={() => handleAdditionalSeatsChange(seats)} // Call with seat value
+                    className={`px-4 py-2 rounded-md text-white font-semibold ${
+                      additionalSeats === seats
+                        ? "bg-blue-500 hover:bg-blue-600"
+                        : "bg-gray-300 hover:bg-gray-400"
+                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50`}
+                    disabled={isDisabled} // Disable button if condition met
+                  >
+                    {seats}
+                  </button>
+                );
+              })}
 
               {/* Clear Button */}
               <button
@@ -493,7 +515,9 @@ export default function PackageCustomizationStep({
               Add extra parent seats beyond the package inclusion (Rs{" "}
               {ADDITIONAL_SEAT_COST} per seat).
             </p>
-            <p>{getRemainingSeats()}</p>
+            <p className="text-gray-600 border-t mt-2 pt-2">
+              Remaining Seats: {getRemainingSeats()}
+            </p>
           </div>
 
           <div className="mt-6">
