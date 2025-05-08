@@ -571,6 +571,9 @@ class CcEvaluation extends DeliveryOrder
                             case 7: // Pharmer Hunter Pro
                                 $criteriaResult['currentValue'] = (int) ($row['pharma_hunter_pro']['results']['correctCount'] ?? 0);
                                 break;
+                            case 8: // Ceylon Pharmacy Advanced
+                                $criteriaResult['currentValue'] = (int) ($row['ceylon_pharmacy']['results']['correctCount'] ?? 0);
+                                break;
                         }
 
                         if ((int) $criteria['id'] === 6) {
