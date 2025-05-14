@@ -118,7 +118,7 @@ export default function PackageCustomizationStep({
             inclusions: {
               parentSeatCount: pkg.parent_seat_count,
               garland: !!pkg.garland,
-              graduationCloth: !!pkg.graduation_cloth,
+              graduationCloth: pkg.graduation_cloth === "1",
               photoPackage: !!pkg.photo_package,
             },
             isActive: !!pkg.is_active,
@@ -397,6 +397,7 @@ export default function PackageCustomizationStep({
                       </div>
 
                       {/* Graduation Cloak Card */}
+                      {console.log(pkg.inclusions.graduationCloth)}
                       <div
                         className={`p-4 rounded-lg text-center shadow-sm ${
                           pkg.inclusions.graduationCloth

@@ -64,7 +64,6 @@ const CertificateDeliveryStep = ({
         0,
         convocation.student_seats - session.sessionCounts
       );
-
       return remainingSeats;
     }
 
@@ -76,6 +75,8 @@ const CertificateDeliveryStep = ({
   useEffect(() => {
     const remainingSeatsSession1 = getRemainingSeats(1);
     const remainingSeatsSession2 = getRemainingSeats(2);
+
+    console.log(remainingSeatsSession1);
 
     // If both sessions are full, set form as invalid
     if (remainingSeatsSession1 === 0 && remainingSeatsSession2 === 0) {

@@ -215,9 +215,9 @@ class ConvocationRegistrationController
                 $data['additional_seats'] ?? 0,
                 $data['session'] ?? 1
             );
-
             http_response_code(201);
             echo json_encode([
+                'package_id' => $data['package_id'],
                 'registration_id' => $registration_id,
                 'reference_number' => $registration_id,
                 'message' => 'Registration created successfully',
