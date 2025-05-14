@@ -199,8 +199,7 @@ export default function ConvocationPortal() {
     submissionData.append("mobile", address.phoneNumber);
     submissionData.append("created_by", formData.studentNumber);
     submissionData.append("type", 1);
-    submissionData.append("payment", 0);
-    submissionData.append("package_id", 0);
+    submissionData.append("payment_amount", 0);
     submissionData.append("certificate_id", 0);
     submissionData.append("certificate_status", "Pending");
 
