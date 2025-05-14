@@ -129,7 +129,8 @@ $packageBookings = $response->toArray();
                                         ?>
                                         <span class="badge <?= $badgeClass ?>"><?= ucfirst($status) ?></span>
                                     </td>
-                                    <td><button class="btn btn-dark btn-sm">View</button></td>
+                                    <td><button type="button" onclick="OpenBooking('<?= $booking['reference_number'] ?>')"
+                                            class="btn btn-dark btn-sm">View</button></td>
                                 </tr>
                             <?php
                             }

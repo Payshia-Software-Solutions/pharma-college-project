@@ -59,7 +59,6 @@ class CertificateOrderController
             'city_id',
             'district',
             'type',
-            'payment',
             'package_id',
             'certificate_id',
             'certificate_status'

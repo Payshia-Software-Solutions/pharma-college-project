@@ -73,7 +73,7 @@ const CertificateDeliveryStep = ({
 
   // Update form validity based on both sessions' availability
   useEffect(() => {
-    const remainingSeatsSession1 = getRemainingSeats("1");
+    const remainingSeatsSession1 = getRemainingSeats(1);
     const remainingSeatsSession2 = getRemainingSeats(2);
 
     console.log(remainingSeatsSession1);
