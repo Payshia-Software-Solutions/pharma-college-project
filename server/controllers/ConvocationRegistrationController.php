@@ -142,6 +142,8 @@ class ConvocationRegistrationController
             $data = $_POST; // Form fields
             $file = $_FILES['payment_slip'] ?? null; // Uploaded file (matches frontend FormData key)
 
+            var_dump($data);
+
             // Extract course_ids directly from $_POST['course_id']
             $courseIds = isset($data['course_id']) && is_array($data['course_id']) ? $data['course_id'] : [];
 
