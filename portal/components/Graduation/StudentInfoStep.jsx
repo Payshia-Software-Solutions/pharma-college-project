@@ -215,9 +215,11 @@ export default function StudentInfoStep({
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <div>
-                    <div className="text-sm text-gray-500">Full Name</div>
+                    <div className="text-sm text-gray-500">
+                      Name on Certificate
+                    </div>
                     <div className="text-gray-700 font-medium">
-                      {studentInfo.first_name} {studentInfo.last_name}
+                      {studentInfo.name_on_certificate}
                     </div>
                   </div>
                 </div>
