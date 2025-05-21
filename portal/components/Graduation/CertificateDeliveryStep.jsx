@@ -54,21 +54,31 @@ const CertificateDeliveryStep = ({
 
   const getRemainingSeats = (sessionId) => {
     if (!convocation || sessionRegistrations.length === 0) return 0;
+    console.log(convocation.student_seats); // should be a number like 100
+    console.log(convocation); // should be a number like 80
 
     const session = sessionRegistrations.find(
       (item) => item.session == sessionId
     );
+    0;
+
+    // Determine total seats based on session ID
+    let totalSeats = 0;
+    if (sessionId == 1) {
+      totalSeats = convocation.student_seats;
+    } else if (sessionId == 2) {
+      totalSeats = convocation.session_2;
+    } else {
+      return 0; // Invalid session ID
+    }
 
     if (session) {
-      const remainingSeats = Math.max(
-        0,
-        convocation.student_seats - session.sessionCounts
-      );
+      const remainingSeats = Math.max(0, totalSeats - session.sessionCounts);
       return remainingSeats;
     }
 
     // Default case if session not found
-    return convocation.student_seats;
+    return totalSeats;
   };
 
   // Update form validity based on both sessions' availability
