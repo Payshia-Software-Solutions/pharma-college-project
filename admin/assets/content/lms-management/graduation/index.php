@@ -2,6 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 include '../../../../include/function-update.php';
+include '../../../../include/lms-functions.php';
 require __DIR__ . '/../../../../vendor/autoload.php';
 define('PARENT_SEAT_RATE', 500); // example value
 
@@ -69,11 +70,9 @@ function filterEnrollmentsByStudentId($enrollments, $studentId)
 
 function formatStudentId($rawId)
 {
-    // Example: PA19839 -> PA/19/839
     return substr($rawId, 0, 2) . '/' . substr($rawId, 2, 2) . '/' . substr($rawId, 4);
 }
 $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submissions-group-by-student')->toArray();
-
 
 
 ?>
@@ -128,9 +127,11 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
                             <tr>
                                 <th scope="col">Reference #</th>
                                 <th scope="col">Student Number</th>
+                                <th scope="col">Course Balance</th>
                                 <th scope="col">Session</th>
                                 <th scope="col">Courses</th>
-                                <th scope="col">Batches</th>
+                                <th scope="col">Certificate</th>
+                                <th scope="col">Advanced</th>
                                 <th scope="col">Pacakge</th>
                                 <th scope="col">Additional Seats</th>
                                 <th scope="col">Due Payment</th>
@@ -148,6 +149,8 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
                             foreach ($packageBookings as $booking) {
                                 // Get the hash value from the current booking
                                 $hashValue = $booking['hash_value'];
+                                $studentnumber = trim($booking['student_number']);
+                                $paymentInfo = GetStudentBalance($studentnumber);
 
                                 $duplicate_error_message = "";
                                 // Check if this hash value is already in the seen array
@@ -183,6 +186,8 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
                                 }
 
                                 $course_ids = explode(',', $booking['course_id']);
+                                $orderedParentIds = array_map('trim', explode(',', $booking['course_id']));
+
                                 $dueAmount = $indexed_packages[$booking['package_id']]['price'] + ($booking['additional_seats'] * PARENT_SEAT_RATE);
 
                                 $userCourseEnrollments = filterEnrollmentsByStudentId($studentEnrollments, formatStudentId($booking['student_number']));
@@ -192,6 +197,7 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
 
                                     </td>
                                     <td><?= $booking['student_number'] ?></td>
+                                    <td><?= number_format($paymentInfo['studentBalance'], 2) ?></td>
                                     <td><?= $booking['session'] ?></td>
                                     <td><?php
                                         foreach ($course_ids as $id) {
@@ -203,27 +209,42 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
                                             }
                                         }
                                         ?>
-                                    </td>
-                                    <td><?php
-                                        $studentSubmissions = $allStudentSubmissions[$booking['student_number']] ?? [];
-                                        foreach ($userCourseEnrollments as $courseEnrollment) {
-                                            $courseCode = $courseEnrollment['course_code'];
-                                            $assignments = $allAssignments[$courseCode] ?? [];
+                                    </td><?php
+                                            $studentSubmissions = $allStudentSubmissions[$booking['student_number']] ?? [];
+                                            $courseGrades = [];
 
-                                            $totalMarks = 0;
-                                            foreach ($assignments as $assignment) {
-                                                $aid = $assignment['assignment_id'];
-                                                if (isset($studentSubmissions[$aid])) {
-                                                    $totalMarks += $studentSubmissions[$aid]['grade'];
+                                            foreach ($userCourseEnrollments as $courseEnrollment) {
+                                                $courseCode = $courseEnrollment['course_code'];
+                                                $parentCourseId = $batchList[$courseCode]['parent_course_id'];
+                                                $assignments = $allAssignments[$courseCode] ?? [];
+
+                                                $totalMarks = 0;
+                                                foreach ($assignments as $assignment) {
+                                                    $aid = $assignment['assignment_id'];
+                                                    if (isset($studentSubmissions[$aid])) {
+                                                        $totalMarks += $studentSubmissions[$aid]['grade'];
+                                                    }
                                                 }
+
+                                                $assignmentCount = count($assignments);
+                                                $avgMark = $assignmentCount > 0 ? $totalMarks / $assignmentCount : 0;
+
+                                                if ($avgMark == 0) {
+                                                    continue;
+                                                }
+
+                                                // Add result to array
+                                                $courseGrades[$parentCourseId] = [
+                                                    'course_code' => $courseCode,
+                                                    'avg_grade' => round($avgMark, 2),
+                                                ];
                                             }
-                                            $assignmentCount = count($assignments);
-                                            $avgMark = $assignmentCount > 0 ? $totalMarks / $assignmentCount : 0;
-
-                                            echo number_format($avgMark, 2);
-                                        }
-
-                                        ?>
+                                            ?>
+                                    <td>
+                                        <?= isset($courseGrades[1]) ? number_format($courseGrades[1]['avg_grade'], 2) : '-' ?>
+                                    </td>
+                                    <td>
+                                        <?= isset($courseGrades[2]) ? number_format($courseGrades[2]['avg_grade'], 2) : '-' ?>
                                     </td>
                                     <td><?= $indexed_packages[$booking['package_id']]['package_name']; ?></td>
                                     <td><?= $booking['additional_seats'] ?></td>
