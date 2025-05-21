@@ -111,4 +111,25 @@ class ConvocationRegistration
         $stmt = $this->pdo->prepare("DELETE FROM convocation_registrations WHERE registration_id = ?");
         return $stmt->execute([$registration_id]);
     }
+
+    // Update only the registration_status of a registration
+    public function updateRegistrationStatus($reference_number, $registration_status)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET registration_status = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$registration_status, $reference_number]);
+    }
+
+    public function updatePayment($reference_number, $payment_status, $payment_amount)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET payment_status = ?, payment_amount = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$payment_status, $payment_amount, $reference_number]);
+    }
 }

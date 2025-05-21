@@ -38,10 +38,7 @@ $selectedPackage = $response->toArray();
 $course_ids = explode(',', $packageBooking['course_id']);
 $dueAmount = $selectedPackage['price'] + ($packageBooking['additional_seats'] * PARENT_SEAT_RATE);
 
-$studentEnrollments = $client->request('GET', $_ENV['SERVER_URL'] . '/student-courses/student/' . $packageBooking['student_number'])->toArray();
-$allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submissions-group-by-student')->toArray();
-
-var_dump($studentEnrollments);
+$userInfo = $client->request('GET', $_ENV['SERVER_URL'] . '/get-student-full-info?loggedUser=' . $packageBooking['student_number'])->toArray()
 ?>
 <div class="loading-popup-content-right <?= htmlspecialchars($userTheme) ?>">
     <div class="row">
@@ -110,6 +107,14 @@ var_dump($studentEnrollments);
                 <div class="col-3">
                     <div class="card">
                         <div class="card-body">
+                            <p class="mb-0">Course Balance</p>
+                            <h5><?= number_format($userInfo['studentBalance']['studentBalance'], 2) ?></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
                             <p class="mb-0">Payble Amount</p>
                             <h5><?= number_format($dueAmount, 2) ?></h5>
                         </div>
@@ -125,6 +130,59 @@ var_dump($studentEnrollments);
                 </div>
             </div>
 
+            <div class="row mt-2 g-2">
+                <div class="col-12">
+                    <h5 class="table-title">Enrollments</h5>
+                </div>
+                <?php foreach ($userInfo['studentEnrollments'] as $enrollment) { ?>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <p class="mb-0"><?= $enrollment['course_code'] ?> | <?= $enrollment['batch_name'] ?></p>
+
+                                <div class="row g-2">
+                                    <?php
+                                    $totalAssingmentMarks = 0;
+                                    $courseAssignments = $enrollment['assignment_grades']['assignments'];
+                                    foreach ($courseAssignments as $assignment) {
+                                        $assignmentGrade = $assignment['grade'];
+                                        $totalAssingmentMarks += $assignmentGrade;
+                                    ?>
+                                        <div class="col-3">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <p class="mb-0"><?= $assignment['assignment_name'] ?></p>
+                                                    <h5><?= number_format($assignmentGrade, 2) ?>
+                                                    </h5>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <?php
+                                    }
+
+                                    $avgMarks = (count($courseAssignments) != 0) ? $totalAssingmentMarks / count($courseAssignments) : 0;
+                                    ?>
+                                    <div class="col-3">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <p class="mb-0">Average</p>
+                                                <h5><?= number_format($avgMarks, 2) ?>
+                                                </h5>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php
+                }
+                ?>
+
+
+            </div>
+
 
         </div>
         <div class="col-4">
@@ -136,7 +194,9 @@ var_dump($studentEnrollments);
                             <input type="text" class="form-control text-center" placeholder="Payment Amount"
                                 name="paid_amount" id="paid_amount">
 
-                            <button class="w-100 btn btn-dark mt-2" type="button">Update & Approve</button>
+                            <button onclick="UpdateConvocationPayment('<?= $referenceNumber ?>') "
+                                class=" w-100 btn btn-dark mt-2" type="button">Update &
+                                Approve</button>
                         </div>
                     </div>
                 </div>
@@ -145,11 +205,22 @@ var_dump($studentEnrollments);
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
+                            <?php
+                            $filePath = $packageBooking['image_path'];
+                            $fullUrl = "https://content-provider.pharmacollege.lk" . $filePath;
+                            $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
 
-                            <img class="w-100"
-                                src="https://content-provider.pharmacollege.lk<?= $packageBooking['image_path'] ?>"
-                                alt="Payment Sip">
-
+                            if (in_array($fileExtension, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
+                                // Show image
+                                echo '<img class="w-100" src="' . $fullUrl . '" alt="Payment Sip">';
+                            } elseif ($fileExtension === 'pdf') {
+                                // Show link to PDF
+                                echo '<a href="' . $fullUrl . '" target="_blank" class="btn btn-primary">View PDF Receipt</a>';
+                            } else {
+                                // Optional: Handle unsupported file types
+                                echo '<p>Unsupported file type.</p>';
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>

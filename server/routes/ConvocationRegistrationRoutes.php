@@ -54,6 +54,11 @@ return [
         return $convocationRegistrationController->updateRegistration($registration_id);
     },
 
+    // PUT update payment only
+    'PUT /convocation-registrations/payment/(\d+)/$' => function ($registration_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->updatePayment($registration_id);
+    },
+
     // DELETE a registration
     'DELETE /convocation-registrations/(\d+)/$' => function ($registration_id) use ($convocationRegistrationController) {
         return $convocationRegistrationController->deleteRegistration($registration_id);
