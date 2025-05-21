@@ -14,8 +14,16 @@ class Course
     public function getAllRecords()
     {
         $stmt = $this->pdo->query("SELECT * FROM course");
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $courses = [];
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $courseCode = $row['course_code'];
+            $courses[$courseCode] = $row;
+        }
+
+        return $courses;
     }
+
 
     public function getRecordById($id)
     {
