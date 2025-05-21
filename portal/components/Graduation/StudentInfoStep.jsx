@@ -135,10 +135,19 @@ export default function StudentInfoStep({
   }, [formData.studentNumber]);
 
   // Masking functions
-  const maskEmail = (email) =>
-    email
-      ? `${email.slice(0, 2)}***${email.slice(-2)}@${email.split("@")[1]}`
-      : "N/A";
+  const maskEmail = (email) => {
+    if (!email) return "N/A";
+    const [local, domain] = email.split("@");
+    if (local.length <= 4) {
+      // Too short to show first 2 and last 2, just partially mask
+      return `${local[0]}***@${domain}`;
+    }
+    const firstTwo = local.slice(0, 2);
+    const lastTwo = local.slice(-2);
+    const masked = "*".repeat(local.length - 4);
+    return `${firstTwo}${masked}${lastTwo}@${domain}`;
+  };
+
   const maskPhone = (phone) =>
     phone ? phone.replace(/\d(?=\d{3})/g, "*") : "N/A";
 
