@@ -13,14 +13,14 @@ class Convocation
 
     public function getAllConvocations()
     {
-        $stmt = $this->pdo->prepare("SELECT `id`, `convocation_name`, `held_on`, `session_count`, `parent_seats`, `student_seats`, `created_by`, `created_at` FROM `convocations`");
+        $stmt = $this->pdo->prepare("SELECT * FROM `convocations`");
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getConvocationById($id)
     {
-        $stmt = $this->pdo->prepare("SELECT `id`, `convocation_name`, `held_on`, `session_count`, `parent_seats`, `student_seats`, `created_by`, `created_at` FROM `convocations` WHERE `id` = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM `convocations` WHERE `id` = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }

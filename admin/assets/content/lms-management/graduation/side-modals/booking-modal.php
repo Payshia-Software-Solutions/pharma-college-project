@@ -37,6 +37,11 @@ $selectedPackage = $response->toArray();
 
 $course_ids = explode(',', $packageBooking['course_id']);
 $dueAmount = $selectedPackage['price'] + ($packageBooking['additional_seats'] * PARENT_SEAT_RATE);
+
+$studentEnrollments = $client->request('GET', $_ENV['SERVER_URL'] . '/student-courses/student/' . $packageBooking['student_number'])->toArray();
+$allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submissions-group-by-student')->toArray();
+
+var_dump($studentEnrollments);
 ?>
 <div class="loading-popup-content-right <?= htmlspecialchars($userTheme) ?>">
     <div class="row">
@@ -123,13 +128,6 @@ $dueAmount = $selectedPackage['price'] + ($packageBooking['additional_seats'] * 
 
         </div>
         <div class="col-4">
-            <div class="row mb-2">
-                <div class="col-12">
-                    <img class="w-100"
-                        src="https://content-provider.pharmacollege.lk<?= $packageBooking['image_path'] ?>"
-                        alt="Payment Sip">
-                </div>
-            </div>
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -137,16 +135,26 @@ $dueAmount = $selectedPackage['price'] + ($packageBooking['additional_seats'] * 
                             <label for="paid_amount" class="mb-2">Payment Amount</label>
                             <input type="text" class="form-control text-center" placeholder="Payment Amount"
                                 name="paid_amount" id="paid_amount">
+
+                            <button class="w-100 btn btn-dark mt-2" type="button">Update & Approve</button>
                         </div>
                     </div>
                 </div>
             </div>
+            <div class="row mb-2 mt-2">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+
+                            <img class="w-100"
+                                src="https://content-provider.pharmacollege.lk<?= $packageBooking['image_path'] ?>"
+                                alt="Payment Sip">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
-
-    <hr>
-    <?php
-    outputArray($packageBooking);
-    outputArray($selectedPackage);
-    ?>
 </div>

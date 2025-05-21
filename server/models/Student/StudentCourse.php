@@ -24,6 +24,23 @@ class StudentCourse
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function GetLmsStudentsByUserName($userName)
+    {
+        $ArrayResult = [];
+        try {
+            global $link;
+            $sql = "SELECT `id`, `student_id`, `username`, `civil_status`, `first_name`, `last_name`, `gender`, `address_line_1`, `address_line_2`, `city`, `district`, `postal_code`, `telephone_1`, `telephone_2`, `nic`, `e_mail`, `birth_day`, `updated_by`, `updated_at`, `full_name`, `name_with_initials`, `name_on_certificate` FROM `user_full_details` WHERE `username` LIKE ? ORDER BY `id` DESC";
+            $stmt = $this->pdo->prepare($sql);
+            $stmt->execute([$userName]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $ArrayResult[$row['username']] = $row;
+        } catch (PDOException $e) {
+            return ["error" => $e->getMessage()];
+        }
+
+        return $ArrayResult[$userName] ?? null;
+    }
+
     // Create a new record
     public function createRecord($data)
     {
@@ -62,8 +79,10 @@ class StudentCourse
     }
 
     // Get records by student ID
-    public function getRecordsByStudentId($studentId)
+    public function getRecordsByStudentId($userName)
     {
+
+        $studentId = $this->GetLmsStudentsByUserName($userName)['student_id'];
         $stmt = $this->pdo->prepare("SELECT * FROM student_course WHERE student_id = :student_id");
         $stmt->execute(['student_id' => $studentId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
