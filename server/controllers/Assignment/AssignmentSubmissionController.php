@@ -30,7 +30,7 @@ class AssignmentSubmissionController
         echo json_encode($submissions);
     }
 
-    public function getSubmissionsBySudentNumber($studenetNumber)
+    public function getSubmissionsByStudentNumber($studenetNumber)
     {
         $submissions = $this->model->getSubmissionsByStudentNumber($studenetNumber);
         echo json_encode($submissions);
