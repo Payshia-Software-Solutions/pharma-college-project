@@ -2,16 +2,22 @@
 // controllers/ConvocationRegistrationController.php
 
 require_once './models/ConvocationRegistration.php';
+require_once './controllers/TransactionPaymentController.php';
+
 
 class ConvocationRegistrationController
 {
     private $model;
     private $ftpConfig;
+    private $transactionPaymentController;
+
 
     public function __construct($pdo)
     {
         $this->model = new ConvocationRegistration($pdo);
         $this->ftpConfig = include('./config/ftp.php');
+        // Create an instance of TransactionPaymentController using the same PDO
+        $this->transactionPaymentController = new TransactionPaymentController($pdo);
     }
 
 
@@ -308,6 +314,49 @@ class ConvocationRegistrationController
         } else {
             http_response_code(404);
             echo json_encode(['error' => 'Registration not found or deletion failed']);
+        }
+    }
+
+
+
+    public function updatePayment($reference_number)
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($data['payment_status']) || !isset($data['payment_amount'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required payment fields']);
+            return;
+        }
+
+        $student_number = $this->model->getRegistrationByReference($reference_number)['student_number'];
+        $paymentData = [
+            'transaction_id'    => $this->transactionPaymentController->generateTransactionId(),
+            'rec_time'          => date('Y-m-d H:i:s'),
+            'reference'         => 'Convocation Payment',
+            'ref_id'            => '1',
+            'created_by'        => $data['created_by'] ?? '',
+            'created_at'        => date('Y-m-d H:i:s'),
+            'student_number'    => $student_number,
+            'transaction_type'  => 'CREDIT',
+            'reference_key'     => 'covocation-payment'
+        ];
+
+        $created = $this->transactionPaymentController->model->createPayment($paymentData);
+
+        if (!$created) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to create payment record']);
+            return;
+        }
+
+        $updated = $this->model->updatePayment($reference_number, $data['payment_status'], $data['payment_amount']);
+
+        if ($updated) {
+            echo json_encode(['status' => 'Payment record created and convocation updated']);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to update convocation registration']);
         }
     }
 }

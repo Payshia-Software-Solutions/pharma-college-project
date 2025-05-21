@@ -310,3 +310,76 @@ function OpenBooking(referenceNumber) {
     }
     fetch_data();
   }
+
+  function UpdateConvocationPayment(referenceNumber) {
+    const paymentAmountInput = document.getElementById('paid_amount');
+    const paymentAmount = Number(paymentAmountInput.value);
+    const paymentStatus = "Paid";
+
+
+     // ✅ Input Validation
+    if (!paymentStatus || paymentStatus.trim() === "") {
+        Swal.fire('Validation Error', 'Payment status cannot be empty.', 'warning');
+        return;
+    }
+
+    if (!paymentAmount || isNaN(paymentAmount) || Number(paymentAmount) <= 0) {
+        Swal.fire('Validation Error', 'Payment amount must be a number greater than 0.', 'warning');
+        return;
+    }
+    Swal.fire({
+        title: 'Are you sure?',
+        text: `This will mark the payment as ${paymentStatus}.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, update it!',
+        cancelButtonText: 'No, cancel!',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            showOverlay();
+
+            const payload = {
+                payment_status: paymentStatus,
+                payment_amount: paymentAmount,
+                created_by: LoggedUser
+            };
+
+            fetch(`https://qa-api.pharmacollege.lk/convocation-registrations/payment/${referenceNumber}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (response.ok) {
+                    Swal.fire(
+                        'Updated!',
+                        'The payment information has been successfully updated.',
+                        'success'
+                    );
+                    // You can add a callback function here, e.g., refresh list
+                } else {
+                    throw new Error(`Failed to update payment. Status: ${response.status}`);
+                }
+            })
+            .catch(error => {
+                Swal.fire(
+                    'Error!',
+                    `An error occurred: ${error.message}`,
+                    'error'
+                );
+            })
+            .finally(() => {
+                hideOverlay();
+            });
+        } else {
+            Swal.fire(
+                'Cancelled',
+                'The payment update was cancelled.',
+                'info'
+            );
+        }
+    });
+}
