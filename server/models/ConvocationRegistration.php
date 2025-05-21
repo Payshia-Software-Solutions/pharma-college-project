@@ -127,7 +127,7 @@ class ConvocationRegistration
     {
         $stmt = $this->pdo->prepare("
         UPDATE convocation_registrations 
-        SET payment_status = ?, payment_amount = ?
+        SET registration_status = ?, payment_amount = ?
         WHERE reference_number = ?
     ");
         return $stmt->execute([$payment_status, $payment_amount, $reference_number]);
