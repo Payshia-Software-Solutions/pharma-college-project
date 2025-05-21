@@ -29,6 +29,12 @@ class AssignmentSubmission
         $stmt->execute([$assignmentId]);
         return $stmt->fetchAll();
     }
+    public function getSubmissionsBySudentNumber($studentNumber)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM assignment_submittion WHERE created_by = ?");
+        $stmt->execute([$studentNumber]);
+        return $stmt->fetchAll();
+    }
 
     public function createSubmission($data)
     {
