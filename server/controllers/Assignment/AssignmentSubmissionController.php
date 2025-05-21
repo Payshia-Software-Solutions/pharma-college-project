@@ -30,6 +30,14 @@ class AssignmentSubmissionController
         echo json_encode($submissions);
     }
 
+    public function getSubmissionsBySudentNumber($studenetNumber)
+    {
+        $submissions = $this->model->getSubmissionsBySudentNumber($studenetNumber);
+        echo json_encode($submissions);
+    }
+
+
+
     public function createSubmission()
     {
         $data = json_decode(file_get_contents('php://input'), true);
