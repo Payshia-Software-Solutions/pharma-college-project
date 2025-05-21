@@ -53,6 +53,27 @@ $courierOrders = $response->toArray();
 $response = $client->request('GET', $_ENV['SERVER_URL'] . '/assignmentsByCourse');
 $allAssignments = $response->toArray();
 
+// Batch List
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/course');
+$batchList = $response->toArray();
+
+// Get Enrollments
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/student-courses');
+$studentEnrollments = $response->toArray();
+
+function filterEnrollmentsByStudentId($enrollments, $studentId)
+{
+    return array_values(array_filter($enrollments, function ($enrollment) use ($studentId) {
+        return $enrollment['student_id'] === $studentId;
+    }));
+}
+
+function formatStudentId($rawId)
+{
+    return substr($rawId, 0, 2) . '/' . substr($rawId, 2, 2) . '/' . substr($rawId, 4);
+}
+$allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submissions-group-by-student')->toArray();
+
 
 ?>
 
@@ -94,16 +115,9 @@ $allAssignments = $response->toArray();
     </div>
 </div>
 
-<div class="row">
-    <div class="col-12 text-end">
-        <button class="btn btn-dark btn-sm" type="button" onclick="OpenDownloadFile()">Download Convocation
-            List</button>
-    </div>
-</div>
-
 <div class="row g-2 mb-5">
-    <div class="col-md-10">
-        <h5 class="table-title">Graduation Center</h5>
+    <div class="col-md-12">
+        <h5 class="table-title">Graduation Center - Download</h5>
 
         <div class="card">
             <div class="card-body">
@@ -113,15 +127,17 @@ $allAssignments = $response->toArray();
                             <tr>
                                 <th scope="col">Reference #</th>
                                 <th scope="col">Student Number</th>
+                                <th scope="col">Course Balance</th>
                                 <th scope="col">Session</th>
                                 <th scope="col">Courses</th>
+                                <th scope="col">Certificate</th>
+                                <th scope="col">Advanced</th>
                                 <th scope="col">Pacakge</th>
                                 <th scope="col">Additional Seats</th>
                                 <th scope="col">Due Payment</th>
                                 <th scope="col">Slip</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Registration Status</th>
-                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -133,6 +149,7 @@ $allAssignments = $response->toArray();
                                 // Get the hash value from the current booking
                                 $hashValue = $booking['hash_value'];
                                 $studentnumber = trim($booking['student_number']);
+                                $paymentInfo = GetStudentBalance($studentnumber);
 
                                 $duplicate_error_message = "";
                                 // Check if this hash value is already in the seen array
@@ -171,12 +188,15 @@ $allAssignments = $response->toArray();
                                 $orderedParentIds = array_map('trim', explode(',', $booking['course_id']));
 
                                 $dueAmount = $indexed_packages[$booking['package_id']]['price'] + ($booking['additional_seats'] * PARENT_SEAT_RATE);
+
+                                $userCourseEnrollments = filterEnrollmentsByStudentId($studentEnrollments, formatStudentId($booking['student_number']));
                             ?>
                                 <tr>
                                     <td><?= $booking['reference_number'] ?>
 
                                     </td>
                                     <td><?= $booking['student_number'] ?></td>
+                                    <td><?= number_format($paymentInfo['studentBalance'], 2) ?></td>
                                     <td><?= $booking['session'] ?></td>
                                     <td><?php
                                         foreach ($course_ids as $id) {
@@ -188,6 +208,42 @@ $allAssignments = $response->toArray();
                                             }
                                         }
                                         ?>
+                                    </td><?php
+                                            $studentSubmissions = $allStudentSubmissions[$booking['student_number']] ?? [];
+                                            $courseGrades = [];
+
+                                            foreach ($userCourseEnrollments as $courseEnrollment) {
+                                                $courseCode = $courseEnrollment['course_code'];
+                                                $parentCourseId = $batchList[$courseCode]['parent_course_id'];
+                                                $assignments = $allAssignments[$courseCode] ?? [];
+
+                                                $totalMarks = 0;
+                                                foreach ($assignments as $assignment) {
+                                                    $aid = $assignment['assignment_id'];
+                                                    if (isset($studentSubmissions[$aid])) {
+                                                        $totalMarks += $studentSubmissions[$aid]['grade'];
+                                                    }
+                                                }
+
+                                                $assignmentCount = count($assignments);
+                                                $avgMark = $assignmentCount > 0 ? $totalMarks / $assignmentCount : 0;
+
+                                                if ($avgMark == 0) {
+                                                    continue;
+                                                }
+
+                                                // Add result to array
+                                                $courseGrades[$parentCourseId] = [
+                                                    'course_code' => $courseCode,
+                                                    'avg_grade' => round($avgMark, 2),
+                                                ];
+                                            }
+                                            ?>
+                                    <td>
+                                        <?= isset($courseGrades[1]) ? number_format($courseGrades[1]['avg_grade'], 2) : '-' ?>
+                                    </td>
+                                    <td>
+                                        <?= isset($courseGrades[2]) ? number_format($courseGrades[2]['avg_grade'], 2) : '-' ?>
                                     </td>
                                     <td><?= $indexed_packages[$booking['package_id']]['package_name']; ?></td>
                                     <td><?= $booking['additional_seats'] ?></td>
@@ -213,8 +269,6 @@ $allAssignments = $response->toArray();
                                         ?>
                                         <span class="badge <?= $badgeClass ?>"><?= ucfirst($status) ?></span>
                                     </td>
-                                    <td><button type="button" onclick="OpenBooking('<?= $booking['reference_number'] ?>')"
-                                            class="btn btn-dark btn-sm">View</button></td>
                                 </tr>
                             <?php
                             }
@@ -225,16 +279,6 @@ $allAssignments = $response->toArray();
             </div>
         </div>
     </div>
-    <div class="col-md-2">
-        <h5 class="table-title">Quick Links</h5>
-        <div class="card">
-            <div class="card-body">
-                <ul class="mb-0">
-                    <li><a href="#" onclick="OpenPackageModal()">Packages</a></li>
-                </ul>
-            </div>
-        </div>
-    </div>
 
 </div>
 
@@ -242,7 +286,7 @@ $allAssignments = $response->toArray();
     $('#graduation-table').dataTable({
         dom: 'Bfrtip',
         buttons: [
-            'pdf'
+            'copy', 'csv', 'excel', 'pdf'
             // 'colvis'
         ],
         order: [

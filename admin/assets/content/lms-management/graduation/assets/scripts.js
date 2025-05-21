@@ -28,6 +28,28 @@ function OpenIndex() {
     fetch_data()
 }
 
+function OpenDownloadFile() {
+    var userTheme = $("#userTheme").val();
+    document.getElementById('index-content').innerHTML = InnerLoader
+    ClosePopUP()
+
+    function fetch_data() {
+        $.ajax({
+            url: 'assets/content/lms-management/graduation/convocation-order-download.php',
+            method: 'POST',
+            data: {
+                userTheme: userTheme,
+                LoggedUser: LoggedUser,
+                UserLevel: UserLevel
+            },
+            success: function (data) {
+                $('#index-content').html(data)
+            }
+        })
+    }
+    fetch_data()
+}
+
 function OpenPackageModal() {
     var userTheme = $("#userTheme").val();
     OpenPopupRight();
