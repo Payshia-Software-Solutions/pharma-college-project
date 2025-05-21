@@ -18,6 +18,12 @@ class AssignmentSubmissionController
         echo json_encode($submissions);
     }
 
+    public function getAllSubmissionsGroupedByStudent()
+    {
+        $submissions = $this->model->getAllSubmissionsGroupedByStudent();
+        echo json_encode($submissions);
+    }
+
     public function getSubmission($id)
     {
         $submission = $this->model->getSubmissionById($id);

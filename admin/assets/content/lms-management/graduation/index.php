@@ -48,6 +48,32 @@ foreach ($packages as $package) {
 $response = $client->request('GET', $_ENV['SERVER_URL'] . '/certificate-orders');
 $courierOrders = $response->toArray();
 
+// Get Courier Orders
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/assignmentsByCourse');
+$allAssignments = $response->toArray();
+
+// Batch List
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/course');
+$batchList = $response->toArray();
+
+// Get Enrollments
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/student-courses');
+$studentEnrollments = $response->toArray();
+
+function filterEnrollmentsByStudentId($enrollments, $studentId)
+{
+    return array_values(array_filter($enrollments, function ($enrollment) use ($studentId) {
+        return $enrollment['student_id'] === $studentId;
+    }));
+}
+
+function formatStudentId($rawId)
+{
+    // Example: PA19839 -> PA/19/839
+    return substr($rawId, 0, 2) . '/' . substr($rawId, 2, 2) . '/' . substr($rawId, 4);
+}
+$allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submissions')->toArray();
+
 
 
 ?>
@@ -104,6 +130,7 @@ $courierOrders = $response->toArray();
                                 <th scope="col">Student Number</th>
                                 <th scope="col">Session</th>
                                 <th scope="col">Courses</th>
+                                <th scope="col">Batches</th>
                                 <th scope="col">Pacakge</th>
                                 <th scope="col">Additional Seats</th>
                                 <th scope="col">Due Payment</th>
@@ -158,6 +185,7 @@ $courierOrders = $response->toArray();
                                 $course_ids = explode(',', $booking['course_id']);
                                 $dueAmount = $indexed_packages[$booking['package_id']]['price'] + ($booking['additional_seats'] * PARENT_SEAT_RATE);
 
+                                $userCourseEnrollments = filterEnrollmentsByStudentId($studentEnrollments, formatStudentId($booking['student_number']));
                             ?>
                                 <tr>
                                     <td><?= $booking['reference_number'] ?>
@@ -174,6 +202,32 @@ $courierOrders = $response->toArray();
                                         <?php
                                             }
                                         }
+                                        ?>
+                                    </td>
+                                    <td><?php
+                                        foreach ($userCourseEnrollments as $courseEnrollment) {
+
+                                            $avgMark = 0;
+                                            $batchCode = $courseEnrollment['course_code'];
+                                            if (isset($allAssignments[$batchCode])) {
+                                                $batchAssignments = $allAssignments[$batchCode];
+                                            } else {
+                                                $batchAssignments = [];
+                                            }
+
+                                            // Get Enrollments
+                                            $response = $client->request('GET', $_ENV['SERVER_URL'] . '/submissions?studentNumber=' . $booking['student_number']);
+                                            $studentSubmissions = $response->toArray();
+                                            $totalStudentMarks = 0;
+                                            foreach ($studentSubmissions as $submission) {
+                                                $totalStudentMarks += $submission['grade'];
+                                            }
+
+                                            $assignmentCount = count($batchAssignments);
+                                            $avgMark = $assignmentCount > 0 ? $totalStudentMarks / $assignmentCount : 0;
+                                            echo $avgMark;
+                                        }
+
                                         ?>
                                     </td>
                                     <td><?= $indexed_packages[$booking['package_id']]['package_name']; ?></td>
