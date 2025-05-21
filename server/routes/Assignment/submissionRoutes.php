@@ -15,7 +15,7 @@ return [
         return $submissionController->getSubmission($id);
     },
 
-    'GET /submissions\?assignment_id=\d+/$' => function () use ($submissionController) {
+    'GET /submissions\?assignment_id=[\w]+/$' => function () use ($submissionController) {
         $assignmentId = $_GET['assignment_id'] ?? null;
         if ($assignmentId) {
             return $submissionController->getSubmissionsByAssignmentId($assignmentId);
@@ -25,7 +25,9 @@ return [
         }
     },
 
-    'GET /submissions\?studentNumber=\d+/$' => function () use ($submissionController) {
+
+
+    'GET /submissions\?studentNumber=[\w]+/$' => function () use ($submissionController) {
         $studentNumber = $_GET['studentNumber'] ?? null;
         if ($studentNumber) {
             return $submissionController->getSubmissionsBySudentNumber($studentNumber);
