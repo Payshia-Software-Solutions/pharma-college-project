@@ -11,6 +11,10 @@ return [
         return $submissionController->getSubmissions();
     },
 
+    'GET /submissions-group-by-student/$' => function () use ($submissionController) {
+        return $submissionController->getAllSubmissionsGroupedByStudent();
+    },
+
     'GET /submissions/(\d+)/$' => function ($id) use ($submissionController) {
         return $submissionController->getSubmission($id);
     },

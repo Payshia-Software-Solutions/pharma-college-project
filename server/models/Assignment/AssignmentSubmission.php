@@ -23,6 +23,22 @@ class AssignmentSubmission
         return $stmt->fetch();
     }
 
+    public function getAllSubmissionsGroupedByStudent()
+    {
+        $stmt = $this->pdo->query("SELECT assignment_id, file_path, created_by, created_at, status, grade FROM assignment_submittion");
+        $submissions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Group by student number (created_by)
+        $grouped = [];
+        foreach ($submissions as $submission) {
+            $studentId = $submission['created_by'];
+            $assignmentId = $submission['assignment_id'];
+            $grouped[$studentId][$assignmentId] = $submission; // or just $submission['grade'] if needed
+        }
+
+        return $grouped;
+    }
+
     public function getSubmissionsByAssignmentId($assignmentId)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM assignment_submittion WHERE assignment_id = ?");
