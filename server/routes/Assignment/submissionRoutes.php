@@ -26,16 +26,17 @@ return [
     },
 
 
-
     'GET /submissions\?studentNumber=[\w]+/$' => function () use ($submissionController) {
         $studentNumber = $_GET['studentNumber'] ?? null;
         if ($studentNumber) {
-            return $submissionController->getSubmissionsBySudentNumber($studentNumber);
+            return $submissionController->getSubmissionsByStudentNumber($studentNumber);
         } else {
             http_response_code(400);
             echo json_encode(['error' => 'Missing required parameters. assignment_id is required']);
         }
     },
+
+
 
     'POST /submissions/$' => function () use ($submissionController) {
         return $submissionController->createSubmission();
