@@ -91,21 +91,17 @@ class Course
 
     public function getRecordByCourseCode($course_code)
     {
-        error_log("Executing query for course_code: $course_code");
-    
-        $query = "SELECT * FROM course WHERE course_code = :course_code ";
+        $query = "SELECT * FROM course WHERE course_code = :course_code";
         $stmt = $this->pdo->prepare($query);
         $stmt->execute(['course_code' => $course_code]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
-    
+
         if ($result) {
             error_log("Query successful, found record: " . json_encode($result));
+            return [$course_code => $result]; // Keyed by course_code
         } else {
             error_log("Query returned no results for course_code: $course_code");
+            return []; // Return empty array if no result
         }
-    
-        return $result;
     }
-    
-
 }

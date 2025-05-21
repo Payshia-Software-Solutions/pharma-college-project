@@ -72,7 +72,7 @@ function formatStudentId($rawId)
     // Example: PA19839 -> PA/19/839
     return substr($rawId, 0, 2) . '/' . substr($rawId, 2, 2) . '/' . substr($rawId, 4);
 }
-$allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submissions')->toArray();
+$allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submissions-group-by-student')->toArray();
 
 
 
@@ -205,27 +205,22 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
                                         ?>
                                     </td>
                                     <td><?php
+                                        $studentSubmissions = $allStudentSubmissions[$booking['student_number']] ?? [];
                                         foreach ($userCourseEnrollments as $courseEnrollment) {
+                                            $courseCode = $courseEnrollment['course_code'];
+                                            $assignments = $allAssignments[$courseCode] ?? [];
 
-                                            $avgMark = 0;
-                                            $batchCode = $courseEnrollment['course_code'];
-                                            if (isset($allAssignments[$batchCode])) {
-                                                $batchAssignments = $allAssignments[$batchCode];
-                                            } else {
-                                                $batchAssignments = [];
+                                            $totalMarks = 0;
+                                            foreach ($assignments as $assignment) {
+                                                $aid = $assignment['assignment_id'];
+                                                if (isset($studentSubmissions[$aid])) {
+                                                    $totalMarks += $studentSubmissions[$aid]['grade'];
+                                                }
                                             }
+                                            $assignmentCount = count($assignments);
+                                            $avgMark = $assignmentCount > 0 ? $totalMarks / $assignmentCount : 0;
 
-                                            // Get Enrollments
-                                            $response = $client->request('GET', $_ENV['SERVER_URL'] . '/submissions?studentNumber=' . $booking['student_number']);
-                                            $studentSubmissions = $response->toArray();
-                                            $totalStudentMarks = 0;
-                                            foreach ($studentSubmissions as $submission) {
-                                                $totalStudentMarks += $submission['grade'];
-                                            }
-
-                                            $assignmentCount = count($batchAssignments);
-                                            $avgMark = $assignmentCount > 0 ? $totalStudentMarks / $assignmentCount : 0;
-                                            echo $avgMark;
+                                            echo number_format($avgMark, 2);
                                         }
 
                                         ?>
