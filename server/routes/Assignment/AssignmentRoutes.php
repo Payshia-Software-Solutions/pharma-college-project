@@ -19,6 +19,11 @@ return [
         return $assignmentController->getAssignment($id);
     },
 
+    // Get an assignment by ID
+    'GET /assignmentsByCourse/$' => function () use ($assignmentController) {
+        return $assignmentController->getAllAssignmentsGroupedByCourse();
+    },
+
     'GET /assignments\?CourseCode=[\w]+/$' => function () use ($assignmentController) {
         $courseCode = $_GET['CourseCode'] ?? null;
         if ($courseCode) {

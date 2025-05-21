@@ -23,6 +23,23 @@ class Assignment
         return $stmt->fetch();
     }
 
+    public function getAllAssignmentsGroupedByCourse()
+    {
+        $stmt = $this->pdo->query("SELECT * FROM assignment");
+
+        $resultArray = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $courseCode = $row['course_code'];
+            if (!isset($resultArray[$courseCode])) {
+                $resultArray[$courseCode] = [];
+            }
+            $resultArray[$courseCode][] = $row;
+        }
+
+        return $resultArray;
+    }
+
+
     public function getAssignmentsByCourse($courseCode)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM assignment WHERE course_code = ?");

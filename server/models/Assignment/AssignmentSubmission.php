@@ -44,8 +44,6 @@ class AssignmentSubmission
         return $resultArray;
     }
 
-
-
     public function createSubmission($data)
     {
         $stmt = $this->pdo->prepare("INSERT INTO assignment_submittion (assignment_id, file_path, created_by, created_at, status, grade) VALUES (?, ?, ?, ?, ?, ?)");
