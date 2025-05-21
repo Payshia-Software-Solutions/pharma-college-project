@@ -77,7 +77,6 @@ class StudentCourse
     {
 
         $studentId = $this->getLmsStudentByUsername($userName)['student_id'];
-        echo $studentId;
         $stmt = $this->pdo->prepare("SELECT * FROM student_course WHERE student_id = :student_id");
         $stmt->execute(['student_id' => $studentId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
