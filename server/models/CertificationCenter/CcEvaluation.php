@@ -516,6 +516,7 @@ class CcEvaluation extends DeliveryOrder
                 $assignmentGrades = $this->calculateAssignmentsGrades($row['course_code'], $userName);
                 $deliveryOrders = $this->getRecordByIndexNumberAndCourse($userName, $row['course_code']);
                 $certificateRecords = $this->certificatePrintStatus->getRecordsByStudentNumberCourseCode($userName, $row['course_code']);
+                $studentBalance = $this->GetStudentBalance($userName);
 
                 // Append the data to the course details
                 $row['ceylon_pharmacy'] = $recoveredPatients;
@@ -524,6 +525,7 @@ class CcEvaluation extends DeliveryOrder
                 $row['assignment_grades'] = $assignmentGrades;
                 $row['deliveryOrders'] = $deliveryOrders;
                 $row['certificateRecords'] = $certificateRecords;
+                $row['studentBalance'] = $studentBalance['studentBalance'];
 
                 $criteriaIds = [];
 

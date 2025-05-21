@@ -31,6 +31,7 @@ $templatePath = __DIR__ . '/../templates/welcome_sms_template.txt';
 
 // Include route files
 $assignmentRoutes = require './routes/Assignment/AssignmentRoutes.php';
+$submissionRoutes = require './routes/Assignment/submissionRoutes.php';
 $appointmentRoutes = require './routes/OtherRoutes/appointmentRoutes.php';
 // $eCertificateRoutes = require './routes/OtherRoutes/eCertificateRoutes.php';
 $courseAssignmentRoutes = require './routes/OtherRoutes/courseAssignmentRoutes.php';
@@ -133,6 +134,7 @@ $convocationRoutes = require './routes/convocationRoutes.php';
 $routes = array_merge(
     $userRoutes,
     $assignmentRoutes,
+    $submissionRoutes,
     $appointmentRoutes,
     // $eCertificateRoutes,
     $courseAssignmentRoutes,
