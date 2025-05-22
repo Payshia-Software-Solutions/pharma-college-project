@@ -34,23 +34,7 @@ class TransactionPayment
 
     public function createPayment($data)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO transcation_payments (transaction_id, rec_time, reference, ref_id, created_by, created_at, student_number, transaction_type, reference_key) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        return $stmt->execute([
-            $data['transaction_id'],
-            $data['rec_time'],
-            $data['reference'],
-            $data['ref_id'],
-            $data['created_by'],
-            $data['created_at'],
-            $data['student_number'],
-            $data['transaction_type'],
-            $data['reference_key']
-        ]);
-    }
-
-    public function updatePayment($id, $data)
-    {
-        $stmt = $this->pdo->prepare("UPDATE transcation_payments SET transaction_id = ?, rec_time = ?, reference = ?, ref_id = ?, created_by = ?, created_at = ?, student_number = ?, transaction_type = ?, reference_key = ? WHERE id = ?");
+        $stmt = $this->pdo->prepare("INSERT INTO transcation_payments (transaction_id, rec_time, reference, ref_id, created_by, created_at, student_number, transaction_type, reference_key, payment_amount) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         return $stmt->execute([
             $data['transaction_id'],
             $data['rec_time'],
@@ -61,6 +45,24 @@ class TransactionPayment
             $data['student_number'],
             $data['transaction_type'],
             $data['reference_key'],
+            $data['payment_amount'],
+        ]);
+    }
+
+    public function updatePayment($id, $data)
+    {
+        $stmt = $this->pdo->prepare("UPDATE transcation_payments SET transaction_id = ?, rec_time = ?, reference = ?, ref_id = ?, created_by = ?, created_at = ?, student_number = ?, transaction_type = ?, reference_key = ?, payment_amount = ? WHERE id = ?");
+        return $stmt->execute([
+            $data['transaction_id'],
+            $data['rec_time'],
+            $data['reference'],
+            $data['ref_id'],
+            $data['created_by'],
+            $data['created_at'],
+            $data['student_number'],
+            $data['transaction_type'],
+            $data['reference_key'],
+            $data['payment_amount'],
             $id
         ]);
     }

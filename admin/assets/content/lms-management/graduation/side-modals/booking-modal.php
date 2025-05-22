@@ -100,7 +100,7 @@ $userInfo = $client->request('GET', $_ENV['SERVER_URL'] . '/get-student-full-inf
                     <div class="card">
                         <div class="card-body">
                             <p class="mb-0">Payment Status</p>
-                            <h5><?= $packageBooking['payment_status'] ?></h5>
+                            <h5><?= $packageBooking['registration_status'] ?></h5>
                         </div>
                     </div>
                 </div>

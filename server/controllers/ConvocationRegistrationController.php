@@ -3,21 +3,28 @@
 
 require_once './models/ConvocationRegistration.php';
 require_once './controllers/TransactionPaymentController.php';
-
+require_once './controllers/UserFullDetailsController.php.php';
+require_once './models/SMSModel.php';
 
 class ConvocationRegistrationController
 {
     private $model;
     private $ftpConfig;
     private $transactionPaymentController;
+    private $UserFullDetailsController;
+    private $smsModel;
+    private $templatePath;
+    private $convocationTemplatePath;
 
-
-    public function __construct($pdo)
+    public function __construct($pdo, $templatePath)
     {
         $this->model = new ConvocationRegistration($pdo);
+        $this->templatePath = $templatePath;
         $this->ftpConfig = include('./config/ftp.php');
         // Create an instance of TransactionPaymentController using the same PDO
         $this->transactionPaymentController = new TransactionPaymentController($pdo);
+        $this->UserFullDetailsController = new UserFullDetailsController($pdo);
+        $this->smsModel = new SMSModel($_ENV['SMS_AUTH_TOKEN'], $_ENV['SMS_SENDER_ID'], $convocationTemplatePath);
     }
 
 
@@ -317,8 +324,6 @@ class ConvocationRegistrationController
         }
     }
 
-
-
     public function updatePayment($reference_number)
     {
         $data = json_decode(file_get_contents('php://input'), true);
@@ -329,9 +334,12 @@ class ConvocationRegistrationController
             return;
         }
 
+        $paymentAmount = $data['payment_amount'];
         $student_number = $this->model->getRegistrationByReference($reference_number)['student_number'];
+        $studentInfo = $this->UserFullDetailsController->getUserByUserName($student_number);
+        $txnNumber = $this->transactionPaymentController->generateTransactionId();
         $paymentData = [
-            'transaction_id'    => $this->transactionPaymentController->generateTransactionId(),
+            'transaction_id'    => $txnNumber,
             'rec_time'          => date('Y-m-d H:i:s'),
             'reference'         => 'Convocation Payment',
             'ref_id'            => '1',
@@ -339,7 +347,8 @@ class ConvocationRegistrationController
             'created_at'        => date('Y-m-d H:i:s'),
             'student_number'    => $student_number,
             'transaction_type'  => 'CREDIT',
-            'reference_key'     => 'covocation-payment'
+            'reference_key'     => 'covocation-payment',
+            'payment_amount'    => $paymentAmount
         ];
 
         $created = $this->transactionPaymentController->model->createPayment($paymentData);
@@ -353,7 +362,28 @@ class ConvocationRegistrationController
         $updated = $this->model->updatePayment($reference_number, $data['payment_status'], $data['payment_amount']);
 
         if ($updated) {
-            echo json_encode(['status' => 'Payment record created and convocation updated']);
+            // Prepare the welcome message
+            $mobile = $studentInfo['phone_number']; // Assuming 'phone_number' is the key for the user's mobile number
+            $studentName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name']; // Combine first and last name
+            $referenceNumber = $reference_number; // Use the user ID as the reference number
+
+            // Send the welcome SMS
+            $smsResponse = $this->smsModel->sendConvocationPaymentApprovedSMS('0770481363', $studentName, $referenceNumber, $txnNumber, $paymentAmount);
+
+            // Check if the SMS was sent successfully
+            if ($smsResponse['status'] === 'error') {
+                throw new Exception('Failed to send welcome SMS: ' . $smsResponse['message']);
+            }
+
+            // Return success response with the new user's ID
+            http_response_code(201); // Created successfully
+            echo json_encode([
+                'status' => 'Success',
+                'message' => 'Payment record created and convocation updated',
+                'reference_number' => $reference_number,
+                'sms_status' => $smsResponse['status'],
+                'sms_message' => $smsResponse['message']
+            ]);
         } else {
             http_response_code(500);
             echo json_encode(['error' => 'Failed to update convocation registration']);

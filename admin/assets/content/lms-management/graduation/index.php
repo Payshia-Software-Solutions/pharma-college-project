@@ -144,11 +144,22 @@ $allAssignments = $response->toArray();
                                 }
                                 $status = $booking['registration_status'];
                                 $badgeClass = '';
+                                $dueAmount = $indexed_packages[$booking['package_id']]['price'] + ($booking['additional_seats'] * PARENT_SEAT_RATE);
+
+                                if ($booking['registration_status'] === "paid" && $booking['payment_amount'] < $dueAmount) {
+                                    $status = "Partially Paid";
+                                }
 
                                 // Determine the badge class based on the registration status
                                 switch ($status) {
                                     case 'Pending':
                                         $badgeClass = 'badge bg-warning text-dark'; // Yellow/Orange badge
+                                        break;
+                                    case 'Partially Paid':
+                                        $badgeClass = 'badge bg-warning'; // Green badge
+                                        break;
+                                    case 'paid':
+                                        $badgeClass = 'badge bg-secondary'; // Green badge
                                         break;
                                     case 'Confirmed':
                                         $badgeClass = 'badge bg-success'; // Green badge
@@ -170,7 +181,6 @@ $allAssignments = $response->toArray();
                                 $course_ids = explode(',', $booking['course_id']);
                                 $orderedParentIds = array_map('trim', explode(',', $booking['course_id']));
 
-                                $dueAmount = $indexed_packages[$booking['package_id']]['price'] + ($booking['additional_seats'] * PARENT_SEAT_RATE);
                             ?>
                                 <tr>
                                     <td><?= $booking['reference_number'] ?>
