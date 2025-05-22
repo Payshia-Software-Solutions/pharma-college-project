@@ -3,7 +3,7 @@
 require_once './models/UserFullDetails.php';
 class UserFullDetailsController
 {
-    private $model;
+    public $model;
 
     public function __construct($pdo)
     {
