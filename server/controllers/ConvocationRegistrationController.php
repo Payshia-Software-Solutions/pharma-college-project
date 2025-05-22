@@ -11,7 +11,7 @@ class ConvocationRegistrationController
     private $model;
     private $ftpConfig;
     private $transactionPaymentController;
-    private $UserFullDetailsController;
+    private $userFullDetailsController;
     private $smsModel;
     private $templatePath;
     private $convocationTemplatePath;
@@ -21,12 +21,10 @@ class ConvocationRegistrationController
         $this->model = new ConvocationRegistration($pdo);
         $this->convocationTemplatePath = $convocationTemplatePath;
         $this->ftpConfig = include('./config/ftp.php');
-        // Create an instance of TransactionPaymentController using the same PDO
         $this->transactionPaymentController = new TransactionPaymentController($pdo);
-        $this->UserFullDetailsController = new UserFullDetailsController($pdo);
+        $this->userFullDetailsController = new UserFullDetailsController($pdo);
         $this->smsModel = new SMSModel($_ENV['SMS_AUTH_TOKEN'], $_ENV['SMS_SENDER_ID'], $convocationTemplatePath);
     }
-
 
     private function ensureDirectoryExists($ftp_conn, $dir)
     {
