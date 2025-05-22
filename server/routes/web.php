@@ -27,6 +27,7 @@ $senderId = $_ENV['SMS_SENDER_ID'];
 
 // Define the path to the template file
 $templatePath = __DIR__ . '/../templates/welcome_sms_template.txt';
+$convocationTemplatePath = __DIR__ . '/../templates/convocation-payment-message.txt';
 
 
 // Include route files
