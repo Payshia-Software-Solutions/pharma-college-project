@@ -41,12 +41,6 @@ class TransactionPaymentController
         echo json_encode($payments);
     }
 
-    public function createPayment()
-    {
-        $data = json_decode(file_get_contents('php://input'), true);
-        $this->model->createPayment($data);
-        echo json_encode(['status' => 'Payment created']);
-    }
 
     public function updatePayment($id)
     {
