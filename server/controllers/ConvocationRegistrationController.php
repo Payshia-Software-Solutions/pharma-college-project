@@ -361,7 +361,7 @@ class ConvocationRegistrationController
 
         if ($updated) {
             // Prepare the welcome message
-            $mobile = $studentInfo['phone_number']; // Assuming 'phone_number' is the key for the user's mobile number
+            $mobile = $studentInfo['telephone_1']; // Assuming 'phone_number' is the key for the user's mobile number
             $studentName = $studentInfo['first_name'] . ' ' . $studentInfo['last_name']; // Combine first and last name
             $referenceNumber = $reference_number; // Use the user ID as the reference number
 
