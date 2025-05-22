@@ -3,7 +3,7 @@
 
 require_once './models/ConvocationRegistration.php';
 require_once './controllers/TransactionPaymentController.php';
-require_once './controllers/UserFullDetailsController.php.php';
+require_once './controllers/UserFullDetailsController.php';
 require_once './models/SMSModel.php';
 
 class ConvocationRegistrationController
