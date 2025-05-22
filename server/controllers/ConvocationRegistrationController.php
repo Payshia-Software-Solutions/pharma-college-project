@@ -16,10 +16,10 @@ class ConvocationRegistrationController
     private $templatePath;
     private $convocationTemplatePath;
 
-    public function __construct($pdo, $templatePath)
+    public function __construct($pdo, $convocationTemplatePath)
     {
         $this->model = new ConvocationRegistration($pdo);
-        $this->templatePath = $templatePath;
+        $this->convocationTemplatePath = $convocationTemplatePath;
         $this->ftpConfig = include('./config/ftp.php');
         // Create an instance of TransactionPaymentController using the same PDO
         $this->transactionPaymentController = new TransactionPaymentController($pdo);
