@@ -334,7 +334,7 @@ class ConvocationRegistrationController
 
         $paymentAmount = $data['payment_amount'];
         $student_number = $this->model->getRegistrationByReference($reference_number)['student_number'];
-        $studentInfo = $this->UserFullDetailsController->getUserByUserName($student_number);
+        $studentInfo = $this->userFullDetailsController->getUserByUserName($student_number);
         $txnNumber = $this->transactionPaymentController->generateTransactionId();
         $paymentData = [
             'transaction_id'    => $txnNumber,

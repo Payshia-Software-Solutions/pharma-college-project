@@ -5,7 +5,7 @@ require_once './controllers/ConvocationRegistrationController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];
-$convocationRegistrationController = new ConvocationRegistrationController($pdo);
+$convocationRegistrationController = new ConvocationRegistrationController($pdo, $convocationTemplatePath);
 
 // Define an array of routes
 return [
