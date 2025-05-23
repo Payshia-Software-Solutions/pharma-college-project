@@ -65,11 +65,6 @@ function BankInfo({ formData, updateFormData, setIsValid, setValue }) {
   };
 
   const validateForm = () => {
-    if (!formData.reference.trim()) {
-      setError("Payment reference is required.");
-      setIsValid(false);
-      return;
-    }
     if (!formData.bank || isNaN(formData.bank)) {
       // Check if bank is a number
       setError("Bank code is required and must be a valid.");
@@ -108,19 +103,6 @@ function BankInfo({ formData, updateFormData, setIsValid, setValue }) {
       </div>
 
       <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Payment Reference
-          </label>
-          <input
-            type="text"
-            value={formData.reference}
-            onChange={(e) => updateFormData("reference", e.target.value)}
-            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
-            placeholder="Enter reference number"
-          />
-        </div>
-
         <div className="relative">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Bank
@@ -176,6 +158,19 @@ function BankInfo({ formData, updateFormData, setIsValid, setValue }) {
             onChange={(e) => updateFormData("branch", e.target.value)}
             className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
             placeholder="Enter branch name"
+          />
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Payment Reference
+          </label>
+          <input
+            type="text"
+            value={formData.reference}
+            onChange={(e) => updateFormData("reference", e.target.value)}
+            className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all"
+            placeholder="Enter reference number(Optional)"
           />
         </div>
       </div>
