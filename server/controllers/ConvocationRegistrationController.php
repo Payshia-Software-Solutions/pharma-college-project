@@ -366,7 +366,7 @@ class ConvocationRegistrationController
             $referenceNumber = $reference_number; // Use the user ID as the reference number
 
             // Send the welcome SMS
-            $smsResponse = $this->smsModel->sendConvocationPaymentApprovedSMS('0770481363', $studentName, $referenceNumber, $txnNumber, $paymentAmount);
+            $smsResponse = $this->smsModel->sendConvocationPaymentApprovedSMS($mobile, $studentName, $referenceNumber, $txnNumber, $paymentAmount);
 
             // Check if the SMS was sent successfully
             if ($smsResponse['status'] === 'error') {

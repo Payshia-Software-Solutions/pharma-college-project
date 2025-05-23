@@ -9,12 +9,22 @@ function PaymentInfo({ formData, updateFormData, setIsValid }) {
     // Simulated API fetch
     const fetchPaymentReasons = async () => {
       const data = [
-        { label: "Convocation Fee", value: "convocation", fixedAmount: 9500 },
-        { label: "Courier Fee", value: "courier", fixedAmount: 400 },
         {
           label: "Course Fee",
           value: "course",
-          defaultAmount: 12500,
+          defaultAmount: 15000,
+          isEditable: true,
+        },
+        {
+          label: "Convocation Fee",
+          value: "convocation",
+          defaultAmount: 7500,
+          isEditable: true,
+        },
+        {
+          label: "Other",
+          value: "other",
+          defaultAmount: "",
           isEditable: true,
         },
       ];

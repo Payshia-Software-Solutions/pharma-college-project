@@ -71,7 +71,6 @@ export default function InternalStudentPayment() {
       !formData.studentNumber ||
       !formData.paymentReason ||
       !formData.amount ||
-      !formData.reference ||
       !formData.bank ||
       !formData.branch ||
       !formData.slip

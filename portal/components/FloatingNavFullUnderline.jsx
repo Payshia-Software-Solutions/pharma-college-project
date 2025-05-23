@@ -6,6 +6,7 @@ import {
   UserPlus,
   GraduationCap,
   ShieldCheck,
+  MessageCircle,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,10 +29,16 @@ const FloatingNavFullUnderline = () => {
       label: "Graduation",
       link: "/graduation",
     },
+    {
+      id: "chat",
+      icon: MessageCircle,
+      label: "Chat",
+      link: "/chat",
+    },
   ];
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 pb-safe z-50">
+    <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 pb-safe z-40">
       <div className="flex justify-around items-center h-16 px-4 max-w-lg mx-auto">
         {tabs.map(({ id, icon: Icon, label, link }) => {
           const isActive =
