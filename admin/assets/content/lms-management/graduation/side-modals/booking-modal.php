@@ -38,7 +38,8 @@ $selectedPackage = $response->toArray();
 $course_ids = explode(',', $packageBooking['course_id']);
 $dueAmount = $selectedPackage['price'] + ($packageBooking['additional_seats'] * PARENT_SEAT_RATE);
 
-$userInfo = $client->request('GET', $_ENV['SERVER_URL'] . '/get-student-full-info?loggedUser=' . $packageBooking['student_number'])->toArray()
+$userInfo = $client->request('GET', $_ENV['SERVER_URL'] . '/get-student-full-info?loggedUser=' . $packageBooking['student_number'])->toArray();
+$hashDupplicateStatus = $client->request('GET', $_ENV['SERVER_URL'] . '/convocation-registrations/check-hash?hashValue=' . $packageBooking['hash_value'])->toArray()
 ?>
 <div class="loading-popup-content-right <?= htmlspecialchars($userTheme) ?>">
     <div class="row">
@@ -182,6 +183,33 @@ $userInfo = $client->request('GET', $_ENV['SERVER_URL'] . '/get-student-full-inf
 
 
             </div>
+
+            <?php if (count($hashDupplicateStatus) > 1) : ?>
+                <div class="row g-2">
+                    <div class="col-12">
+                        <h5 class="table-title">Slip Dupplicate Status</h5>
+                    </div>
+                    <?php foreach ($hashDupplicateStatus as $hashRecord) {
+                    ?>
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <p><?= $hashRecord['registration_id'] ?> | <?= $hashRecord['student_number'] ?></p>
+                                    <p>
+                                        <a target="_blank"
+                                            href="https://content-provider.pharmacollege.lk<?= $hashRecord['image_path'] ?>">Download
+                                            Slip</a>
+                                    </p>
+                                </div>
+                            </div>
+
+                        </div>
+                    <?php
+                    }
+                    ?>
+
+                </div>
+            <?php endif ?>
 
 
         </div>
