@@ -144,4 +144,15 @@ $studentCount = count($accountDetails);
             </div>
         </a>
     </div>
+
+    <div class="col-md-3 col-6 col-xxl-2">
+        <a href="./lms-word-pallet" rel="noopener noreferrer">
+            <div class="card clickable">
+                <div class="card-body text-center">
+                    <i class="fa-brands fa-creative-commons-nd icon-card"></i>
+                    <h5 class="mb-0">Word Pallet</h5>
+                </div>
+            </div>
+        </a>
+    </div>
 </div>
