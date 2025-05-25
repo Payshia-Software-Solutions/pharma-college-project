@@ -32,6 +32,17 @@ return [
         return $convocationRegistrationController->validateDuplicate($studentNumber);
     },
 
+    // GET a single registration by reference number (same as ID)
+    'GET /convocation-registrations/check-hash\?hashValue=[A-Za-z0-9]+/$' => function () use ($convocationRegistrationController) {
+        $hashValue = isset($_GET['hashValue']) ? $_GET['hashValue'] : null;
+        if (!$hashValue) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required parameter: hashValue']);
+            return;
+        }
+        return $convocationRegistrationController->checkHashDupplicate($hashValue);
+    },
+
 
     // GET a single registration by reference number (same as ID)
     'GET /convocation-registrations\?referenceNumber=[\d]+/$' => function () use ($convocationRegistrationController) {

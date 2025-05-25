@@ -78,6 +78,13 @@ class ConvocationRegistration
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function checkHashDupplicate($generated_hash)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE hash_value = ?");
+        $stmt->execute([$generated_hash]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // Read a single registration by ID
     public function getRegistrationById($registration_id)
     {
