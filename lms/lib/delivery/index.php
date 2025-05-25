@@ -54,7 +54,8 @@ if (isset($studentBalanceArray['TotalStudentPaymentRecords'])) {
 <div id="index-content" class="mt-3">
     <div class="row">
         <div class="col-12 text-end mb-2">
-            <button type="button" class="btn btn-warning" onclick="OpenIndex()"><i class="fa-solid fa-rotate-right"></i> Reload</button>
+            <button type="button" class="btn btn-warning" onclick="OpenIndex()"><i class="fa-solid fa-rotate-right"></i>
+                Reload</button>
         </div>
     </div>
 
@@ -81,7 +82,6 @@ if (isset($studentBalanceArray['TotalStudentPaymentRecords'])) {
                                         <th>Order</th>
                                         <th>Status</th>
                                         <th>Order Date</th>
-                                        <th>Esti. Delivery</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -115,8 +115,11 @@ if (isset($studentBalanceArray['TotalStudentPaymentRecords'])) {
                                                 <span class="badge bg-<?= $color ?>"><?= $active_status ?></span>
                                             </td>
                                             <td><?= $formattedOrderDate ?></td>
-                                            <td>Withing 3-5 Working Days</td>
-                                            <td class="text-center"><button class="btn btn-primary btn-sm"><i class="fa-solid fa-map-location-dot"></i> Tracking</button></td>
+                                            <td class="text-center">
+                                                <button class="btn btn-primary btn-sm">
+                                                    <i class="fa-solid fa-check-circle"></i> Update Received
+                                                </button>
+                                            </td>
                                         </tr>
                                     <?php } ?>
                                 </tbody>
@@ -145,7 +148,8 @@ if (isset($studentBalanceArray['TotalStudentPaymentRecords'])) {
         ?>
                 <div class="col-md-4 pb-3">
 
-                    <div class="card border-0 shadow-sm clickable other-card flex-fill" onclick=" OrderConfirmation('<?= $selectedArray['id'] ?>')">
+                    <div class="card border-0 shadow-sm clickable other-card flex-fill"
+                        onclick=" OrderConfirmation('<?= $selectedArray['id'] ?>')">
                         <div class="card-body">
                             <img src="./lib/delivery/assets/images/<?= $selectedArray['icon'] ?>" class="icon">
                             <h4 class="mb-0"><?= $selectedArray['delivery_title'] ?></h4>
@@ -155,7 +159,9 @@ if (isset($studentBalanceArray['TotalStudentPaymentRecords'])) {
 
                     <?php if ($UserLevel != "Student") { ?>
                         <div class="text-end">
-                            <button class="btn btn-dark mt-2" type="button" onclick="CreateNewDelivery('<?= $selectedArray['course_id'] ?>', '<?= $selectedArray['id'] ?>')"><i class="fa-solid fa-pencil"></i> Edit</button>
+                            <button class="btn btn-dark mt-2" type="button"
+                                onclick="CreateNewDelivery('<?= $selectedArray['course_id'] ?>', '<?= $selectedArray['id'] ?>')"><i
+                                    class="fa-solid fa-pencil"></i> Edit</button>
                         </div>
                     <?php } ?>
                 </div>

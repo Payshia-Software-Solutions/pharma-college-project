@@ -73,7 +73,7 @@ class ConvocationRegistration
     // Validate duplicate registration
     public function validateDuplicate($student_number)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE student_number = ? AND registration_status = 'pending'");
+        $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE student_number = ?");
         $stmt->execute([$student_number]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
