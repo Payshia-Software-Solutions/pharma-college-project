@@ -2,18 +2,29 @@
 // controllers/ConvocationRegistrationController.php
 
 require_once './models/ConvocationRegistration.php';
+require_once './controllers/TransactionPaymentController.php';
+require_once './controllers/UserFullDetailsController.php';
+require_once './models/SMSModel.php';
 
 class ConvocationRegistrationController
 {
     private $model;
     private $ftpConfig;
+    private $transactionPaymentController;
+    private $userFullDetailsController;
+    private $smsModel;
+    private $templatePath;
+    private $convocationTemplatePath;
 
-    public function __construct($pdo)
+    public function __construct($pdo, $convocationTemplatePath)
     {
         $this->model = new ConvocationRegistration($pdo);
+        $this->convocationTemplatePath = $convocationTemplatePath;
         $this->ftpConfig = include('./config/ftp.php');
+        $this->transactionPaymentController = new TransactionPaymentController($pdo);
+        $this->userFullDetailsController = new UserFullDetailsController($pdo);
+        $this->smsModel = new SMSModel($_ENV['SMS_AUTH_TOKEN'], $_ENV['SMS_SENDER_ID'], $convocationTemplatePath);
     }
-
 
     private function ensureDirectoryExists($ftp_conn, $dir)
     {
@@ -85,6 +96,18 @@ class ConvocationRegistrationController
         echo json_encode($registrations);
     }
 
+    public function getCountsBySessions()
+    {
+        $registrations = $this->model->getCountsBySessions();
+        echo json_encode($registrations);
+    }
+
+
+    public function getAdditionalSeatsCountsBySessions($sessionId)
+    {
+        $registrations = $this->model->getAdditionalSeatsCountsBySessions($sessionId);
+        echo json_encode($registrations);
+    }
     // GET a single registration by ID
     public function getRegistration($registration_id)
     {
@@ -109,6 +132,19 @@ class ConvocationRegistrationController
         }
     }
 
+    // GET a single registration by ID
+    public function checkHashDupplicate($generated_hash)
+    {
+        $registration = $this->model->checkHashDupplicate($generated_hash);
+        if ($registration) {
+            echo json_encode($registration);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Registration not found']);
+        }
+    }
+
+
     // GET a single registration by reference number
     public function getRegistrationByReference($reference_number)
     {
@@ -124,10 +160,13 @@ class ConvocationRegistrationController
     // POST create a new registration (no reference_number in input)
     public function createRegistration()
     {
+        $paymentSlipPath = '';
         // Check if the request is multipart/form-data
         if ($_SERVER['CONTENT_TYPE'] && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
             $data = $_POST; // Form fields
             $file = $_FILES['payment_slip'] ?? null; // Uploaded file (matches frontend FormData key)
+
+            // var_dump($data);
 
             // Extract course_ids directly from $_POST['course_id']
             $courseIds = isset($data['course_id']) && is_array($data['course_id']) ? $data['course_id'] : [];
@@ -200,10 +239,11 @@ class ConvocationRegistrationController
                 $data['hash_value'] ?? null,
                 $paymentSlipPath,
                 $data['additional_seats'] ?? 0,
+                $data['session'] ?? 1
             );
-
             http_response_code(201);
             echo json_encode([
+                'package_id' => $data['package_id'],
                 'registration_id' => $registration_id,
                 'reference_number' => $registration_id,
                 'message' => 'Registration created successfully',
@@ -238,7 +278,10 @@ class ConvocationRegistrationController
                 $data['payment_status'] ?? 'pending',
                 $data['payment_amount'] ?? null,
                 $data['registration_status'] ?? 'pending',
-                $data['additional_seats'] ?? null,
+                $data['hash_value'] ?? null,
+                $paymentSlipPath,
+                $data['additional_seats'] ?? 0,
+                $data['session'] ?? 1
             );
             http_response_code(201);
             echo json_encode([
@@ -289,6 +332,72 @@ class ConvocationRegistrationController
         } else {
             http_response_code(404);
             echo json_encode(['error' => 'Registration not found or deletion failed']);
+        }
+    }
+
+    public function updatePayment($reference_number)
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($data['payment_status']) || !isset($data['payment_amount'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required payment fields']);
+            return;
+        }
+
+        $paymentAmount = $data['payment_amount'];
+        $student_number = $this->model->getRegistrationByReference($reference_number)['student_number'];
+        $studentInfo = $this->userFullDetailsController->model->getUserByUserName($student_number);
+        $txnNumber = $this->transactionPaymentController->generateTransactionId();
+        $paymentData = [
+            'transaction_id'    => $txnNumber,
+            'rec_time'          => date('Y-m-d H:i:s'),
+            'reference'         => 'Convocation Payment',
+            'ref_id'            => '1',
+            'created_by'        => $data['created_by'] ?? '',
+            'created_at'        => date('Y-m-d H:i:s'),
+            'student_number'    => $student_number,
+            'transaction_type'  => 'CREDIT',
+            'reference_key'     => 'covocation-payment',
+            'payment_amount'    => $paymentAmount
+        ];
+
+        $created = $this->transactionPaymentController->model->createPayment($paymentData);
+
+        if (!$created) {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to create payment record']);
+            return;
+        }
+
+        $updated = $this->model->updatePayment($reference_number, $data['payment_status'], $data['payment_amount']);
+
+        if ($updated) {
+            // Prepare the welcome message
+            $mobile = $studentInfo['telephone_1']; // Assuming 'phone_number' is the key for the user's mobile number
+            $studentName = $studentInfo['name_on_certificate']; // Combine first and last name
+            $referenceNumber = $reference_number; // Use the user ID as the reference number
+
+            // Send the welcome SMS
+            $smsResponse = $this->smsModel->sendConvocationPaymentApprovedSMS($mobile, $studentName, $referenceNumber, $txnNumber, $paymentAmount);
+
+            // Check if the SMS was sent successfully
+            if ($smsResponse['status'] === 'error') {
+                throw new Exception('Failed to send welcome SMS: ' . $smsResponse['message']);
+            }
+
+            // Return success response with the new user's ID
+            http_response_code(201); // Created successfully
+            echo json_encode([
+                'status' => 'Success',
+                'message' => 'Payment record created and convocation updated',
+                'reference_number' => $reference_number,
+                'sms_status' => $smsResponse['status'],
+                'sms_message' => $smsResponse['message']
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to update convocation registration']);
         }
     }
 }

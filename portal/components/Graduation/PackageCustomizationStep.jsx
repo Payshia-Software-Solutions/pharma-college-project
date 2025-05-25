@@ -118,7 +118,7 @@ export default function PackageCustomizationStep({
             inclusions: {
               parentSeatCount: pkg.parent_seat_count,
               garland: !!pkg.garland,
-              graduationCloth: !!pkg.graduation_cloth,
+              graduationCloth: pkg.graduation_cloth === "1",
               photoPackage: !!pkg.photo_package,
             },
             isActive: !!pkg.is_active,
@@ -210,7 +210,70 @@ export default function PackageCustomizationStep({
     return basePrice + additionalCost;
   };
 
-  console.log(packages);
+  const [convocation, setConvocation] = useState(null);
+  const [sessionAdditionalSeat, setsessionAdditionalSeat] = useState([]);
+
+  // Fetch convocation data and session registrations
+  useEffect(() => {
+    const fetchConvocation = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}convocations/1`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch convocation data");
+        }
+        const data = await response.json();
+        setConvocation(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setStepLoading(false);
+      }
+    };
+
+    const fetchRegistrations = async () => {
+      try {
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}convocation-registrations/get-additional-seats-by-sessions/${formData.session}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch session registrations");
+        }
+        const data = await response.json();
+        setsessionAdditionalSeat(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setStepLoading(false);
+      }
+    };
+
+    fetchConvocation();
+    fetchRegistrations();
+  }, [setStepLoading]);
+
+  const getRemainingSeats = () => {
+    if (!convocation || sessionAdditionalSeat.length === 0) return 0;
+
+    if (sessionAdditionalSeat.total_additional_seats) {
+      const remainingSeats = Math.max(
+        0,
+        convocation.parent_seats - sessionAdditionalSeat.total_additional_seats
+      );
+
+      // Check if remaining seats are 0 or negative
+      if (remainingSeats <= 0) {
+        setIsValid(false); // Set form validity to false when no seats are available
+      }
+
+      return remainingSeats;
+    }
+
+    // Default case if session not found
+    return convocation.parent_seats;
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 50 }}
@@ -286,7 +349,11 @@ export default function PackageCustomizationStep({
                       {/* Student Seats Card */}
                       <div className="bg-gray-50 p-4 rounded-lg text-center shadow-sm">
                         <div className="text-gray-600 mb-2 flex justify-center">
-                          <ChairIcon />
+                          <Image
+                            src={`/icons/chair.png`}
+                            width={40}
+                            height={40}
+                          />
                         </div>
                         <h3 className="font-medium text-gray-700">
                           Student Seat
@@ -311,7 +378,11 @@ export default function PackageCustomizationStep({
                               : "text-gray-400"
                           } mb-2 flex justify-center`}
                         >
-                          <StarIcon />
+                          <Image
+                            src={`/icons/necklace.png`}
+                            width={40}
+                            height={40}
+                          />
                         </div>
                         <h3 className="font-medium text-gray-700">Garland</h3>
                         <p
@@ -326,6 +397,7 @@ export default function PackageCustomizationStep({
                       </div>
 
                       {/* Graduation Cloak Card */}
+                      {console.log(pkg.inclusions.graduationCloth)}
                       <div
                         className={`p-4 rounded-lg text-center shadow-sm ${
                           pkg.inclusions.graduationCloth
@@ -340,10 +412,14 @@ export default function PackageCustomizationStep({
                               : "text-gray-400"
                           } mb-2 flex justify-center`}
                         >
-                          <GraduationCapIcon />
+                          <Image
+                            src={`/icons/graduation-hat.png`}
+                            width={40}
+                            height={40}
+                          />
                         </div>
                         <h3 className="font-medium text-gray-700">
-                          Graduation Cloak
+                          Graduation Hat
                         </h3>
                         <p
                           className={`text-sm font-medium ${
@@ -373,7 +449,11 @@ export default function PackageCustomizationStep({
                               : "text-gray-400"
                           } mb-2 flex justify-center`}
                         >
-                          <ScrollIcon />
+                          <Image
+                            src={`/icons/curled.png`}
+                            width={40}
+                            height={40}
+                          />
                         </div>
                         <h3 className="font-medium text-gray-700">Scroll</h3>
                         <p
@@ -404,19 +484,25 @@ export default function PackageCustomizationStep({
               Additional Seats
             </label>
             <div className="mt-2 flex space-x-4">
-              {[1, 2, 3, 4].map((seats) => (
-                <button
-                  key={seats}
-                  onClick={() => handleAdditionalSeatsChange(seats)} // Call with seat value
-                  className={`px-4 py-2 rounded-md text-white font-semibold ${
-                    additionalSeats === seats
-                      ? "bg-blue-500 hover:bg-blue-600"
-                      : "bg-gray-300 hover:bg-gray-400"
-                  } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50`}
-                >
-                  {seats}
-                </button>
-              ))}
+              {[1, 2, 3, 4].map((seats) => {
+                const remainingSeats = getRemainingSeats(); // Get remaining seats or balance
+                const isDisabled = remainingSeats < seats; // Disable if remaining balance is less than the seats
+
+                return (
+                  <button
+                    key={seats}
+                    onClick={() => handleAdditionalSeatsChange(seats)} // Call with seat value
+                    className={`px-4 py-2 rounded-md text-white font-semibold ${
+                      additionalSeats === seats
+                        ? "bg-blue-500 hover:bg-blue-600"
+                        : "bg-gray-300 hover:bg-gray-400"
+                    } focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50`}
+                    disabled={isDisabled} // Disable button if condition met
+                  >
+                    {seats}
+                  </button>
+                );
+              })}
 
               {/* Clear Button */}
               <button
@@ -429,6 +515,9 @@ export default function PackageCustomizationStep({
             <p className="mt-1 text-sm text-gray-500">
               Add extra parent seats beyond the package inclusion (Rs{" "}
               {ADDITIONAL_SEAT_COST} per seat).
+            </p>
+            <p className="text-gray-600 border-t mt-2 pt-2">
+              Remaining Seats: {getRemainingSeats()}
             </p>
           </div>
 

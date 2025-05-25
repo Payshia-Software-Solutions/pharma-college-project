@@ -27,10 +27,12 @@ $senderId = $_ENV['SMS_SENDER_ID'];
 
 // Define the path to the template file
 $templatePath = __DIR__ . '/../templates/welcome_sms_template.txt';
+$convocationTemplatePath = __DIR__ . '/../templates/convocation-payment-message.txt';
 
 
 // Include route files
 $assignmentRoutes = require './routes/Assignment/AssignmentRoutes.php';
+$submissionRoutes = require './routes/Assignment/submissionRoutes.php';
 $appointmentRoutes = require './routes/OtherRoutes/appointmentRoutes.php';
 // $eCertificateRoutes = require './routes/OtherRoutes/eCertificateRoutes.php';
 $courseAssignmentRoutes = require './routes/OtherRoutes/courseAssignmentRoutes.php';
@@ -107,9 +109,8 @@ $DeliveryOrdersRoutes = require './routes/Orders/DeliveryOrdersRoutes.php';
 $UserCertificatePrintStatusRoutes = require './routes/UserCertificatePrintStatusRoutes/UserCertificatePrintStatusRoutes.php';
 $ContactRoutes = require './routes/Contact/ContactRoutes.php';
 $EventsPageRoutes = require './routes/EventsPageRoutes.php';
+$EmailRoutes = require './routes/EmailRoutes.php';
 $TestimonialRoutes = require './routes/TestimonialRoutes.php';
-// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes  TestimonialRoutes.php
-
 $DistrictsRoutes = require './routes/District/DistrictsRoutes.php';
 $ECertificateRoutes = require './routes/ecertificates/ECertificateRoutes.php';
 $paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.php';
@@ -121,6 +122,14 @@ $SMSRoutes = require './routes/SMSRoutes.php';
 $bankRoutes = require './routes/bankRoutes.php';
 $ConvocationRegistrationRoutes  = require './routes/ConvocationRegistrationRoutes.php';
 $PackageRoutes  = require './routes/PackageRoutes.php';
+$CertificateOrderRoutes = require './routes/CertificateOrderRoutes.php';
+$convocationRoutes = require './routes/convocationRoutes.php';
+$transactionPaymentRoutes = require './routes/transactionPaymentRoutes.php';
+
+$WordListRoutes = require './routes/WordListRoutes.php';
+$EnWordSubmissionRoutes = require './routes/EnWordSubmissionRoutes.php';
+
+
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
 
 
@@ -131,7 +140,9 @@ $PackageRoutes  = require './routes/PackageRoutes.php';
 
 $routes = array_merge(
     $userRoutes,
+    $transactionPaymentRoutes,
     $assignmentRoutes,
+    $submissionRoutes,
     $appointmentRoutes,
     // $eCertificateRoutes,
     $courseAssignmentRoutes,
@@ -214,17 +225,15 @@ $routes = array_merge(
     $bankRoutes,
     $studentCourseRoutes,
     $EventsPageRoutes,
-
+    $EmailRoutes,
     $TestimonialRoutes,
-
-
     $EventsPageRoutes,
-
-
     $ConvocationRegistrationRoutes,
     $PackageRoutes,
-
-
+    $CertificateOrderRoutes,
+    $convocationRoutes,
+    $WordListRoutes,
+    $EnWordSubmissionRoutes
 );
 
 

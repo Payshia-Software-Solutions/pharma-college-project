@@ -24,6 +24,12 @@ class AssignmentController
         echo json_encode($assignment);
     }
 
+    public function getAllAssignmentsGroupedByCourse()
+    {
+        $assignments = $this->model->getAllAssignmentsGroupedByCourse();
+        echo json_encode($assignments);
+    }
+
     public function getAssignmentsByCourse($courseCode)
     {
         $assignment = $this->model->getAssignmentsByCourse($courseCode);

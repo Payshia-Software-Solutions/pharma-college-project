@@ -57,6 +57,16 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      animation: {
+        'bounce-in': 'bounce-in 0.5s ease-out',
+      },
+      keyframes: {
+        'bounce-in': {
+          '0%': { transform: 'scale(0.8)', opacity: 0 },
+          '80%': { transform: 'scale(1.05)' },
+          '100%': { transform: 'scale(1)', opacity: 1 },
+        },
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

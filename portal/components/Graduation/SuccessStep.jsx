@@ -1,7 +1,7 @@
-// SuccessStep.js
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Loader, FileText } from "lucide-react";
+import { CheckCircle, Truck, Copy, Calendar } from "lucide-react";
 
 // Import other components
 import RegistrationHeader from "./SuccessComponents/RegistrationHeader";
@@ -11,8 +11,9 @@ import PackageDetails from "./SuccessComponents/PackageDetails";
 import PaymentStatus from "./SuccessComponents/PaymentStatus";
 import PaymentSlip from "./SuccessComponents/PaymentSlip";
 import FooterNote from "./SuccessComponents/FooterNote";
+import CertificateConfirmation from "./SuccessComponents/CertificateConfirmation";
 
-export default function SuccessStep({ referenceNumber }) {
+export default function SuccessStep({ referenceNumber, deliveryMethod }) {
   const [registration, setRegistration] = useState(null);
   const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,14 +24,17 @@ export default function SuccessStep({ referenceNumber }) {
     const fetchData = async () => {
       setLoading(true);
       try {
+        // Conditional API endpoints based on deliveryMethod
+        const registrationUrl =
+          deliveryMethod === "By Courier"
+            ? `${process.env.NEXT_PUBLIC_API_URL}/certificate-orders/${referenceNumber}`
+            : `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations/${referenceNumber}`;
+
         const [regResponse, pkgResponse, courseResponse] = await Promise.all([
-          fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations/${referenceNumber}`,
-            {
-              method: "GET",
-              headers: { "Content-Type": "application/json" },
-            }
-          ),
+          fetch(registrationUrl, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }),
           fetch(`${process.env.NEXT_PUBLIC_API_URL}/packages`, {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -73,7 +77,7 @@ export default function SuccessStep({ referenceNumber }) {
     };
 
     fetchData();
-  }, [referenceNumber]);
+  }, [referenceNumber, deliveryMethod]); // Add deliveryMethod to dependency array
 
   const selectedPackage = registration
     ? packages.find((pkg) => pkg.package_id === registration.package_id) || {
@@ -82,7 +86,6 @@ export default function SuccessStep({ referenceNumber }) {
       }
     : { name: "Loading...", price: 0 };
 
-  console.log("allCourses in render:", allCourses);
   return (
     <motion.div
       initial={{ opacity: 0, x: 50 }}
@@ -108,18 +111,31 @@ export default function SuccessStep({ referenceNumber }) {
           {error}. Unable to load receipt details.
         </p>
       )}
+
       {!loading && !error && registration && allCourses.length > 0 && (
         <>
-          <RegistrationHeader registration={registration} />
-          <StudentDetails registration={registration} />
-          <CourseDetails registration={registration} allCourses={allCourses} />
-          <PackageDetails
-            selectedPackage={selectedPackage}
-            registration={registration}
-          />
-          <PaymentStatus registration={registration} />
-          <PaymentSlip registration={registration} />
-          <FooterNote registration={registration} />
+          {/* Conditionally render content based on the delivery method */}
+          {deliveryMethod === "By Courier" ? (
+            <>
+              <CertificateConfirmation referenceNumber={referenceNumber} />
+            </>
+          ) : (
+            <>
+              <RegistrationHeader registration={registration} />
+              <StudentDetails registration={registration} />
+              <CourseDetails
+                registration={registration}
+                allCourses={allCourses}
+              />
+              <PackageDetails
+                selectedPackage={selectedPackage}
+                registration={registration}
+              />
+              <PaymentStatus registration={registration} />
+              <PaymentSlip registration={registration} />
+              <FooterNote registration={registration} />
+            </>
+          )}
         </>
       )}
     </motion.div>

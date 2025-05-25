@@ -22,9 +22,9 @@ import { User, Book, Package, FileText, GraduationCap } from "lucide-react";
 const steps = [
   { id: 1, title: "Student Info", icon: User },
   { id: 2, title: "Course", icon: Book },
-  { id: 3, title: "Certificate Delivery", icon: GraduationCap }, // New step
+  { id: 3, title: "Delivery", icon: GraduationCap }, // New step
   { id: 4, title: "Package", icon: Package },
-  { id: 5, title: "Review & Submit", icon: FileText },
+  { id: 5, title: "Review", icon: FileText },
 ];
 
 export default function ConvocationPortal() {
@@ -56,6 +56,8 @@ export default function ConvocationPortal() {
     },
     package_id: null,
     paymentSlip: null,
+    session: null,
+    deliveryMethod: null,
   });
   const [isValid, setIsValid] = useState(false);
   const [splashLoading, setSplashLoading] = useState(true);
@@ -132,16 +134,46 @@ export default function ConvocationPortal() {
     setIsLoading(true);
     setShowSuccess(false);
 
-    if (
-      !formData.studentNumber ||
-      !formData.studentName ||
-      formData.courses.length === 0 || // Changed from !formData.course.id
-      !formData.package_id ||
-      !formData.paymentSlip
-    ) {
-      alert(
-        "Please complete all required fields, including the payment slip and at least one course."
-      );
+    if (!formData.studentNumber) {
+      alert("Please enter the student number.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (!formData.studentName) {
+      alert("Please enter the student name.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (formData.courses.length === 0) {
+      alert("Please select at least one course.");
+      setIsLoading(false);
+      return;
+    }
+
+    if (formData.deliveryMethod === "Convocation Ceremony") {
+      if (!formData.package_id) {
+        alert("Please select a package for the convocation ceremony.");
+        setIsLoading(false);
+        return;
+      }
+
+      if (!formData.paymentSlip) {
+        alert("Please upload the payment slip for the convocation ceremony.");
+        setIsLoading(false);
+        return;
+      }
+
+      if (!formData.session) {
+        alert("Please select a session for the convocation ceremony.");
+        setIsLoading(false);
+        return;
+      }
+    }
+
+    if (!formData.deliveryMethod) {
+      alert("Please select a delivery method.");
       setIsLoading(false);
       return;
     }
@@ -158,12 +190,24 @@ export default function ConvocationPortal() {
       "additional_seats",
       formData.packageDetails.additionalSeats
     );
+    submissionData.append("deliveryMethod", formData.deliveryMethod);
+    submissionData.append("session", formData.session);
+    submissionData.append("address_line1", address.line1);
+    submissionData.append("address_line2", address.line2 || ""); // Optional field
+    submissionData.append("city_id", address.city);
+    submissionData.append("district", address.district);
+    submissionData.append("mobile", address.phoneNumber);
+    submissionData.append("created_by", formData.studentNumber);
+    submissionData.append("type", 1);
+    submissionData.append("payment_amount", 0);
+    submissionData.append("certificate_id", 0);
+    submissionData.append("certificate_status", "Pending");
 
     try {
       // Determine the correct API URL based on the delivery method
       const apiUrl =
         formData.deliveryMethod === "By Courier"
-          ? `${process.env.NEXT_PUBLIC_API_URL}/courier-registrations`
+          ? `${process.env.NEXT_PUBLIC_API_URL}/certificate-orders`
           : `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations`;
 
       // Make the appropriate API call
@@ -214,7 +258,10 @@ export default function ConvocationPortal() {
           <main className="flex-1 p-4">
             <AnimatePresence mode="wait">
               {showSuccess ? (
-                <SuccessStep referenceNumber={referenceNumber} />
+                <SuccessStep
+                  referenceNumber={referenceNumber}
+                  deliveryMethod={formData.deliveryMethod}
+                />
               ) : (
                 <>
                   {currentStep === 1 && (
@@ -235,30 +282,32 @@ export default function ConvocationPortal() {
                   )}
                   {currentStep === 3 && (
                     <CertificateDeliveryStep
-                      deliveryMethod={deliveryMethod}
-                      setDeliveryMethod={setDeliveryMethod}
-                      setIsValid={setIsValid}
-                      setStepLoading={setStepLoading}
-                    />
-                  )}
-
-                  {currentStep === 4 && deliveryMethod === "By Courier" && (
-                    <AddressStep
-                      address={address}
-                      setAddress={setAddress}
-                      setIsValid={setIsValid}
-                    />
-                  )}
-
-                  {currentStep === 4 && deliveryMethod !== "By Courier" && (
-                    <PackageCustomizationStep
                       formData={formData}
-                      updatePackageData={updatePackageData}
+                      setFormData={setFormData}
                       setIsValid={setIsValid}
                       setStepLoading={setStepLoading}
-                      packages={packages}
                     />
                   )}
+                  {/* {alert(deliveryMethod)} */}
+                  {currentStep === 4 &&
+                    formData.deliveryMethod === "By Courier" && (
+                      <AddressStep
+                        address={address}
+                        setAddress={setAddress}
+                        setIsValid={setIsValid}
+                      />
+                    )}
+
+                  {currentStep === 4 &&
+                    formData.deliveryMethod !== "By Courier" && (
+                      <PackageCustomizationStep
+                        formData={formData}
+                        updatePackageData={updatePackageData}
+                        setIsValid={setIsValid}
+                        setStepLoading={setStepLoading}
+                        packages={packages}
+                      />
+                    )}
                   {currentStep === 5 && (
                     <ReviewStep
                       formData={formData}

@@ -45,31 +45,33 @@ export default function ReviewStep({
 
   useEffect(() => {
     const isComplete =
-      formData.studentNumber &&
-      formData.studentName &&
-      formData.courses.length > 0 &&
-      (deliveryMethod === "Convocation Ceremony"
-        ? formData.package_id
-        : true) &&
-      (deliveryMethod === "Convocation Ceremony" ? paymentSlip : true); // Only require payment slip for Convocation Ceremony
+      formData.deliveryMethod === "Convocation Ceremony" ? paymentSlip : true; // Only require payment slip for Convocation Ceremony
     setIsValid(isComplete);
-    if (paymentSlip) {
-      updateFormData("paymentSlip", paymentSlip);
-    }
-  }, [formData, paymentSlip, setIsValid, updateFormData, deliveryMethod]);
+  }, [formData, paymentSlip, setIsValid, updateFormData]);
 
   const handleFileChange = (files) => {
     const file = files[0];
-    if (
-      file &&
-      (file.type === "image/jpeg" ||
-        file.type === "image/png" ||
-        file.type === "application/pdf")
-    ) {
-      setPaymentSlip(file);
-    } else {
-      alert("Please upload a valid payment slip (JPEG, PNG, or PDF).");
-      setPaymentSlip(null);
+
+    // Normalize the file type to lowercase for case-insensitive comparison
+    const validTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "application/pdf",
+    ];
+
+    if (file) {
+      // Check if the file type is valid
+      if (validTypes.includes(file.type.toLowerCase())) {
+        setPaymentSlip(file); // Set local state for payment slip
+
+        // Update formData with payment slip
+
+        updateFormData("paymentSlip", file);
+      } else {
+        alert("Please upload a valid payment slip (JPEG, PNG, or PDF).");
+        setPaymentSlip(null); // Reset the file input if it's invalid
+      }
     }
   };
 
@@ -125,7 +127,7 @@ export default function ReviewStep({
           <SelectedCoursesCard formData={formData} />
 
           {/* Conditionally render Payment Slip upload if "Convocation Ceremony" is selected */}
-          {deliveryMethod === "Convocation Ceremony" && (
+          {formData.deliveryMethod === "Convocation Ceremony" && (
             <>
               <SelectedPackageCard
                 formData={formData}
@@ -191,7 +193,7 @@ export default function ReviewStep({
           )}
 
           {/* Conditionally render address information if "By Courier" is selected */}
-          {deliveryMethod === "By Courier" && (
+          {formData.deliveryMethod === "By Courier" && (
             <CourierAddressCard address={address} />
           )}
         </div>

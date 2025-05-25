@@ -105,7 +105,7 @@ if (empty($imageBase64)) {
         font-family: "Chaparral Pro Bold Italic";
         width: calc(297mm - 100px);
         font-size: 35px;
-        text-align: center !important;
+        /* text-align: center !important; */
         font-weight: 800 !important;
         position: fixed;
         top: <?= $name_position_from_top ?> !important;
@@ -156,4 +156,5 @@ if ($backImage != "" && $backImageStatus == 1) {
 <img class="qr-code" src=<?= (new QRCode)->render($text) ?> />
 <p class="print-date">Date:<?= $PrintDate ?></p>
 <p class="print-number">Index Number:<?= $s_user_name ?></p>
-<p class="certificate-number">Certificate ID:<?= GetCertificateID('Workshop-Certificate', $s_user_name, $CourseCode) ?></p>
+<p class="certificate-number">Certificate ID:<?= GetCertificateID('Workshop-Certificate', $s_user_name, $CourseCode) ?>
+</p>

@@ -24,6 +24,17 @@ class StudentCourse
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Get LMS student details by username
+    public function getLmsStudentByUsername($userName)
+    {
+        $cleanUsername = rtrim($userName, "/");
+        $stmt = $this->pdo->prepare("SELECT * FROM user_full_details WHERE username = :username");
+        $stmt->execute(['username' => $cleanUsername]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+
     // Create a new record
     public function createRecord($data)
     {
@@ -62,8 +73,10 @@ class StudentCourse
     }
 
     // Get records by student ID
-    public function getRecordsByStudentId($studentId)
+    public function getRecordsByStudentId($userName)
     {
+
+        $studentId = $this->getLmsStudentByUsername($userName)['student_id'];
         $stmt = $this->pdo->prepare("SELECT * FROM student_course WHERE student_id = :student_id");
         $stmt->execute(['student_id' => $studentId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);

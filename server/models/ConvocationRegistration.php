@@ -10,28 +10,6 @@ class ConvocationRegistration
         $this->pdo = $pdo;
     }
 
-    // Create a new registration (reference_number set after insert)
-    public function createRegistration($student_number, $course_id, $package_id, $event_id = null, $payment_status = 'pending', $payment_amount = null, $registration_status = 'pending', $hash_value = null, $image_path = null, $additional_seats = null)
-    {
-        // Insert without reference_number initially
-        $stmt = $this->pdo->prepare("
-            INSERT INTO convocation_registrations (student_number, course_id, package_id, event_id, payment_status, payment_amount, registration_status, hash_value, image_path, additional_seats)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
-        $stmt->execute([$student_number, $course_id, $package_id, $event_id, $payment_status, $payment_amount, $registration_status, $hash_value, $image_path, $additional_seats]);
-
-        $registration_id = $this->pdo->lastInsertId();
-
-        // Update reference_number to match registration_id
-        $stmt = $this->pdo->prepare("
-            UPDATE convocation_registrations 
-            SET reference_number = ? 
-            WHERE registration_id = ?
-        ");
-        $stmt->execute([$registration_id, $registration_id]);
-
-        return $registration_id;
-    }
 
     // Read all registrations
     public function getAllRegistrations()
@@ -53,12 +31,57 @@ class ConvocationRegistration
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getCountsBySessions()
+    {
+        $stmt = $this->pdo->prepare("SELECT `session`, COUNT(registration_id) AS `sessionCounts` FROM convocation_registrations GROUP BY `session`");
+        $stmt->execute([]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAdditionalSeatsCountsBySessions($sessionId)
+    {
+        $stmt = $this->pdo->prepare("SELECT SUM(additional_seats) AS `total_additional_seats` FROM convocation_registrations WHERE `session` = ?");
+        $stmt->execute([$sessionId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
+    // Create a new registration (reference_number set after insert)
+    public function createRegistration($student_number, $course_id, $package_id, $event_id = null, $payment_status = 'pending', $payment_amount = null, $registration_status = 'pending', $hash_value = null, $image_path = null, $additional_seats = null, $session = 1)
+    {
+        // Insert without reference_number initially
+        $stmt = $this->pdo->prepare("
+            INSERT INTO convocation_registrations (student_number, course_id, package_id, event_id, payment_status, payment_amount, registration_status, hash_value, image_path, additional_seats, session)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->execute([$student_number, $course_id, $package_id, $event_id, $payment_status, $payment_amount, $registration_status, $hash_value, $image_path, $additional_seats, $session]);
+
+        $registration_id = $this->pdo->lastInsertId();
+
+        // Update reference_number to match registration_id
+        $stmt = $this->pdo->prepare("
+            UPDATE convocation_registrations 
+            SET reference_number = ? 
+            WHERE registration_id = ?
+        ");
+        $stmt->execute([$registration_id, $registration_id]);
+
+        return $registration_id;
+    }
+
 
     // Validate duplicate registration
     public function validateDuplicate($student_number)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE student_number = ? AND registration_status = 'pending'");
+        $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE student_number = ?");
         $stmt->execute([$student_number]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function checkHashDupplicate($generated_hash)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE hash_value = ?");
+        $stmt->execute([$generated_hash]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -94,5 +117,26 @@ class ConvocationRegistration
     {
         $stmt = $this->pdo->prepare("DELETE FROM convocation_registrations WHERE registration_id = ?");
         return $stmt->execute([$registration_id]);
+    }
+
+    // Update only the registration_status of a registration
+    public function updateRegistrationStatus($reference_number, $registration_status)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET registration_status = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$registration_status, $reference_number]);
+    }
+
+    public function updatePayment($reference_number, $payment_status, $payment_amount)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET registration_status = ?, payment_amount = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$payment_status, $payment_amount, $reference_number]);
     }
 }

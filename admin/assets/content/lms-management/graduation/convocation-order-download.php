@@ -1,0 +1,308 @@
+<?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+include '../../../../include/function-update.php';
+include '../../../../include/lms-functions.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
+define('PARENT_SEAT_RATE', 500); // example value
+
+// For use env file data
+use Dotenv\Dotenv;
+use Symfony\Component\HttpClient\HttpClient;
+
+// Load environment variables
+$dotenv = Dotenv::createImmutable(dirname(__DIR__, 4));
+$dotenv->load();
+
+// Initialize HTTP client
+$client = HttpClient::create();
+
+// Fetch logged-in user data (if needed)
+$LoggedUser = $_POST['LoggedUser'];
+$UserLevel = $_POST['UserLevel'];
+
+// Fetch certificate order data from API
+$response = $client->request('GET', $_ENV["SERVER_URL"] . '/packages/');
+$graduationPackages = $response->toArray();
+
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/convocation-registrations');
+$packageBookings = $response->toArray();
+
+// Get Main Courses
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/parent-main-course');
+$mainCourses = $response->toArray();
+
+$indexed_courses = [];
+foreach ($mainCourses as $course) {
+    $indexed_courses[$course['id']] = $course;
+}
+
+// Get Packages
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/packages');
+$packages = $response->toArray();
+$indexed_packages = [];
+foreach ($packages as $package) {
+    $indexed_packages[$package['package_id']] = $package;
+}
+
+// Get Courier Orders
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/certificate-orders');
+$courierOrders = $response->toArray();
+
+// Get Courier Orders
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/assignmentsByCourse');
+$allAssignments = $response->toArray();
+
+// Batch List
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/course');
+$batchList = $response->toArray();
+
+// Get Enrollments
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/student-courses');
+$studentEnrollments = $response->toArray();
+
+function filterEnrollmentsByStudentId($enrollments, $studentId)
+{
+    return array_values(array_filter($enrollments, function ($enrollment) use ($studentId) {
+        return $enrollment['student_id'] === $studentId;
+    }));
+}
+
+function formatStudentId($rawId)
+{
+    return substr($rawId, 0, 2) . '/' . substr($rawId, 2, 2) . '/' . substr($rawId, 4);
+}
+$allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submissions-group-by-student')->toArray();
+
+
+?>
+
+<div class="row mt-5">
+    <div class="col-md-6 col-lg-3 d-flex">
+        <div class="card item-card flex-fill">
+            <div class="overlay-box">
+                <i class="fa-solid fa-chart-line icon-card"></i>
+            </div>
+            <div class="card-body">
+                <p>Packages</p>
+                <h1><?= count($graduationPackages) ?></h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3 d-flex">
+        <div class="card item-card flex-fill">
+            <div class="overlay-box">
+                <i class="fa-solid fa-chart-line icon-card"></i>
+            </div>
+            <div class="card-body">
+                <p>Bookings</p>
+                <h1><?= count($packageBookings) ?></h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6 col-lg-3 d-flex">
+        <div class="card item-card flex-fill">
+            <div class="overlay-box">
+                <i class="fa-solid fa-chart-line icon-card"></i>
+            </div>
+            <div class="card-body">
+                <p>By Courier</p>
+                <h1><?= count($courierOrders) ?></h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-2 mb-5">
+    <div class="col-md-12">
+        <h5 class="table-title">Graduation Center - Download</h5>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="graduation-table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Reference #</th>
+                                <th scope="col">Student Number</th>
+                                <th scope="col">Course Balance</th>
+                                <th scope="col">Session</th>
+                                <th scope="col">Courses</th>
+                                <th scope="col">Certificate</th>
+                                <th scope="col">Advanced</th>
+                                <th scope="col">Pacakge</th>
+                                <th scope="col">Additional Seats</th>
+                                <th scope="col">Due Payment</th>
+                                <th scope="col">Slip</th>
+                                <th scope="col">Status</th>
+                                <th scope="col">Registration Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            // Initialize an array to store seen hash values
+                            $seenHashes = [];
+
+                            foreach ($packageBookings as $booking) {
+                                // Get the hash value from the current booking
+                                $hashValue = $booking['hash_value'];
+                                $studentnumber = trim($booking['student_number']);
+                                $paymentInfo = GetStudentBalance($studentnumber);
+
+                                $duplicate_error_message = "";
+                                // Check if this hash value is already in the seen array
+                                if (in_array($hashValue, $seenHashes)) {
+                                    $duplicate_error_message = "Duplicate";
+                                } else {
+                                    // Add the hash value to the seen array
+                                    $seenHashes[] = $hashValue;
+                                }
+                                $status = $booking['registration_status'];
+                                $badgeClass = '';
+
+                                $dueAmount = $indexed_packages[$booking['package_id']]['price'] + ($booking['additional_seats'] * PARENT_SEAT_RATE);
+
+                                if ($booking['registration_status'] === "paid" && $booking['payment_amount'] < $dueAmount) {
+                                    $status = "Partially Paid";
+                                }
+
+                                // Determine the badge class based on the registration status
+                                switch ($status) {
+                                    case 'Pending':
+                                        $badgeClass = 'badge bg-warning text-dark'; // Yellow/Orange badge
+                                        break;
+                                    case 'Partially Paid':
+                                        $badgeClass = 'badge bg-warning'; // Green badge
+                                        break;
+                                    case 'paid':
+                                        $badgeClass = 'badge bg-secondary'; // Green badge
+                                        break;
+                                    case 'Confirmed':
+                                        $badgeClass = 'badge bg-success'; // Green badge
+                                        break;
+                                    case 'Canceled':
+                                        $badgeClass = 'badge bg-danger'; // Red badge
+                                        break;
+                                    case 'Completed':
+                                        $badgeClass = 'badge bg-primary'; // Blue badge
+                                        break;
+                                    case 'On Hold':
+                                        $badgeClass = 'badge bg-secondary'; // Grey badge
+                                        break;
+                                    default:
+                                        $badgeClass = 'badge bg-info'; // Light blue badge for unknown status
+                                        break;
+                                }
+
+                                $course_ids = explode(',', $booking['course_id']);
+                                $orderedParentIds = array_map('trim', explode(',', $booking['course_id']));
+
+                                $dueAmount = $indexed_packages[$booking['package_id']]['price'] + ($booking['additional_seats'] * PARENT_SEAT_RATE);
+
+                                $userCourseEnrollments = filterEnrollmentsByStudentId($studentEnrollments, formatStudentId($booking['student_number']));
+                            ?>
+                                <tr>
+                                    <td><?= $booking['reference_number'] ?>
+
+                                    </td>
+                                    <td><?= $booking['student_number'] ?></td>
+                                    <td><?= number_format($paymentInfo['studentBalance'], 2) ?></td>
+                                    <td><?= $booking['session'] ?></td>
+                                    <td><?php
+                                        foreach ($course_ids as $id) {
+                                            $id = trim($id); // remove spaces
+                                            if (isset($indexed_courses[$id])) {
+                                        ?>
+                                                <p><?= $indexed_courses[$id]['course_name']; ?></p>
+                                        <?php
+                                            }
+                                        }
+                                        ?>
+                                    </td><?php
+                                            $studentSubmissions = $allStudentSubmissions[$booking['student_number']] ?? [];
+                                            $courseGrades = [];
+
+                                            foreach ($userCourseEnrollments as $courseEnrollment) {
+                                                $courseCode = $courseEnrollment['course_code'];
+                                                $parentCourseId = $batchList[$courseCode]['parent_course_id'];
+                                                $assignments = $allAssignments[$courseCode] ?? [];
+
+                                                $totalMarks = 0;
+                                                foreach ($assignments as $assignment) {
+                                                    $aid = $assignment['assignment_id'];
+                                                    if (isset($studentSubmissions[$aid])) {
+                                                        $totalMarks += $studentSubmissions[$aid]['grade'];
+                                                    }
+                                                }
+
+                                                $assignmentCount = count($assignments);
+                                                $avgMark = $assignmentCount > 0 ? $totalMarks / $assignmentCount : 0;
+
+                                                if ($avgMark == 0) {
+                                                    continue;
+                                                }
+
+                                                // Add result to array
+                                                $courseGrades[$parentCourseId] = [
+                                                    'course_code' => $courseCode,
+                                                    'avg_grade' => round($avgMark, 2),
+                                                ];
+                                            }
+                                            ?>
+                                    <td>
+                                        <?= isset($courseGrades[1]) ? number_format($courseGrades[1]['avg_grade'], 2) : '-' ?>
+                                    </td>
+                                    <td>
+                                        <?= isset($courseGrades[2]) ? number_format($courseGrades[2]['avg_grade'], 2) : '-' ?>
+                                    </td>
+                                    <td><?= $indexed_packages[$booking['package_id']]['package_name']; ?></td>
+                                    <td><?= $booking['additional_seats'] ?></td>
+                                    <td><?= number_format($dueAmount, 2) ?></td>
+                                    <td>
+                                        <a style="color: white !important;" class="btn btn-dark btn-sm"
+                                            href="http://content-provider.pharmacollege.lk<?= $booking['image_path'] ?>"
+                                            download target="_blank">
+                                            <i class="fa fa-download" aria-hidden="true"></i>
+
+                                        </a>
+                                    </td>
+
+                                    <td> <?php if (!empty($duplicate_error_message)): ?>
+                                            <div class="badge bg-danger" role="alert">
+                                                <?= $duplicate_error_message ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php
+
+                                        ?>
+                                        <span class="badge <?= $badgeClass ?>"><?= ucfirst($status) ?></span>
+                                    </td>
+                                </tr>
+                            <?php
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $('#graduation-table').dataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf'
+            // 'colvis'
+        ],
+        order: [
+            [0, 'asc']
+        ]
+    })
+</script>

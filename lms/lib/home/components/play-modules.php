@@ -15,8 +15,10 @@
                     <div class="col-12 mt-2">
                         <?php $ProgressValue = $winPharmaPercentage; ?>
                         <p class="m-0"><?= number_format($ProgressValue) ?>%</p>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= number_format($ProgressValue, 2) ?>%</div>
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: <?= $ProgressValue ?>%">
+                                <?= number_format($ProgressValue, 2) ?>%</div>
                         </div>
                     </div>
                 </div>
@@ -39,7 +41,8 @@
                         $overallGradeDpad =  OverallGradeDpad($loggedUser)['overallGrade'];
                         $ProgressValue = number_format($overallGradeDpad); ?>
                         <p class="m-0"><?= $ProgressValue ?>%</p>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
                         </div>
                     </div>
@@ -69,7 +72,8 @@
 
                     <div class="col-12 mt-2">
                         <p class="m-0"><?= $RecoveredPatientsCount ?> out of <?= $CoursePatientsCount ?></p>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
                         </div>
                     </div>
@@ -120,11 +124,15 @@
 
                     <div class="col-12 mt-2">
                         <div class="d-flex justify-content-between gap-2 mb-2">
-                            <div class="p-2 bg-light rounded-3 flex-fill"><i class="fa-solid fa-gem"></i> <?= $gemCount ?></div>
-                            <div class="p-2 bg-light rounded-3 flex-fill"><i class="fa-solid fa-coins"></i> <?= $coinCount ?></div>
+                            <div class="p-2 bg-light rounded-3 flex-fill"><i class="fa-solid fa-gem"></i>
+                                <?= $gemCount ?></div>
+                            <div class="p-2 bg-light rounded-3 flex-fill"><i class="fa-solid fa-coins"></i>
+                                <?= $coinCount ?></div>
                         </div>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
-                            <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= number_format($ProgressValue, 2) ?>%</div>
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: <?= $ProgressValue ?>%">
+                                <?= number_format($ProgressValue, 2) ?>%</div>
                         </div>
                     </div>
                 </div>
@@ -197,10 +205,13 @@
 
                         $ProgressValue = number_format((count($correctAttempts) / ($MedicineCount * $CountAnswer)) * 100, 2); ?>
                         <div class="d-flex justify-content-between gap-2 mb-2">
-                            <div class="p-2 bg-light rounded-3 flex-fill"><i class="fa-solid fa-gem"></i> <?= $gemCount ?></div>
-                            <div class="p-2 bg-light rounded-3 flex-fill"><i class="fa-solid fa-coins"></i> <?= $coinCount ?></div>
+                            <div class="p-2 bg-light rounded-3 flex-fill"><i class="fa-solid fa-gem"></i>
+                                <?= $gemCount ?></div>
+                            <div class="p-2 bg-light rounded-3 flex-fill"><i class="fa-solid fa-coins"></i>
+                                <?= $coinCount ?></div>
                         </div>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
                         </div>
                     </div>
@@ -224,7 +235,31 @@
                     <div class="col-12 mt-2">
                         <?php $ProgressValue = 0; ?>
                         <p class="m-0"><?= $ProgressValue ?>%</p>
-                        <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
+                            <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-6 col-md-4 mb-2 d-flex">
+        <div class="card game-card shadow flex-fill" onclick="redirectToURL('word-pallet')">
+            <div class="card-body text-center">
+                <div class="row">
+                    <div class="col-12">
+                        <img src="./lib/home/assets/images/rumor.gif" class="game-icon">
+                        <h4 class="card-title">Word Pallet</h4>
+                    </div>
+
+                    <div class="col-12 mt-2">
+                        <?php
+                        $ProgressValue = number_format(0); ?>
+                        <p class="m-0"><?= $ProgressValue ?>%</p>
+                        <div class="progress" role="progressbar" aria-label="Example with label"
+                            aria-valuenow="<?= $ProgressValue ?>" aria-valuemin="0" aria-valuemax="100">
                             <div class="progress-bar" style="width: <?= $ProgressValue ?>%"><?= $ProgressValue ?>%</div>
                         </div>
                     </div>

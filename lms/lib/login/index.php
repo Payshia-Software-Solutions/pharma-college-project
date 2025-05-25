@@ -1,3 +1,21 @@
+<?php
+
+$getUsername = $getPassword = $readonlyMode = '';
+
+if (isset($_POST['getUsername'])) {
+    $getUsername = $_POST['getUsername'];
+}
+
+if (isset($_POST['getPassword'])) {
+    $getPassword = $_POST['getPassword'];
+}
+
+if (!empty($getUsername) && !empty($getPassword)) {
+    $readonlyMode = 'readonly';
+} else {
+    $readonlyMode = '';
+}
+?>
 <style>
     body {
         height: 100vh;
@@ -30,7 +48,8 @@
             <div class="card-body">
                 <div class="row mb-2 mt-4">
                     <div class="col-12 text-center">
-                        <img src="https://lms.pharmacollege.lk/assets/images/logo.png" class="w-25 pb-2 border-bottom mb-2 border-2" alt="logo" class="logo">
+                        <img src="https://lms.pharmacollege.lk/assets/images/logo.png"
+                            class="w-25 pb-2 border-bottom mb-2 border-2" alt="logo" class="logo">
                         <h3 class="text-center ">Login</h3>
                     </div>
                 </div>
@@ -38,14 +57,17 @@
                     <div class="row mb-3">
                         <div class="col-12">
                             <p class="mb-0 text-label">User Name</p>
-                            <input type="text" class="form-control" required name="username" id="username" placeholder="Enter Username Eg(PAXXXXX)">
+                            <input type="text" class="form-control" required name="username" id="username"
+                                placeholder="Enter Username Eg(PAXXXXX)" value="<?= $getUsername ?>"
+                                <?= $readonlyMode ?>>
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-12">
                             <p class="mb-0  text-label">Password</p>
-                            <input type="password" class="form-control" required name="password" id="password" placeholder="*********">
+                            <input type="password" class="form-control" required name="password" id="password"
+                                placeholder="*********" value="<?= $getPassword ?>" <?= $readonlyMode ?>>
                         </div>
                     </div>
 

@@ -2,6 +2,9 @@
 <html lang="en">
 
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Initialize the session
 session_start();
 date_default_timezone_set("Asia/Colombo");
@@ -14,6 +17,16 @@ if (isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true) {
     header("location: index");
     exit;
 }
+
+$getUsername = $getPassword = '';
+if (isset($_GET['UserName'])) {
+    $getUsername = $_GET['UserName'];
+}
+
+if (isset($_GET['TempPassword'])) {
+    $getPassword = $_GET['TempPassword'];
+}
+
 
 // Define variables and initialize with empty values
 $username = $password = $status = "";
@@ -126,6 +139,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 ?>
+<input type="hidden" name="getUsername" id="getUsername" value="<?= $getUsername ?>">
+<input type="hidden" name="getPassword" id="getPassword" value="<?= $getPassword ?>">
 
 <head>
     <!-- Meta Description -->
@@ -173,7 +188,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <!-- End of Common scripts -->
 
     <!-- Custom Scripts -->
-    <script src="./lib/login/assets/js/login-1.0.0.js"></script>
+    <script src="./lib/login/assets/js/login-1.0.1.js"></script>
     <!-- End of Custom Scripts -->
 </body>
 

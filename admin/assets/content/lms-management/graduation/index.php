@@ -2,7 +2,9 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 include '../../../../include/function-update.php';
+include '../../../../include/lms-functions.php';
 require __DIR__ . '/../../../../vendor/autoload.php';
+define('PARENT_SEAT_RATE', 500); // example value
 
 // For use env file data
 use Dotenv\Dotenv;
@@ -25,6 +27,33 @@ $graduationPackages = $response->toArray();
 
 $response = $client->request('GET', $_ENV['SERVER_URL'] . '/convocation-registrations');
 $packageBookings = $response->toArray();
+
+// Get Main Courses
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/parent-main-course');
+$mainCourses = $response->toArray();
+
+$indexed_courses = [];
+foreach ($mainCourses as $course) {
+    $indexed_courses[$course['id']] = $course;
+}
+
+// Get Packages
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/packages');
+$packages = $response->toArray();
+$indexed_packages = [];
+foreach ($packages as $package) {
+    $indexed_packages[$package['package_id']] = $package;
+}
+
+// Get Courier Orders
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/certificate-orders');
+$courierOrders = $response->toArray();
+
+// Get Courier Orders
+$response = $client->request('GET', $_ENV['SERVER_URL'] . '/assignmentsByCourse');
+$allAssignments = $response->toArray();
+
+
 ?>
 
 <div class="row mt-5">
@@ -51,10 +80,29 @@ $packageBookings = $response->toArray();
             </div>
         </div>
     </div>
+
+    <div class="col-md-6 col-lg-3 d-flex">
+        <div class="card item-card flex-fill">
+            <div class="overlay-box">
+                <i class="fa-solid fa-chart-line icon-card"></i>
+            </div>
+            <div class="card-body">
+                <p>By Courier</p>
+                <h1><?= count($courierOrders) ?></h1>
+            </div>
+        </div>
+    </div>
 </div>
 
-<div class="row g-2">
-    <div class="col-md-8">
+<div class="row">
+    <div class="col-12 text-end">
+        <button class="btn btn-dark btn-sm" type="button" onclick="OpenDownloadFile()">Download Convocation
+            List</button>
+    </div>
+</div>
+
+<div class="row g-2 mb-5">
+    <div class="col-md-10">
         <h5 class="table-title">Graduation Center</h5>
 
         <div class="card">
@@ -65,9 +113,12 @@ $packageBookings = $response->toArray();
                             <tr>
                                 <th scope="col">Reference #</th>
                                 <th scope="col">Student Number</th>
+                                <th scope="col">Session</th>
                                 <th scope="col">Courses</th>
                                 <th scope="col">Pacakge</th>
-                                <th scope="col">Payments</th>
+                                <th scope="col">Additional Seats</th>
+                                <th scope="col">Due Payment</th>
+                                <th scope="col">Slip</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Registration Status</th>
                                 <th scope="col">Action</th>
@@ -81,23 +132,34 @@ $packageBookings = $response->toArray();
                             foreach ($packageBookings as $booking) {
                                 // Get the hash value from the current booking
                                 $hashValue = $booking['hash_value'];
+                                $studentnumber = trim($booking['student_number']);
 
+                                $duplicate_error_message = "";
                                 // Check if this hash value is already in the seen array
                                 if (in_array($hashValue, $seenHashes)) {
-                                    echo "<tr><td colspan='7' class='text-danger'>Duplicate image detected for student {$booking['student_number']}</td></tr>";
-                                    continue; // Skip to the next booking
+                                    $duplicate_error_message = "Duplicate";
                                 } else {
                                     // Add the hash value to the seen array
                                     $seenHashes[] = $hashValue;
                                 }
-
                                 $status = $booking['registration_status'];
                                 $badgeClass = '';
+                                $dueAmount = $indexed_packages[$booking['package_id']]['price'] + ($booking['additional_seats'] * PARENT_SEAT_RATE);
+
+                                if ($booking['registration_status'] === "paid" && $booking['payment_amount'] < $dueAmount) {
+                                    $status = "Partially Paid";
+                                }
 
                                 // Determine the badge class based on the registration status
                                 switch ($status) {
                                     case 'Pending':
                                         $badgeClass = 'badge bg-warning text-dark'; // Yellow/Orange badge
+                                        break;
+                                    case 'Partially Paid':
+                                        $badgeClass = 'badge bg-warning'; // Green badge
+                                        break;
+                                    case 'paid':
+                                        $badgeClass = 'badge bg-secondary'; // Green badge
                                         break;
                                     case 'Confirmed':
                                         $badgeClass = 'badge bg-success'; // Green badge
@@ -115,21 +177,54 @@ $packageBookings = $response->toArray();
                                         $badgeClass = 'badge bg-info'; // Light blue badge for unknown status
                                         break;
                                 }
+
+                                $course_ids = explode(',', $booking['course_id']);
+                                $orderedParentIds = array_map('trim', explode(',', $booking['course_id']));
+
                             ?>
                                 <tr>
-                                    <td><?= $booking['reference_number'] ?></td>
+                                    <td><?= $booking['reference_number'] ?>
+
+                                    </td>
                                     <td><?= $booking['student_number'] ?></td>
-                                    <td><?= $booking['course_id'] ?></td>
-                                    <td><?= $booking['package_id'] ?></td>
-                                    <td><?= $booking['payment_amount'] ?></td>
-                                    <td></td>
+                                    <td><?= $booking['session'] ?></td>
+                                    <td><?php
+                                        foreach ($course_ids as $id) {
+                                            $id = trim($id); // remove spaces
+                                            if (isset($indexed_courses[$id])) {
+                                        ?>
+                                                <p><?= $indexed_courses[$id]['course_name']; ?></p>
+                                        <?php
+                                            }
+                                        }
+                                        ?>
+                                    </td>
+                                    <td><?= $indexed_packages[$booking['package_id']]['package_name']; ?></td>
+                                    <td><?= $booking['additional_seats'] ?></td>
+                                    <td><?= number_format($dueAmount, 2) ?></td>
+                                    <td>
+                                        <a style="color: white !important;" class="btn btn-dark btn-sm"
+                                            href="http://content-provider.pharmacollege.lk<?= $booking['image_path'] ?>"
+                                            download target="_blank">
+                                            <i class="fa fa-download" aria-hidden="true"></i>
+
+                                        </a>
+                                    </td>
+
+                                    <td> <?php if (!empty($duplicate_error_message)): ?>
+                                            <div class="badge bg-danger" role="alert">
+                                                <?= $duplicate_error_message ?>
+                                            </div>
+                                        <?php endif; ?>
+                                    </td>
                                     <td>
                                         <?php
 
                                         ?>
                                         <span class="badge <?= $badgeClass ?>"><?= ucfirst($status) ?></span>
                                     </td>
-                                    <td><button class="btn btn-dark btn-sm">View</button></td>
+                                    <td><button type="button" onclick="OpenBooking('<?= $booking['reference_number'] ?>')"
+                                            class="btn btn-dark btn-sm">View</button></td>
                                 </tr>
                             <?php
                             }
@@ -140,7 +235,7 @@ $packageBookings = $response->toArray();
             </div>
         </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-2">
         <h5 class="table-title">Quick Links</h5>
         <div class="card">
             <div class="card-body">
@@ -157,7 +252,7 @@ $packageBookings = $response->toArray();
     $('#graduation-table').dataTable({
         dom: 'Bfrtip',
         buttons: [
-            'copy', 'csv', 'excel', 'pdf'
+            'pdf'
             // 'colvis'
         ],
         order: [
