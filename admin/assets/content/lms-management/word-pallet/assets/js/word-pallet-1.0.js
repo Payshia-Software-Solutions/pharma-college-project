@@ -78,9 +78,11 @@ function SaveWord(wordId) {
     new Date().toISOString().slice(0, 19).replace("T", " ")
   );
 
-  const isUpdate = wordId && wordId !== "null" && wordId !== "";
+  // Update if wordId is a number and greater than zero
+  const idNum = Number(wordId);
+  const isUpdate = idNum > 0;
 
-  fetch(SERVER_URL + "/word-list" + (isUpdate ? "/" + wordId : ""), {
+  fetch(SERVER_URL + "/word-list" + (isUpdate ? "/" + idNum : ""), {
     method: "POST",
     body: formData,
   })

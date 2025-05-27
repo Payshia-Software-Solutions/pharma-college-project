@@ -24,6 +24,15 @@ class PaymentPortalRequest
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+
+    // Fetch a payment request by Ref
+    public function getRecordByUnique($unique_number)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM payment_requests WHERE unique_number = :unique_number");
+        $stmt->execute(['unique_number' => $unique_number]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     // Insert a new payment request
     public function createRecord($data)
     {

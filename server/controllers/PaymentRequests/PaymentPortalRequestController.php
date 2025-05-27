@@ -33,6 +33,20 @@ class PaymentPortalRequestController
         }
     }
 
+    // Get a payment request by ID
+    public function getRecordByUnique($unique_number)
+    {
+        $record = $this->model->getRecordByUnique($unique_number);
+        if ($record) {
+            echo json_encode($record);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Payment request not found']);
+        }
+    }
+
+
+
     private function ensureDirectoryExists($ftp_conn, $dir)
     {
         $parts = explode('/', $dir);
