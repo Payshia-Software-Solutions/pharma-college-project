@@ -30,7 +30,7 @@ class PaymentPortalRequest
     {
         $stmt = $this->pdo->prepare("SELECT * FROM payment_requests WHERE unique_number = :unique_number");
         $stmt->execute(['unique_number' => $unique_number]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Insert a new payment request
