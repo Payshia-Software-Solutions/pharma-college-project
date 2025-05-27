@@ -61,7 +61,8 @@ $InactiveCount = 0;
             <div class="card-body">
                 <div class="row">
                     <div class="col-12 text-end">
-                        <button class="btn btn-primary btn-sm" type="button" onclick="OpenPendingUser()">Download List</button>
+                        <button class="btn btn-primary btn-sm" type="button" onclick="OpenPendingUser()">Download
+                            List</button>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -117,14 +118,17 @@ $InactiveCount = 0;
                                             <p class="mb-0"><?= $address_l1; ?>, <?= $address_l2; ?></p>
                                             <p class="mb-0">Register Date - <?= $formattedRegDate ?></p>
                                         </td>
-                                        <td class="text-center"><span class="badge bg-<?= $color ?>"><?= $approved_status ?></span></td>
+                                        <td class="text-center"><span
+                                                class="badge bg-<?= $color ?>"><?= $approved_status ?></span></td>
                                         <td>
                                             <div class="text-center">
-                                                <button class="btn btn-sm btn-dark view-button mb-2" type="button" onclick="OpenUserInfo('<?= $referenceId ?>')">
+                                                <button class="btn btn-sm btn-dark view-button mb-2" type="button"
+                                                    onclick="OpenUserInfo('<?= $referenceId ?>')">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </button>
 
-                                                <button class="btn btn-sm btn-light" type="button" onclick="OpenEditUserInfo('<?= $referenceId ?>')">
+                                                <button class="btn btn-sm btn-light" type="button"
+                                                    onclick="OpenEditUserInfo('<?= $referenceId ?>')">
                                                     <i class="fa-solid fa-pencil"></i>
                                                 </button>
                                             </div>
@@ -197,7 +201,8 @@ $InactiveCount = 0;
                                             <?php
                                             if ($UserLevel == "Admin" && $approved_status == "Rejected") {
                                             ?><div class="mt-2">
-                                                    <button class="btn btn-sm btn-dark view-button" type="button" onclick="OpenUserInfo('<?= $referenceId ?>')">
+                                                    <button class="btn btn-sm btn-dark view-button" type="button"
+                                                        onclick="OpenUserInfo('<?= $referenceId ?>')">
                                                         <i class="fa-solid fa-eye"></i> Update Status
                                                     </button>
                                                 </div>

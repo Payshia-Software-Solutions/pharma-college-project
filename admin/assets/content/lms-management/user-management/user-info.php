@@ -3,6 +3,20 @@ require_once('../../../../include/config.php');
 include '../../../../include/function-update.php';
 include '../../../../include/lms-functions.php';
 
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+// For use env file data
+use Dotenv\Dotenv;
+use Symfony\Component\HttpClient\HttpClient;
+
+// Load environment variables
+$dotenv = Dotenv::createImmutable(dirname(__DIR__, 4));
+$dotenv->load();
+
+// Initialize HTTP client
+$client = HttpClient::create();
+
+
 $refId = $_POST['refId'];
 $selectedArray = GetTemporaryUsers()[$refId];
 $CourseBatches = getLmsBatches();
@@ -34,12 +48,25 @@ if ($approved_status == "Not Approved") {
 } else {
     $color = "success";
 }
+// Create the SQL query
+
+$ArrayResult = array();
+$sql = "SELECT * FROM temp_lms_user WHERE email_address = '$email_address' AND aprroved_status LIKE 'Approved'";
+$result = $lms_link->query($sql);
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $ArrayResult[] = $row;
+    }
+}
+
+$paymentRequests = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal-requests/by-reference/5791')->toArray();
 
 ?>
 <div class="loading-popup-content">
     <div class="row">
         <div class="col-12 w-100 text-end">
-            <button class="btn btn-sm btn-dark" onclick="ClosePopUP()"><i class="fa-regular fa-circle-xmark"></i></button>
+            <button class="btn btn-sm btn-dark" onclick="ClosePopUP()"><i
+                    class="fa-regular fa-circle-xmark"></i></button>
         </div>
     </div>
     <div class="row">
@@ -53,7 +80,8 @@ if ($approved_status == "Not Approved") {
                     <h6 class="mb-0"><?= $email_address ?></h6>
                     <span class="badge bg-<?= $color ?>"><?= $approved_status ?></span>
                     <div class="mt-2">
-                        <button class="btn btn-light" type="button" onclick="OpenEditUserInfo('<?= $referenceId ?>')"><i class="fa-solid fa-pencil"></i> Edit</button>
+                        <button class="btn btn-light" type="button" onclick="OpenEditUserInfo('<?= $referenceId ?>')"><i
+                                class="fa-solid fa-pencil"></i> Edit</button>
                     </div>
                 </div>
 
@@ -66,25 +94,30 @@ if ($approved_status == "Not Approved") {
 
                 <div class="col-6 col-md-4">
                     <p class="mb-0 text-secondary">Phone Number</p>
-                    <p class="mb-0"><a class="mb-0 text-secondary" href="tel:<?= $phone_number ?>"><i class="fa-solid fa-phone clickable"></i></a> <?= formatPhoneNumber($phone_number) ?> </p>
-                    <p class="mb-0"><a class="mb-0 text-secondary" href="<?= generateWhatsAppLink($phone_number) ?>" target="_blank"><i class="fa-brands fa-whatsapp clickable"></i></a> <?= formatPhoneNumber($whatsapp_number) ?> </p>
+                    <p class="mb-0"><a class="mb-0 text-secondary" href="tel:<?= $phone_number ?>"><i
+                                class="fa-solid fa-phone clickable"></i></a> <?= formatPhoneNumber($phone_number) ?>
+                    </p>
+                    <p class="mb-0"><a class="mb-0 text-secondary" href="<?= generateWhatsAppLink($phone_number) ?>"
+                            target="_blank"><i class="fa-brands fa-whatsapp clickable"></i></a>
+                        <?= formatPhoneNumber($whatsapp_number) ?> </p>
                 </div>
             </div>
 
             <div class="row mt-3">
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-">
                     <p class="mb-0 text-secondary">Full Name</p>
                     <h6 class="mb-0"><?= ($full_name != "") ? $full_name : "Not Set" ?></h6>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-3">
                     <p class="mb-0 text-secondary">Name with Initials</p>
                     <h6 class="mb-0"><?= ($name_with_initials != "") ? $name_with_initials : "Not Set" ?></h6>
                 </div>
-                <div class="col-12 col-md-4">
+                <div class="col-12 col-md-3">
                     <p class="mb-0 text-secondary">Name on Certificate</p>
                     <h6 class="mb-0"><?= ($name_on_certificate != "") ? $name_on_certificate : "Not Set" ?></h6>
                 </div>
             </div>
+
 
             <div class="row mt-3">
                 <div class="col-6 col-md-2">
@@ -93,7 +126,8 @@ if ($approved_status == "Not Approved") {
                 </div>
                 <div class="col-6 col-md-3">
                     <p class="mb-0 text-secondary">City</p>
-                    <h6 class="mb-0"><?= $cityList[(int)$cityId]['name_en'] ?>, <?= $cityList[(int)$cityId]['postcode'] ?></h6>
+                    <h6 class="mb-0"><?= $cityList[(int)$cityId]['name_en'] ?>,
+                        <?= $cityList[(int)$cityId]['postcode'] ?></h6>
                 </div>
                 <div class="col-6 col-md-2">
                     <p class="mb-0 text-secondary">District</p>
@@ -113,7 +147,8 @@ if ($approved_status == "Not Approved") {
                         if (!empty($CourseBatches)) {
                             foreach ($CourseBatches as $selectedArray) {
                         ?>
-                                <option value="<?= $selectedArray['course_code'] ?>"><?= $selectedArray['course_code'] ?> - <?= $selectedArray['course_name'] ?></option>
+                                <option value="<?= $selectedArray['course_code'] ?>"><?= $selectedArray['course_code'] ?> -
+                                    <?= $selectedArray['course_name'] ?></option>
                         <?php
                             }
                         }
@@ -128,12 +163,26 @@ if ($approved_status == "Not Approved") {
                         <option value="Admin">Admin</option>
                     </select>
                 </div>
+
+                <?php
+
+                ?>
                 <div class="col-md-3">
-                    <button onclick="UpdateUserStatus('<?= $refId ?>', 'Rejected')" class="btn btn-danger w-100 form-control" type="button"><i class="fa-solid fa-user-xmark"></i> Reject</button>
+                    <button onclick="UpdateUserStatus('<?= $refId ?>', 'Rejected')"
+                        class="btn btn-danger w-100 form-control" type="button"><i class="fa-solid fa-user-xmark"></i>
+                        Reject</button>
                 </div>
-                <div class="col-md-3">
-                    <button onclick="UpdateUserStatus('<?= $refId ?>', 'Approved')" class="btn btn-dark w-100 form-control" type="button"><i class="fa-solid fa-user-check"></i> Approve</button>
-                </div>
+                <?php if (count($ArrayResult) == 0) : ?>
+                    <div class="col-md-3">
+                        <button onclick="UpdateUserStatus('<?= $refId ?>', 'Approved')"
+                            class="btn btn-dark w-100 form-control" type="button"><i class="fa-solid fa-user-check"></i>
+                            Approve</button>
+                    </div>
+                <?php else : ?>
+                    <div class="alert alert-warning">This Email is already activated with
+                        <?= $ArrayResult[0]['index_number'] ?> | REF <?= $ArrayResult[0]['id'] ?></div>
+
+                <?php endif ?>
             </div>
         </div>
     </div>

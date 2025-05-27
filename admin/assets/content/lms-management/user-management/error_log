@@ -1,6 +1,0 @@
-[01-May-2025 23:59:03 Asia/Colombo] PHP Fatal error:  Uncaught mysqli_sql_exception: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near '`full_name` = ?, `name_with_initials` = ?, `name_on_certificate` = ?, `birth_...' at line 1 in /home/pharmaco/admin.pharmacollege.lk/include/lms-functions.php:681
-Stack trace:
-#0 /home/pharmaco/admin.pharmacollege.lk/include/lms-functions.php(681): mysqli_prepare()
-#1 /home/pharmaco/admin.pharmacollege.lk/assets/content/lms-management/user-management/user-activation.php(80): CreateNewLmsUserFullDetails()
-#2 {main}
-  thrown in /home/pharmaco/admin.pharmacollege.lk/include/lms-functions.php on line 681
