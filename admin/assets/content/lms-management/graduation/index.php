@@ -94,13 +94,15 @@ $allAssignments = $response->toArray();
     </div>
 </div>
 
-<div class="row">
+<div class="row mt-3">
     <div class="col-12 text-end">
+         <button class="btn btn-dark btn-sm" type="button" onclick="OpenCourierList()">Curirer List</button>
         <button class="btn btn-dark btn-sm" type="button" onclick="OpenDownloadFile()">Download Convocation
             List</button>
     </div>
 </div>
 
+<div id="page-table">
 <div class="row g-2 mb-5">
     <div class="col-md-10">
         <h5 class="table-title">Graduation Center</h5>
@@ -246,6 +248,7 @@ $allAssignments = $response->toArray();
         </div>
     </div>
 
+</div>
 </div>
 
 <script>
