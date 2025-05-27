@@ -54,71 +54,71 @@ function OpenPackageModal() {
     var userTheme = $("#userTheme").val();
     OpenPopupRight();
     $("#loading-popup-right").html(InnerLoader);
-  
+
     function fetch_data() {
-      $.ajax({
-        url: 'assets/content/lms-management/graduation/side-modals/package-modal.php',
-        method: "POST",
-        data: {
-          LoggedUser: LoggedUser,
-          UserLevel: UserLevel,
-          userTheme: userTheme,
-          company_id: company_id,
-        },
-        success: function (data) {
-          $("#loading-popup-right").html(data);
-        },
-      });
+        $.ajax({
+            url: 'assets/content/lms-management/graduation/side-modals/package-modal.php',
+            method: "POST",
+            data: {
+                LoggedUser: LoggedUser,
+                UserLevel: UserLevel,
+                userTheme: userTheme,
+                company_id: company_id,
+            },
+            success: function (data) {
+                $("#loading-popup-right").html(data);
+            },
+        });
     }
     fetch_data();
-  }
+}
 
 function OpenInactivePackageModal() {
     var userTheme = $("#userTheme").val();
     OpenPopupRight();
     $("#loading-popup-right").html(InnerLoader);
-  
+
     function fetch_data() {
-      $.ajax({
-        url: 'assets/content/lms-management/graduation/side-modals/inactive-packages-modal.php',
-        method: "POST",
-        data: {
-          LoggedUser: LoggedUser,
-          UserLevel: UserLevel,
-          userTheme: userTheme,
-          company_id: company_id,
-        },
-        success: function (data) {
-          $("#loading-popup-right").html(data);
-        },
-      });
+        $.ajax({
+            url: 'assets/content/lms-management/graduation/side-modals/inactive-packages-modal.php',
+            method: "POST",
+            data: {
+                LoggedUser: LoggedUser,
+                UserLevel: UserLevel,
+                userTheme: userTheme,
+                company_id: company_id,
+            },
+            success: function (data) {
+                $("#loading-popup-right").html(data);
+            },
+        });
     }
     fetch_data();
-  }
-  
+}
+
 function OpenPackageForm(packageId = 0) {
     OpenPopup();
     document.getElementById("loading-popup").innerHTML = InnerLoader;
-  
+
     function fetch_data() {
-      $.ajax({
-        url: "./assets/content/lms-management/graduation/popup-modals/package-form.php",
-        method: "POST",
-        data: {
-          LoggedUser: LoggedUser,
-          UserLevel: UserLevel,
-          packageId: packageId,
-        },
-        success: function (data) {
-          $("#loading-popup").html(data);
-        },
-      });
+        $.ajax({
+            url: "./assets/content/lms-management/graduation/popup-modals/package-form.php",
+            method: "POST",
+            data: {
+                LoggedUser: LoggedUser,
+                UserLevel: UserLevel,
+                packageId: packageId,
+            },
+            success: function (data) {
+                $("#loading-popup").html(data);
+            },
+        });
     }
     fetch_data();
-  }
+}
 
 
-  function SavePackage(packageId) {
+function SavePackage(packageId) {
     const packageName = document.getElementById("package_name").value.trim();
     const price = document.getElementById("price").value;
     const parentSeatCount = document.getElementById("parent_seat_count").value;
@@ -190,7 +190,7 @@ function OpenPackageForm(packageId = 0) {
         });
 }
 
-    
+
 
 
 
@@ -212,33 +212,33 @@ function DeletePackage(packageId) {
             fetch(`https://qa-api.pharmacollege.lk/packages/${packageId}`, {
                 method: 'DELETE',
             })
-            .then(response => {
-                if (response.status === 200) {
-                    // Successfully deleted
+                .then(response => {
+                    if (response.status === 200) {
+                        // Successfully deleted
+                        Swal.fire(
+                            'Deleted!',
+                            'Your package has been deleted.',
+                            'success'
+                        );
+
+                        OpenPackageModal();
+                        // You can refresh the package list or update the UI here
+                        // Optionally hide any relevant modal or refresh the package list
+                    } else {
+                        // If deletion fails
+                        throw new Error(`Failed to delete package. Status: ${response.status}`);
+                    }
+                })
+                .catch(error => {
                     Swal.fire(
-                        'Deleted!',
-                        'Your package has been deleted.',
-                        'success'
+                        'Error!',
+                        `An error occurred: ${error.message}`,
+                        'error'
                     );
-                    
-                    OpenPackageModal();
-                    // You can refresh the package list or update the UI here
-                    // Optionally hide any relevant modal or refresh the package list
-                } else {
-                    // If deletion fails
-                    throw new Error(`Failed to delete package. Status: ${response.status}`);
-                }
-            })
-            .catch(error => {
-                Swal.fire(
-                    'Error!',
-                    `An error occurred: ${error.message}`,
-                    'error'
-                );
-            })
-            .finally(() => {
-                hideOverlay();  // Hide loading spinner (if any)
-            });
+                })
+                .finally(() => {
+                    hideOverlay();  // Hide loading spinner (if any)
+                });
         } else {
             // Action canceled
             Swal.fire(
@@ -276,28 +276,28 @@ function ChangePackageStatus(packageId, packageStatus = 1) {
                 method: 'POST', // 🔥 Changed to POST
                 body: formData
             })
-            .then(response => {
-                if (response.status === 200 || response.status === 201) {
+                .then(response => {
+                    if (response.status === 200 || response.status === 201) {
+                        Swal.fire(
+                            'Done!',
+                            'Your package has been marked as ' + statusText + '.',
+                            'success'
+                        );
+                        OpenPackageModal();
+                    } else {
+                        throw new Error(`Failed to update package. Status: ${response.status}`);
+                    }
+                })
+                .catch(error => {
                     Swal.fire(
-                        'Done!',
-                        'Your package has been marked as ' + statusText + '.',
-                        'success'
+                        'Error!',
+                        `An error occurred: ${error.message}`,
+                        'error'
                     );
-                    OpenPackageModal();
-                } else {
-                    throw new Error(`Failed to update package. Status: ${response.status}`);
-                }
-            })
-            .catch(error => {
-                Swal.fire(
-                    'Error!',
-                    `An error occurred: ${error.message}`,
-                    'error'
-                );
-            })
-            .finally(() => {
-                hideOverlay();
-            });
+                })
+                .finally(() => {
+                    hideOverlay();
+                });
         } else {
             Swal.fire(
                 'Cancelled',
@@ -313,33 +313,33 @@ function OpenBooking(referenceNumber) {
     var userTheme = $("#userTheme").val();
     OpenPopupRight();
     $("#loading-popup-right").html(InnerLoader);
-  
+
     function fetch_data() {
-      $.ajax({
-        url: 'assets/content/lms-management/graduation/side-modals/booking-modal.php',
-        method: "POST",
-        data: {
-          LoggedUser: LoggedUser,
-          UserLevel: UserLevel,
-          userTheme: userTheme,
-          company_id: company_id,
-          referenceNumber: referenceNumber
-        },
-        success: function (data) {
-          $("#loading-popup-right").html(data);
-        },
-      });
+        $.ajax({
+            url: 'assets/content/lms-management/graduation/side-modals/booking-modal.php',
+            method: "POST",
+            data: {
+                LoggedUser: LoggedUser,
+                UserLevel: UserLevel,
+                userTheme: userTheme,
+                company_id: company_id,
+                referenceNumber: referenceNumber
+            },
+            success: function (data) {
+                $("#loading-popup-right").html(data);
+            },
+        });
     }
     fetch_data();
-  }
+}
 
-  function UpdateConvocationPayment(referenceNumber) {
+function UpdateConvocationPayment(referenceNumber) {
     const paymentAmountInput = document.getElementById('paid_amount');
     const paymentAmount = Number(paymentAmountInput.value);
     const paymentStatus = "Paid";
 
 
-     // ✅ Input Validation
+    // ✅ Input Validation
     if (!paymentStatus || paymentStatus.trim() === "") {
         Swal.fire('Validation Error', 'Payment status cannot be empty.', 'warning');
         return;
@@ -374,28 +374,28 @@ function OpenBooking(referenceNumber) {
                 },
                 body: JSON.stringify(payload)
             })
-            .then(response => {
-                if (response.ok) {
+                .then(response => {
+                    if (response.ok) {
+                        Swal.fire(
+                            'Updated!',
+                            'The payment information has been successfully updated.',
+                            'success'
+                        );
+                        // You can add a callback function here, e.g., refresh list
+                    } else {
+                        throw new Error(`Failed to update payment. Status: ${response.status}`);
+                    }
+                })
+                .catch(error => {
                     Swal.fire(
-                        'Updated!',
-                        'The payment information has been successfully updated.',
-                        'success'
+                        'Error!',
+                        `An error occurred: ${error.message}`,
+                        'error'
                     );
-                    // You can add a callback function here, e.g., refresh list
-                } else {
-                    throw new Error(`Failed to update payment. Status: ${response.status}`);
-                }
-            })
-            .catch(error => {
-                Swal.fire(
-                    'Error!',
-                    `An error occurred: ${error.message}`,
-                    'error'
-                );
-            })
-            .finally(() => {
-                hideOverlay();
-            });
+                })
+                .finally(() => {
+                    hideOverlay();
+                });
         } else {
             Swal.fire(
                 'Cancelled',
@@ -404,4 +404,26 @@ function OpenBooking(referenceNumber) {
             );
         }
     });
+}
+
+function OpenCourierList() {
+    var userTheme = $("#userTheme").val();
+    document.getElementById('page-table').innerHTML = InnerLoader
+    ClosePopUP()
+
+    function fetch_data() {
+        $.ajax({
+            url: 'assets/content/lms-management/graduation/courier-list.php',
+            method: 'POST',
+            data: {
+                userTheme: userTheme,
+                LoggedUser: LoggedUser,
+                UserLevel: UserLevel
+            },
+            success: function (data) {
+                $('#page-table').html(data)
+            }
+        })
+    }
+    fetch_data()
 }
