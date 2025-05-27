@@ -60,6 +60,7 @@ if ($result->num_rows > 0) {
 }
 
 $paymentRequests = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal-requests/by-reference/5791')->toArray();
+var_dump($paymentRequests);
 
 ?>
 <div class="loading-popup-content">
@@ -104,7 +105,7 @@ $paymentRequests = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-porta
             </div>
 
             <div class="row mt-3">
-                <div class="col-12 col-md-">
+                <div class="col-12 col-md-3">
                     <p class="mb-0 text-secondary">Full Name</p>
                     <h6 class="mb-0"><?= ($full_name != "") ? $full_name : "Not Set" ?></h6>
                 </div>
@@ -115,6 +116,17 @@ $paymentRequests = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-porta
                 <div class="col-12 col-md-3">
                     <p class="mb-0 text-secondary">Name on Certificate</p>
                     <h6 class="mb-0"><?= ($name_on_certificate != "") ? $name_on_certificate : "Not Set" ?></h6>
+                </div>
+                <div class="col-12 col-md-3">
+                    <p class="mb-0 text-secondary">Slips</p>
+                    <?php foreach ($paymentRequests as $paymentRequest) : ?>
+                        <a style="color: white !important;" class="btn btn-dark btn-sm"
+                            href="http://content-provider.pharmacollege.lk<?= $paymentRequest['slip_path'] ?>" download
+                            target="_blank">
+                            <i class="fa fa-download" aria-hidden="true"></i>
+                        </a>
+                    <?php endforeach ?>
+
                 </div>
             </div>
 
