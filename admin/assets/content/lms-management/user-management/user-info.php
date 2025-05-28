@@ -60,7 +60,7 @@ if ($result->num_rows > 0) {
 }
 
 $paymentRequests = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal-requests/by-reference/5791')->toArray();
-var_dump($paymentRequests);
+// var_dump($paymentRequests);
 
 ?>
 <div class="loading-popup-content">
@@ -105,7 +105,7 @@ var_dump($paymentRequests);
             </div>
 
             <div class="row mt-3">
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-md-4">
                     <p class="mb-0 text-secondary">Full Name</p>
                     <h6 class="mb-0"><?= ($full_name != "") ? $full_name : "Not Set" ?></h6>
                 </div>
@@ -117,7 +117,7 @@ var_dump($paymentRequests);
                     <p class="mb-0 text-secondary">Name on Certificate</p>
                     <h6 class="mb-0"><?= ($name_on_certificate != "") ? $name_on_certificate : "Not Set" ?></h6>
                 </div>
-                <div class="col-12 col-md-3">
+                <div class="col-12 col-md-2">
                     <p class="mb-0 text-secondary">Slips</p>
                     <?php foreach ($paymentRequests as $paymentRequest) : ?>
                         <a style="color: white !important;" class="btn btn-dark btn-sm"
