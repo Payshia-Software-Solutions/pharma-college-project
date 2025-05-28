@@ -45,6 +45,17 @@ class PaymentPortalRequestController
         }
     }
 
+    // GET a single registration by ID
+    public function checkHashDupplicate($generated_hash)
+    {
+        $registration = $this->model->checkHashDupplicate($generated_hash);
+        if ($registration) {
+            echo json_encode($registration);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Registration not found']);
+        }
+    }
 
 
     private function ensureDirectoryExists($ftp_conn, $dir)

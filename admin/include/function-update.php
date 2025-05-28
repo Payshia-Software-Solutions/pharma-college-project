@@ -20,6 +20,29 @@ function outputArray($array, $format = 'print_r')
     echo '</pre>';
 }
 
+function getBadgeClassByStatus($status)
+{
+    switch ($status) {
+        case 'Pending':
+            return 'badge bg-warning text-dark'; // Yellow/Orange badge
+        case 'Partially Paid':
+            return 'badge bg-warning'; // Yellow badge
+        case 'paid':
+            return 'badge bg-secondary'; // Grey badge
+        case 'Confirmed':
+            return 'badge bg-success'; // Green badge
+        case 'Canceled':
+            return 'badge bg-danger'; // Red badge
+        case 'Completed':
+            return 'badge bg-primary'; // Blue badge
+        case 'On Hold':
+            return 'badge bg-secondary'; // Grey badge
+        default:
+            return 'badge bg-info'; // Light blue badge for unknown status
+    }
+}
+
+
 function generateQRCode($text)
 {
 
