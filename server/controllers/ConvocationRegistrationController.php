@@ -335,6 +335,30 @@ class ConvocationRegistrationController
         }
     }
 
+    public function updateSession($reference_number)
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($data['session'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required session field']);
+            return;
+        }
+
+        $updated = $this->model->updateSession($reference_number, $data['session']);
+        if ($updated) {
+            http_response_code(201); // Created successfully
+            echo json_encode([
+                'status' => 'Success',
+                'message' => 'Session updated to ' . $data['session'],
+                'reference_number' => $reference_number,
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to update convocation registration']);
+        }
+    }
+
     public function updatePayment($reference_number)
     {
         $data = json_decode(file_get_contents('php://input'), true);

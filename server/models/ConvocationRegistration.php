@@ -143,4 +143,15 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     ");
         return $stmt->execute([$payment_status, $payment_amount, $reference_number]);
     }
+
+
+    public function updateSession($reference_number, $session)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET session = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$session, $reference_number]);
+    }
 }

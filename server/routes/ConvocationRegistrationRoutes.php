@@ -70,6 +70,11 @@ return [
         return $convocationRegistrationController->updatePayment($registration_id);
     },
 
+    // PUT update payment only
+    'PUT /convocation-registrations/(\d+)/update-session$' => function ($registration_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->updateSession($registration_id);
+    },
+
     // DELETE a registration
     'DELETE /convocation-registrations/(\d+)/$' => function ($registration_id) use ($convocationRegistrationController) {
         return $convocationRegistrationController->deleteRegistration($registration_id);
