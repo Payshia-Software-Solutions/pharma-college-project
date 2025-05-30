@@ -71,7 +71,7 @@ return [
     },
 
     // PUT update payment only
-    'PUT /convocation-registrations/(\d+)/update-session$' => function ($registration_id) use ($convocationRegistrationController) {
+    'PUT /convocation-registrations/(\d+)/update-session/$' => function ($registration_id) use ($convocationRegistrationController) {
         return $convocationRegistrationController->updateSession($registration_id);
     },
 
