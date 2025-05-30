@@ -22,6 +22,8 @@ $txnNumber = $_POST['txnNumber'];
 
 // Get Payment Requests
 $paymentRequest = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal-requests/' . $txnNumber)->toArray();
+$checkHashInfo = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal-requests/check-hash?hashValue=' . $paymentRequest['hash_value'])->toArray();
+
 ?>
 <div class="loading-popup-content-right <?= htmlspecialchars($userTheme) ?>">
     <div class="row">
@@ -110,14 +112,41 @@ $paymentRequest = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal
                                 </div>
 
                             </div>
+
+                            <?php if (count($checkHashInfo) > 1) : ?>
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <h5 class="table-title">Slip Dupplicate Status</h5>
+                                    </div>
+                                    <?php foreach ($checkHashInfo as $hashRecord) {
+                                    ?>
+                                        <div class="col-12">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <p class="mb-0"><?= $hashRecord['unique_number'] ?></p>
+                                                    <a target="_blank" class="btn btn-dark btn-sm text-light"
+                                                        href="https://content-provider.pharmacollege.lk<?= $hashRecord['slip_path'] ?>">Download
+                                                        Slip</a>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    <?php
+                                    }
+                                    ?>
+
+                                </div>
+
+                            <?php else : ?>
+                                <h6 class="mt-2">No Dupplicate Receipts</h6>
+                            <?php endif ?>
                         </div>
                     </div>
-                </div>
 
 
-                <div class="col-12">
-                    <?php outputArray($paymentRequest); ?>
+
                 </div>
+
             </div>
         </div>
         <div class="col-md-4">

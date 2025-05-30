@@ -3,8 +3,6 @@
 
 require_once './models/TransactionPayment.php';
 
-
-
 class TransactionPaymentController
 {
     public  $model;

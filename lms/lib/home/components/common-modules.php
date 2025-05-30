@@ -1,3 +1,4 @@
+text/x-generic common-modules.php ( ASCII text )
 <div class="row">
     <div class="col-12">
         <h4 class="section-topic">Common Modules</h4>
@@ -9,7 +10,7 @@
                 <div class="row">
                     <div class="col-12">
                         <img src="./lib/course/assets/images/video-conference.gif" class="game-icon">
-                        <h4 class="card-title">Course</h4>
+                        <h4 class="card-title">Recordings</h4>
                     </div>
 
                     <div class="col-12 mt-2">
@@ -176,12 +177,12 @@
     </div>
 
     <div class="col-6 col-md-4 mb-2 d-flex">
-        <div class="card game-card shadow flex-fill" onclick="redirectToURL('certificate-center')">
+        <div class="card game-card shadow flex-fill" onclick="redirectToURL('convocation')">
             <div class="card-body text-center">
                 <div class="row">
                     <div class="col-12">
                         <img src="./lib/certificate-center/assets/images/certificate.gif" class="game-icon">
-                        <h4 class="card-title">Certificate Center</h4>
+                        <h4 class="card-title">Convocation/Certificate</h4>
                     </div>
 
                     <div class="col-12 mt-2">
