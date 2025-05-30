@@ -440,7 +440,7 @@ function changeBookingSession(bookingId, newSession) {
       fetch(
         `https://qa-api.pharmacollege.lk/convocation-registrations/${bookingId}/update-session`,
         {
-          method: "PUT", // or PUT if your API expects that
+          method: "POST", // or PUT if your API expects that
           body: formData,
         }
       )
