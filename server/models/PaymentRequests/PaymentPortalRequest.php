@@ -33,6 +33,13 @@ class PaymentPortalRequest
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getPaymentRequestRecordsByReason($unique_number, $reason)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM payment_requests WHERE unique_number = :unique_number AND payment_reson = :reason");
+        $stmt->execute(['unique_number' => $unique_number, 'reason' => $reason]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // Insert a new payment request
     public function createRecord($data)
     {

@@ -50,4 +50,25 @@ return [
         return $paymentRequestController->checkHashDupplicate($hashValue);
     },
 
+
+    // GET a single registration by reference number (same as ID)
+    'GET /payment-portal-requests/get-records\?UniqueNumber=[A-Za-z0-9]+&Reason=[A-Za-z0-9]+/$' => function () use ($paymentRequestController) {
+        $UniqueNumber = isset($_GET['UniqueNumber']) ? $_GET['UniqueNumber'] : null;
+        $Reason = isset($_GET['Reason']) ? $_GET['Reason'] : null;
+
+        $missing = [];
+        if (!$UniqueNumber) $missing[] = 'UniqueNumber';
+        if (!$Reason) $missing[] = 'Reason';
+
+        if (!empty($missing)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required parameter(s): ' . implode(', ', $missing)]);
+            return;
+        }
+
+        return $paymentRequestController->getPaymentRequestRecordsByReason($UniqueNumber, $Reason);
+    },
+
+
+
 ];

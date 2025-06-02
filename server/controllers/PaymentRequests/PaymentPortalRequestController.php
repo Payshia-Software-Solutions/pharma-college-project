@@ -57,6 +57,17 @@ class PaymentPortalRequestController
         }
     }
 
+    public function getPaymentRequestRecordsByReason($unique_number, $reason)
+    {
+        $records = $this->model->getPaymentRequestRecordsByReason($unique_number, $reason);
+        if ($records) {
+            echo json_encode($records);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No payment requests found for the given unique number and reason']);
+        }
+    }
+
 
     private function ensureDirectoryExists($ftp_conn, $dir)
     {
