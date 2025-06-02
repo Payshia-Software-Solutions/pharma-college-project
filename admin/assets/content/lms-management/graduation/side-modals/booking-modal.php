@@ -51,6 +51,22 @@ try {
     }
 }
 
+try {
+    $getPaymentTransactionRecords = $client->request('GET', $_ENV['SERVER_URL'] . '/tc-payments?student_number=' . $packageBooking['student_number'] . '&referKey=covocation-payment')->toArray();
+} catch (\Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface $e) {
+    if ($e->getResponse()->getStatusCode() === 404) {
+        $getPaymentTransactionRecords = [];
+    } else {
+        throw $e;
+    }
+}
+
+$totalPayments = 0;
+foreach ($getPaymentTransactionRecords as $record) {
+    $totalPayments += $record['payment_amount'];
+}
+
+$balance = $dueAmount - $totalPayments;
 
 ?>
 <div class="loading-popup-content-right <?= htmlspecialchars($userTheme) ?>">
@@ -199,9 +215,9 @@ try {
                     <?php endforeach; ?>
                 <?php else : ?>
                     <div class="col-12">
-                        <div class="card">
+                        <div class="card mt-2">
                             <div class="card-body">
-                                <p class="text-center">No payment records found.</p>
+                                <p class="text-center mb-0">No payment requests found.</p>
                             </div>
                         </div>
                     </div>
@@ -291,25 +307,70 @@ try {
         </div>
 
         <div class="col-4">
+
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
-                            <label for="paid_amount" class="mb-2">Payment Amount</label>
-                            <input type="text" class="form-control text-center" placeholder="Payment Amount"
-                                name="paid_amount" id="paid_amount">
+                            <h4>Payment Details</h4>
+                            <p class="mb-0">Total Due Amount: <strong><?= number_format($dueAmount, 2) ?></strong></p>
+                            <p class="mb-0">Total Payments: <strong><?= number_format($totalPayments, 2) ?></strong></p>
+                            <p class="mb-0">Balance: <strong><?= number_format($balance, 2) ?></strong></p>
 
-                            <button onclick="UpdateConvocationPayment('<?= $referenceNumber ?>') "
-                                class=" w-100 btn btn-dark mt-2" type="button">Update &
-                                Approve</button>
+                            <?php if ($balance > 0) : ?>
+                                <p class="text-danger mb-0">Payment is pending.</p>
+                                <label for="paid_amount" class="mb-2">Payment Amount</label>
+                                <input type="text" class="form-control text-center" placeholder="Payment Amount"
+                                    name="paid_amount" id="paid_amount">
+
+                                <button onclick="UpdateConvocationPayment('<?= $referenceNumber ?>')"
+                                    class="w-100 btn btn-dark mt-2" type="button"><?= strtolower($packageBooking['registration_status']) === 'paid' ? 'Add Payment' : 'Approve & Update Payment' ?>
+                                </button>
+                            <?php else : ?>
+                                <p class="text-success mb-0">Payment is complete.</p>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
             </div>
+
+
+            <div class="row">
+                <?php if (count($getPaymentTransactionRecords) > 0) : ?>
+                    <div class="col-12">
+                        <h5 class="table-title">Payment Transactions</h5>
+                    </div>
+                    <?php foreach ($getPaymentTransactionRecords as $record) : ?>
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="mb-0"><?= $record['reference'] ?></p>
+                                    <p class="mb-0"><?= $record['transaction_id'] ?>
+                                    <p class="mb-0"><?= $record['payment_amount'] ?></p>
+                                    <p class="mb-0"><?= $record['rec_time'] ?></p>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <div class="col-12">
+                        <div class="card mt-2">
+                            <div class="card-body">
+                                <p class="text-center mb-0">No payment transactions found.</p>
+                            </div>
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+
+
+
+
             <div class="row mb-2 mt-2">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-body">
+                            <h4>Main Payment</h4>
                             <?php
                             $filePath = $packageBooking['image_path'];
                             $fullUrl = "https://content-provider.pharmacollege.lk" . $filePath;
