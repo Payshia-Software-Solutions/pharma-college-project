@@ -39,6 +39,27 @@ class TransactionPaymentController
         echo json_encode($payments);
     }
 
+    public function getPaymentsByStudentNumberAndReference($studentNumber, $referKey)
+    {
+        $payments = $this->model->getPaymentsByStudentNumberAndReference($studentNumber, $referKey);
+        echo json_encode($payments);
+    }
+
+    public function createPayment()
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+        $data['transaction_id'] = $this->generateTransactionId();
+        $data['rec_time'] = date('Y-m-d H:i:s');
+        $data['created_by'] = 'system'; // or use session/user info
+        $data['created_at'] = date('Y-m-d H:i:s');
+
+        if ($this->model->createPayment($data)) {
+            echo json_encode(['status' => 'Payment created', 'transaction_id' => $data['transaction_id']]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to create payment']);
+        }
+    }
 
     public function updatePayment($id)
     {

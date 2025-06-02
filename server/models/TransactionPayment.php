@@ -30,6 +30,12 @@ class TransactionPayment
         return $stmt->fetchAll();
     }
 
+    public function getPaymentsByStudentNumberAndReference($studentNumber, $referenceKey)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM transcation_payments WHERE student_number = ? AND reference_key = ?");
+        $stmt->execute([$studentNumber, $referenceKey]);
+        return $stmt->fetchAll();
+    }
 
 
     public function createPayment($data)
