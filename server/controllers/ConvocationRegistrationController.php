@@ -414,12 +414,13 @@ class ConvocationRegistrationController
             $studentName = $studentInfo['name_on_certificate']; // Combine first and last name
             $referenceNumber = $reference_number; // Use the user ID as the reference number
 
-            // Send the welcome SMS
+            // Send the welcome 
             $smsResponse = $this->smsModel->sendConvocationPaymentApprovedSMS($mobile, $studentName, $referenceNumber, $txnNumber, $paymentAmount);
+            var_dump($smsResponse);
 
             // Check if the SMS was sent successfully
             if ($smsResponse['status'] === 'error') {
-                throw new Exception('Failed to send welcome SMS: ' . $smsResponse['message']);
+                throw new Exception('Failed to send SMS: ' . $smsResponse['message']);
             }
 
             // Return success response with the new user's ID
