@@ -49,7 +49,7 @@ class SMSModel
         );
 
         // Send SMS
-        return $this->sendSMS($mobile, $this->senderId, $message);
+        return $this->sendSMS($mobile, "Pharma C.", $message);
     }
 
 
