@@ -324,8 +324,7 @@ $balance = $dueAmount - $totalPayments;
                                 <input type="text" class="form-control text-center" placeholder="Payment Amount"
                                     name="paid_amount" id="paid_amount">
 
-                                <button
-                                    onclick="UpdateConvocationPayment('<?= $referenceNumber ?>', '<?= $referenceNumber ?>')"
+                                <button onclick="UpdateConvocationPayment('<?= $referenceNumber ?>')"
                                     class="w-100 btn btn-dark mt-2"
                                     type="button"><?= strtolower($packageBooking['registration_status']) === 'paid' ? 'Add Payment' : 'Approve & Update Payment' ?>
                                 </button>

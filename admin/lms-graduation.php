@@ -44,7 +44,7 @@ $SubPage = false;
     <!-- Add Scripts -->
 
     <?php include './include/footer-scripts.php' ?>
-    <script src="./assets/content/lms-management/graduation/assets/scripts.js"></script>
+    <script src="./assets/content/lms-management/graduation/assets/scripts-1.0.js"></script>
 </body>
 
 </html>
