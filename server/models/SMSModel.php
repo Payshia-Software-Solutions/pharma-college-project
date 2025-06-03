@@ -8,11 +8,12 @@ class SMSModel
     private $templatePath;
     private $convocationTemplatePath;
 
-    public function __construct($authToken, $senderId, $templatePath)
+    public function __construct($authToken, $senderId, $templatePath, $convocationTemplatePath)
     {
         $this->authToken = $authToken;
         $this->senderId = $senderId;
         $this->templatePath = $templatePath;
+        $this->convocationTemplatePath = $convocationTemplatePath;
     }
 
     public function sendWelcomeSMS($mobile, $studentName, $referenceNumber)

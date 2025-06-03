@@ -29,7 +29,6 @@ $senderId = $_ENV['SMS_SENDER_ID'];
 $templatePath = __DIR__ . '/../templates/welcome_sms_template.txt';
 $convocationTemplatePath = __DIR__ . '/../templates/convocation-payment-message.txt';
 
-
 // Include route files
 $assignmentRoutes = require './routes/Assignment/AssignmentRoutes.php';
 $submissionRoutes = require './routes/Assignment/submissionRoutes.php';
