@@ -471,7 +471,7 @@ function changeBookingSession(bookingId, newSession) {
   });
 }
 
-function InactivePayment(recordId) {
+function InactivePayment(recordId, referenceNumber) {
   Swal.fire({
     title: "Are you sure?",
     text: "This will mark the payment as inactive. You can reactivate it later.",
@@ -497,7 +497,7 @@ function InactivePayment(recordId) {
               "The payment has been marked as inactive.",
               "success"
             );
-            OpenCourierList();
+            OpenBooking(referenceNumber);
           } else {
             throw new Error(
               `Failed to update payment. Status: ${response.status}`

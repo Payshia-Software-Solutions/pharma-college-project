@@ -90,7 +90,7 @@ $balance = $dueAmount - $totalPayments;
 
 
     <div class="row">
-        <div class="col-8">
+        <div class="col-md-8">
             <div class="row g-2">
                 <div class="col-3">
                     <div class="card">
@@ -307,7 +307,7 @@ $balance = $dueAmount - $totalPayments;
             <?php endif ?>
         </div>
 
-        <div class="col-4">
+        <div class="col-md-4">
 
             <div class="row">
                 <div class="col-12">
@@ -324,7 +324,8 @@ $balance = $dueAmount - $totalPayments;
                                 <input type="text" class="form-control text-center" placeholder="Payment Amount"
                                     name="paid_amount" id="paid_amount">
 
-                                <button onclick="UpdateConvocationPayment('<?= $referenceNumber ?>')"
+                                <button
+                                    onclick="UpdateConvocationPayment('<?= $referenceNumber ?>', '<?= $referenceNumber ?>')"
                                     class="w-100 btn btn-dark mt-2"
                                     type="button"><?= strtolower($packageBooking['registration_status']) === 'paid' ? 'Add Payment' : 'Approve & Update Payment' ?>
                                 </button>
@@ -352,7 +353,7 @@ $balance = $dueAmount - $totalPayments;
                                     <p class="mb-0"><?= $record['rec_time'] ?></p>
 
                                     <button class="btn btn-danger btn-sm" type="button"
-                                        onclick="InactivePayment('<?= $record['id'] ?>')" <?= $record['id'] ?>>Inactive</button>
+                                        onclick="InactivePayment('<?= $record['id'] ?>', '<?= $referenceNumber ?>')">Inactive</button>
                                 </div>
                             </div>
                         </div>
