@@ -393,7 +393,7 @@ class ConvocationRegistrationController
             'payment_amount'    => $paymentAmount
         ];
 
-        $updatePaymentAmount = $paidAmount + $recAmount;
+        $updatePaymentAmount = $paidAmount + $paymentAmount;
 
         $created = $this->transactionPaymentController->model->createPayment($paymentData);
 
@@ -403,7 +403,7 @@ class ConvocationRegistrationController
             return;
         } else {
             // Log the payment creation
-            echo json_encode("Payment record created successfully for reference number: $reference_number");
+            // echo json_encode("Payment record created successfully for reference number: $reference_number");
         }
 
 
