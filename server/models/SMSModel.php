@@ -48,8 +48,9 @@ class SMSModel
             $template
         );
 
+
         // Send SMS
-        return $this->sendSMS($mobile, "Pharma C.", $message);
+        return $this->sendSMS('0770481363', $this->senderId, $message);
     }
 
 
