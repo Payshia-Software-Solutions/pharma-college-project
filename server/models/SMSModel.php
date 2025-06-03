@@ -36,7 +36,7 @@ class SMSModel
     public function sendConvocationPaymentApprovedSMS($mobile, $studentName, $referenceNumber, $receiptNumber, $paymentAmount)
     {
         // Load the convocation SMS template from file
-        $template = file_get_contents(__DIR__ . '/../templates/convocation-payment-message.txt');
+        $template = file_get_contents('templates/convocation-payment-message.txt');
         if (!$template) {
             throw new Exception("Unable to load convocation SMS template.");
         }
