@@ -55,7 +55,8 @@ $courierOrders = $response->toArray();
                                     </td>
                                     <td><?= number_format($order['cod_amount'], 2) ?></td>
                                     <td>
-                                        <button type="button" class="btn btn-dark btn-sm">
+                                        <button type="button" class="btn btn-dark btn-sm"
+                                            onclick="OpenCourierListModel('<?= $order['id'] ?>')">
                                             View
                                         </button>
                                     </td>
