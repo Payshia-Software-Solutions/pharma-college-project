@@ -397,6 +397,8 @@ class ConvocationRegistrationController
             'payment_amount'    => $recieptAmount
         ];
 
+        $updatePaymentAmount = $paidAmount + $recieptAmount;
+
         $created = $this->transactionPaymentController->model->createPayment($paymentData);
 
         if (!$created) {
@@ -409,7 +411,7 @@ class ConvocationRegistrationController
         }
 
 
-        $updated = $this->model->updatePayment($reference_number, $data['payment_status'], $data['payment_amount']);
+        $updated = $this->model->updatePayment($reference_number, $data['payment_status'], $updatePaymentAmount);
 
         if ($updated) {
             // Prepare the welcome message
