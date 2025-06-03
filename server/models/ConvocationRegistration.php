@@ -105,6 +105,20 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getPayableAmount($reference_number)
+    {
+        $stmt = $this->pdo->prepare("SELECT price, additional_seats FROM convocation_registrations WHERE reference_number = ?");
+        $stmt->execute([$reference_number]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            return null; // or throw an exception if preferred
+        }
+
+        $dueAmount = $row['price'] + ($row['additional_seats'] * 500);
+        return $dueAmount;
+    }
+
     // Update a registration
     public function updateRegistration($registration_id, $student_number, $course_id, $package_id, $event_id, $payment_status, $payment_amount, $registration_status)
     {

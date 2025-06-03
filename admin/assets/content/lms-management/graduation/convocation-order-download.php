@@ -133,7 +133,8 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
                                 <th scope="col">Advanced</th>
                                 <th scope="col">Pacakge</th>
                                 <th scope="col">Additional Seats</th>
-                                <th scope="col">Due Payment</th>
+                                <th scope="col">Package Amount</th>
+                                <th scope="col">Paid</th>
                                 <th scope="col">Slip</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Registration Status</th>
@@ -258,6 +259,7 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
                                     <td><?= $indexed_packages[$booking['package_id']]['package_name']; ?></td>
                                     <td><?= $booking['additional_seats'] ?></td>
                                     <td><?= number_format($dueAmount, 2) ?></td>
+                                    <td><?= $booking['payment_amount'] ?></td>
                                     <td>
                                         <a style="color: white !important;" class="btn btn-dark btn-sm"
                                             href="http://content-provider.pharmacollege.lk<?= $booking['image_path'] ?>"

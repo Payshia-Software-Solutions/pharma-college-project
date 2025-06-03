@@ -372,8 +372,18 @@ class ConvocationRegistrationController
 
         $paymentAmount = $data['payment_amount'];
         $student_number = $this->model->getRegistrationByReference($reference_number)['student_number'];
+        $paybleAmount = $this->model->getPayableAmount($reference_number);
+        $paidAmount = $this->transactionPaymentController->model->getPaidAmount($reference_number, 'covocation-payment');
         $studentInfo = $this->userFullDetailsController->model->getUserByUserName($student_number);
         $txnNumber = $this->transactionPaymentController->generateTransactionId();
+        $recieptAmount = $paymentAmount - $paidAmount;
+
+        if ($recieptAmount > 0) {
+            $paymentType = "CREDIT";
+        } else {
+            $paymentType = "DEBIT";
+        }
+
         $paymentData = [
             'transaction_id'    => $txnNumber,
             'rec_time'          => date('Y-m-d H:i:s'),
@@ -382,9 +392,9 @@ class ConvocationRegistrationController
             'created_by'        => $data['created_by'] ?? '',
             'created_at'        => date('Y-m-d H:i:s'),
             'student_number'    => $student_number,
-            'transaction_type'  => 'CREDIT',
+            'transaction_type'  => $paymentType,
             'reference_key'     => 'covocation-payment',
-            'payment_amount'    => $paymentAmount
+            'payment_amount'    => $recieptAmount
         ];
 
         $created = $this->transactionPaymentController->model->createPayment($paymentData);
