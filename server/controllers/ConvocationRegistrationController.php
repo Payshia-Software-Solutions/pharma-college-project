@@ -371,7 +371,7 @@ class ConvocationRegistrationController
         }
 
         $paymentAmount = $data['payment_amount'];
-        $recInfo = $this->model->getRegistrationByReference($reference_number)['student_number'];
+        $recInfo = $this->model->getRegistrationByReference($reference_number);
         $student_number = $recInfo['student_number'];
         $recAmount = $recInfo['payment_amount'];
 
@@ -403,7 +403,7 @@ class ConvocationRegistrationController
             return;
         } else {
             // Log the payment creation
-            error_log("Payment record created successfully for reference number: $reference_number");
+            echo json_encode("Payment record created successfully for reference number: $reference_number");
         }
 
 
