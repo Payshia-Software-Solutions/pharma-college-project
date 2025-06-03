@@ -190,6 +190,6 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
         SET additional_seats = ?
         WHERE reference_number = ?
     ");
-        return $stmt->execute([$reference_number, $additional_seats]);
+        return $stmt->execute([$additional_seats, $reference_number]);
     }
 }
