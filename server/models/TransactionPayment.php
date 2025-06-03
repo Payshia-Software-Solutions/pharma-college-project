@@ -37,6 +37,14 @@ class TransactionPayment
         return $stmt->fetchAll();
     }
 
+    public function getPaidAmount($studentNumber, $referenceKey)
+    {
+        $stmt = $this->pdo->prepare("SELECT SUM(payment_amount) AS total_paid FROM transcation_payments WHERE student_number = ? AND reference_key = ?");
+        $stmt->execute([$studentNumber, $referenceKey]);
+        $result = $stmt->fetch();
+        return $result ? $result['total_paid'] : 0;
+    }
+
 
     public function createPayment($data)
     {

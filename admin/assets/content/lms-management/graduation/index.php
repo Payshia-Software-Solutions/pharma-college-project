@@ -120,7 +120,8 @@ $allAssignments = $response->toArray();
                                     <th scope="col">Courses</th>
                                     <th scope="col">Pacakge</th>
                                     <th scope="col">Additional Seats</th>
-                                    <th scope="col">Due Payment</th>
+                                    <th scope="col">Package Amount</th>
+                                    <th scope="col">Paid</th>
                                     <th scope="col">Slip</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Registration Status</th>
@@ -192,7 +193,7 @@ $allAssignments = $response->toArray();
                                                 onclick="OpenBooking('<?= $booking['reference_number'] ?>')"
                                                 class="btn btn-dark btn-sm">View</button></td>
                                         <td><?= $booking['student_number'] ?></td>
-                                        <td><?= $booking['session'] ?>
+                                        <td>
                                             <select name="session"
                                                 onchange="changeBookingSession(<?= $booking['reference_number'] ?>, this.value)">
                                                 <option value="1" <?= $booking['session'] == 1 ? 'selected' : '' ?>>1
@@ -216,6 +217,7 @@ $allAssignments = $response->toArray();
                                         <td><?= $indexed_packages[$booking['package_id']]['package_name']; ?></td>
                                         <td><?= $booking['additional_seats'] ?></td>
                                         <td><?= number_format($dueAmount, 2) ?></td>
+                                        <td><?= $booking['payment_amount'] ?></td>
                                         <td>
                                             <a style="color: white !important;" class="btn btn-dark btn-sm"
                                                 href="http://content-provider.pharmacollege.lk<?= $booking['image_path'] ?>"
