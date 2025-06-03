@@ -403,7 +403,11 @@ class ConvocationRegistrationController
             http_response_code(500);
             echo json_encode(['error' => 'Failed to create payment record']);
             return;
+        } else {
+            // Log the payment creation
+            error_log("Payment record created successfully for reference number: $reference_number");
         }
+
 
         $updated = $this->model->updatePayment($reference_number, $data['payment_status'], $data['payment_amount']);
 
