@@ -50,12 +50,16 @@ class SMSModel
 
 
         // Send SMS
-        return $this->sendSMS('0770481363', $this->senderId, $message);
+        return $this->sendSMS($mobile, $this->senderId, $message);
     }
 
 
     public function sendSMS($mobile, $senderId, $message)
     {
+
+        if (!preg_match('/^0/', $mobile)) {
+            $mobile = '0' . $mobile;
+        }
         $msgdata = [
             "recipient" => $mobile,
             "sender_id" => $senderId,
