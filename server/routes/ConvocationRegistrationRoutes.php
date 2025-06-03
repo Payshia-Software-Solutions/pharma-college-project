@@ -75,6 +75,11 @@ return [
         return $convocationRegistrationController->updateSession($registration_id);
     },
 
+    // PUT update payment only
+    'POST /convocation-registrations/(\d+)/update-additional-seats/$' => function ($registration_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->updateAdditionalSeats($registration_id);
+    },
+
     // DELETE a registration
     'DELETE /convocation-registrations/(\d+)/$' => function ($registration_id) use ($convocationRegistrationController) {
         return $convocationRegistrationController->deleteRegistration($registration_id);

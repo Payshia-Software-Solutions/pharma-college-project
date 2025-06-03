@@ -182,4 +182,14 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     ");
         return $stmt->execute([$session, $reference_number]);
     }
+
+    public function updateAdditionalSeats($reference_number, $additional_seats)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET additional_seats = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$reference_number, $additional_seats]);
+    }
 }

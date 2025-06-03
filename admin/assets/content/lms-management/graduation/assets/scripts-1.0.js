@@ -471,6 +471,57 @@ function changeBookingSession(bookingId, newSession) {
   });
 }
 
+function changeAdditionalSeats(bookingId, newSeatCount) {
+  Swal.fire({
+    title: "Are you sure?",
+    text: `You are about to change the number of additional seats to ${newSeatCount}.`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes, change it!",
+    cancelButtonText: "No, keep current",
+    reverseButtons: true,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      showOverlay(); // Optional: your custom loading overlay
+
+      const formData = new FormData();
+      formData.append("additional_seats", newSeatCount);
+
+      fetch(
+        `https://qa-api.pharmacollege.lk/convocation-registrations/${bookingId}/update-additional-seats`,
+        {
+          method: "POST", // or PUT depending on API spec
+          body: formData,
+        }
+      )
+        .then((response) => {
+          if (response.ok) {
+            Swal.fire(
+              "Updated!",
+              `The number of additional seats has been changed to ${newSeatCount}.`,
+              "success"
+            );
+            // Optionally reload or update UI
+            // location.reload();
+          } else {
+            throw new Error(
+              `Failed to update seats. Status: ${response.status}`
+            );
+          }
+        })
+        .catch((error) => {
+          Swal.fire("Error!", `An error occurred: ${error.message}`, "error");
+        })
+        .finally(() => {
+          hideOverlay(); // Optional
+        });
+    } else {
+      Swal.fire("Cancelled", "No changes were made.", "info");
+    }
+  });
+}
+
+
 function InactivePayment(recordId, referenceNumber) {
   Swal.fire({
     title: "Are you sure?",

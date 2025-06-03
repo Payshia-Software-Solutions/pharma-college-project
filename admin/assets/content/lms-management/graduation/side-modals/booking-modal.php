@@ -141,6 +141,15 @@ $balance = $dueAmount - $totalPayments;
                         </div>
                     </div>
                 </div>
+
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="mb-0">Additional Seats</p>
+                            <h5><?= $packageBooking['additional_seats'] ?></h5>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-3">
                     <div class="card">
                         <div class="card-body">

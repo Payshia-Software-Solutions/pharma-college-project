@@ -215,7 +215,15 @@ $allAssignments = $response->toArray();
                                             ?>
                                         </td>
                                         <td><?= $indexed_packages[$booking['package_id']]['package_name']; ?></td>
-                                        <td><?= $booking['additional_seats'] ?></td>
+                                        <td>
+                                            <select name="additional_seats"
+                                                onchange="changeAdditionalSeats(<?= $booking['reference_number'] ?>, this.value)">
+                                                <?php for ($i = 0; $i <= 4; $i++): ?>
+                                                    <option value="<?= $i ?>" <?= $booking['additional_seats'] == $i ? 'selected' : '' ?>><?= $i ?></option>
+                                                <?php endfor; ?>
+                                            </select>
+                                        </td>
+
                                         <td><?= number_format($dueAmount, 2) ?></td>
                                         <td><?= $booking['payment_amount'] ?></td>
                                         <td>
