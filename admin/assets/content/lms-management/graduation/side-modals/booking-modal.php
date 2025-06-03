@@ -196,7 +196,8 @@ $balance = $dueAmount - $totalPayments;
                                             <ul class="list-group">
                                                 <?php foreach ($checkHashInfo as $dup) : ?>
                                                     <li class="list-group-item">
-                                                        <strong>Reference:</strong> <?= htmlspecialchars($dup['payment_reference']) ?> <br>
+                                                        <strong>Reference:</strong> <?= htmlspecialchars($dup['payment_reference']) ?>
+                                                        <br>
                                                         <strong>Amount:</strong> <?= htmlspecialchars($dup['paid_amount']) ?> <br>
                                                         <strong> <a target="_blank" class="btn btn-dark btn-sm text-light"
                                                                 href="https://content-provider.pharmacollege.lk<?= $dup['slip_path'] ?>">Download
@@ -324,7 +325,8 @@ $balance = $dueAmount - $totalPayments;
                                     name="paid_amount" id="paid_amount">
 
                                 <button onclick="UpdateConvocationPayment('<?= $referenceNumber ?>')"
-                                    class="w-100 btn btn-dark mt-2" type="button"><?= strtolower($packageBooking['registration_status']) === 'paid' ? 'Add Payment' : 'Approve & Update Payment' ?>
+                                    class="w-100 btn btn-dark mt-2"
+                                    type="button"><?= strtolower($packageBooking['registration_status']) === 'paid' ? 'Add Payment' : 'Approve & Update Payment' ?>
                                 </button>
                             <?php else : ?>
                                 <p class="text-success mb-0">Payment is complete.</p>
@@ -348,6 +350,9 @@ $balance = $dueAmount - $totalPayments;
                                     <p class="mb-0"><?= $record['transaction_id'] ?>
                                     <p class="mb-0"><?= $record['payment_amount'] ?></p>
                                     <p class="mb-0"><?= $record['rec_time'] ?></p>
+
+                                    <button class="btn btn-danger btn-sm" type="button"
+                                        onclick="InactivePayment('<?= $record['id'] ?>')" <?= $record['id'] ?>>Inactive</button>
                                 </div>
                             </div>
                         </div>

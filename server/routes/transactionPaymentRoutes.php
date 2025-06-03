@@ -56,4 +56,9 @@ return [
     'DELETE /tc-payments/(\d+)/$' => function ($id) use ($transactionPaymentController) {
         return $transactionPaymentController->deletePayment($id);
     },
+
+    // Inactive Payment
+    'POST /tc-payments/inactive/(\d+)/$' => function ($id) use ($transactionPaymentController) {
+        return $transactionPaymentController->InactivePayment($id);
+    }
 ];

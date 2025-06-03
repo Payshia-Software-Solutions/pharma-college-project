@@ -73,4 +73,10 @@ class TransactionPaymentController
         $this->model->deletePayment($id);
         echo json_encode(['status' => 'Payment deleted']);
     }
+
+    public function inactivePayment($id)
+    {
+        $this->model->inactivePayment($id);
+        echo json_encode(['status' => 'Payment marked as inactive']);
+    }
 }
