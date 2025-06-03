@@ -6,6 +6,7 @@ class SMSModel
     private $authToken;
     private $senderId;
     private $templatePath;
+    private $convocationTemplatePath;
 
     public function __construct($authToken, $senderId, $templatePath)
     {
@@ -36,7 +37,7 @@ class SMSModel
     public function sendConvocationPaymentApprovedSMS($mobile, $studentName, $referenceNumber, $receiptNumber, $paymentAmount)
     {
         // Load the convocation SMS template from file
-        $template = file_get_contents($this->templatePath);
+        $template = file_get_contents($this->convocationTemplatePath);
         if (!$template) {
             throw new Exception("Unable to load convocation SMS template.");
         }
