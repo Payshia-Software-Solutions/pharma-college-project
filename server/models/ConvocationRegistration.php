@@ -108,19 +108,20 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     public function getPayableAmount($reference_number)
     {
         $stmt = $this->pdo->prepare("SELECT 
-    cr.*, 
-    p.package_name, 
-    p.price, 
-    p.parent_seat_count, 
-    p.garland, 
-    p.graduation_cloth, 
-    p.photo_package, 
-    p.is_active, 
-    p.created_at AS package_created_at, 
-    p.updated_at AS package_updated_at,
-FROM convocation_registrations cr
-LEFT JOIN packages p ON cr.package_id = p.package_id
-wHERE cr.reference_number = ?");
+        cr.*, 
+        p.package_name, 
+        p.price, 
+        p.parent_seat_count, 
+        p.garland, 
+        p.graduation_cloth, 
+        p.photo_package, 
+        p.is_active, 
+        p.created_at AS package_created_at, 
+        p.updated_at AS package_updated_at
+    FROM convocation_registrations cr
+    LEFT JOIN packages p ON cr.package_id = p.package_id
+    WHERE cr.reference_number = ?");
+
         $stmt->execute([$reference_number]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
