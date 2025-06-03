@@ -470,3 +470,48 @@ function changeBookingSession(bookingId, newSession) {
     }
   });
 }
+
+function InactivePayment(recordId) {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "This will mark the payment as inactive. You can reactivate it later.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonText: "Yes, mark as inactive!",
+    cancelButtonText: "No, cancel!",
+    reverseButtons: true,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      showOverlay();
+
+      fetch(
+        `https://qa-api.pharmacollege.lk/tc-payments/inactive/${recordId}/`,
+        {
+          method: "POST",
+        }
+      )
+        .then((response) => {
+          if (response.ok) {
+            Swal.fire(
+              "Done!",
+              "The payment has been marked as inactive.",
+              "success"
+            );
+            OpenCourierList();
+          } else {
+            throw new Error(
+              `Failed to update payment. Status: ${response.status}`
+            );
+          }
+        })
+        .catch((error) => {
+          Swal.fire("Error!", `An error occurred: ${error.message}`, "error");
+        })
+        .finally(() => {
+          hideOverlay();
+        });
+    } else {
+      Swal.fire("Cancelled", "The payment is still active :)", "info");
+    }
+  });
+}

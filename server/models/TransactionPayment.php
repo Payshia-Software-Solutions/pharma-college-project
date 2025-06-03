@@ -12,7 +12,7 @@ class TransactionPayment
 
     public function getAllPayments()
     {
-        $stmt = $this->pdo->query("SELECT * FROM transcation_payments");
+        $stmt = $this->pdo->query("SELECT * FROM transcation_payments WHERE record_status = 'Active' ORDER BY created_at DESC");
         return $stmt->fetchAll();
     }
 
@@ -25,14 +25,14 @@ class TransactionPayment
 
     public function getPaymentsByStudentNumber($studentNumber)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM transcation_payments WHERE student_number = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM transcation_payments WHERE student_number = ? ");
         $stmt->execute([$studentNumber]);
         return $stmt->fetchAll();
     }
 
     public function getPaymentsByStudentNumberAndReference($studentNumber, $referenceKey)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM transcation_payments WHERE student_number = ? AND reference_key = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM transcation_payments WHERE student_number = ? AND reference_key = ? AND record_status = 'Active'");
         $stmt->execute([$studentNumber, $referenceKey]);
         return $stmt->fetchAll();
     }
@@ -84,6 +84,12 @@ class TransactionPayment
     public function deletePayment($id)
     {
         $stmt = $this->pdo->prepare("DELETE FROM transcation_payments WHERE id = ?");
+        return $stmt->execute([$id]);
+    }
+
+    public function InactivePayment($id)
+    {
+        $stmt = $this->pdo->prepare("UPDATE transcation_payments SET record_status = 'Inactive' WHERE id = ?");
         return $stmt->execute([$id]);
     }
 }
