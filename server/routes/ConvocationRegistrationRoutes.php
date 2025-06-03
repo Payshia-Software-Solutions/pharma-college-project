@@ -80,6 +80,11 @@ return [
         return $convocationRegistrationController->updateAdditionalSeats($registration_id);
     },
 
+    // PUT update payment only
+    'POST /convocation-registrations/(\d+)/update-package/$' => function ($registration_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->updatePackages($registration_id);
+    },
+
     // DELETE a registration
     'DELETE /convocation-registrations/(\d+)/$' => function ($registration_id) use ($convocationRegistrationController) {
         return $convocationRegistrationController->deleteRegistration($registration_id);

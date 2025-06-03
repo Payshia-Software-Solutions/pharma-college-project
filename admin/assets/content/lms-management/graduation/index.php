@@ -214,11 +214,21 @@ $allAssignments = $response->toArray();
                                             }
                                             ?>
                                         </td>
-                                        <td><?= $indexed_packages[$booking['package_id']]['package_name']; ?></td>
+                                        <td>
+                                            <select name="package"
+                                                onchange="changePackage(<?= $booking['reference_number'] ?>, this.value)">
+                                                <?php foreach ($graduationPackages as $package): ?>
+                                                    <option value="<?= $package['package_id'] ?>"
+                                                        <?= $booking['package_id'] == $package['package_id'] ? 'selected' : '' ?>>
+                                                        <?= htmlspecialchars($package['package_name']) ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </td>
                                         <td>
                                             <select name="additional_seats"
                                                 onchange="changeAdditionalSeats(<?= $booking['reference_number'] ?>, this.value)">
-                                                <?php for ($i = 0; $i <= 4; $i++): ?>
+                                                <?php for ($i = 0; $i <= 8; $i++): ?>
                                                     <option value="<?= $i ?>" <?= $booking['additional_seats'] == $i ? 'selected' : '' ?>><?= $i ?></option>
                                                 <?php endfor; ?>
                                             </select>
