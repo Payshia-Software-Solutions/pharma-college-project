@@ -416,7 +416,7 @@ class ConvocationRegistrationController
 
             // Send the welcome 
             $smsResponse = $this->smsModel->sendConvocationPaymentApprovedSMS($mobile, $studentName, $referenceNumber, $txnNumber, $paymentAmount);
-            var_dump($smsResponse);
+            // var_dump($smsResponse);
 
             // Check if the SMS was sent successfully
             if ($smsResponse['status'] === 'error') {
