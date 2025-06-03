@@ -521,6 +521,60 @@ function changeAdditionalSeats(bookingId, newSeatCount) {
   });
 }
 
+function changePackage(bookingId, newPackageId) {
+  const selectedPackageText = document.querySelector(
+    `select[name="package"] option[value="${newPackageId}"]`
+  ).textContent;
+
+  Swal.fire({
+    title: "Are you sure?",
+    text: `You are about to change the package to "${selectedPackageText}".`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes, change it!",
+    cancelButtonText: "No, keep current",
+    reverseButtons: true,
+  }).then((result) => {
+    if (result.isConfirmed) {
+      showOverlay();
+
+      const formData = new FormData();
+      formData.append("package_id", newPackageId);
+
+      fetch(
+        `https://qa-api.pharmacollege.lk/convocation-registrations/${bookingId}/update-package`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      )
+        .then((response) => {
+          if (response.ok) {
+            Swal.fire(
+              "Updated!",
+              `The package has been changed to "${selectedPackageText}".`,
+              "success"
+            );
+            // location.reload();
+          } else {
+            throw new Error(
+              `Failed to update package. Status: ${response.status}`
+            );
+          }
+        })
+        .catch((error) => {
+          Swal.fire("Error!", `An error occurred: ${error.message}`, "error");
+        })
+        .finally(() => {
+          hideOverlay();
+        });
+    } else {
+      Swal.fire("Cancelled", "No changes were made.", "info");
+    }
+  });
+}
+
+
 
 function InactivePayment(recordId, referenceNumber) {
   Swal.fire({

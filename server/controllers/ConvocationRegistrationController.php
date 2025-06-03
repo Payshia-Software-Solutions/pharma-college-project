@@ -384,6 +384,31 @@ class ConvocationRegistrationController
     }
 
 
+    public function updatePackages($reference_number)
+    {
+        if (!isset($_POST['package_id'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required session field']);
+            return;
+        }
+
+        $package_id = $_POST['package_id'];
+
+        $updated = $this->model->updatePackages($reference_number, $package_id);
+        if ($updated) {
+            http_response_code(201);
+            echo json_encode([
+                'status' => 'Success',
+                'message' => 'Package updated',
+                'reference_number' => $reference_number,
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to update convocation registration']);
+        }
+    }
+
+
     public function updatePayment($reference_number)
     {
         $data = json_decode(file_get_contents('php://input'), true);
