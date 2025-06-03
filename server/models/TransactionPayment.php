@@ -89,7 +89,7 @@ class TransactionPayment
 
     public function InactivePayment($id)
     {
-        $stmt = $this->pdo->prepare("UPDATE transcation_payments SET record_status = 'Inactive' WHERE id = ?");
+        $stmt = $this->pdo->prepare("UPDATE transcation_payments SET record_status = 'Deleted' WHERE id = ?");
         return $stmt->execute([$id]);
     }
 }
