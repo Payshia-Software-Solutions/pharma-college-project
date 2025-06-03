@@ -515,3 +515,28 @@ function InactivePayment(recordId, referenceNumber) {
     }
   });
 }
+
+function OpenCourierListModel(courierOrderId) {
+    var userTheme = $("#userTheme").val();
+    OpenPopupRight();
+    $("#loading-popup-right").html(InnerLoader);
+
+    function fetch_data() {
+        $.ajax({
+            url: 'assets/content/lms-management/graduation/side-modals/courier-list-model.php',
+            method: "POST",
+            data: {
+                LoggedUser: LoggedUser,
+                UserLevel: UserLevel,
+                userTheme: userTheme,
+                company_id: company_id,
+                courierOrderId: courierOrderId
+            },
+            success: function (data) {
+                $("#loading-popup-right").html(data);
+            }
+        });
+    }
+    fetch_data();
+}
+
