@@ -552,7 +552,7 @@ function changePackage(bookingId, newPackageId) {
           if (response.ok) {
             Swal.fire(
               "Updated!",
-              `The package has been changed to "${selectedPackageText}".`,
+              `The package has been changed to ${selectedPackageText}.`,
               "success"
             );
             // location.reload();
