@@ -34,6 +34,7 @@ export default function GraduationClient() {
           <div className="bg-white rounded-2xl shadow-2xl p-8 text-center border-t-4 border-red-500">
             {/* Icon */}
             <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+
               <svg 
                 className="w-10 h-10 text-red-600" 
                 fill="none" 
@@ -45,6 +46,7 @@ export default function GraduationClient() {
                   strokeLinejoin="round" 
                   strokeWidth={2} 
                   d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" 
+
                 />
               </svg>
             </div>
@@ -56,8 +58,10 @@ export default function GraduationClient() {
 
             {/* Description */}
             <p className="text-gray-600 mb-6 leading-relaxed">
-              The graduation portal registration period has ended. 
-              New applications are no longer being accepted at this time.
+
+              The graduation portal registration period has ended. New
+              applications are no longer being accepted at this time.
+
             </p>
 
             {/* Contact Info */}
@@ -72,8 +76,17 @@ export default function GraduationClient() {
 
             {/* Status Badge */}
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-red-100 text-red-800 text-sm font-medium">
-              <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
               </svg>
               Registrations Unavailable
             </div>
@@ -95,4 +108,5 @@ export default function GraduationClient() {
       <GraduationPortal />
     </div>
   );
+
 }

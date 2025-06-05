@@ -4,5 +4,7 @@
         "saveanswer",
         "submittion",
         "winpharma"
-    ]
+    ],
+    "IDX.aI.enableInlineCompletion": true,
+    "IDX.aI.enableCodebaseIndexing": true
 }

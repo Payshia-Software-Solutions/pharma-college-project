@@ -1,3 +1,5 @@
+// page.js (Server Component)
+
 import React, { Suspense } from "react";
 import GraduationClient from "./GraduationClient";
 
@@ -23,4 +25,5 @@ export default function Home() {
       <GraduationClient />
     </Suspense>
   );
+
 }
