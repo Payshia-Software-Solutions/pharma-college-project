@@ -24,6 +24,12 @@ return [
         return $paymentRequestController->getRecordByUnique($unique_number);
     },
 
+
+    // Get a payment request by Ref Number and Reason
+    'GET /payment-portal-requests/by-number-type/([A-Za-z0-9]+)/$' => function ($numberType) use ($paymentRequestController) {
+        return $paymentRequestController->getRecordByNumberType($numberType);
+    },
+
     // Create a new payment request
     'POST /payment-portal-requests/$' => function () use ($paymentRequestController) {
         return $paymentRequestController->createRecord();

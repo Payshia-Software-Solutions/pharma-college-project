@@ -1,4 +1,9 @@
 <?php
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+
 require_once('../../../../include/config.php');
 include '../../../../include/function-update.php';
 include '../../../../include/lms-functions.php';
@@ -16,12 +21,12 @@ $dotenv->load();
 // Initialize HTTP client
 $client = HttpClient::create();
 
-
 $refId = $_POST['refId'];
 $selectedArray = GetTemporaryUsers()[$refId];
 $CourseBatches = getLmsBatches();
 $cityList = GetCities($link);
 $DistrictList = getDistricts($link);
+
 // Create Variables
 $email_address = $selectedArray['email_address'];
 $first_name = $selectedArray['first_name'];
@@ -48,8 +53,8 @@ if ($approved_status == "Not Approved") {
 } else {
     $color = "success";
 }
-// Create the SQL query
 
+// Create the SQL query
 $ArrayResult = array();
 $sql = "SELECT * FROM temp_lms_user WHERE email_address = '$email_address' AND aprroved_status LIKE 'Approved'";
 $result = $lms_link->query($sql);
@@ -58,11 +63,23 @@ if ($result->num_rows > 0) {
         $ArrayResult[] = $row;
     }
 }
-
-$paymentRequests = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal-requests/by-reference/5791')->toArray();
-// var_dump($paymentRequests);
+try {
+    $paymentRequests = $client->request(
+        'GET',
+        $_ENV['SERVER_URL'] . '/payment-portal-requests/by-reference/' . $refId
+    )->toArray();
+} catch (\Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface $e) {
+    // If it's a 404 error, set to empty array
+    if ($e->getCode() === 404) {
+        $paymentRequests = [];
+    } else {
+        // Re-throw other client exceptions
+        throw $e;
+    }
+}
 
 ?>
+
 <div class="loading-popup-content">
     <div class="row">
         <div class="col-12 w-100 text-end">
@@ -119,13 +136,42 @@ $paymentRequests = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-porta
                 </div>
                 <div class="col-12 col-md-2">
                     <p class="mb-0 text-secondary">Slips</p>
-                    <?php foreach ($paymentRequests as $paymentRequest) : ?>
-                        <a style="color: white !important;" class="btn btn-dark btn-sm"
-                            href="http://content-provider.pharmacollege.lk<?= $paymentRequest['slip_path'] ?>" download
-                            target="_blank">
-                            <i class="fa fa-download" aria-hidden="true"></i>
-                        </a>
+                    <?php foreach ($paymentRequests as $paymentRequest) :
+                        $checkHashInfo = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal-requests/check-hash?hashValue=' . $paymentRequest['hash_value'])->toArray();
+                    ?>
+                        <div class="border-bottom border-top p-2">
+
+                            <a style="color: white !important;" class="btn btn-dark btn-sm"
+                                href="http://content-provider.pharmacollege.lk<?= $paymentRequest['slip_path'] ?>" download
+                                target="_blank">
+                                <i class="fa fa-download" aria-hidden="true"></i>
+                            </a>
+
+
+                            <?php if (count($checkHashInfo) > 1) : ?>
+                                <div class="row g-2">
+                                    <?php foreach ($checkHashInfo as $hashRecord) {
+                                    ?>
+                                        <p class="mb-0"><?= $hashRecord['unique_number'] ?></p>
+                                        <a target="_blank" class="btn btn-dark btn-sm text-light"
+                                            href="https://content-provider.pharmacollege.lk<?= $hashRecord['slip_path'] ?>">Download
+                                            Slip</a>
+                                    <?php
+                                    }
+                                    ?>
+
+                                </div>
+
+
+                            <?php else : ?>
+                                <h6 class="mt-2">No Dupplicate Receipts</h6>
+                            <?php endif ?>
+
+                        </div>
+
                     <?php endforeach ?>
+
+
 
                 </div>
             </div>
