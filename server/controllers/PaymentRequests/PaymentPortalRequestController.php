@@ -273,4 +273,16 @@ class PaymentPortalRequestController
             $data['is_active']
         );
     }
+
+    // Get a payment request by Ref Number and Reason
+    public function getRecordByNumberType($numberType)
+    {
+        $record = $this->model->getRecordByNumberType($numberType);
+        if ($record) {
+            echo json_encode($record);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Payment request not found']);
+        }
+    }
 }

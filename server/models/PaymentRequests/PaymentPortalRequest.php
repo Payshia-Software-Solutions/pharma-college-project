@@ -89,4 +89,11 @@ class PaymentPortalRequest
         $stmt->execute([$generated_hash]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getRecordByNumberType($numberType)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM payment_requests WHERE number_type = :number_type");
+        $stmt->execute(['number_type' => $numberType]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

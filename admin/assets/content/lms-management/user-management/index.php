@@ -2,6 +2,18 @@
 require_once('../../../../include/config.php');
 include '../../../../include/function-update.php';
 include '../../../../include/lms-functions.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+// For use env file data
+use Dotenv\Dotenv;
+use Symfony\Component\HttpClient\HttpClient;
+
+// Load environment variables
+$dotenv = Dotenv::createImmutable(dirname(__DIR__, 4));
+$dotenv->load();
+
+// Initialize HTTP client
+$client = HttpClient::create();
 
 $Locations = GetLocations($link);
 $temporaryUsers = GetTemporaryUsers();

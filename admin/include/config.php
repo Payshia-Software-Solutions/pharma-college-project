@@ -40,11 +40,11 @@ try {
 // $database = "pharmaco_pharmacollege";
 // $database_error = "";
 
-// $server = "localhost";
-// $username = "root";
-// $password = "";
-// $database = "pharmaco_pharmacollege";
-// $database_error = "";
+$server = "localhost";
+$username = "root";
+$password = "";
+$database = "pharmaco_pharmacollege";
+$database_error = "";
 
 // $server = '109.70.148.53';
 // $database   = 'pharmaco_pharmacollege';
