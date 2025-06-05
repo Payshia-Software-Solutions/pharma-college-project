@@ -14,6 +14,8 @@ $dotenv->load();
 
 // Initialize HTTP client
 $client = HttpClient::create();
+$paymentRequests = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal-requests/by-number-type/ref_number/')->toArray();
+// var_dump($paymentRequests);
 
 $Locations = GetLocations($link);
 $temporaryUsers = GetTemporaryUsers();
@@ -84,6 +86,7 @@ $InactiveCount = 0;
                                 <th>#</th>
                                 <th>Email</th>
                                 <th>Details</th>
+                                <th>Slips</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -119,6 +122,10 @@ $InactiveCount = 0;
 
                                     $regDate = new DateTime($selectedArray['created_at']);
                                     $formattedRegDate = $regDate->format('Y-m-d H:i:s');
+
+                                    $filteredRequests = array_filter($paymentRequests, function ($item) use ($referenceId) {
+                                        return $item['unique_number'] == $referenceId;
+                                    });
                             ?>
                                     <tr>
                                         <td><?= $referenceId; ?></td>
@@ -129,6 +136,28 @@ $InactiveCount = 0;
                                             <p class="mb-0">Phone : <?= $phone_number; ?></p>
                                             <p class="mb-0"><?= $address_l1; ?>, <?= $address_l2; ?></p>
                                             <p class="mb-0">Register Date - <?= $formattedRegDate ?></p>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            if (!empty($filteredRequests)) {
+                                                foreach ($filteredRequests as $request) {
+                                                    $slipUrl = $request['slip_path'];
+                                                    if (!empty($slipUrl)) {
+                                            ?>
+                                                        <a href="https://content-provider.pharmacollege.lk<?= $slipUrl ?>" target="_blank"
+                                                            class="btn btn-sm btn-primary mb-2">View
+                                                            Slip</a>
+                                                    <?php
+                                                    } else {
+                                                    ?>
+                                                        <span class="badge bg-warning">No Slip Available</span>
+                                            <?php
+                                                    }
+                                                }
+                                            } else {
+                                                echo '<span class="badge bg-warning">No Payment Request</span>';
+                                            }
+                                            ?>
                                         </td>
                                         <td class="text-center"><span
                                                 class="badge bg-<?= $color ?>"><?= $approved_status ?></span></td>
@@ -198,6 +227,8 @@ $InactiveCount = 0;
                                         $color = "success";
                                     }
 
+
+
                             ?>
                                     <tr>
                                         <td>
@@ -244,6 +275,7 @@ $InactiveCount = 0;
         $('#userTable').DataTable({
             responsive: true,
             dom: 'Bfrtip',
+            pageLength: 50,
             buttons: [
                 'copy', 'csv', 'excel', 'pdf'
                 // 'colvis'
