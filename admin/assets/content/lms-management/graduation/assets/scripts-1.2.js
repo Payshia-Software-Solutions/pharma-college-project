@@ -28,6 +28,7 @@ function OpenIndex() {
   fetch_data();
 }
 
+
 function OpenDownloadFile() {
   var userTheme = $("#userTheme").val();
   document.getElementById("index-content").innerHTML = InnerLoader;
@@ -645,3 +646,24 @@ function OpenCourierListModel(courierOrderId) {
     fetch_data();
 }
 
+function OpenCertificateGeneratePage() {
+  var userTheme = $("#userTheme").val();
+  document.getElementById("index-content").innerHTML = InnerLoader;
+  ClosePopUP();
+
+  function fetch_data() {
+    $.ajax({
+      url: "assets/content/lms-management/graduation/certificate-generate.php",
+      method: "POST",
+      data: {
+        userTheme: userTheme,
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+      },
+      success: function (data) {
+        $("#index-content").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
