@@ -26,7 +26,7 @@ return [
 
 
     // Get a payment request by Ref Number and Reason
-    'GET /payment-portal-requests/by-number-type/([A-Za-z0-9]+)/$' => function ($numberType) use ($paymentRequestController) {
+    'GET /payment-portal-requests/by-number-type/([a-z_]+)/$' => function ($numberType) use ($paymentRequestController) {
         return $paymentRequestController->getRecordByNumberType($numberType);
     },
 
