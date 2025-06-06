@@ -254,6 +254,14 @@
                         <h4 class="card-title">Word Pallet</h4>
                     </div>
 
+                    <?php
+                    $word_pallet_total_words = $studentEntries['total_words'] ?? 0;
+                    $word_pallet_correct_count = $studentEntries['correct_count'] ?? 0;
+                    $word_pallet_incorrect_count = $studentEntries['incorrect_count'] ?? 0;
+                    $word_pallet_grade = $studentEntries['grade'] ?? 0;
+                    $ProgressValue = number_format($word_pallet_grade * 100, 2);
+                    ?>
+
                     <div class="col-12 mt-2">
                         <?php
                         $ProgressValue = number_format(0); ?>
