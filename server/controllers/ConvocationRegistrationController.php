@@ -487,4 +487,16 @@ class ConvocationRegistrationController
             echo json_encode(['error' => 'Failed to update convocation registration']);
         }
     }
+
+
+    public function GetListbyCourseAndSession($courseCode, $session)
+    {
+        $registrations = $this->model->getListbyCourseAndSession($courseCode, $session);
+        if ($registrations) {
+            echo json_encode($registrations);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No registrations found for the specified course and session']);
+        }
+    }
 }

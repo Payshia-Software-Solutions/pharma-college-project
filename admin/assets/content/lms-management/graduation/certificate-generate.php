@@ -78,9 +78,9 @@ foreach ($mainCourses as $course) {
 
 
 
-<div class="row">
+<div class="row g-2 mt-3">
     <!-- Left Column - Course Selection -->
-    <div class="col-md-4">
+    <div class="col-md-2">
         <div class="card">
             <div class="card-body">
                 <h1 class="card-title mb-4">Please choose the Course</h1>
@@ -89,19 +89,35 @@ foreach ($mainCourses as $course) {
                     <select class="form-select" id="courseSelect">
                         <option value="">-- Choose a Course --</option>
                         <?php foreach ($indexed_courses as $course): ?>
-                            <option value="<?= $course['id'] ?>"><?= $course['name'] ?></option>
+                            <option value="<?= $course['id'] ?>"><?= $course['course_name'] ?></option>
                         <?php endforeach; ?>
                     </select>
                 </div>
 
                 <!-- Session Selection (Initially Hidden) -->
                 <div class="session-section mt-4" id="sessionSection">
-                    <h5>Select Session:</h5>
+                    <h5>Select Session</h5>
                     <div class="d-flex flex-wrap">
-                        <button class="btn btn-outline-success session-btn" data-session="1">Session 1</button>
+                        <button class="btn btn-outline-success session-btn me-2" data-session="1">Session 1</button>
                         <button class="btn btn-outline-success session-btn" data-session="2">Session 2</button>
                     </div>
+
                 </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-body">
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+
             </div>
         </div>
     </div>
