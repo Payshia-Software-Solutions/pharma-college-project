@@ -67,10 +67,10 @@ class EnWordSubmissionController
 
             // Build response
             $response = [
-                'total_words' => $totalWords,
-                'correct_count' => $correct_count,
-                'incorrect_count' => $incorrect_count,
-                'grade' => round($grade, 2)
+                'total_words' => (int) $totalWords,
+                'correct_count' => (int) $correct_count,
+                'incorrect_count' => (int) $incorrect_count,
+                'grade' => round((float) $grade, 2),
             ];
 
             echo json_encode($response);
