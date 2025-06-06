@@ -203,4 +203,11 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     ");
         return $stmt->execute([$package_id, $reference_number]);
     }
+
+    public function GetListbyCourseAndSession($courseId, $session)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE FIND_IN_SET(?, course_id) AND session = ?");
+        $stmt->execute([$courseId, $session]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

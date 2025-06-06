@@ -89,4 +89,8 @@ return [
     'DELETE /convocation-registrations/(\d+)/$' => function ($registration_id) use ($convocationRegistrationController) {
         return $convocationRegistrationController->deleteRegistration($registration_id);
     },
+
+    'GET /convocation-registrations\?courseCode=([A-Za-z0-9]+)&viewSession=([A-Za-z0-9]+)' => function ($courseCode, $viewSession) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->GetListbyCourseAndSession($courseCode, $viewSession);
+    },
 ];
