@@ -45,14 +45,8 @@ class EnWordSubmissionController
 
         if ($data && isset($data['correct_count'])) {
             // Count correct submissions by word_id
-            $correctCounts = [];
-            foreach ($data['correct_count'] as $submission) {
-                $wordId = $submission['word_id'];
-                if (!isset($correctCounts[$wordId])) {
-                    $correctCounts[$wordId] = 0;
-                }
-                $correctCounts[$wordId]++;
-            }
+            $correct_count = $data['correct_count'];
+
 
             // Determine how many active words the student has mastered
             $masteredCount = 0;
@@ -72,7 +66,7 @@ class EnWordSubmissionController
             }
 
             $totalWords = count($activeWords);
-            $grade = $totalWords > 0 ? ($masteredCount / $totalWords) * 10 : 0;
+            $grade = $totalWords > 0 ? ($correct_count / $masteredCount)  : 0;
 
             // Build response
             $response = [
