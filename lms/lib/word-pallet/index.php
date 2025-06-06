@@ -33,6 +33,8 @@ try {
         throw $e;
     }
 }
+
+$wordCount = count($selectedWord)
 ?>
 
 <!-- Floating Background Elements -->
