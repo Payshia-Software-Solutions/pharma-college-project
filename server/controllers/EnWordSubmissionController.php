@@ -66,6 +66,7 @@ class EnWordSubmissionController
 
             // Build response
             $response = [
+                'total_words' => $totalWords,
                 'correct_count' => $data['correct_count'],
                 'incorrect_count' => $data['incorrect_count'],
                 'grade' => round($grade, 2)
