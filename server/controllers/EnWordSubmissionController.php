@@ -47,26 +47,22 @@ class EnWordSubmissionController
             // Count correct submissions by word_id
             $correct_count = $data['correct_count'];
 
-
-            // Determine how many active words the student has mastered
-            $masteredCount = 0;
-
+            $totalWords = 0;
             foreach ($activeWords as $word) {
-                $wordId = $word['id'];
                 $type = $word['word_type'];
-                $correctCount = isset($correctCounts[$wordId]) ? $correctCounts[$wordId] : 0;
 
-                if (
-                    ($type === 'Basic' && $correctCount >= 10) ||
-                    ($type === 'Intermediate' && $correctCount >= 15) ||
-                    ($type === 'Advanced' && $correctCount >= 20)
-                ) {
-                    $masteredCount++;
+                if ($type === 'Basic') {
+                    $totalWords += 10;
+                } elseif ($type === 'Intermediate') {
+                    $totalWords += 15;
+                } elseif ($type === 'Advanced') {
+                    $totalWords += 20;
+                } else {
+                    $masteredCount = 0; // Default value if type is not recognized
                 }
             }
 
-            $totalWords = count($activeWords);
-            $grade = $totalWords > 0 ? ($correct_count / $masteredCount)  : 0;
+            $grade = $totalWords > 0 ? ($correct_count / $totalWords)  : 0;
 
             // Build response
             $response = [
