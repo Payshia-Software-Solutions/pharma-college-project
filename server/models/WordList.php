@@ -34,7 +34,7 @@ class WordList
 
     public function getActiveAllWords()
     {
-        $stmt = $this->pdo->query("SELECT * FROM en_word_list word_status = 'Active'");
+        $stmt = $this->pdo->query("SELECT * FROM en_word_list WHERE word_status = 'Active'");
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
