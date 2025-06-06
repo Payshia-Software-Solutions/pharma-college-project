@@ -16,6 +16,8 @@ return [
     // GET by student number
     'GET /en-word-submissions/student/([A-Za-z0-9]+)/$' => fn($student_number) => $controller->getByStudent($student_number),
 
+    'GET /en-word-submissions/student-grades/([A-Za-z0-9]+)/$' => fn($student_number) => $controller->getByStudentGrades($student_number),
+
     // POST create
     'POST /en-word-submissions/$' => fn() => $controller->submitAnswer(),
 

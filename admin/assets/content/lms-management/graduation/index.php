@@ -273,7 +273,7 @@ $allAssignments = $response->toArray();
                 <div class="card-body">
                     <ul class="mb-0">
                         <li><a href="#" onclick="OpenPackageModal()">Packages</a></li>
-                        <li><a href="#" onclick="CertificateGenerateList()">Certificate Generate List</a></li>
+                        <li><a href="#" onclick="OpenCertificateGeneratePage()">Certificate</a></li>
                     </ul>
                 </div>
             </div>

@@ -6,14 +6,33 @@ error_reporting(E_ALL);
 require_once '../../vendor/autoload.php';
 
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../../')->load();
 $client = HttpClient::create();
 $LoggedUser = $_POST["LoggedUser"];
 
+$selectedWord = [];
+$studentEntries = [];
+
 // Get New Word for Student
-$selectedWord = $client->request('GET', $_ENV["SERVER_URL"] . '/word-list/get-word-for-game/' . $LoggedUser)->toArray();
+try {
+    $selectedWord = $client->request('GET', $_ENV["SERVER_URL"] . '/word-list/get-word-for-game/' . $LoggedUser)->toArray();
+} catch (ClientExceptionInterface | TransportExceptionInterface $e) {
+    if (method_exists($e, 'getCode') && $e->getCode() !== 404) {
+        throw $e; // rethrow if it's not a 404
+    }
+}
+
+try {
+    $studentEntries = $client->request('GET', $_ENV["SERVER_URL"] . '/en-word-submissions/student/' . $LoggedUser)->toArray();
+} catch (ClientExceptionInterface | TransportExceptionInterface $e) {
+    if (method_exists($e, 'getCode') && $e->getCode() !== 404) {
+        throw $e;
+    }
+}
 ?>
 
 <!-- Floating Background Elements -->
@@ -38,64 +57,71 @@ $selectedWord = $client->request('GET', $_ENV["SERVER_URL"] . '/word-list/get-wo
 
         <!-- Content Section -->
         <div class="content-section">
-            <div class="row g-4">
-                <!-- Image Section -->
-                <div class="col-12 col-lg-7">
-                    <div class="image-container">
-                        <img class="word-image"
-                            src="https://content-provider.pharmacollege.lk/<?= $selectedWord['word_img'] ?>"
-                            alt="Image of <?= $selectedWord['question'] ?>">
-                        <div class="image-overlay">
-                            <h5><i class="fas fa-eye me-2"></i>Study the image carefully</h5>
-                            <p class="mb-0">What word best describes what you see?</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Question Section -->
-                <div class="col-12 col-lg-5">
-                    <div class="question-section">
-                        <h6 class="section-title">
-                            <i class="fas fa-question-circle"></i>
-                            Choose the Correct Answer!
-                        </h6>
-
-                        <!-- Tip Card -->
-                        <?php if (!empty($selectedWord['word_tip'])): ?>
-                            <div class="tip-card">
-                                <h4 class="tip-title">💡 Helpful Tip</h4>
-                                <p class="mb-0"><?= htmlspecialchars($selectedWord['word_tip']) ?></p>
+            <?php if (empty($selectedWord)): ?>
+                <div class="row g-4">
+                    <!-- Image Section -->
+                    <div class="col-12 col-lg-7">
+                        <div class="image-container">
+                            <img class="word-image"
+                                src="https://content-provider.pharmacollege.lk/<?= $selectedWord['word_img'] ?>"
+                                alt="Image of <?= $selectedWord['question'] ?>">
+                            <div class="image-overlay">
+                                <h5><i class="fas fa-eye me-2"></i>Study the image carefully</h5>
+                                <p class="mb-0">What word best describes what you see?</p>
                             </div>
-                        <?php endif; ?>
+                        </div>
+                    </div>
 
-                        <!-- Answer Options -->
-                        <div class="answers-container">
-                            <?php foreach ($selectedWord['options'] as $index => $option): ?>
-                                <div class="answer-card" data-answer="<?= htmlspecialchars($option['text']) ?>"
-                                    onclick="selectAnswer(this, '<?= htmlspecialchars($option['text']) ?>')">
-                                    <div class="card-body">
-                                        <h4 class="answer-text">
-                                            <?= htmlspecialchars($option['text']) ?>
-                                            <i class="fas fa-arrow-right answer-icon"></i>
-                                        </h4>
-                                    </div>
+                    <!-- Question Section -->
+                    <div class="col-12 col-lg-5">
+                        <div class="question-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-question-circle"></i>
+                                Choose the Correct Answer!
+                            </h6>
+
+                            <!-- Tip Card -->
+                            <?php if (!empty($selectedWord['word_tip'])): ?>
+                                <div class="tip-card">
+                                    <h4 class="tip-title">💡 Helpful Tip</h4>
+                                    <p class="mb-0"><?= htmlspecialchars($selectedWord['word_tip']) ?></p>
                                 </div>
-                            <?php endforeach; ?>
+                            <?php endif; ?>
+
+                            <!-- Answer Options -->
+                            <div class="answers-container">
+                                <?php foreach ($selectedWord['options'] as $index => $option): ?>
+                                    <div class="answer-card" data-answer="<?= htmlspecialchars($option['text']) ?>"
+                                        onclick="selectAnswer(this, '<?= htmlspecialchars($option['text']) ?>')">
+                                        <div class="card-body">
+                                            <h4 class="answer-text">
+                                                <?= htmlspecialchars($option['text']) ?>
+                                                <i class="fas fa-arrow-right answer-icon"></i>
+                                            </h4>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Next Button -->
-            <div class="row mt-4">
-                <div class="col-12">
-                    <button type="button" class="next-button w-100" id="nextButton" onclick="proceedToNext()">
-                        <i class="fas fa-forward me-2"></i>
-                        Continue to Next Word
-                        <i class="fas fa-forward ms-2"></i>
-                    </button>
+                <!-- Next Button -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <button type="button" class="next-button w-100" id="nextButton" onclick="proceedToNext()">
+                            <i class="fas fa-forward me-2"></i>
+                            Continue to Next Word
+                            <i class="fas fa-forward ms-2"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
+            <?php else: ?>
+                <div class="alert alert-danger text-center border-0 shadow-lg" role="alert">
+                    <i class="fas fa-skull-crossbones me-2 fs-3"></i>
+                    <h2 class="alert-heading mb-3">GAME OVER</h2>
+                    <p class="mb-0 fs-5">Better luck next time!</p>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>
