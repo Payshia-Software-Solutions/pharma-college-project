@@ -32,7 +32,7 @@ function PaymentSuccess({ paymentReference, amount, date, method }) {
               <div>
                 <p className="text-sm text-gray-600">Amount Paid</p>
                 <p className="text-xl font-semibold text-green-800">
-                  LKR {amount.toFixed(2)}
+                  LKR {parseFloat(amount || 0).toFixed(2)}
                 </p>
               </div>
               <div>

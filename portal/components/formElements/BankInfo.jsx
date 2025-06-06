@@ -148,7 +148,7 @@ function BankInfo({ formData, updateFormData, setIsValid, setValue }) {
             )}
         </div>
 
-        <div>
+        <div className="">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Branch
           </label>
@@ -161,7 +161,7 @@ function BankInfo({ formData, updateFormData, setIsValid, setValue }) {
           />
         </div>
 
-        <div>
+        <div className="hidden">
           <label className="block text-sm font-medium text-gray-700 mb-1">
             Payment Reference
           </label>

@@ -29,7 +29,6 @@ $senderId = $_ENV['SMS_SENDER_ID'];
 $templatePath = __DIR__ . '/../templates/welcome_sms_template.txt';
 $convocationTemplatePath = __DIR__ . '/../templates/convocation-payment-message.txt';
 
-
 // Include route files
 $assignmentRoutes = require './routes/Assignment/AssignmentRoutes.php';
 $submissionRoutes = require './routes/Assignment/submissionRoutes.php';
@@ -71,7 +70,7 @@ $communityPostReplyRoutes = require './routes/Community/communityPostReplyRoutes
 $communityPostReplyRatingsRoutes = require './routes/Community/communityPostReplyRatingsRoutes.php';
 $communityKnowledgebaseRoutes = require './routes/Community/communityKnowledgebaseRoutes.php';
 $paymentReasonRoutes = require './routes/Payment/paymentReasonRoutes.php';
-$paymentRequestRoutes = require './routes/Payment/paymentRequestRoutes.php';
+$paymentRequestRoutesOld = require './routes/Payment/paymentRequestRoutes.php';
 $courseRoutes = require './routes/Course/courseRoutes.php';
 $studentPaymentRoutes = require './routes/Student/studentPaymentRoutes.php';
 $supportTicketRoutes = require './routes/TicketRoutes/supportTicketRoutes.php';
@@ -181,7 +180,7 @@ $routes = array_merge(
     $communityPostReplyRoutes,
     $communityPostReplyRatingsRoutes,
     $paymentReasonRoutes,
-    $paymentRequestRoutes,
+    $paymentRequestRoutesOld,
     $courseRoutes,
     $studentPaymentRoutes,
     $supportTicketRoutes,

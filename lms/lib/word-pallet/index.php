@@ -1,15 +1,45 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 require_once '../../vendor/autoload.php';
 
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
 use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../../')->load();
 $client = HttpClient::create();
 $LoggedUser = $_POST["LoggedUser"];
 
+$selectedWord = [];
+$studentEntries = [];
+$total_words = $correct_count = $incorrect_count = $grade = 0;
+
 // Get New Word for Student
 $selectedWord = $client->request('GET', $_ENV["SERVER_URL"] . '/word-list/get-word-for-game/' . $LoggedUser)->toArray();
+try {
+} catch (ClientExceptionInterface | TransportExceptionInterface $e) {
+    if (method_exists($e, 'getCode') && $e->getCode() !== 404) {
+        throw $e; // rethrow if it's not a 404
+    }
+}
+
+try {
+    $studentEntries = $client->request('GET', $_ENV["SERVER_URL"] . '/en-word-submissions/student-grades/' . $LoggedUser)->toArray();
+    // var_dump($studentEntries);
+
+    $total_words = $studentEntries['total_words'] ?? 0;
+    $correct_count = $studentEntries['correct_count'] ?? 0;
+    $incorrect_count = $studentEntries['incorrect_count'] ?? 0;
+    $grade = $studentEntries['grade'] ?? 0;
+} catch (ClientExceptionInterface | TransportExceptionInterface $e) {
+    if (method_exists($e, 'getCode') && $e->getCode() !== 404) {
+        throw $e;
+    }
+}
 ?>
 
 <!-- Floating Background Elements -->
@@ -32,66 +62,252 @@ $selectedWord = $client->request('GET', $_ENV["SERVER_URL"] . '/word-list/get-wo
             <p class="mb-0 opacity-75">Test Your Vocabulary Skills</p>
         </div>
 
+        <!-- Game Statistics Section -->
+        <div class="stats-section mb-4">
+            <div class="row g-3">
+                <!-- Total Words -->
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3 class="stat-number"><?= number_format($total_words) ?></h3>
+                        <p class="stat-label">Total Words</p>
+                    </div>
+                </div>
+
+                <!-- Correct Answers -->
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon correct">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3 class="stat-number text-success"><?= number_format($correct_count) ?></h3>
+                        <p class="stat-label">Correct</p>
+                    </div>
+                </div>
+
+                <!-- Incorrect Answers -->
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon incorrect">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <h3 class="stat-number text-danger"><?= number_format($incorrect_count) ?></h3>
+                        <p class="stat-label">Incorrect</p>
+                    </div>
+                </div>
+
+                <!-- Grade Percentage -->
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon grade">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <h3 class="stat-number text-primary"><?= number_format($grade * 100, 1) ?>%</h3>
+                        <p class="stat-label">Grade</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-section mt-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="progress-label">Overall Progress</span>
+                    <span class="progress-percentage"><?= number_format($grade * 100, 1) ?>%</span>
+                </div>
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-primary"
+                        role="progressbar"
+                        style="width: <?= ($grade * 100) ?>%"
+                        aria-valuenow="<?= ($grade * 100) ?>"
+                        aria-valuemin="0"
+                        aria-valuemax="100">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .stats-section {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                padding: 1.5rem;
+                border-radius: 15px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                margin-bottom: 2rem;
+            }
+
+            .stat-card {
+                background: white;
+                padding: 1.5rem 1rem;
+                border-radius: 12px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+                border: 1px solid rgba(0, 0, 0, 0.05);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            }
+
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1rem;
+                background: #6c757d;
+                color: white;
+                font-size: 1.2rem;
+            }
+
+            .stat-icon.correct {
+                background: linear-gradient(135deg, #28a745, #20c997);
+            }
+
+            .stat-icon.incorrect {
+                background: linear-gradient(135deg, #dc3545, #fd7e14);
+            }
+
+            .stat-icon.grade {
+                background: linear-gradient(135deg, #007bff, #6610f2);
+            }
+
+            .stat-number {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                color: #2c3e50;
+            }
+
+            .stat-label {
+                font-size: 0.9rem;
+                color: #6c757d;
+                font-weight: 500;
+                margin-bottom: 0;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .progress-section {
+                background: white;
+                padding: 1rem;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+
+            .progress-label {
+                font-weight: 600;
+                color: #495057;
+                font-size: 0.9rem;
+            }
+
+            .progress-percentage {
+                font-weight: 700;
+                color: #007bff;
+                font-size: 1rem;
+            }
+
+            .progress {
+                border-radius: 10px;
+                background-color: #e9ecef;
+                overflow: hidden;
+            }
+
+            .progress-bar {
+                border-radius: 10px;
+                transition: width 0.6s ease;
+                background: linear-gradient(90deg, #007bff, #0056b3);
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 768px) {
+                .stat-number {
+                    font-size: 1.5rem;
+                }
+
+                .stat-icon {
+                    width: 40px;
+                    height: 40px;
+                    font-size: 1rem;
+                }
+
+                .stats-section {
+                    padding: 1rem;
+                }
+            }
+        </style>
+
         <!-- Content Section -->
         <div class="content-section">
-            <div class="row g-4">
-                <!-- Image Section -->
-                <div class="col-12 col-lg-7">
-                    <div class="image-container">
-                        <img class="word-image"
-                            src="https://content-provider.pharmacollege.lk/<?= $selectedWord['word_img'] ?>"
-                            alt="Image of <?= $selectedWord['question'] ?>">
-                        <div class="image-overlay">
-                            <h5><i class="fas fa-eye me-2"></i>Study the image carefully</h5>
-                            <p class="mb-0">What word best describes what you see?</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Question Section -->
-                <div class="col-12 col-lg-5">
-                    <div class="question-section">
-                        <h6 class="section-title">
-                            <i class="fas fa-question-circle"></i>
-                            Choose the Correct Answer!
-                        </h6>
-
-                        <!-- Tip Card -->
-                        <?php if (!empty($selectedWord['word_tip'])): ?>
-                            <div class="tip-card">
-                                <h4 class="tip-title">💡 Helpful Tip</h4>
-                                <p class="mb-0"><?= htmlspecialchars($selectedWord['word_tip']) ?></p>
+            <?php if (!empty($selectedWord)): ?>
+                <div class="row g-4">
+                    <!-- Image Section -->
+                    <div class="col-12 col-lg-7">
+                        <div class="image-container">
+                            <img class="word-image"
+                                src="https://content-provider.pharmacollege.lk/<?= $selectedWord['word_img'] ?>"
+                                alt="Image of <?= $selectedWord['question'] ?>">
+                            <div class="image-overlay">
+                                <h5><i class="fas fa-eye me-2"></i>Study the image carefully</h5>
+                                <p class="mb-0">What word best describes what you see?</p>
                             </div>
-                        <?php endif; ?>
+                        </div>
+                    </div>
 
-                        <!-- Answer Options -->
-                        <div class="answers-container">
-                            <?php foreach ($selectedWord['options'] as $index => $option): ?>
-                                <div class="answer-card" data-answer="<?= htmlspecialchars($option['text']) ?>"
-                                    onclick="selectAnswer(this, '<?= htmlspecialchars($option['text']) ?>')">
-                                    <div class="card-body">
-                                        <h4 class="answer-text">
-                                            <?= htmlspecialchars($option['text']) ?>
-                                            <i class="fas fa-arrow-right answer-icon"></i>
-                                        </h4>
-                                    </div>
+                    <!-- Question Section -->
+                    <div class="col-12 col-lg-5">
+                        <div class="question-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-question-circle"></i>
+                                Choose the Correct Answer!
+                            </h6>
+
+                            <!-- Tip Card -->
+                            <?php if (!empty($selectedWord['word_tip'])): ?>
+                                <div class="tip-card">
+                                    <h4 class="tip-title">💡 Helpful Tip</h4>
+                                    <p class="mb-0"><?= htmlspecialchars($selectedWord['word_tip']) ?></p>
                                 </div>
-                            <?php endforeach; ?>
+                            <?php endif; ?>
+
+                            <!-- Answer Options -->
+                            <div class="answers-container">
+                                <?php foreach ($selectedWord['options'] as $index => $option): ?>
+                                    <div class="answer-card" data-answer="<?= htmlspecialchars($option['text']) ?>"
+                                        onclick="selectAnswer(this, '<?= htmlspecialchars($option['text']) ?>')">
+                                        <div class="card-body">
+                                            <h4 class="answer-text">
+                                                <?= htmlspecialchars($option['text']) ?>
+                                                <i class="fas fa-arrow-right answer-icon"></i>
+                                            </h4>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
-            <!-- Next Button -->
-            <div class="row mt-4">
-                <div class="col-12">
-                    <button type="button" class="next-button w-100" id="nextButton" onclick="proceedToNext()">
-                        <i class="fas fa-forward me-2"></i>
-                        Continue to Next Word
-                        <i class="fas fa-forward ms-2"></i>
-                    </button>
+                <!-- Next Button -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <button type="button" class="next-button w-100" id="nextButton" onclick="proceedToNext()">
+                            <i class="fas fa-forward me-2"></i>
+                            Continue to Next Word
+                            <i class="fas fa-forward ms-2"></i>
+                        </button>
+                    </div>
                 </div>
-            </div>
+            <?php else: ?>
+                <div class="alert alert-danger text-center border-0 shadow-lg" role="alert">
+                    <i class="fas fa-skull-crossbones me-2 fs-3"></i>
+                    <h2 class="alert-heading mb-3">GAME OVER</h2>
+                    <p class="mb-0 fs-5">Better luck next time!</p>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 </div>

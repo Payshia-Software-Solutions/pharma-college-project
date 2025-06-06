@@ -1,7 +1,7 @@
 <?php
 require_once('./include/config.php');
 include './include/function-update.php';
-$pageTitle = "Graduation Portal";
+$pageTitle = "LMS Payments";
 $SubPageTitle = "";
 $SubPage = false;
 ?>
@@ -44,7 +44,7 @@ $SubPage = false;
     <!-- Add Scripts -->
 
     <?php include './include/footer-scripts.php' ?>
-    <script src="./assets/content/lms-management/graduation/assets/scripts-1.2.js"></script>
+    <script src="./assets/content/lms-management/update-payment/assets/js/scripts-1.0.js"></script>
 </body>
 
 </html>

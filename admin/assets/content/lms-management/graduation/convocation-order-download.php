@@ -73,8 +73,6 @@ function formatStudentId($rawId)
     return substr($rawId, 0, 2) . '/' . substr($rawId, 2, 2) . '/' . substr($rawId, 4);
 }
 $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submissions-group-by-student')->toArray();
-
-
 ?>
 
 <div class="row mt-5">
@@ -127,6 +125,7 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
                             <tr>
                                 <th scope="col">Reference #</th>
                                 <th scope="col">Student Number</th>
+                                <th scope="col">Student Name</th>
                                 <th scope="col">Course Balance</th>
                                 <th scope="col">Session</th>
                                 <th scope="col">Courses</th>
@@ -134,7 +133,8 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
                                 <th scope="col">Advanced</th>
                                 <th scope="col">Pacakge</th>
                                 <th scope="col">Additional Seats</th>
-                                <th scope="col">Due Payment</th>
+                                <th scope="col">Package Amount</th>
+                                <th scope="col">Paid</th>
                                 <th scope="col">Slip</th>
                                 <th scope="col">Status</th>
                                 <th scope="col">Registration Status</th>
@@ -204,10 +204,9 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
                                 $userCourseEnrollments = filterEnrollmentsByStudentId($studentEnrollments, formatStudentId($booking['student_number']));
                             ?>
                                 <tr>
-                                    <td><?= $booking['reference_number'] ?>
-
-                                    </td>
+                                    <td><?= $booking['reference_number'] ?></td>
                                     <td><?= $booking['student_number'] ?></td>
+                                    <td><?= $booking['name_on_certificate'] ?></td>
                                     <td><?= number_format($paymentInfo['studentBalance'], 2) ?></td>
                                     <td><?= $booking['session'] ?></td>
                                     <td><?php
@@ -260,6 +259,7 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
                                     <td><?= $indexed_packages[$booking['package_id']]['package_name']; ?></td>
                                     <td><?= $booking['additional_seats'] ?></td>
                                     <td><?= number_format($dueAmount, 2) ?></td>
+                                    <td><?= $booking['payment_amount'] ?></td>
                                     <td>
                                         <a style="color: white !important;" class="btn btn-dark btn-sm"
                                             href="http://content-provider.pharmacollege.lk<?= $booking['image_path'] ?>"

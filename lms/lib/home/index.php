@@ -2,11 +2,11 @@
 require '../../vendor/autoload.php';
 
 use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Dotenv\Dotenv;
 
 $client = HttpClient::create();
-
-//for use env file data
-use Dotenv\Dotenv;
 
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
@@ -80,6 +80,16 @@ try {
     $notReceivedOrders = [];
 }
 
+
+$word_pallet_total_words = $word_pallet_correct_count = $word_pallet_incorrect_count = $word_pallet_grade = 0;
+try {
+    $studentEntries = $client->request('GET', $_ENV["SERVER_URL"] . '/en-word-submissions/student-grades/' . $LoggedUser)->toArray();
+} catch (ClientExceptionInterface | TransportExceptionInterface $e) {
+    if (method_exists($e, 'getCode') && $e->getCode() !== 404) {
+        throw $e;
+    }
+}
+
 include './components/hi-user.php';
 include './components/image-slider.php';
 include './components/payment-status.php';
@@ -91,45 +101,45 @@ include './components/banner.php'; ?>
     <div class="col-12">
 
         <?php
-            if (!empty($notReceivedOrders)) {
-                ?>
-        <div class="alert alert-warning">
-            <p class="mb-0">Please click the "Received" button if you have received your order. This will help us update
-                the status of your order promptly. Thank you!<br>ඔබගේ ඇනවුම ලබා ගත්තා නම් "Received" බටනය ඔබා එය තත්වය
-                යාවත්කාලීන කිරීමේදි අපට උදව් කරන්න. ස්තූතියි!</p>
-        </div>
-        <?php
-                foreach ($notReceivedOrders as $selectedArray) {
-                    ?>
+        if (!empty($notReceivedOrders)) {
+        ?>
+            <div class="alert alert-warning">
+                <p class="mb-0">Please click the "Received" button if you have received your order. This will help us update
+                    the status of your order promptly. Thank you!<br>ඔබගේ ඇනවුම ලබා ගත්තා නම් "Received" බටනය ඔබා එය තත්වය
+                    යාවත්කාලීන කිරීමේදි අපට උදව් කරන්න. ස්තූතියි!</p>
+            </div>
+            <?php
+            foreach ($notReceivedOrders as $selectedArray) {
+            ?>
 
-        <div class="col-md-4 pb-3">
-            <div class="card border-0 shadow-sm clickable other-card flex-fill" onclick="">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-3">
-                            <img src="<?= $_ENV['IMG_PATH_BASE'] ?>/lib/delivery/assets/images/<?= $selectedArray['icon'] ?>"
-                                class="w-100">
-                        </div>
-                        <div class="col-9">
-                            <h4 class="mb-0"><?= $selectedArray['delivery_title'] ?></h4>
-                            <h6 class="text-end mb-0">Tracking # <?= $selectedArray['tracking_number'] ?></h6>
+                <div class="col-md-4 pb-3">
+                    <div class="card border-0 shadow-sm clickable other-card flex-fill" onclick="">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <img src="<?= $_ENV['IMG_PATH_BASE'] ?>/lib/delivery/assets/images/<?= $selectedArray['icon'] ?>"
+                                        class="w-100">
+                                </div>
+                                <div class="col-9">
+                                    <h4 class="mb-0"><?= $selectedArray['delivery_title'] ?></h4>
+                                    <h6 class="text-end mb-0">Tracking # <?= $selectedArray['tracking_number'] ?></h6>
 
-                            <div class="row mt-2">
-                                <div class="col-12">
-                                    <button type="button"
-                                        onclick="UpdateOrderReceivedStatus('<?= $selectedArray['id'] ?>', 'Received')"
-                                        class="w-100 btn btn-dark">Received</button>
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <button type="button"
+                                                onclick="UpdateOrderReceivedStatus('<?= $selectedArray['id'] ?>', 'Received')"
+                                                class="w-100 btn btn-dark">Received</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
         <?php
-                }
             }
-            ?>
+        }
+        ?>
     </div>
 </div>
 

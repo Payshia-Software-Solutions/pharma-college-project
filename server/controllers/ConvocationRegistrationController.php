@@ -13,7 +13,6 @@ class ConvocationRegistrationController
     private $transactionPaymentController;
     private $userFullDetailsController;
     private $smsModel;
-    private $templatePath;
     private $convocationTemplatePath;
 
     public function __construct($pdo, $convocationTemplatePath)
@@ -335,6 +334,81 @@ class ConvocationRegistrationController
         }
     }
 
+    public function updateSession($reference_number)
+    {
+        if (!isset($_POST['session'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required session field']);
+            return;
+        }
+
+        $session = $_POST['session'];
+
+        $updated = $this->model->updateSession($reference_number, $session);
+        if ($updated) {
+            http_response_code(201);
+            echo json_encode([
+                'status' => 'Success',
+                'message' => 'Session updated to ' . $session,
+                'reference_number' => $reference_number,
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to update convocation registration']);
+        }
+    }
+
+
+    public function updateAdditionalSeats($reference_number)
+    {
+        if (!isset($_POST['additional_seats'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required session field']);
+            return;
+        }
+
+        $additional_seats = $_POST['additional_seats'];
+
+        $updated = $this->model->updateAdditionalSeats($reference_number, $additional_seats);
+        if ($updated) {
+            http_response_code(201);
+            echo json_encode([
+                'status' => 'Success',
+                'message' => 'Additional Seats updated to ' . $additional_seats,
+                'reference_number' => $reference_number,
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to update convocation registration']);
+        }
+    }
+
+
+    public function updatePackages($reference_number)
+    {
+        if (!isset($_POST['package_id'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required session field']);
+            return;
+        }
+
+        $package_id = $_POST['package_id'];
+
+        $updated = $this->model->updatePackages($reference_number, $package_id);
+        if ($updated) {
+            http_response_code(201);
+            echo json_encode([
+                'status' => 'Success',
+                'message' => 'Package updated',
+                'reference_number' => $reference_number,
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to update convocation registration']);
+        }
+    }
+
+
     public function updatePayment($reference_number)
     {
         $data = json_decode(file_get_contents('php://input'), true);
@@ -346,9 +420,15 @@ class ConvocationRegistrationController
         }
 
         $paymentAmount = $data['payment_amount'];
-        $student_number = $this->model->getRegistrationByReference($reference_number)['student_number'];
+        $recInfo = $this->model->getRegistrationByReference($reference_number);
+        $student_number = $recInfo['student_number'];
+        $recAmount = $recInfo['payment_amount'];
+
+        $paybleAmount = $this->model->getPayableAmount($reference_number);
+        $paidAmount = $this->transactionPaymentController->model->getPaidAmount($student_number, 'covocation-payment');
         $studentInfo = $this->userFullDetailsController->model->getUserByUserName($student_number);
         $txnNumber = $this->transactionPaymentController->generateTransactionId();
+
         $paymentData = [
             'transaction_id'    => $txnNumber,
             'rec_time'          => date('Y-m-d H:i:s'),
@@ -357,10 +437,12 @@ class ConvocationRegistrationController
             'created_by'        => $data['created_by'] ?? '',
             'created_at'        => date('Y-m-d H:i:s'),
             'student_number'    => $student_number,
-            'transaction_type'  => 'CREDIT',
+            'transaction_type'  => "CREDIT",
             'reference_key'     => 'covocation-payment',
             'payment_amount'    => $paymentAmount
         ];
+
+        $updatePaymentAmount = $paidAmount + $paymentAmount;
 
         $created = $this->transactionPaymentController->model->createPayment($paymentData);
 
@@ -368,9 +450,13 @@ class ConvocationRegistrationController
             http_response_code(500);
             echo json_encode(['error' => 'Failed to create payment record']);
             return;
+        } else {
+            // Log the payment creation
+            // echo json_encode("Payment record created successfully for reference number: $reference_number");
         }
 
-        $updated = $this->model->updatePayment($reference_number, $data['payment_status'], $data['payment_amount']);
+
+        $updated = $this->model->updatePayment($reference_number, $data['payment_status'], $updatePaymentAmount);
 
         if ($updated) {
             // Prepare the welcome message
@@ -378,12 +464,13 @@ class ConvocationRegistrationController
             $studentName = $studentInfo['name_on_certificate']; // Combine first and last name
             $referenceNumber = $reference_number; // Use the user ID as the reference number
 
-            // Send the welcome SMS
+            // Send the welcome 
             $smsResponse = $this->smsModel->sendConvocationPaymentApprovedSMS($mobile, $studentName, $referenceNumber, $txnNumber, $paymentAmount);
+            // var_dump($smsResponse);
 
             // Check if the SMS was sent successfully
             if ($smsResponse['status'] === 'error') {
-                throw new Exception('Failed to send welcome SMS: ' . $smsResponse['message']);
+                throw new Exception('Failed to send SMS: ' . $smsResponse['message']);
             }
 
             // Return success response with the new user's ID

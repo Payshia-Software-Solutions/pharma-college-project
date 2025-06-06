@@ -33,6 +33,42 @@ class PaymentPortalRequestController
         }
     }
 
+    // Get a payment request by ID
+    public function getRecordByUnique($unique_number)
+    {
+        $record = $this->model->getRecordByUnique($unique_number);
+        if ($record) {
+            echo json_encode($record);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Payment request not found']);
+        }
+    }
+
+    // GET a single registration by ID
+    public function checkHashDupplicate($generated_hash)
+    {
+        $registration = $this->model->checkHashDupplicate($generated_hash);
+        if ($registration) {
+            echo json_encode($registration);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Registration not found']);
+        }
+    }
+
+    public function getPaymentRequestRecordsByReason($unique_number, $reason)
+    {
+        $records = $this->model->getPaymentRequestRecordsByReason($unique_number, $reason);
+        if ($records) {
+            echo json_encode($records);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No payment requests found for the given unique number and reason']);
+        }
+    }
+
+
     private function ensureDirectoryExists($ftp_conn, $dir)
     {
         $parts = explode('/', $dir);
@@ -236,5 +272,17 @@ class PaymentPortalRequestController
             $data['created_at'],
             $data['is_active']
         );
+    }
+
+    // Get a payment request by Ref Number and Reason
+    public function getRecordByNumberType($numberType)
+    {
+        $record = $this->model->getRecordByNumberType($numberType);
+        if ($record) {
+            echo json_encode($record);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Payment request not found']);
+        }
     }
 }

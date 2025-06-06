@@ -24,6 +24,22 @@ class PaymentPortalRequest
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+
+    // Fetch a payment request by Ref
+    public function getRecordByUnique($unique_number)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM payment_requests WHERE unique_number = :unique_number");
+        $stmt->execute(['unique_number' => $unique_number]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getPaymentRequestRecordsByReason($unique_number, $reason)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM payment_requests WHERE unique_number = :unique_number AND payment_reson = :reason");
+        $stmt->execute(['unique_number' => $unique_number, 'reason' => $reason]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // Insert a new payment request
     public function createRecord($data)
     {
@@ -65,5 +81,19 @@ class PaymentPortalRequest
     {
         $stmt = $this->pdo->prepare("DELETE FROM payment_requests WHERE id = :id");
         $stmt->execute(['id' => $id]);
+    }
+
+    public function checkHashDupplicate($generated_hash)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM payment_requests WHERE hash_value = ?");
+        $stmt->execute([$generated_hash]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getRecordByNumberType($numberType)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM payment_requests WHERE number_type = :number_type");
+        $stmt->execute(['number_type' => $numberType]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

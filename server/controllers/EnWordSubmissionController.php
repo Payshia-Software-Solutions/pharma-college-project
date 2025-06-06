@@ -38,6 +38,49 @@ class EnWordSubmissionController
         echo json_encode($data);
     }
 
+    public function getByStudentGrades($student_number)
+    {
+        $data = $this->model->getCorrectAndIncorrectCounts($student_number);
+        $activeWords = $this->wordModel->getActiveAllWords();
+
+        if ($data && isset($data['correct_count'])) {
+            // Count correct submissions by word_id
+            $correct_count = $data['correct_count'];
+            $incorrect_count = $data['incorrect_count'];
+
+            $totalWords = 0;
+            foreach ($activeWords as $word) {
+                $type = $word['word_type'];
+
+                if ($type === 'Basic') {
+                    $totalWords += 10;
+                } elseif ($type === 'Intermediate') {
+                    $totalWords += 15;
+                } elseif ($type === 'Advanced') {
+                    $totalWords += 20;
+                } else {
+                    $masteredCount = 0; // Default value if type is not recognized
+                }
+            }
+
+            $grade = $totalWords > 0 ? ($correct_count / $totalWords)  : 0;
+
+            // Build response
+            $response = [
+                'total_words' => (int) $totalWords,
+                'correct_count' => (int) $correct_count,
+                'incorrect_count' => (int) $incorrect_count,
+                'grade' => round((float) $grade, 2),
+            ];
+
+            echo json_encode($response);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No submissions found for this student']);
+        }
+    }
+
+
     public function createSubmission()
     {
         $data = $_POST;

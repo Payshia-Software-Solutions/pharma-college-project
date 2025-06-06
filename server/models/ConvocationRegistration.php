@@ -14,18 +14,22 @@ class ConvocationRegistration
     // Read all registrations
     public function getAllRegistrations()
     {
-        $sql = "SELECT cr.*, 
-                   p.package_name, 
-                   p.price, 
-                   p.parent_seat_count, 
-                   p.garland, 
-                   p.graduation_cloth, 
-                   p.photo_package, 
-                   p.is_active, 
-                   p.created_at AS package_created_at, 
-                   p.updated_at AS package_updated_at
-            FROM convocation_registrations cr
-            LEFT JOIN packages p ON cr.package_id = p.package_id";
+        $sql = "SELECT 
+    cr.*, 
+    p.package_name, 
+    p.price, 
+    p.parent_seat_count, 
+    p.garland, 
+    p.graduation_cloth, 
+    p.photo_package, 
+    p.is_active, 
+    p.created_at AS package_created_at, 
+    p.updated_at AS package_updated_at,
+    u.name_on_certificate
+FROM convocation_registrations cr
+LEFT JOIN packages p ON cr.package_id = p.package_id
+LEFT JOIN user_full_details u ON cr.student_number = u.username;
+";
 
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -101,6 +105,34 @@ class ConvocationRegistration
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getPayableAmount($reference_number)
+    {
+        $stmt = $this->pdo->prepare("SELECT 
+        cr.*, 
+        p.package_name, 
+        p.price, 
+        p.parent_seat_count, 
+        p.garland, 
+        p.graduation_cloth, 
+        p.photo_package, 
+        p.is_active, 
+        p.created_at AS package_created_at, 
+        p.updated_at AS package_updated_at
+    FROM convocation_registrations cr
+    LEFT JOIN packages p ON cr.package_id = p.package_id
+    WHERE cr.reference_number = ?");
+
+        $stmt->execute([$reference_number]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$row) {
+            return null; // or throw an exception if preferred
+        }
+
+        $dueAmount = $row['price'] + ($row['additional_seats'] * 500);
+        return $dueAmount;
+    }
+
     // Update a registration
     public function updateRegistration($registration_id, $student_number, $course_id, $package_id, $event_id, $payment_status, $payment_amount, $registration_status)
     {
@@ -138,5 +170,37 @@ class ConvocationRegistration
         WHERE reference_number = ?
     ");
         return $stmt->execute([$payment_status, $payment_amount, $reference_number]);
+    }
+
+
+    public function updateSession($reference_number, $session)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET session = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$session, $reference_number]);
+    }
+
+    public function updateAdditionalSeats($reference_number, $additional_seats)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET additional_seats = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$additional_seats, $reference_number]);
+    }
+
+    public function updatePackages($reference_number, $package_id)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET package_id = ?
+        WHERE reference_number = ?
+
+    ");
+        return $stmt->execute([$package_id, $reference_number]);
     }
 }

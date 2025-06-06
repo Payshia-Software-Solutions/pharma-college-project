@@ -36,7 +36,7 @@ class SMSModel
     public function sendConvocationPaymentApprovedSMS($mobile, $studentName, $referenceNumber, $receiptNumber, $paymentAmount)
     {
         // Load the convocation SMS template from file
-        $template = file_get_contents($this->templatePath);
+        $template = file_get_contents('templates/convocation-payment-message.txt');
         if (!$template) {
             throw new Exception("Unable to load convocation SMS template.");
         }
@@ -48,6 +48,7 @@ class SMSModel
             $template
         );
 
+
         // Send SMS
         return $this->sendSMS($mobile, $this->senderId, $message);
     }
@@ -55,6 +56,10 @@ class SMSModel
 
     public function sendSMS($mobile, $senderId, $message)
     {
+
+        if (!preg_match('/^0/', $mobile)) {
+            $mobile = '0' . $mobile;
+        }
         $msgdata = [
             "recipient" => $mobile,
             "sender_id" => $senderId,

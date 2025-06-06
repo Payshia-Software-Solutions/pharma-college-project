@@ -2,6 +2,20 @@
 require_once('../../../../include/config.php');
 include '../../../../include/function-update.php';
 include '../../../../include/lms-functions.php';
+require __DIR__ . '/../../../../vendor/autoload.php';
+
+// For use env file data
+use Dotenv\Dotenv;
+use Symfony\Component\HttpClient\HttpClient;
+
+// Load environment variables
+$dotenv = Dotenv::createImmutable(dirname(__DIR__, 4));
+$dotenv->load();
+
+// Initialize HTTP client
+$client = HttpClient::create();
+$paymentRequests = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal-requests/by-number-type/ref_number/')->toArray();
+// var_dump($paymentRequests);
 
 $Locations = GetLocations($link);
 $temporaryUsers = GetTemporaryUsers();
@@ -61,7 +75,8 @@ $InactiveCount = 0;
             <div class="card-body">
                 <div class="row">
                     <div class="col-12 text-end">
-                        <button class="btn btn-primary btn-sm" type="button" onclick="OpenPendingUser()">Download List</button>
+                        <button class="btn btn-primary btn-sm" type="button" onclick="OpenPendingUser()">Download
+                            List</button>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -71,6 +86,7 @@ $InactiveCount = 0;
                                 <th>#</th>
                                 <th>Email</th>
                                 <th>Details</th>
+                                <th>Slips</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -106,6 +122,10 @@ $InactiveCount = 0;
 
                                     $regDate = new DateTime($selectedArray['created_at']);
                                     $formattedRegDate = $regDate->format('Y-m-d H:i:s');
+
+                                    $filteredRequests = array_filter($paymentRequests, function ($item) use ($referenceId) {
+                                        return $item['unique_number'] == $referenceId;
+                                    });
                             ?>
                                     <tr>
                                         <td><?= $referenceId; ?></td>
@@ -117,14 +137,39 @@ $InactiveCount = 0;
                                             <p class="mb-0"><?= $address_l1; ?>, <?= $address_l2; ?></p>
                                             <p class="mb-0">Register Date - <?= $formattedRegDate ?></p>
                                         </td>
-                                        <td class="text-center"><span class="badge bg-<?= $color ?>"><?= $approved_status ?></span></td>
+                                        <td>
+                                            <?php
+                                            if (!empty($filteredRequests)) {
+                                                foreach ($filteredRequests as $request) {
+                                                    $slipUrl = $request['slip_path'];
+                                                    if (!empty($slipUrl)) {
+                                            ?>
+                                                        <a href="https://content-provider.pharmacollege.lk<?= $slipUrl ?>" target="_blank"
+                                                            class="btn btn-sm btn-primary mb-2">View
+                                                            Slip</a>
+                                                    <?php
+                                                    } else {
+                                                    ?>
+                                                        <span class="badge bg-warning">No Slip Available</span>
+                                            <?php
+                                                    }
+                                                }
+                                            } else {
+                                                echo '<span class="badge bg-warning">No Payment Request</span>';
+                                            }
+                                            ?>
+                                        </td>
+                                        <td class="text-center"><span
+                                                class="badge bg-<?= $color ?>"><?= $approved_status ?></span></td>
                                         <td>
                                             <div class="text-center">
-                                                <button class="btn btn-sm btn-dark view-button mb-2" type="button" onclick="OpenUserInfo('<?= $referenceId ?>')">
+                                                <button class="btn btn-sm btn-dark view-button mb-2" type="button"
+                                                    onclick="OpenUserInfo('<?= $referenceId ?>')">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </button>
 
-                                                <button class="btn btn-sm btn-light" type="button" onclick="OpenEditUserInfo('<?= $referenceId ?>')">
+                                                <button class="btn btn-sm btn-light" type="button"
+                                                    onclick="OpenEditUserInfo('<?= $referenceId ?>')">
                                                     <i class="fa-solid fa-pencil"></i>
                                                 </button>
                                             </div>
@@ -182,6 +227,8 @@ $InactiveCount = 0;
                                         $color = "success";
                                     }
 
+
+
                             ?>
                                     <tr>
                                         <td>
@@ -197,7 +244,8 @@ $InactiveCount = 0;
                                             <?php
                                             if ($UserLevel == "Admin" && $approved_status == "Rejected") {
                                             ?><div class="mt-2">
-                                                    <button class="btn btn-sm btn-dark view-button" type="button" onclick="OpenUserInfo('<?= $referenceId ?>')">
+                                                    <button class="btn btn-sm btn-dark view-button" type="button"
+                                                        onclick="OpenUserInfo('<?= $referenceId ?>')">
                                                         <i class="fa-solid fa-eye"></i> Update Status
                                                     </button>
                                                 </div>
@@ -227,6 +275,7 @@ $InactiveCount = 0;
         $('#userTable').DataTable({
             responsive: true,
             dom: 'Bfrtip',
+            pageLength: 50,
             buttons: [
                 'copy', 'csv', 'excel', 'pdf'
                 // 'colvis'

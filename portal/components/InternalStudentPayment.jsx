@@ -73,7 +73,6 @@ export default function EnhancedPaymentApp() {
       !formData.studentNumber ||
       !formData.paymentReason ||
       !formData.amount ||
-      !formData.reference ||
       !formData.bank ||
       !formData.branch ||
       !formData.slip
