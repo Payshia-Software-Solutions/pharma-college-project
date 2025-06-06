@@ -16,10 +16,11 @@ $LoggedUser = $_POST["LoggedUser"];
 
 $selectedWord = [];
 $studentEntries = [];
+$total_words = $correct_count = $incorrect_count = $grade = 0;
 
 // Get New Word for Student
+$selectedWord = $client->request('GET', $_ENV["SERVER_URL"] . '/word-list/get-word-for-game/' . $LoggedUser)->toArray();
 try {
-    $selectedWord = $client->request('GET', $_ENV["SERVER_URL"] . '/word-list/get-word-for-game/' . $LoggedUser)->toArray();
 } catch (ClientExceptionInterface | TransportExceptionInterface $e) {
     if (method_exists($e, 'getCode') && $e->getCode() !== 404) {
         throw $e; // rethrow if it's not a 404
@@ -27,14 +28,18 @@ try {
 }
 
 try {
-    $studentEntries = $client->request('GET', $_ENV["SERVER_URL"] . '/en-word-submissions/student/' . $LoggedUser)->toArray();
+    $studentEntries = $client->request('GET', $_ENV["SERVER_URL"] . '/en-word-submissions/student-grades/' . $LoggedUser)->toArray();
+    // var_dump($studentEntries);
+
+    $total_words = $studentEntries['total_words'] ?? 0;
+    $correct_count = $studentEntries['correct_count'] ?? 0;
+    $incorrect_count = $studentEntries['incorrect_count'] ?? 0;
+    $grade = $studentEntries['grade'] ?? 0;
 } catch (ClientExceptionInterface | TransportExceptionInterface $e) {
     if (method_exists($e, 'getCode') && $e->getCode() !== 404) {
         throw $e;
     }
 }
-
-$wordCount = count($selectedWord)
 ?>
 
 <!-- Floating Background Elements -->
@@ -57,9 +62,188 @@ $wordCount = count($selectedWord)
             <p class="mb-0 opacity-75">Test Your Vocabulary Skills</p>
         </div>
 
+        <!-- Game Statistics Section -->
+        <div class="stats-section mb-4">
+            <div class="row g-3">
+                <!-- Total Words -->
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3 class="stat-number"><?= number_format($total_words) ?></h3>
+                        <p class="stat-label">Total Words</p>
+                    </div>
+                </div>
+
+                <!-- Correct Answers -->
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon correct">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3 class="stat-number text-success"><?= number_format($correct_count) ?></h3>
+                        <p class="stat-label">Correct</p>
+                    </div>
+                </div>
+
+                <!-- Incorrect Answers -->
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon incorrect">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <h3 class="stat-number text-danger"><?= number_format($incorrect_count) ?></h3>
+                        <p class="stat-label">Incorrect</p>
+                    </div>
+                </div>
+
+                <!-- Grade Percentage -->
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon grade">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <h3 class="stat-number text-primary"><?= number_format($grade * 100, 1) ?>%</h3>
+                        <p class="stat-label">Grade</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-section mt-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="progress-label">Overall Progress</span>
+                    <span class="progress-percentage"><?= number_format($grade * 100, 1) ?>%</span>
+                </div>
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-primary"
+                        role="progressbar"
+                        style="width: <?= ($grade * 100) ?>%"
+                        aria-valuenow="<?= ($grade * 100) ?>"
+                        aria-valuemin="0"
+                        aria-valuemax="100">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .stats-section {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                padding: 1.5rem;
+                border-radius: 15px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                margin-bottom: 2rem;
+            }
+
+            .stat-card {
+                background: white;
+                padding: 1.5rem 1rem;
+                border-radius: 12px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+                border: 1px solid rgba(0, 0, 0, 0.05);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            }
+
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1rem;
+                background: #6c757d;
+                color: white;
+                font-size: 1.2rem;
+            }
+
+            .stat-icon.correct {
+                background: linear-gradient(135deg, #28a745, #20c997);
+            }
+
+            .stat-icon.incorrect {
+                background: linear-gradient(135deg, #dc3545, #fd7e14);
+            }
+
+            .stat-icon.grade {
+                background: linear-gradient(135deg, #007bff, #6610f2);
+            }
+
+            .stat-number {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                color: #2c3e50;
+            }
+
+            .stat-label {
+                font-size: 0.9rem;
+                color: #6c757d;
+                font-weight: 500;
+                margin-bottom: 0;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .progress-section {
+                background: white;
+                padding: 1rem;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+
+            .progress-label {
+                font-weight: 600;
+                color: #495057;
+                font-size: 0.9rem;
+            }
+
+            .progress-percentage {
+                font-weight: 700;
+                color: #007bff;
+                font-size: 1rem;
+            }
+
+            .progress {
+                border-radius: 10px;
+                background-color: #e9ecef;
+                overflow: hidden;
+            }
+
+            .progress-bar {
+                border-radius: 10px;
+                transition: width 0.6s ease;
+                background: linear-gradient(90deg, #007bff, #0056b3);
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 768px) {
+                .stat-number {
+                    font-size: 1.5rem;
+                }
+
+                .stat-icon {
+                    width: 40px;
+                    height: 40px;
+                    font-size: 1rem;
+                }
+
+                .stats-section {
+                    padding: 1rem;
+                }
+            }
+        </style>
+
         <!-- Content Section -->
         <div class="content-section">
-            <?php if (empty($selectedWord)): ?>
+            <?php if (!empty($selectedWord)): ?>
                 <div class="row g-4">
                     <!-- Image Section -->
                     <div class="col-12 col-lg-7">
