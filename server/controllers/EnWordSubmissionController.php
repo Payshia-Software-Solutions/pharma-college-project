@@ -41,11 +41,13 @@ class EnWordSubmissionController
     public function getByStudentGrades($student_number)
     {
         $data = $this->model->getCorrectAndIncorrectCounts($student_number);
+        var_dump($data); // Debugging line to check the data structure
         $activeWords = $this->wordModel->getActiveAllWords();
 
         if ($data && isset($data['correct_count'])) {
             // Count correct submissions by word_id
             $correct_count = $data['correct_count'];
+            $incorrect_count = $data['incorrect_count'];
 
             $totalWords = 0;
             foreach ($activeWords as $word) {
@@ -67,8 +69,8 @@ class EnWordSubmissionController
             // Build response
             $response = [
                 'total_words' => $totalWords,
-                'correct_count' => $data['correct_count'],
-                'incorrect_count' => $data['incorrect_count'],
+                'correct_count' => $correct_count,
+                'incorrect_count' => $incorrect_count,
                 'grade' => round($grade, 2)
             ];
 
