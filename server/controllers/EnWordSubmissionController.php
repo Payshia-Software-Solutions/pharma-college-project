@@ -40,6 +40,7 @@ class EnWordSubmissionController
 
     public function getByStudentGrades($student_number)
     {
+        echo $student_number;
         $data = $this->model->getCorrectAndIncorrectCounts($student_number);
         var_dump($data); // Debugging line to check the data structure
         $activeWords = $this->wordModel->getActiveAllWords();
