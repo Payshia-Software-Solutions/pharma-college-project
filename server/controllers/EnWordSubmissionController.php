@@ -38,6 +38,57 @@ class EnWordSubmissionController
         echo json_encode($data);
     }
 
+    public function getByStudentGrades($student_number)
+    {
+        $data = $this->model->getCorrectAndIncorrectCounts($student_number);
+        $activeWords = $this->wordModel->getActiveAllWords();
+
+        if ($data && isset($data['correct_count'])) {
+            // Count correct submissions by word_id
+            $correctCounts = [];
+            foreach ($data['correct_count'] as $submission) {
+                $wordId = $submission['word_id'];
+                if (!isset($correctCounts[$wordId])) {
+                    $correctCounts[$wordId] = 0;
+                }
+                $correctCounts[$wordId]++;
+            }
+
+            // Determine how many active words the student has mastered
+            $masteredCount = 0;
+
+            foreach ($activeWords as $word) {
+                $wordId = $word['id'];
+                $type = $word['word_type'];
+                $correctCount = isset($correctCounts[$wordId]) ? $correctCounts[$wordId] : 0;
+
+                if (
+                    ($type === 'Basic' && $correctCount >= 10) ||
+                    ($type === 'Intermediate' && $correctCount >= 15) ||
+                    ($type === 'Advanced' && $correctCount >= 20)
+                ) {
+                    $masteredCount++;
+                }
+            }
+
+            $totalWords = count($activeWords);
+            $grade = $totalWords > 0 ? ($masteredCount / $totalWords) * 10 : 0;
+
+            // Build response
+            $response = [
+                'correct_count' => $data['correct_count'],
+                'incorrect_count' => $data['incorrect_count'],
+                'grade' => round($grade, 2)
+            ];
+
+            echo json_encode($response);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No submissions found for this student']);
+        }
+    }
+
+
     public function createSubmission()
     {
         $data = $_POST;

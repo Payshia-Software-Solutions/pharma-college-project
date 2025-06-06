@@ -44,6 +44,21 @@ class EnWordSubmission
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Get submissions by student number with grades
+    public function getCorrectAndIncorrectCounts($student_number)
+    {
+        $stmt = $this->pdo->prepare("
+        SELECT 
+            SUM(CASE WHEN correct_status = 'Correct' THEN 1 ELSE 0 END) AS correct_count,
+            SUM(CASE WHEN correct_status = 'Incorrect' THEN 1 ELSE 0 END) AS incorrect_count
+        FROM en_word_submission
+        WHERE student_number = ?
+    ");
+        $stmt->execute([$student_number]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
     public function getCorrectSubmissionsByStudent($studentNumber)
     {
         $stmt = $this->pdo->prepare("SELECT * FROM en_word_submission WHERE student_number = ? AND correct_status = 'Correct'");
