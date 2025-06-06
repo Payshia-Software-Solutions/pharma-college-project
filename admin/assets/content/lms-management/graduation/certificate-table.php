@@ -17,4 +17,4 @@ if (strtolower($UserLevel) != 'admin') die('Access denied');
 $courseCode = $_POST['courseCode'] ?? null;
 $showSession = $_POST['showSession'] ?? null;
 
-$packageBookings = $client->request('GET', $_ENV['SERVER_URL'] . '/convocation-registrations')->toArray();
+$packageBookings = $client->request('GET', $_ENV['SERVER_URL'] . '/convocation-registrations?courseCode=' . $courseCode . '&viewSession=' . $showSession)->toArray();

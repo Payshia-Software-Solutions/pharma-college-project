@@ -499,4 +499,26 @@ class ConvocationRegistrationController
             echo json_encode(['error' => 'No registrations found for the specified course and session']);
         }
     }
+
+    public function GetListbyCourse($courseCode)
+    {
+        $registrations = $this->model->getListbyCourse($courseCode);
+        if ($registrations) {
+            echo json_encode($registrations);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No registrations found for the specified course']);
+        }
+    }
+
+    public function GetListbySession($session)
+    {
+        $registrations = $this->model->getListbySession($session);
+        if ($registrations) {
+            echo json_encode($registrations);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No registrations found for the specified session']);
+        }
+    }
 }
