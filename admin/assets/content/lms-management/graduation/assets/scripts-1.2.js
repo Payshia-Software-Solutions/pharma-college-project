@@ -28,7 +28,6 @@ function OpenIndex() {
   fetch_data();
 }
 
-
 function OpenDownloadFile() {
   var userTheme = $("#userTheme").val();
   document.getElementById("index-content").innerHTML = InnerLoader;
@@ -575,8 +574,6 @@ function changePackage(bookingId, newPackageId) {
   });
 }
 
-
-
 function InactivePayment(recordId, referenceNumber) {
   Swal.fire({
     title: "Are you sure?",
@@ -623,27 +620,27 @@ function InactivePayment(recordId, referenceNumber) {
 }
 
 function OpenCourierListModel(courierOrderId) {
-    var userTheme = $("#userTheme").val();
-    OpenPopupRight();
-    $("#loading-popup-right").html(InnerLoader);
+  var userTheme = $("#userTheme").val();
+  OpenPopupRight();
+  $("#loading-popup-right").html(InnerLoader);
 
-    function fetch_data() {
-        $.ajax({
-            url: 'assets/content/lms-management/graduation/side-modals/courier-list-model.php',
-            method: "POST",
-            data: {
-                LoggedUser: LoggedUser,
-                UserLevel: UserLevel,
-                userTheme: userTheme,
-                company_id: company_id,
-                courierOrderId: courierOrderId
-            },
-            success: function (data) {
-                $("#loading-popup-right").html(data);
-            }
-        });
-    }
-    fetch_data();
+  function fetch_data() {
+    $.ajax({
+      url: "assets/content/lms-management/graduation/side-modals/courier-list-model.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        userTheme: userTheme,
+        company_id: company_id,
+        courierOrderId: courierOrderId,
+      },
+      success: function (data) {
+        $("#loading-popup-right").html(data);
+      },
+    });
+  }
+  fetch_data();
 }
 
 function OpenCertificateGeneratePage() {
@@ -662,6 +659,67 @@ function OpenCertificateGeneratePage() {
       },
       success: function (data) {
         $("#index-content").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
+
+function triggerOpenTable() {
+  const courseCode = document.getElementById("courseSelect").value;
+  const sessionDropdown = document.getElementById("sessionDropdown").value;
+
+  if (!courseCode) {
+    alert("Please select a course.");
+    return;
+  }
+
+  if (!sessionDropdown) {
+    alert("Please select a session.");
+    return;
+  }
+  OpenCertificateGenerateTable(courseCode, sessionDropdown);
+}
+
+function OpenCertificateGenerateTable(courseCode, showSession) {
+  var userTheme = $("#userTheme").val();
+  $("#certification-table").html(InnerLoader);
+
+  function fetch_data() {
+    $.ajax({
+      url: "assets/content/lms-management/graduation/certificate-table.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        userTheme: userTheme,
+        company_id: company_id,
+        courseCode: courseCode,
+        showSession: showSession,
+      },
+      success: function (data) {
+        $("#certification-table").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
+
+function OpenCertificateModel(referenceId) {
+  OpenPopup();
+  document.getElementById("loading-popup").innerHTML = InnerLoader;
+
+  function fetch_data() {
+    $.ajax({
+      url: "./assets/content/lms-management/graduation/popup-modals/certiticate-model.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        referenceId: referenceId,
+      },
+      success: function (data) {
+        $("#loading-popup").html(data);
       },
     });
   }
