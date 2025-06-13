@@ -1,10 +1,10 @@
 <?php
 // routes/UserCertificatePrintStatusRoutes.php
 
-require_once './controllers/UserCertificatePrintStatusController.php';
+require_once './controllers/UserCertificatePrintStatusControllerNew.php';
 
 $pdo = $GLOBALS['pdo'];
-$ucpsController = new UserCertificatePrintStatusController($pdo);
+$ucpsController = new UserCertificatePrintStatusControllerNew($pdo);
 
 return [
     // GET all statuses
