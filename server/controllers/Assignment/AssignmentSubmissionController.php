@@ -24,6 +24,12 @@ class AssignmentSubmissionController
         echo json_encode($submissions);
     }
 
+    public function getAverageGradeByStudentAndCourse($studentId, $courseCode)
+    {
+        $averageGrade = $this->model->getAverageGradeByStudentAndCourse($studentId, $courseCode);
+        echo json_encode($averageGrade);
+    }
+
     public function getSubmission($id)
     {
         $submission = $this->model->getSubmissionById($id);

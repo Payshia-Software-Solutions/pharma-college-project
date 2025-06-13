@@ -41,6 +41,9 @@ if (isset($showSession)) {
         $_ENV['SERVER_URL'] . '/convocation-registrations?viewSession=' . $showSession
     )->toArray();
 }
+
+
+
 ?>
 
 <div class="card">
@@ -54,6 +57,7 @@ if (isset($showSession)) {
                             <th scope="col">Student Number</th>
                             <th scope="col">Session</th>
                             <th scope="col">Paid</th>
+                            <th scope="col">Grade</th>
                             <th scope="col">Registration Status</th>
                             <th scope="col">Action</th>
                         </tr>
@@ -65,6 +69,7 @@ if (isset($showSession)) {
                                 <td><?= $booking['student_number'] ?></td>
                                 <td><?= $booking['session'] ?></td>
                                 <td><?= $booking['payment_amount'] ?></td>
+                                <th scope="col">Grade</th>
                                 <td><?= $booking['registration_status'] ?></td>
                                 <td><button class="btn btn-dark btn-sm" type="button" onclick="OpenCertificateModel('<?= $booking['registration_id'] ?>')">View</button></td>
                             </tr>
