@@ -491,7 +491,7 @@ class ConvocationRegistrationController
 
     public function GetListbyCourseAndSession($courseCode, $session)
     {
-        $registrations = $this->model->getListbyCourseAndSession($courseCode, $session);
+        $registrations = $this->model->GetListbyCourseAndSession($courseCode, $session);
         if ($registrations) {
             echo json_encode($registrations);
         } else {
