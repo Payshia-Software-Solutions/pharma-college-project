@@ -3,7 +3,7 @@
 
 require_once 'helpers/CertificateHelper.php';
 
-class UserCertificatePrintStatus
+class UserCertificatePrintStatusNew
 {
     private $pdo;
 

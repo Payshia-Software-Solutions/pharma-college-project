@@ -233,7 +233,7 @@ $routes = array_merge(
     $convocationRoutes,
     $WordListRoutes,
     $EnWordSubmissionRoutes,
-    $UserCertificatePrintStatusRoutes
+    $UserCertificatePrintStatusRoutesNew
 );
 
 

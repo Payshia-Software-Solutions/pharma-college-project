@@ -2,15 +2,15 @@
 
 // controllers/CertificationCenter/UserCertificatePrintStatusController.php
 
-require_once 'models/UserCertificatePrintStatus.php';
+require_once 'models/UserCertificatePrintStatusNew.php';
 
-class UserCertificatePrintStatusController
+class UserCertificatePrintStatusControllerNew
 {
     private $model;
 
     public function __construct($pdo)
     {
-        $this->model = new UserCertificatePrintStatus($pdo);
+        $this->model = new UserCertificatePrintStatusNew($pdo);
     }
 
     public function getAllStatuses()
