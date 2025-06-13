@@ -36,7 +36,7 @@ class Course
     {
         $stmt = $this->pdo->prepare("SELECT * FROM course WHERE parent_course_id = :parent_course_id");
         $stmt->execute(['parent_course_id' => $id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // public function getCourseFeeByCourseCode($course_code)
