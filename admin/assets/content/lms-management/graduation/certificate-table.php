@@ -43,6 +43,12 @@ if (isset($showSession)) {
 }
 
 
+$assignmentGrades = $client->request('GET', $_ENV['SERVER_URL'] . '/submissions/average-grade?studentId=PA19584&courseCode=' . $courseCode)->toArray();
+var_dump($assignmentGrades);
+if (empty($packageBookings)) {
+    echo '<div class="alert alert-warning">No bookings found for the selected course and session.</div>';
+    return;
+}
 
 ?>
 
@@ -63,13 +69,14 @@ if (isset($showSession)) {
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($packageBookings as $booking) : ?>
+                        <?php foreach ($packageBookings as $booking) :
+                        ?>
                             <tr>
                                 <td><?= $booking['registration_id'] ?></td>
                                 <td><?= $booking['student_number'] ?></td>
                                 <td><?= $booking['session'] ?></td>
                                 <td><?= $booking['payment_amount'] ?></td>
-                                <th scope="col">Grade</th>
+                                <th scope="col"><?= $assignmentGrades['average_grade'] ?></th>
                                 <td><?= $booking['registration_status'] ?></td>
                                 <td><button class="btn btn-dark btn-sm" type="button" onclick="OpenCertificateModel('<?= $booking['registration_id'] ?>')">View</button></td>
                             </tr>

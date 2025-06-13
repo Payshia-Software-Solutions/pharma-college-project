@@ -23,43 +23,54 @@ class AssignmentSubmission
         return $stmt->fetch();
     }
 
-    public function getAverageGradeByStudentAndCourse($studentId, $courseCode)
+    public function getAverageGradeByStudentAndCourse($studentId, $parentCourseId)
     {
         $sql = "
-        WITH ranked AS (
-            SELECT
-                a.id,
-                a.course_code,
-                a.assignment_id,
-                asub.grade,
-                ROW_NUMBER() OVER (
-                    PARTITION BY a.assignment_id
-                    ORDER BY a.id
-                ) AS rn
-            FROM assignment a
-            JOIN student_course sc
-                ON a.course_code = sc.course_code
-            JOIN users u
-                ON sc.student_id = u.userid
-            LEFT JOIN assignment_submittion asub
-                ON  asub.assignment_id = a.assignment_id
-                AND asub.created_by   = u.username
-            WHERE  u.username = ?
-              AND a.course_code = ?
-        ),
-        dedup AS (
-            SELECT course_code, grade
-            FROM   ranked
-            WHERE  rn = 1
-        )
-        SELECT
-            course_code,
-            ROUND(AVG(grade), 2) AS average_grade
-        FROM dedup;
+        WITH ranked AS (        
+    SELECT
+        a.id,
+        a.course_code,
+        a.assignment_id,
+        asub.grade,
+        ROW_NUMBER() OVER (
+            PARTITION BY a.assignment_id
+            ORDER BY a.id
+        ) AS rn
+    FROM assignment a
+    JOIN student_course sc
+           ON a.course_code = sc.course_code
+    JOIN users u
+           ON sc.student_id = u.userid
+    LEFT JOIN assignment_submittion asub
+           ON  asub.assignment_id = a.assignment_id
+           AND asub.created_by   = u.username
+    WHERE u.username  = ?        
+),
+dedup AS (            
+    SELECT course_code, grade
+    FROM   ranked
+    WHERE  rn = 1
+),
+avg_grade AS (        
+    SELECT
+        course_code,
+        ROUND(AVG(grade), 2) AS average_grade
+    FROM dedup
+    GROUP BY course_code
+)
+SELECT
+    c.course_name,
+    c.parent_course_id,
+    c.course_code,
+    ag.average_grade          
+FROM avg_grade ag
+JOIN course c
+      ON c.course_code = ag.course_code;
+
     ";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$studentId, $courseCode]);
+        $stmt->execute([$studentId, $parentCourseId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
