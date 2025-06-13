@@ -90,17 +90,17 @@ return [
         return $convocationRegistrationController->deleteRegistration($registration_id);
     },
 
-    'GET /convocation-registrations\?courseCode=([A-Za-z0-9]+)&viewSession=([A-Za-z0-9]+)/$' => function ($courseCode, $viewSession) use ($convocationRegistrationController) {
+    'GET /convocation-registrations-certificate\?courseCode=([A-Za-z0-9]+)&viewSession=([A-Za-z0-9]+)/$' => function ($courseCode, $viewSession) use ($convocationRegistrationController) {
         return $convocationRegistrationController->GetListbyCourseAndSession($courseCode, $viewSession);
     },
 
 
-    'GET /convocation-registrations\?courseCode=([A-Za-z0-9]+)/$' => function ($courseCode) use ($convocationRegistrationController) {
+    'GET /convocation-registrations-certificate\?courseCode=([A-Za-z0-9]+)/$' => function ($courseCode) use ($convocationRegistrationController) {
         return $convocationRegistrationController->GetListbyCourse($courseCode);
     },
 
 
-    'GET /convocation-registrations\?viewSession=([A-Za-z0-9]+)/$' => function ($viewSession) use ($convocationRegistrationController) {
+    'GET /convocation-registrations-certificate\?viewSession=([A-Za-z0-9]+)/$' => function ($viewSession) use ($convocationRegistrationController) {
         return $convocationRegistrationController->GetListbySession($viewSession);
     },
 ];
