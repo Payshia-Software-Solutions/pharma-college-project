@@ -15,7 +15,7 @@ return [
         return $submissionController->getAllSubmissionsGroupedByStudent();
     },
 
-    'GET /submissions/average-grade/?studentId=([A-Za-z0-9]+)&courseCode=([A-Za-z0-9]+)' => function () use ($submissionController) {
+    'GET /submissions/average-grade\?studentId=([A-Za-z0-9]+)&courseCode=([A-Za-z0-9]+)/$' => function () use ($submissionController) {
         $studentId = $_GET['studentId'] ?? null;
         $courseCode = $_GET['courseCode'] ?? null;
 
