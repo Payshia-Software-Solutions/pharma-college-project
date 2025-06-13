@@ -27,7 +27,18 @@ class CourseController
         }
     }
 
-   
+    public function getRecordByParentId($id)
+    {
+        $record = $this->model->getRecordByParentId($id);
+        if ($record) {
+            echo json_encode($record);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Record not found']);
+        }
+    }
+
+
 
     public function createRecord()
     {
@@ -52,24 +63,23 @@ class CourseController
 
 
     // New method for fetching course by course_code
-public function getRecordByCourseCode($course_code)
-{
-    // Debugging log to check the incoming course_code
-    error_log("Fetching course for course_code: $course_code");
+    public function getRecordByCourseCode($course_code)
+    {
+        // Debugging log to check the incoming course_code
+        error_log("Fetching course for course_code: $course_code");
 
-    // Fetch the record from the model
-    $record = $this->model->getRecordByCourseCode(trim($course_code));
+        // Fetch the record from the model
+        $record = $this->model->getRecordByCourseCode(trim($course_code));
 
-    if ($record) {
-        // Log and return the record as JSON
-        error_log("Course found: " . json_encode($record));
-        echo json_encode($record);
-    } else {
-        // Log and return a 404 error
-        error_log("Course not found for course_code: $course_code");
-        http_response_code(404);
-        echo json_encode(['error' => 'Course not found']);
+        if ($record) {
+            // Log and return the record as JSON
+            error_log("Course found: " . json_encode($record));
+            echo json_encode($record);
+        } else {
+            // Log and return a 404 error
+            error_log("Course not found for course_code: $course_code");
+            http_response_code(404);
+            echo json_encode(['error' => 'Course not found']);
+        }
     }
-}
-
 }
