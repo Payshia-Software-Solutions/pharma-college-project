@@ -26,21 +26,21 @@ $packageBookingsBySession = [];
 if (isset($courseCode) && isset($showSession)) {
     $packageBookings = $client->request(
         'GET',
-        $_ENV['SERVER_URL'] . '/convocation-registrations?courseCode=' . $courseCode . '&viewSession=' . $showSession
+        $_ENV['SERVER_URL'] . '/convocation-registrations-certificate?courseCode=' . $courseCode . '&viewSession=' . $showSession
     )->toArray();
 }
 
 if (isset($courseCode)) {
     $packageBookings = $client->request(
         'GET',
-        $_ENV['SERVER_URL'] . '/convocation-registrations?courseCode=' . $courseCode
+        $_ENV['SERVER_URL'] . '/convocation-registrations-certificate?courseCode=' . $courseCode
     )->toArray();
 }
 
 if (isset($showSession)) {
     $packageBookings = $client->request(
         'GET',
-        $_ENV['SERVER_URL'] . '/convocation-registrations?viewSession=' . $showSession
+        $_ENV['SERVER_URL'] . '/convocation-registrations-certificate?viewSession=' . $showSession
     )->toArray();
 }
 
