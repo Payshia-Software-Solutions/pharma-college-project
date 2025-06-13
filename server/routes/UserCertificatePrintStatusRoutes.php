@@ -1,0 +1,34 @@
+<?php
+// routes/UserCertificatePrintStatusRoutes.php
+
+require_once './controllers/CertificationCenter/UserCertificatePrintStatusController.php';
+
+$pdo = $GLOBALS['pdo'];
+$ucpsController = new UserCertificatePrintStatusController($pdo);
+
+return [
+    // GET all statuses
+    'GET /certificate-print-status/$' => function () use ($ucpsController) {
+        return $ucpsController->getAllStatuses();
+    },
+
+    // GET a single status by ID
+    'GET /certificate-print-status/(\d+)/$' => function ($id) use ($ucpsController) {
+        return $ucpsController->getStatusById($id);
+    },
+
+    // POST create a new status
+    'POST /certificate-print-status/$' => function () use ($ucpsController) {
+        return $ucpsController->createStatus();
+    },
+
+    // PUT update a status
+    'PUT /certificate-print-status/(\d+)/$' => function ($id) use ($ucpsController) {
+        return $ucpsController->updateStatus($id);
+    },
+
+    // DELETE a status
+    'DELETE /certificate-print-status/(\d+)/$' => function ($id) use ($ucpsController) {
+        return $ucpsController->deleteStatus($id);
+    },
+];

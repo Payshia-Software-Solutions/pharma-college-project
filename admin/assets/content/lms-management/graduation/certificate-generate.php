@@ -80,7 +80,7 @@ foreach ($mainCourses as $course) {
 
 <div class="row g-2 mt-3">
     <!-- Left Column - Course Selection -->
-    <div class="col-md-2">
+    <div class="col-md-3">
         <div class="card">
             <div class="card-body">
                 <h6 class="card-title mb-4">Please choose the Course</h1>
@@ -111,15 +111,9 @@ foreach ($mainCourses as $course) {
     </div>
 
 
-    <div class="col-md-7" id="certification-table"></div>
+    <div class="col-md-9" id="certification-table"></div>
 
-    <div class="col-md-3">
-        <div class="card">
-            <div class="card-body">
 
-            </div>
-        </div>
-    </div>
 </div>
 <script>
 

@@ -60,64 +60,62 @@ if (isset($courseCode) && isset($showSession)) {
                             <th scope="col">Reference #</th>
                             <th scope="col">Student Number</th>
                             <th scope="col">Session</th>
-                            <th scope="col">Course</th>
                             <th scope="col">Paid</th>
-                            <th scope="col">Grade</th>
+                            <th scope="col">Certificate</th>
                             <th scope="col">Registration Status</th>
                             <th scope="col">Action</th>
                         </tr>
                     </thead>
                     <?php
                     /* 1️⃣ Fire every request — store (studentId => ResponseInterface) */
-                    $requests = [];
-                    foreach ($packageBookings as $booking) {
-                        $studentId = $booking['student_number'];
+                    // $requests = [];
+                    // foreach ($packageBookings as $booking) {
+                    //     $studentId = $booking['student_number'];
 
-                        $requests[$studentId] = $client->request(
-                            'GET',
-                            $_ENV['SERVER_URL'] .
-                                '/submissions/average-grade?studentId=' . $studentId .
-                                '&courseCode=' . $courseCode,
-                            [
-                                // user_data lets us recover the studentId inside the stream loop
-                                'user_data' => $studentId,
-                            ]
-                        );
-                    }
+                    //     $requests[$studentId] = $client->request(
+                    //         'GET',
+                    //         $_ENV['SERVER_URL'] .
+                    //             '/submissions/average-grade?studentId=' . $studentId .
+                    //             '&courseCode=' . $courseCode,
+                    //         [
+                    //             // user_data lets us recover the studentId inside the stream loop
+                    //             'user_data' => $studentId,
+                    //         ]
+                    //     );
+                    // }
 
-                    /* 2️⃣ Collect the results as soon as each finishes */
-                    $gradesMap = []; // [studentId => average_grade]
-                    foreach ($client->stream($requests) as $response => $chunk) {
-                        if (!$chunk->isLast()) {
-                            // skip until the body is fully received
-                            continue;
-                        }
+                    // /* 2️⃣ Collect the results as soon as each finishes */
+                    // $gradesMap = []; // [studentId => average_grade]
+                    // foreach ($client->stream($requests) as $response => $chunk) {
+                    //     if (!$chunk->isLast()) {
+                    //         // skip until the body is fully received
+                    //         continue;
+                    //     }
 
-                        $studentId = $response->getInfo('user_data'); // the key we set above
-                        try {
-                            $data = $response->toArray(false); // don’t throw on invalid JSON
-                            if (is_array($data) && isset($data['average_grade'])) {
-                                $gradesMap[$studentId] = $data['average_grade'];
-                            }
-                        } catch (TransportExceptionInterface | DecodingExceptionInterface $e) {
-                            // ignore; student will fall back to 'N/A'
-                        }
-                    }
+                    //     $studentId = $response->getInfo('user_data'); // the key we set above
+                    //     try {
+                    //         $data = $response->toArray(false); // don’t throw on invalid JSON
+                    //         if (is_array($data) && isset($data['average_grade'])) {
+                    //             $gradesMap[$studentId] = $data['average_grade'];
+                    //         }
+                    //     } catch (TransportExceptionInterface | DecodingExceptionInterface $e) {
+                    //         // ignore; student will fall back to 'N/A'
+                    //     }
+                    // }
                     ?>
 
                     <tbody>
                         <?php foreach ($packageBookings as $booking): ?>
                             <?php
                             $studentId = $booking['student_number'];
-                            $avg       = $gradesMap[$studentId] ?? 'N/A';
+                            // $avg       = $gradesMap[$studentId] ?? 'N/A';
                             ?>
                             <tr>
                                 <td><?= $booking['registration_id'] ?></td>
                                 <td><?= $studentId ?></td>
                                 <td><?= $booking['session'] ?></td>
-                                <td><?= $booking['course_id'] ?></td>
                                 <td><?= $booking['payment_amount'] ?></td>
-                                <th scope="col"><?= $avg ?></th>
+                                <td><?= $booking['certificicate_print_status'] ?></td>
                                 <td><?= $booking['registration_status'] ?></td>
                                 <td>
                                     <button
@@ -144,7 +142,7 @@ if (isset($courseCode) && isset($showSession)) {
             // 'colvis'
         ],
         order: [
-            [4, 'dsc']
+            [0, 'dsc']
         ]
     })
 </script>
