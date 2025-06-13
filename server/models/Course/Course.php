@@ -34,7 +34,7 @@ class Course
 
     public function getRecordByParentId($id)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM course WHERE parent_course_id = :parent_course_id AND display = 1");
+        $stmt = $this->pdo->prepare("SELECT * FROM course WHERE parent_course_id = :parent_course_id");
         $stmt->execute(['parent_course_id' => $id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
