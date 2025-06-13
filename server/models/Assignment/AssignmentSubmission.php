@@ -25,15 +25,21 @@ class AssignmentSubmission
 
     public function getAverageGradeByStudentAndCourse($studentId, $parentCourseId)
     {
-        $sql = "WITH ranked AS (        
+        /*  ──────────────────────────────────────────────────────────────────────────
+        ranked  → one row per submission, ranked so rn = 1 is the *latest* one
+        dedup   → collapses to the latest grade for every assignment
+        avg_grade → averages those grades per course
+    ────────────────────────────────────────────────────────────────────────── */
+        $sql = "
+WITH ranked AS (
     SELECT
-        a.id,
         a.course_code,
         a.assignment_id,
         asub.grade,
         ROW_NUMBER() OVER (
             PARTITION BY a.assignment_id
-            ORDER BY a.id
+            ORDER BY            -- newest first
+                  asub.id        DESC         -- (or asub.submitted_at DESC)
         ) AS rn
     FROM assignment a
     JOIN student_course sc
@@ -43,14 +49,14 @@ class AssignmentSubmission
     LEFT JOIN assignment_submittion asub
            ON  asub.assignment_id = a.assignment_id
            AND asub.created_by   = u.username
-    WHERE u.username  = ?         
+    WHERE u.username = ?
 ),
-dedup AS (            
+dedup AS (
     SELECT course_code, grade
     FROM   ranked
-    WHERE  rn = 1
+    WHERE  rn = 1                -- keep only the latest submission
 ),
-avg_grade AS (        
+avg_grade AS (
     SELECT
         course_code,
         ROUND(AVG(grade), 2) AS average_grade
@@ -61,7 +67,7 @@ SELECT
     c.course_name,
     c.parent_course_id,
     c.course_code,
-    ag.average_grade          
+    ag.average_grade
 FROM avg_grade ag
 JOIN course c
       ON c.course_code = ag.course_code
@@ -69,9 +75,10 @@ WHERE c.parent_course_id = ?;
 ";
 
         $stmt = $this->pdo->prepare($sql);
-        $stmt->execute([$studentId, $parentCourseId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $stmt->execute([$studentId, $parentCourseId]);   // 1 = username, 2 = parent course
+        return $stmt->fetch(PDO::FETCH_ASSOC);           // use fetchAll() if you need many rows
     }
+
 
 
     public function getAllSubmissionsGroupedByStudent()
