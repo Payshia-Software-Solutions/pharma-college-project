@@ -25,8 +25,7 @@ class AssignmentSubmission
 
     public function getAverageGradeByStudentAndCourse($studentId, $parentCourseId)
     {
-        $sql = "
-        WITH ranked AS (        
+        $sql = "WITH ranked AS (        
     SELECT
         a.id,
         a.course_code,
@@ -44,7 +43,7 @@ class AssignmentSubmission
     LEFT JOIN assignment_submittion asub
            ON  asub.assignment_id = a.assignment_id
            AND asub.created_by   = u.username
-    WHERE u.username  = ?        
+    WHERE u.username  = ?         
 ),
 dedup AS (            
     SELECT course_code, grade
@@ -65,9 +64,9 @@ SELECT
     ag.average_grade          
 FROM avg_grade ag
 JOIN course c
-      ON c.course_code = ag.course_code;
-
-    ";
+      ON c.course_code = ag.course_code
+WHERE c.parent_course_id = ?;
+";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$studentId, $parentCourseId]);
