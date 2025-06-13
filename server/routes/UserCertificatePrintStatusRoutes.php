@@ -1,7 +1,7 @@
 <?php
 // routes/UserCertificatePrintStatusRoutes.php
 
-require_once './controllers/CertificationCenter/UserCertificatePrintStatusController.php';
+require_once './controllers/UserCertificatePrintStatusController.php';
 
 $pdo = $GLOBALS['pdo'];
 $ucpsController = new UserCertificatePrintStatusController($pdo);

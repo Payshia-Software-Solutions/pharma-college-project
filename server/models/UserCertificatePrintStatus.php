@@ -1,6 +1,8 @@
 <?php
 // models/CertificationCenter/UserCertificatePrintStatus.php
 
+require_once 'helpers/CertificateHelper.php';
+
 class UserCertificatePrintStatus
 {
     private $pdo;
