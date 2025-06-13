@@ -23,6 +23,47 @@ class AssignmentSubmission
         return $stmt->fetch();
     }
 
+    public function getAverageGradeByStudentAndCourse($studentId, $courseCode)
+    {
+        $sql = "
+        WITH ranked AS (
+            SELECT
+                a.id,
+                a.course_code,
+                a.assignment_id,
+                asub.grade,
+                ROW_NUMBER() OVER (
+                    PARTITION BY a.assignment_id
+                    ORDER BY a.id
+                ) AS rn
+            FROM assignment a
+            JOIN student_course sc
+                ON a.course_code = sc.course_code
+            JOIN users u
+                ON sc.student_id = u.userid
+            LEFT JOIN assignment_submittion asub
+                ON  asub.assignment_id = a.assignment_id
+                AND asub.created_by   = u.username
+            WHERE  u.username = ?
+              AND a.course_code = ?
+        ),
+        dedup AS (
+            SELECT course_code, grade
+            FROM   ranked
+            WHERE  rn = 1
+        )
+        SELECT
+            course_code,
+            ROUND(AVG(grade), 2) AS average_grade
+        FROM dedup;
+    ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$studentId, $courseCode]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+
     public function getAllSubmissionsGroupedByStudent()
     {
         $stmt = $this->pdo->query("SELECT assignment_id, file_path, created_by, created_at, status, grade FROM assignment_submittion");
