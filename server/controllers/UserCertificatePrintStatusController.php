@@ -2,7 +2,7 @@
 
 // controllers/CertificationCenter/UserCertificatePrintStatusController.php
 
-require_once 'models/CertificationCenter/UserCertificatePrintStatus.php';
+require_once 'models/UserCertificatePrintStatus.php';
 
 class UserCertificatePrintStatusController
 {
