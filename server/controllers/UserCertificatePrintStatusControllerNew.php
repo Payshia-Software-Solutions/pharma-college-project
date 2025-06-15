@@ -29,14 +29,31 @@ class UserCertificatePrintStatusControllerNew
         }
     }
 
+    public function getStatusByCertificateId($certificate_id)
+    {
+        $status = $this->model->getStatusByCertificateId($certificate_id);
+        if ($status) {
+            echo json_encode($status);
+        } else {
+            echo json_encode(["error" => "Status not found"]);
+        }
+    }
+
+    // controllers/CertificationCenter/UserCertificatePrintStatusController.php
     public function createStatus()
     {
         $data = json_decode(file_get_contents("php://input"), true);
 
-        $this->model->createStatus($data);
+        // The model now gives us the generated certificate_id
+        $certificateId = $this->model->createStatus($data);
+
         http_response_code(201);
-        echo json_encode(["message" => "Status created successfully"]);
+        echo json_encode([
+            "message"        => "Status created successfully",
+            "certificate_id" => $certificateId
+        ]);
     }
+
 
     public function updateStatus($id)
     {

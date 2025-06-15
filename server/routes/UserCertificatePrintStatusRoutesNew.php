@@ -17,6 +17,11 @@ return [
         return $ucpsController->getStatusById($id);
     },
 
+     // GET a single status by ID
+    'GET /certificate-print-status/by-certificate_id/([A-Za-z0-9]+)/$' => function ($certificate_id) use ($ucpsController) {
+        return $ucpsController->getStatusByCertificateId($certificate_id);
+    },
+
     // POST create a new status
     'POST /certificate-print-status/$' => function () use ($ucpsController) {
         return $ucpsController->createStatus();
