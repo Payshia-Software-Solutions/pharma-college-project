@@ -206,7 +206,9 @@ function formatNameForCertificate($fullName, $maxLength = 30)
                 </div>
                 <div class="col-4">
                     <label for="ceromany_mnumber">Ceromany Number</label>
-                    <input type="text" name="ceromony_number" id="ceromony_number" class="form-control form-control-sm"
+                    <input
+                        onblur="SetCeremonyNumber('<?= $bookingInfo['student_number'] ?>', this.value, '<?= $bookingInfo['reference_number'] ?>' )"
+                        type="text" name="ceromony_number" id="ceromony_number" class="form-control form-control-sm"
                         value="" />
                 </div>
             </div>
