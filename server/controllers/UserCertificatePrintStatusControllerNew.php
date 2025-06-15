@@ -65,7 +65,7 @@ class UserCertificatePrintStatusControllerNew
         echo json_encode([
             "message"        => "Status created successfully",
             "certificate_id" => $certificateId,
-            "certificate_print_status" => $certificateIdStatus ? "Updated" : "Failed to update convocation registration",
+            "certificate_print_status" => $certificateIdStatus
         ]);
     }
 
