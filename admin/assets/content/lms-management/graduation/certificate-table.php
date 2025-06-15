@@ -54,6 +54,7 @@ if (isset($courseCode) && isset($showSession)) {
                     <thead>
                         <tr>
                             <th scope="col">Reference #</th>
+                            <th scope="col">Ceremony Number</th>
                             <th scope="col">Student Number</th>
                             <th scope="col">Session</th>
                             <th scope="col">Grade</th>
@@ -109,6 +110,9 @@ if (isset($courseCode) && isset($showSession)) {
                             ?>
                             <tr>
                                 <td><?= $booking['registration_id'] ?></td>
+                                <td>
+                                    <?= (!empty($booking['ceremony_number']) && $booking['ceremony_number'] != 0) ? $booking['ceremony_number'] : 'Not Set' ?>
+                                </td>
                                 <td><?= $studentId ?></td>
                                 <td><?= $booking['session'] ?></td>
                                 <td><?= $avg ?></td>
@@ -138,7 +142,7 @@ if (isset($courseCode) && isset($showSession)) {
             // 'colvis'
         ],
         order: [
-            [3, 'dsc']
+            [4, 'dsc']
         ]
     })
 </script>

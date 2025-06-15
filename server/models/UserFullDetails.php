@@ -29,6 +29,12 @@ class UserFullDetails
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function updateCertificateNameByUserName($username, $name_on_certificate)
+    {
+        $stmt = $this->pdo->prepare("UPDATE user_full_details SET name_on_certificate = :name_on_certificate WHERE username = :username");
+        $stmt->execute(['name_on_certificate' => $name_on_certificate, 'username' => $username]);
+    }
+
     public function createUser($data)
     {
         $sql = "INSERT INTO user_full_details (student_id, username, civil_status, first_name, last_name, gender, address_line_1, address_line_2, city, district, postal_code, telephone_1, telephone_2, nic, e_mail, birth_day, updated_by, updated_at, full_name, name_with_initials, name_on_certificate) 

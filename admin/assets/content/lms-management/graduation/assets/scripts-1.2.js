@@ -841,15 +841,96 @@ function SetCeremonyNumber(
       .then((result) => {
         Swal.fire(
           "Success",
-          `Ceremony number set successfully.<br>Registration ID: <b>${result.registration_id}</b>`,
+          `Ceremony number set successfully.<br>Registration ID: <b>${result.reference_number}</b>`,
           "success"
         );
         // Optional UI refresh (swap in your own handler)
-        if (referenceId) OpenConvocationModel(referenceId);
+        if (referenceId) OpenCertificateModel(referenceId);
       })
       .catch((error) => {
         Swal.fire("Error", error.message, "error");
       })
       .finally(() => hideOverlay());
+  });
+}
+
+/**
+ * Persist a certificate field (name, ceremony number, etc.) for a student.
+ *
+ * @param {string|number} student_number  The student’s ID.
+ * @param {string|number} updatedValue    The value you want to save (e.g. ceremony number).
+ * @param {?string}       referenceId     Optional – opens the booking modal again when supplied.
+ */
+function saveCertificateField(
+  student_number,
+  updatedValue,
+  referenceId = null
+) {
+  // Basic front‑end guardrails
+  if (!updatedValue || updatedValue === "0") {
+    Swal.fire(
+      "Nothing to save",
+      "Please enter a value other than empty or zero before saving.",
+      "warning"
+    );
+    return;
+  }
+
+  const payload = {
+    student_number,
+    updated_value: updatedValue, //  name this to match the API contract
+    updated_by: LoggedUser, // assumes you already define LoggedUser globally
+  };
+
+  Swal.fire({
+    title: "Confirm save?",
+    html: `
+      <p>You’re about to assign
+      <b>${updatedValue}</b> to student
+      <b>${student_number}</b>.</p>
+      <p>This will be stored in the convocation‑registration table.</p>`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes, save it!",
+    cancelButtonText: "No, cancel",
+    reverseButtons: true,
+  }).then((result) => {
+    if (!result.isConfirmed) {
+      Swal.fire("Cancelled", "No changes were made.", "info");
+      return;
+    }
+
+    showOverlay();
+
+    fetch(
+      // 🔀 change this path if your route is different
+      `https://qa-api.pharmacollege.lk/userFullDetails/update-certificate-name/${student_number}`,
+      {
+        method: "PUT", // or PATCH if that’s what your API uses
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    )
+      .then(async (res) => {
+        if (!res.ok) {
+          const msg = await res.text();
+          throw new Error(`Server responded ${res.status}: ${msg}`);
+        }
+        return res.json();
+      })
+      .then((result) => {
+        Swal.fire(
+          "Success",
+          `Saved successfully.<br>Registration ID: <b>${result.reference_number}</b>`,
+          "success"
+        );
+
+        // Refresh the UI (your own handler)
+        if (referenceId) OpenCertificateModel(referenceId);
+      })
+      .catch((err) => {
+        Swal.fire("Error", err.message, "error");
+      })
+      .finally(hideOverlay);
   });
 }
