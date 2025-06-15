@@ -28,19 +28,20 @@ class UserCertificatePrintStatusNew
 
     public function createStatus($data)
     {
-        // Automatically generate certificate_id based on type
+        // Automatically generate certificate_id if not provided
         if (!isset($data['certificate_id'])) {
-            switch ($data['type']) {
-                case 'Transcript':
-                    $data['certificate_id'] = GenerateCertificateId('Transcript', 'CTR');
-                    break;
-                case 'Certificate':
-                    $data['certificate_id'] = GenerateCertificateId('Certificate', 'CREF');
-                    break;
-                default:
-                    $data['certificate_id'] = GenerateCertificateId('Workshop-Certificate', 'WC');
-                    break;
+            if ($data['type'] === 'Transcript') {
+                $data['certificate_id'] = $this->generateCertificateId('Transcript', 'CTR');
+            } elseif ($data['type'] === 'Certificate') {
+                $data['certificate_id'] = $this->generateCertificateId('Certificate', 'CREF');
+            } else {
+                $data['certificate_id'] = $this->generateCertificateId('Workshop-Certificate', 'WC');
             }
+        }
+
+
+        if (empty($data['print_date'])) {
+            $data['print_date'] = date('Y-m-d H:i:s'); // Or just 'Y-m-d' if only date is needed
         }
 
         $stmt = $this->pdo->prepare("INSERT INTO `user_certificate_print_status` (`student_number`, `certificate_id`, `print_date`, `print_status`, `print_by`, `type`, `course_code`) VALUES (?, ?, ?, ?, ?, ?, ?)");
@@ -54,6 +55,21 @@ class UserCertificatePrintStatusNew
             $data['course_code']
         ]);
     }
+
+    // Generates a certificate ID with prefix and incrementing number
+    private function generateCertificateId($type, $prefix)
+    {
+        $stmt = $this->pdo->prepare("SELECT COUNT(id) AS total FROM user_certificate_print_status WHERE `type` = ?");
+        $stmt->execute([$type]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $count = isset($row['total']) ? (int)$row['total'] + 1 : 1;
+
+        // Example: CREF001, CTR023, WC015
+        return $prefix . str_pad($count, 3, '0', STR_PAD_LEFT);
+    }
+
+
     public function updateStatus($id, $data)
     {
         $stmt = $this->pdo->prepare("UPDATE `user_certificate_print_status` SET `student_number` = ?, `certificate_id` = ?, `print_date` = ?, `print_status` = ?, `print_by` = ?, `type` = ?, `course_code` = ? WHERE `id` = ?");
