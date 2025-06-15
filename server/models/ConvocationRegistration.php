@@ -236,7 +236,7 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     }
 
 
-    public function updateCertificatePrintStatus($reference_number, $certificate_print_status, $certificate_id)
+    public function updateCertificatePrintStatus($certificate_print_status, $certificate_id, $reference_number)
     {
         $stmt = $this->pdo->prepare("
         UPDATE convocation_registrations 
@@ -247,7 +247,7 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     }
 
     // Update advanced certificate print status
-    public function updateAdvancedCertificatePrintStatus($reference_number, $advanced_print_status, $advancedcertificate_id)
+    public function updateAdvancedCertificatePrintStatus($advanced_print_status, $advancedcertificate_id, $reference_number)
     {
         $stmt = $this->pdo->prepare("
         UPDATE convocation_registrations 

@@ -55,10 +55,10 @@ class UserCertificatePrintStatusControllerNew
 
         if ($parentCourseCode == "1") {
             // Update the convocation registration with the new certificate_id
-            $this->convocationRegistrationModel->updateCertificatePrintStatus($reference_number, $certificateId, "Generated");
+            $this->convocationRegistrationModel->updateCertificatePrintStatus("Generated", $reference_number, $certificateId,);
         } else if ($parentCourseCode == "2") {
             // Update the convocation registration with the new certificate_id
-            $this->convocationRegistrationModel->updateAdvancedCertificatePrintStatus($reference_number, $certificateId, "Generated");
+            $this->convocationRegistrationModel->updateAdvancedCertificatePrintStatus("Generated", $reference_number, $certificateId,);
         }
 
         http_response_code(201);
