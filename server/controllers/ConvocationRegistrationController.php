@@ -559,7 +559,7 @@ class ConvocationRegistrationController
 
         $certificate_print_status = $data['certificate_print_status'];
         $certificate_id = $data['certificate_id'];
-        $updated = $this->model->updateCertificatePrintStatus($reference_number, $certificate_id, $certificate_print_status);
+        $updated = $this->model->updateCertificatePrintStatus($$certificate_print_status, $reference_number, $certificate_id,);
         if ($updated) {
             http_response_code(201);
             echo json_encode([
@@ -586,7 +586,7 @@ class ConvocationRegistrationController
         $advanced_print_status = $data['advanced_print_status'];
         $advanced_certifiate_id = $data['advanced_certifiate_id'];
 
-        $updated = $this->model->updateAdvancedCertificatePrintStatus($reference_number, $advanced_certifiate_id, $advanced_print_status);
+        $updated = $this->model->updateAdvancedCertificatePrintStatus($advanced_print_status, $reference_number, $advanced_certifiate_id);
         if ($updated) {
             http_response_code(201);
             echo json_encode([
