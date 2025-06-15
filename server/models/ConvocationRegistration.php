@@ -224,4 +224,14 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
         $stmt->execute([$session]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function updateCeremonyNumber($reference_number, $ceremony_number)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET ceremony_number = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$ceremony_number, $reference_number]);
+    }
 }

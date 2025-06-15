@@ -103,4 +103,11 @@ return [
     'GET /convocation-registrations-certificate\?viewSession=([A-Za-z0-9]+)/$' => function ($viewSession) use ($convocationRegistrationController) {
         return $convocationRegistrationController->GetListbySession($viewSession);
     },
+
+    // PUT update ceremony number only
+    'PUT /convocation-registrations/ceremony-number/([A-Za-z0-9]+)/$' => function ($registration_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->updateCeremonyNumber($registration_id);
+    },
+
+
 ];

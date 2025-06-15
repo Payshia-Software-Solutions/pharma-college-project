@@ -726,7 +726,13 @@ function OpenCertificateModel(referenceId) {
   fetch_data();
 }
 
-function GenerateCertificate(student_number, type, course_code, print_status) {
+function GenerateCertificate(
+  student_number,
+  type,
+  course_code,
+  print_status,
+  referenceId
+) {
   const data = {
     student_number: student_number,
     type: type,
@@ -740,9 +746,9 @@ function GenerateCertificate(student_number, type, course_code, print_status) {
   Swal.fire({
     title: "Confirm save?",
     html: `
-      <p>You’re about to create a <b>${prettyType}</b> record for student
+      <p>You're about to create a <b>${prettyType}</b> record for student
       <b>${data.student_number}</b>.</p>
-      <p>This will trigger automatic certificate‑ID generation on the server.</p>`,
+      <p>This will trigger automatic certificate-ID generation on the server.</p>`,
     icon: "question",
     showCancelButton: true,
     confirmButtonText: "Yes, save it!",
@@ -777,6 +783,69 @@ function GenerateCertificate(student_number, type, course_code, print_status) {
           "success"
         );
         // Optional: refresh page or table
+        OpenCertificateModel(referenceId);
+      })
+      .catch((error) => {
+        Swal.fire("Error", error.message, "error");
+      })
+      .finally(() => hideOverlay());
+  });
+}
+
+function SetCeremonyNumber(
+  student_number,
+  ceremony_number,
+  referenceId = null
+) {
+  const data = {
+    student_number,
+    ceremony_number,
+    updated_by: LoggedUser, // must exist globally just like in GenerateCertificate
+  };
+
+  Swal.fire({
+    title: "Confirm save?",
+    html: `
+      <p>You're about to assign ceremony number
+      <b>${ceremony_number}</b> to student
+      <b>${student_number}</b>.</p>
+      <p>This will be stored in the convocation‑registration table.</p>`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes, save it!",
+    cancelButtonText: "No, cancel",
+    reverseButtons: true,
+  }).then((result) => {
+    if (!result.isConfirmed) {
+      Swal.fire("Cancelled", "No changes were made.", "info");
+      return;
+    }
+
+    showOverlay(); // same helper you already have
+
+    fetch(
+      `https://qa-api.pharmacollege.lk/convocation-registrations/ceremony-number/${referenceId}`,
+      {
+        method: "PUT", // change to PUT/PATCH if your backend requires
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }
+    )
+      .then(async (response) => {
+        if (!response.ok) {
+          const msg = await response.text();
+          throw new Error(`Server responded ${response.status}: ${msg}`);
+        }
+        return response.json();
+      })
+      .then((result) => {
+        Swal.fire(
+          "Success",
+          `Ceremony number set successfully.<br>Registration ID: <b>${result.registration_id}</b>`,
+          "success"
+        );
+        // Optional UI refresh (swap in your own handler)
+        if (referenceId) OpenConvocationModel(referenceId);
       })
       .catch((error) => {
         Swal.fire("Error", error.message, "error");

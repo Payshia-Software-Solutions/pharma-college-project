@@ -521,4 +521,29 @@ class ConvocationRegistrationController
             echo json_encode(['error' => 'No registrations found for the specified session']);
         }
     }
+
+    public function UpdateCeremonyNumber($reference_number)
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($data['ceremony_number']) || empty($data['ceremony_number'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required payment fields']);
+            return;
+        }
+
+        $ceremony_number = $data['ceremony_number'];
+        $updated = $this->model->updateCeremonyNumber($reference_number, $ceremony_number);
+        if ($updated) {
+            http_response_code(201);
+            echo json_encode([
+                'status' => 'Success',
+                'message' => 'Ceremony number updated to ' . $ceremony_number,
+                'reference_number' => $reference_number,
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to update convocation registration']);
+        }
+    }
 }
