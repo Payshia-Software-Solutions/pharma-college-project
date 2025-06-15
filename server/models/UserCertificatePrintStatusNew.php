@@ -26,10 +26,11 @@ class UserCertificatePrintStatusNew
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // models/CertificationCenter/UserCertificatePrintStatus.php
     public function createStatus($data)
     {
-        // Automatically generate certificate_id if not provided
-        if (!isset($data['certificate_id'])) {
+        // ── Auto‑generate certificate_id if missing ────────────────────────────────
+        if (empty($data['certificate_id'])) {
             if ($data['type'] === 'Transcript') {
                 $data['certificate_id'] = $this->generateCertificateId('Transcript', 'CTR');
             } elseif ($data['type'] === 'Certificate') {
@@ -39,12 +40,18 @@ class UserCertificatePrintStatusNew
             }
         }
 
-
+        // ── Default print_date to now if absent ────────────────────────────────────
         if (empty($data['print_date'])) {
-            $data['print_date'] = date('Y-m-d H:i:s'); // Or just 'Y-m-d' if only date is needed
+            $data['print_date'] = date('Y-m-d H:i:s');
         }
 
-        $stmt = $this->pdo->prepare("INSERT INTO `user_certificate_print_status` (`student_number`, `certificate_id`, `print_date`, `print_status`, `print_by`, `type`, `course_code`) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        // ── Insert ────────────────────────────────────────────────────────────────
+        $stmt = $this->pdo->prepare("
+        INSERT INTO `user_certificate_print_status`
+            (`student_number`, `certificate_id`, `print_date`,
+             `print_status`, `print_by`, `type`, `course_code`)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+    ");
         $stmt->execute([
             $data['student_number'],
             $data['certificate_id'],
@@ -54,7 +61,11 @@ class UserCertificatePrintStatusNew
             $data['type'],
             $data['course_code']
         ]);
+
+        // Return the generated value so the controller can send it back
+        return $data['certificate_id'];
     }
+
 
     // Generates a certificate ID with prefix and incrementing number
     private function generateCertificateId($type, $prefix)
