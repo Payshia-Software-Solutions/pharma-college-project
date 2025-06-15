@@ -234,4 +234,28 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     ");
         return $stmt->execute([$ceremony_number, $reference_number]);
     }
+
+
+    public function updateCertificatePrintStatus($reference_number, $certificate_print_status)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET certificate_print_status = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$certificate_print_status, $reference_number]);
+    }
+
+    // Update advanced certificate print status
+    public function updateAdvancedCertificatePrintStatus($reference_number, $advanced_print_status)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET advanced_print_status = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$advanced_print_status, $reference_number]);
+    }
 }
+// End of ConvocationRegistration class
+// Note: This class assumes that the PDO connection is passed to it when instantiated.

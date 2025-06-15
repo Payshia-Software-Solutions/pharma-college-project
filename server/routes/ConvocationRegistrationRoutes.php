@@ -21,8 +21,6 @@ return [
         return $convocationRegistrationController->getAdditionalSeatsCountsBySessions($sessionId);
     },
 
-
-
     // GET a single registration by ID
     'GET /convocation-registrations/(\d+)/$' => function ($registration_id) use ($convocationRegistrationController) {
         return $convocationRegistrationController->getRegistration($registration_id);
@@ -42,7 +40,6 @@ return [
         }
         return $convocationRegistrationController->checkHashDupplicate($hashValue);
     },
-
 
     // GET a single registration by reference number (same as ID)
     'GET /convocation-registrations\?referenceNumber=[\d]+/$' => function () use ($convocationRegistrationController) {
@@ -94,11 +91,9 @@ return [
         return $convocationRegistrationController->GetListbyCourseAndSession($courseCode, $viewSession);
     },
 
-
     'GET /convocation-registrations-certificate\?courseCode=([A-Za-z0-9]+)/$' => function ($courseCode) use ($convocationRegistrationController) {
         return $convocationRegistrationController->GetListbyCourse($courseCode);
     },
-
 
     'GET /convocation-registrations-certificate\?viewSession=([A-Za-z0-9]+)/$' => function ($viewSession) use ($convocationRegistrationController) {
         return $convocationRegistrationController->GetListbySession($viewSession);
@@ -109,5 +104,11 @@ return [
         return $convocationRegistrationController->updateCeremonyNumber($registration_id);
     },
 
+    'PUT /convocation-registrations/certificate-print-status/([A-Za-z0-9]+)/$' => function ($registration_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->updateCertificatePrintStatus($registration_id);
+    },
 
+    'PUT /convocation-registrations/advanced-certificate-print-status/([A-Za-z0-9]+)/$' => function ($registration_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->updateAdvancedCertificatePrintStatus($registration_id);
+    },
 ];
