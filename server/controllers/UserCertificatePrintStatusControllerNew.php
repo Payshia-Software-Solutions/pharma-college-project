@@ -3,18 +3,18 @@
 // controllers/CertificationCenter/UserCertificatePrintStatusController.php
 
 require_once 'models/UserCertificatePrintStatusNew.php';
-require_once './controllers/ConvocationRegistrationController.php';
+require_once './models/ConvocationRegistration.php';
+require_once './models/SMSModel.php';
 
 class UserCertificatePrintStatusControllerNew
 {
     private $model;
-    private $convocationRegistrationController;
-    private $convocationTemplatePath;
+    private $convocationRegistrationModel;
 
-    public function __construct($pdo, $convocationTemplatePath)
+    public function __construct($pdo)
     {
         $this->model = new UserCertificatePrintStatusNew($pdo);
-        $this->convocationRegistrationController = new ConvocationRegistrationController($pdo, $convocationTemplatePath);
+        $this->convocationRegistrationModel = new ConvocationRegistration($pdo);
     }
 
     public function getAllStatuses()
@@ -54,10 +54,10 @@ class UserCertificatePrintStatusControllerNew
         $certificateId = $this->model->createStatus($data);
         if ($parentCourseCode == "1") {
             // Update the convocation registration with the new certificate_id
-            $this->convocationRegistrationController->model->updateCertificatePrintStatus($reference_number, "Generated");
+            $this->convocationRegistrationModel->updateCertificatePrintStatus($reference_number, "Generated");
         } else if ($parentCourseCode == "2") {
             // Update the convocation registration with the new certificate_id
-            $this->convocationRegistrationController->model->updateAdvancedCertificatePrintStatus($reference_number, "Generated");
+            $this->convocationRegistrationModel->updateAdvancedCertificatePrintStatus($reference_number, "Generated");
         }
 
         http_response_code(201);
