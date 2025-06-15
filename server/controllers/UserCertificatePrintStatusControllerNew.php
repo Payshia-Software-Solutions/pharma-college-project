@@ -3,14 +3,18 @@
 // controllers/CertificationCenter/UserCertificatePrintStatusController.php
 
 require_once 'models/UserCertificatePrintStatusNew.php';
+require_once './controllers/ConvocationRegistrationController.php';
 
 class UserCertificatePrintStatusControllerNew
 {
     private $model;
+    private $convocationRegistrationController;
+    private $convocationTemplatePath;
 
-    public function __construct($pdo)
+    public function __construct($pdo, $convocationTemplatePath)
     {
         $this->model = new UserCertificatePrintStatusNew($pdo);
+        $this->convocationRegistrationController = new ConvocationRegistrationController($pdo, $convocationTemplatePath);
     }
 
     public function getAllStatuses()
@@ -43,9 +47,18 @@ class UserCertificatePrintStatusControllerNew
     public function createStatus()
     {
         $data = json_decode(file_get_contents("php://input"), true);
+        $parentCourseCode = $data['parentCourseCode'] ?? null;
+        $reference_number = $data['referenceId'] ?? null;
 
         // The model now gives us the generated certificate_id
         $certificateId = $this->model->createStatus($data);
+        if ($parentCourseCode == "1") {
+            // Update the convocation registration with the new certificate_id
+            $this->convocationRegistrationController->model->updateCertificatePrintStatus($reference_number, "Generated");
+        } else if ($parentCourseCode == "2") {
+            // Update the convocation registration with the new certificate_id
+            $this->convocationRegistrationController->model->updateAdvancedCertificatePrintStatus($reference_number, "Generated");
+        }
 
         http_response_code(201);
         echo json_encode([

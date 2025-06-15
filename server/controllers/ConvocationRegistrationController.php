@@ -8,7 +8,7 @@ require_once './models/SMSModel.php';
 
 class ConvocationRegistrationController
 {
-    private $model;
+    public $model;
     private $ftpConfig;
     private $transactionPaymentController;
     private $userFullDetailsController;
@@ -539,6 +539,56 @@ class ConvocationRegistrationController
             echo json_encode([
                 'status' => 'Success',
                 'message' => 'Ceremony number updated to ' . $ceremony_number,
+                'reference_number' => $reference_number,
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to update convocation registration']);
+        }
+    }
+
+    public function updateCertificatePrintStatus($reference_number)
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($data['certificate_print_status']) || empty($data['certificate_print_status'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required certificate print status field']);
+            return;
+        }
+
+        $certificate_print_status = $data['certificate_print_status'];
+        $updated = $this->model->updateCertificatePrintStatus($reference_number, $certificate_print_status);
+        if ($updated) {
+            http_response_code(201);
+            echo json_encode([
+                'status' => 'Success',
+                'message' => 'Certificate print status updated to ' . $certificate_print_status,
+                'reference_number' => $reference_number,
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to update convocation registration']);
+        }
+    }
+
+    public function updateAdvancedCertificatePrintStatus($reference_number)
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($data['advanced_print_status']) || empty($data['advanced_print_status'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required advanced print status field']);
+            return;
+        }
+
+        $advanced_print_status = $data['advanced_print_status'];
+        $updated = $this->model->updateAdvancedCertificatePrintStatus($reference_number, $advanced_print_status);
+        if ($updated) {
+            http_response_code(201);
+            echo json_encode([
+                'status' => 'Success',
+                'message' => 'Advanced certificate print status updated to ' . $advanced_print_status,
                 'reference_number' => $reference_number,
             ]);
         } else {

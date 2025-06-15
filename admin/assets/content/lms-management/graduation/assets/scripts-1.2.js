@@ -731,7 +731,8 @@ function GenerateCertificate(
   type,
   course_code,
   print_status,
-  referenceId
+  referenceId,
+  parentCourseCode
 ) {
   const data = {
     student_number: student_number,
@@ -739,6 +740,8 @@ function GenerateCertificate(
     course_code: course_code,
     print_status: print_status,
     print_by: LoggedUser, // This must be defined in global scope
+    parentCourseCode: parentCourseCode || null, // Optional, can be null
+    referenceId: referenceId || null, // Optional, can be null
   };
 
   const prettyType = type ?? "Certificate";
@@ -878,7 +881,7 @@ function saveCertificateField(
 
   const payload = {
     student_number,
-    updated_value: updatedValue, //  name this to match the API contract
+    name_on_certificate: updatedValue, //  name this to match the API contract
     updated_by: LoggedUser, // assumes you already define LoggedUser globally
   };
 
@@ -888,7 +891,7 @@ function saveCertificateField(
       <p>You’re about to assign
       <b>${updatedValue}</b> to student
       <b>${student_number}</b>.</p>
-      <p>This will be stored in the convocation‑registration table.</p>`,
+      <p>This will be stored in the User Details.</p>`,
     icon: "question",
     showCancelButton: true,
     confirmButtonText: "Yes, save it!",
@@ -919,11 +922,7 @@ function saveCertificateField(
         return res.json();
       })
       .then((result) => {
-        Swal.fire(
-          "Success",
-          `Saved successfully.<br>Registration ID: <b>${result.reference_number}</b>`,
-          "success"
-        );
+        Swal.fire("Success", `Saved successfully.</b>`, "success");
 
         // Refresh the UI (your own handler)
         if (referenceId) OpenCertificateModel(referenceId);
