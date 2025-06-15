@@ -26,6 +26,13 @@ class UserCertificatePrintStatusNew
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getStatusByCertificateId($certificate_id)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM `user_certificate_print_status` WHERE `certificate_id` = ?");
+        $stmt->execute([$certificate_id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     // models/CertificationCenter/UserCertificatePrintStatus.php
     public function createStatus($data)
     {
