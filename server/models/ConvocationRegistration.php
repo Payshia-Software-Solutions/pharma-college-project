@@ -236,25 +236,26 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     }
 
 
-    public function updateCertificatePrintStatus($reference_number, $certificate_print_status)
+    public function updateCertificatePrintStatus($reference_number, $certificate_print_status, $certificate_id)
     {
         $stmt = $this->pdo->prepare("
         UPDATE convocation_registrations 
-        SET certificate_print_status = ?
+        SET certificate_print_status = ?, certificate_id = ?
         WHERE reference_number = ?
     ");
-        return $stmt->execute([$certificate_print_status, $reference_number]);
+        return $stmt->execute([$certificate_print_status, $certificate_id, $reference_number]);
     }
 
     // Update advanced certificate print status
-    public function updateAdvancedCertificatePrintStatus($reference_number, $advanced_print_status)
+    public function updateAdvancedCertificatePrintStatus($reference_number, $advanced_print_status, $advancedcertificate_id)
     {
         $stmt = $this->pdo->prepare("
         UPDATE convocation_registrations 
-        SET advanced_print_status = ?
+        SET advanced_print_status = ?, 
+            advanced_id = ?
         WHERE reference_number = ?
     ");
-        return $stmt->execute([$advanced_print_status, $reference_number]);
+        return $stmt->execute([$advanced_print_status, $advancedcertificate_id, $reference_number]);
     }
 }
 // End of ConvocationRegistration class

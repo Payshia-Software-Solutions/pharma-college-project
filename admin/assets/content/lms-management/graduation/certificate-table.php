@@ -56,10 +56,10 @@ if (isset($courseCode) && isset($showSession)) {
                             <th scope="col">Reference #</th>
                             <th scope="col">Ceremony Number</th>
                             <th scope="col">Student Number</th>
-                            <th scope="col">Session</th>
                             <th scope="col">Grade</th>
                             <th scope="col">Paid</th>
                             <th scope="col">Certificate</th>
+                            <th scope="col">Advanced</th>
                             <th scope="col">Registration Status</th>
                             <th scope="col">Action</th>
                         </tr>
@@ -104,28 +104,28 @@ if (isset($courseCode) && isset($showSession)) {
 
                     <tbody>
                         <?php foreach ($packageBookings as $booking): ?>
-                            <?php
+                        <?php
                             $studentId = $booking['student_number'];
                             $avg       = $gradesMap[$studentId] ?? 'N/A';
                             ?>
-                            <tr>
-                                <td><?= $booking['registration_id'] ?></td>
-                                <td>
-                                    <?= (!empty($booking['ceremony_number']) && $booking['ceremony_number'] != 0) ? $booking['ceremony_number'] : 'Not Set' ?>
-                                </td>
-                                <td><?= $studentId ?></td>
-                                <td><?= $booking['session'] ?></td>
-                                <td><?= $avg ?></td>
-                                <td><?= $booking['payment_amount'] ?></td>
-                                <td><?= $booking['certificicate_print_status'] ?></td>
-                                <td><?= $booking['registration_status'] ?></td>
-                                <td>
-                                    <button class="btn btn-dark btn-sm" type="button"
-                                        onclick="OpenCertificateModel('<?= $booking['registration_id'] ?>')">
-                                        View
-                                    </button>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td><?= $booking['registration_id'] ?></td>
+                            <td>
+                                <?= (!empty($booking['ceremony_number']) && $booking['ceremony_number'] != 0) ? $booking['ceremony_number'] : 'Not Set' ?>
+                            </td>
+                            <td><?= $studentId ?></td>
+                            <td><?= $avg ?></td>
+                            <td><?= $booking['payment_amount'] ?></td>
+                            <td><?= $booking['certificate_print_status'] ?></td>
+                            <td><?= $booking['advanced_print_status'] ?></td>
+                            <td><?= $booking['registration_status'] ?></td>
+                            <td>
+                                <button class="btn btn-dark btn-sm" type="button"
+                                    onclick="OpenCertificateModel('<?= $booking['registration_id'] ?>')">
+                                    View
+                                </button>
+                            </td>
+                        </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -134,15 +134,15 @@ if (isset($courseCode) && isset($showSession)) {
 </div>
 
 <script>
-    $('#certificate-table').dataTable({
-        dom: 'Bfrtip',
-        pageLength: 50,
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print',
-            // 'colvis'
-        ],
-        order: [
-            [4, 'dsc']
-        ]
-    })
+$('#certificate-table').dataTable({
+    dom: 'Bfrtip',
+    pageLength: 50,
+    buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print',
+        // 'colvis'
+    ],
+    order: [
+        [3, 'dsc']
+    ]
+})
 </script>
