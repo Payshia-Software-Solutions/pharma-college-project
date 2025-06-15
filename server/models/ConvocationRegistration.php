@@ -251,8 +251,7 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     {
         $stmt = $this->pdo->prepare("
         UPDATE convocation_registrations 
-        SET advanced_print_status = ?, 
-            advanced_id = ?
+        SET advanced_print_status = ?, advanced_id = ?
         WHERE reference_number = ?
     ");
         return $stmt->execute([$advanced_print_status, $advancedcertificate_id, $reference_number]);
