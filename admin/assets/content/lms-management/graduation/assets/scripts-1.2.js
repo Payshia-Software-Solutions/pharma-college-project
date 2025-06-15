@@ -725,3 +725,62 @@ function OpenCertificateModel(referenceId) {
   }
   fetch_data();
 }
+
+function GenerateCertificate(student_number, type, course_code, print_status) {
+  const data = {
+    student_number: student_number,
+    type: type,
+    course_code: course_code,
+    print_status: print_status,
+    print_by: LoggedUser, // This must be defined in global scope
+  };
+
+  const prettyType = type ?? "Certificate";
+
+  Swal.fire({
+    title: "Confirm save?",
+    html: `
+      <p>You’re about to create a <b>${prettyType}</b> record for student
+      <b>${data.student_number}</b>.</p>
+      <p>This will trigger automatic certificate‑ID generation on the server.</p>`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes, save it!",
+    cancelButtonText: "No, cancel",
+    reverseButtons: true,
+  }).then((result) => {
+    if (!result.isConfirmed) {
+      Swal.fire("Cancelled", "No changes were made.", "info");
+      return;
+    }
+
+    showOverlay();
+
+    fetch("https://qa-api.pharmacollege.lk/certificate-print-status", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const msg = await response.text();
+          throw new Error(`Server responded ${response.status}: ${msg}`);
+        }
+        return response.json();
+      })
+      .then((result) => {
+        Swal.fire(
+          "Success",
+          `Certificate generated successfully.<br>ID: <b>${result.certificate_id}</b>`,
+          "success"
+        );
+        // Optional: refresh page or table
+      })
+      .catch((error) => {
+        Swal.fire("Error", error.message, "error");
+      })
+      .finally(() => hideOverlay());
+  });
+}
