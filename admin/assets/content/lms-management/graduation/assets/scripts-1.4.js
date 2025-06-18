@@ -935,3 +935,31 @@ function saveCertificateField(
       .finally(hideOverlay);
   });
 }
+
+function SendCeremonyNumber(referenceId) {
+  showOverlay();
+
+  fetch(
+    `https://qa-api.pharmacollege.lk/convocation-registrations/notify-ceremony?referenceNumber=${referenceId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(),
+    }
+  )
+    .then((response) => {
+      if (response.ok) {
+        OpenAlert("success", "Done!", "Ceremony Number Sent successfully!");
+      } else {
+        throw new Error(
+          `Failed to update ceremony number. Status: ${response.status}`
+        );
+      }
+    })
+    .catch((error) => {
+      OpenAlert("error", "Error updating Ceremony Number", error.message);
+    })
+    .finally(() => hideOverlay());
+}
