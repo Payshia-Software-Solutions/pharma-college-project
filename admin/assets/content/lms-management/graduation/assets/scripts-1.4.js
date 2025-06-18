@@ -787,6 +787,7 @@ function GenerateCertificate(
         );
         // Optional: refresh page or table
         OpenCertificateModel(referenceId);
+        triggerOpenTable();
       })
       .catch((error) => {
         Swal.fire("Error", error.message, "error");
@@ -848,7 +849,8 @@ function SetCeremonyNumber(
           "success"
         );
         // Optional UI refresh (swap in your own handler)
-        if (referenceId) OpenCertificateModel(referenceId);
+        // if (referenceId) OpenCertificateModel(referenceId);
+        // triggerOpenTable();
       })
       .catch((error) => {
         Swal.fire("Error", error.message, "error");
