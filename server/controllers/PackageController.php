@@ -5,7 +5,7 @@ require_once './models/Package.php';
 
 class PackageController
 {
-    private $model;
+    public $model;
     private $ftpConfig;
 
     public function __construct($pdo)
