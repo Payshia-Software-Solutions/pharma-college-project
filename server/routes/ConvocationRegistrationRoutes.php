@@ -62,7 +62,7 @@ return [
             return;
         }
 
-        return json_encode($convocationRegistrationController->notifyCeremonyNumber($reference_number));
+        echo json_encode($convocationRegistrationController->notifyCeremonyNumber($reference_number));
     },
 
 
