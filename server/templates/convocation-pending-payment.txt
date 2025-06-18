@@ -1,0 +1,6 @@
+Dear {{FIRST_NAME}},  
+Your Ceremony No. is not processed  
+due to unpaid amount: Rs. {{DUE_AMOUNT}}.  
+
+Please complete payment.  
+– Ceylon Pharma College

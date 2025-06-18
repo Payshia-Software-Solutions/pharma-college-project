@@ -1,0 +1,6 @@
+Dear {{FIRST_NAME}},  
+Ceremony No: {{CEREMONY_NUMBER}}  
+Ref No: {{REFERENCE_NUMBER}}  
+
+– Ceylon Pharma College  
+www.pharmacollege.lk

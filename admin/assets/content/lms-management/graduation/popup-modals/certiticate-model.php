@@ -154,47 +154,47 @@ function formatNameForCertificate($fullName, $maxLength = 30)
                             }
                         }
                     ?>
-                    <div class="col-md-6">
-                        <div class="row g-2">
-                            <div class="col-8">
-                                <div>Course Name</div>
-                                <strong><?= $enrollment['batch_name'] ?></strong>
-                            </div>
-                            <div class="col-4">
-                                <div>Certificate</div>
-                                <strong><?= ($enrollment['certificate_eligibility'] === true) ? 'Eligible' : 'Not eligible'; ?></strong>
-                            </div>
-                            <div class="col-12 text-end">
-                                <?php if ($certificateExists): ?>
-                                <div>Certificate ID: <strong><?= $certificateId ?></strong></div>
-                                <button class="btn btn-primary" type="button"
-                                    onclick="PrintCertificate('<?= $certificateId ?>')">
-                                    Print Certificate
-                                </button>
-                                <?php else: ?>
-                                <button
-                                    class="btn <?= ($enrollment['certificate_eligibility'] === true) ? 'btn-dark' : 'btn-danger'; ?>"
-                                    type="button"
-                                    onclick="GenerateCertificate('<?= $bookingInfo['student_number'] ?>','Certificate', '<?= $enrollment['course_code'] ?>','Printed', '<?= $referenceId ?>', '<?= $enrollment['parent_course_id'] ?>')">
-                                    Generate Certificate
-                                </button>
+                        <div class="col-md-6">
+                            <div class="row g-2">
+                                <div class="col-8">
+                                    <div>Course Name</div>
+                                    <strong><?= $enrollment['batch_name'] ?></strong>
+                                </div>
+                                <div class="col-4">
+                                    <div>Certificate</div>
+                                    <strong><?= ($enrollment['certificate_eligibility'] === true) ? 'Eligible' : 'Not eligible'; ?></strong>
+                                </div>
+                                <div class="col-12 text-end">
+                                    <?php if ($certificateExists): ?>
+                                        <div>Certificate ID: <strong><?= $certificateId ?></strong></div>
+                                        <button class="btn btn-primary" type="button"
+                                            onclick="PrintCertificate('<?= $certificateId ?>')">
+                                            Print Certificate
+                                        </button>
+                                    <?php else: ?>
+                                        <button
+                                            class="btn <?= ($enrollment['certificate_eligibility'] === true) ? 'btn-dark' : 'btn-danger'; ?>"
+                                            type="button"
+                                            onclick="GenerateCertificate('<?= $bookingInfo['student_number'] ?>','Certificate', '<?= $enrollment['course_code'] ?>','Printed', '<?= $referenceId ?>', '<?= $enrollment['parent_course_id'] ?>')">
+                                            Generate Certificate
+                                        </button>
 
-                                <?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
                             </div>
                         </div>
-                    </div>
                     <?php endforeach; ?>
                 </div>
             </div>
 
             <?php if (floatval($courseBalance) == 0 && floatval($convocationBalance) == 0): ?>
-            <div class="alert alert-success mt-2">
-                ✅ Payments completed. You can generate the certificate.
-            </div>
+                <div class="alert alert-success mt-2">
+                    ✅ Payments completed. You can generate the certificate.
+                </div>
             <?php else: ?>
-            <div class="alert alert-warning mt-2">
-                ⚠️ Payments are available to get
-            </div>
+                <div class="alert alert-warning mt-2">
+                    ⚠️ Payments are available to get
+                </div>
             <?php endif; ?>
 
             <div class="row">
@@ -210,7 +210,7 @@ function formatNameForCertificate($fullName, $maxLength = 30)
                     <input
                         onblur="SetCeremonyNumber('<?= $bookingInfo['student_number'] ?>', this.value, '<?= $bookingInfo['reference_number'] ?>' )"
                         type="text" name="ceromony_number" id="ceromony_number" class="form-control form-control-sm"
-                        value="" />
+                        value="<?= $bookingInfo['ceremony_number'] ?>" />
                 </div>
             </div>
         </div>

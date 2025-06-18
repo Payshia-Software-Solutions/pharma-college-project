@@ -104,28 +104,30 @@ if (isset($courseCode) && isset($showSession)) {
 
                     <tbody>
                         <?php foreach ($packageBookings as $booking): ?>
-                        <?php
+                            <?php
                             $studentId = $booking['student_number'];
                             $avg       = $gradesMap[$studentId] ?? 'N/A';
                             ?>
-                        <tr>
-                            <td><?= $booking['registration_id'] ?></td>
-                            <td>
-                                <?= (!empty($booking['ceremony_number']) && $booking['ceremony_number'] != 0) ? $booking['ceremony_number'] : 'Not Set' ?>
-                            </td>
-                            <td><?= $studentId ?></td>
-                            <td><?= $avg ?></td>
-                            <td><?= $booking['payment_amount'] ?></td>
-                            <td><?= $booking['certificate_print_status'] ?></td>
-                            <td><?= $booking['advanced_print_status'] ?></td>
-                            <td><?= $booking['registration_status'] ?></td>
-                            <td>
-                                <button class="btn btn-dark btn-sm" type="button"
-                                    onclick="OpenCertificateModel('<?= $booking['registration_id'] ?>')">
-                                    View
-                                </button>
-                            </td>
-                        </tr>
+                            <tr>
+                                <td><?= $booking['registration_id'] ?></td>
+                                <td>
+                                    <input type="text" name="ceremony_number" class="form-control form-control-sm"
+                                        onchange="SetCeremonyNumber('<?= $booking['student_number'] ?>', this.value, '<?= $booking['reference_number'] ?>' )"
+                                        value="<?= (!empty($booking['ceremony_number']) && $booking['ceremony_number'] != 0) ? htmlspecialchars($booking['ceremony_number']) : '' ?>" />
+                                </td>
+                                <td><?= $studentId ?></td>
+                                <td><?= $avg ?></td>
+                                <td><?= $booking['payment_amount'] ?></td>
+                                <td><?= $booking['certificate_print_status'] ?></td>
+                                <td><?= $booking['advanced_print_status'] ?></td>
+                                <td><?= $booking['registration_status'] ?></td>
+                                <td>
+                                    <button class="btn btn-dark btn-sm" type="button"
+                                        onclick="OpenCertificateModel('<?= $booking['registration_id'] ?>')">
+                                        View
+                                    </button>
+                                </td>
+                            </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
@@ -134,15 +136,15 @@ if (isset($courseCode) && isset($showSession)) {
 </div>
 
 <script>
-$('#certificate-table').dataTable({
-    dom: 'Bfrtip',
-    pageLength: 50,
-    buttons: [
-        'copy', 'csv', 'excel', 'pdf', 'print',
-        // 'colvis'
-    ],
-    order: [
-        [3, 'dsc']
-    ]
-})
+    $('#certificate-table').dataTable({
+        dom: 'Bfrtip',
+        pageLength: 50,
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf', 'print',
+            // 'colvis'
+        ],
+        order: [
+            [3, 'dsc']
+        ]
+    })
 </script>
