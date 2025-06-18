@@ -543,7 +543,7 @@ class ConvocationRegistrationController
      * @param string $reference_number
      * @return void  (prints/echoes JSON + sets http_response_code)
      */
-    public function notifyCeremonyNumber($reference_number): void
+    public function notifyCeremonyNumber($reference_number)
     {
         /* ----------------------------------------------------
      * 1. Validate & fetch registration
@@ -617,13 +617,13 @@ class ConvocationRegistrationController
      * 5. Success response
      * -------------------------------------------------- */
         http_response_code(200);
-        echo json_encode([
+        return [
             'status'            => 'success',
             'reference_number'  => $reference_number,
             'ceremony_number'   => $ceremonyNumber,
             'balances'          => $balances,
             'mobile'            => $mobile
-        ]);
+        ];
     }
 
 

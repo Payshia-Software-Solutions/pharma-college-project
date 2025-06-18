@@ -1,5 +1,5 @@
 Dear {{FIRST_NAME}},  
-Your Ceremony No. is not processed due to unpaid balances:  
+Your Ceremony Number is not processed due to unpaid balances:  
 Course: Rs. {{COURSE_BALANCE}}  
 Convocation: Rs. {{CONVOCATION_BALANCE}}  
 Total: Rs. {{TOTAL_DUE}}  

@@ -115,6 +115,7 @@ $allAssignments = $response->toArray();
                                 <tr>
                                     <th scope="col">Reference #</th>
                                     <th scope="col">Action</th>
+                                    <th scope="col">Ceremony number</th>
                                     <th scope="col">Student Number</th>
                                     <th scope="col">Session</th>
                                     <th scope="col">Courses</th>
@@ -189,9 +190,14 @@ $allAssignments = $response->toArray();
                                         <td><?= $booking['reference_number'] ?>
 
                                         </td>
-                                        <td><button type="button"
+                                        <td>
+                                            <button type="button"
                                                 onclick="OpenBooking('<?= $booking['reference_number'] ?>')"
-                                                class="btn btn-dark btn-sm">View</button></td>
+                                                class="btn btn-dark btn-sm mb-2">View</button>
+
+                                            <button type="button" onclick="SendCeremonyNumber('<?= $booking['reference_number'] ?>')" class="btn btn-dark btn-sm">Send</button>
+                                        </td>
+                                        <td><?= $booking['ceremony_number'] ?></td>
                                         <td><?= $booking['student_number'] ?></td>
                                         <td>
                                             <select name="session"
