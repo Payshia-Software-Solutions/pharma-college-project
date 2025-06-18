@@ -741,7 +741,7 @@ class ConvocationRegistrationController
             throw new RuntimeException('Package not found');
         }
 
-        $convocationBalance = $registration['payment_amount'] - ($package['price'] + ($registration['additional_seats'] * PARENT_SEAT_RATE));
+        $convocationBalance = ($package['price'] + ($registration['additional_seats'] * PARENT_SEAT_RATE)) - $registration['payment_amount'];
         $courseBalance      = $this->CcEvaluationController->model->GetStudentBalance($studentNumber)['studentBalance'] ?? 0;
 
         return [
