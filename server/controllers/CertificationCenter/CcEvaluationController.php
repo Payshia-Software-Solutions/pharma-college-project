@@ -5,7 +5,7 @@ require_once './models/CertificationCenter/CcEvaluation.php';
 
 class CcEvaluationController
 {
-    private $model;
+    public $model;
     public function __construct($pdo)
     {
         $this->model = new CcEvaluation($pdo);

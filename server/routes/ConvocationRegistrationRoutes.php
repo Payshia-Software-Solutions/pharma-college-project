@@ -52,6 +52,21 @@ return [
         return $convocationRegistrationController->getRegistrationByReference($reference_number);
     },
 
+    // Trigger SMS notification for ceremony number
+    // GET /convocation-registrations/notify-ceremony?referenceNumber=12345
+    'GET /convocation-registrations/notify-ceremony\?referenceNumber=[\d]+/$' => function () use ($convocationRegistrationController) {
+        $reference_number = $_GET['referenceNumber'] ?? null;
+        if (!$reference_number) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required parameter: referenceNumber']);
+            return;
+        }
+
+        return $convocationRegistrationController->notifyCeremonyNumber($reference_number);
+    },
+
+
+
     // POST create a new registration
     'POST /convocation-registrations/$' => function () use ($convocationRegistrationController) {
         return $convocationRegistrationController->createRegistration();

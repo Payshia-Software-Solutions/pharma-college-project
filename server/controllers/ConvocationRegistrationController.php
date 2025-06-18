@@ -1,9 +1,13 @@
 <?php
 // controllers/ConvocationRegistrationController.php
 
+define('PARENT_SEAT_RATE', 500);
+
 require_once './models/ConvocationRegistration.php';
 require_once './controllers/TransactionPaymentController.php';
 require_once './controllers/UserFullDetailsController.php';
+require_once './controllers/CertificationCenter/CcEvaluationController.php';
+require_once './controllers/PackageController.php';
 require_once './models/SMSModel.php';
 
 class ConvocationRegistrationController
@@ -12,8 +16,10 @@ class ConvocationRegistrationController
     private $ftpConfig;
     private $transactionPaymentController;
     private $userFullDetailsController;
+    private $packageController;
     private $smsModel;
     private $convocationTemplatePath;
+    private $CcEvaluationController;
 
     public function __construct($pdo, $convocationTemplatePath)
     {
@@ -22,6 +28,8 @@ class ConvocationRegistrationController
         $this->ftpConfig = include('./config/ftp.php');
         $this->transactionPaymentController = new TransactionPaymentController($pdo);
         $this->userFullDetailsController = new UserFullDetailsController($pdo);
+        $this->packageController = new PackageController($pdo);
+        $this->CcEvaluationController = new CcEvaluationController($pdo);
         $this->smsModel = new SMSModel($_ENV['SMS_AUTH_TOKEN'], $_ENV['SMS_SENDER_ID'], $convocationTemplatePath);
     }
 
@@ -522,30 +530,146 @@ class ConvocationRegistrationController
         }
     }
 
-    public function UpdateCeremonyNumber($reference_number)
-    {
-        $data = json_decode(file_get_contents('php://input'), true);
 
-        if (!isset($data['ceremony_number']) || empty($data['ceremony_number'])) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Missing required payment fields']);
+
+    /**
+     * Send the appropriate ceremony‑related SMS and return a JSON status block.
+     *
+     * Contract:
+     *   - Success  → HTTP 200 + { status: "success", ...extraInfo }
+     *   - Business error (e.g. missing data) → HTTP 400 + { status: "error", message: "..." }
+     *   - System/runtime error              → HTTP 500 + { status: "error", message: "..." }
+     *
+     * @param string $reference_number
+     * @return void  (prints/echoes JSON + sets http_response_code)
+     */
+    public function notifyCeremonyNumber($reference_number): void
+    {
+        /* ----------------------------------------------------
+     * 1. Validate & fetch registration
+     * -------------------------------------------------- */
+        $registration = $this->model->getRegistrationByReference($reference_number);
+        if (!$registration) {
+            http_response_code(404);   // Not Found
+            echo json_encode(['status' => 'error', 'message' => 'Registration not found', 'reference_number' => $reference_number]);
             return;
         }
 
+        $studentNumber  = $registration['student_number'];
+        $ceremonyNumber = $registration['ceremony_number'] ?? 'Not Assigned';
+
+        /* ----------------------------------------------------
+     * 2. Calculate balances (helper throws on failure)
+     * -------------------------------------------------- */
+        try {
+            $balances = $this->calculateStudentDueAmount($reference_number);
+        } catch (RuntimeException $e) {
+            http_response_code(400);   // Bad Request (missing package, etc.)
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            return;
+        }
+
+        /* ----------------------------------------------------
+     * 3. Fetch contact info
+     * -------------------------------------------------- */
+        $studentInfo = $this->userFullDetailsController->model->getUserByUserName($studentNumber);
+        $mobile      = $studentInfo['telephone_1']        ?? null;
+        $studentName = $studentInfo['name_on_certificate'] ?? 'Student';
+
+        if (!$mobile) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Mobile number not found for student']);
+            return;
+        }
+
+        /* For test‑only: override real mobile with a fixed number */
+        $mobile = "0770481363";
+
+        /* ----------------------------------------------------
+     * 4. Send SMS (handle SMS gateway result)
+     * -------------------------------------------------- */
+        try {
+            if ($balances['convocation_balance'] > 0 || $balances['course_balance'] > 0) {
+                $smsOk = $this->smsModel->sendCeremonyDueBreakdownSMS(
+                    $mobile,
+                    $studentName,
+                    $balances['course_balance'],
+                    $balances['convocation_balance']
+                );
+            } else {
+                $smsOk = $this->smsModel->sendCeremonyNumberSMS(
+                    $mobile,
+                    $studentName,
+                    $ceremonyNumber
+                );
+            }
+
+            if (!$smsOk) {
+                throw new RuntimeException('SMS gateway returned failure');
+            }
+        } catch (Exception $e) {
+            http_response_code(502);   // Bad Gateway – downstream service failed
+            echo json_encode(['status' => 'error', 'message' => 'SMS send failed: ' . $e->getMessage()]);
+            return;
+        }
+
+        /* ----------------------------------------------------
+     * 5. Success response
+     * -------------------------------------------------- */
+        http_response_code(200);
+        echo json_encode([
+            'status'            => 'success',
+            'reference_number'  => $reference_number,
+            'ceremony_number'   => $ceremonyNumber,
+            'balances'          => $balances,
+            'mobile'            => $mobile
+        ]);
+    }
+
+
+
+
+
+    public function UpdateCeremonyNumber(string $reference_number): void
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($data['ceremony_number']) || trim($data['ceremony_number']) === '') {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing ceremony_number']);
+            return;
+        }
         $ceremony_number = $data['ceremony_number'];
-        $updated = $this->model->updateCeremonyNumber($reference_number, $ceremony_number);
-        if ($updated) {
-            http_response_code(201);
-            echo json_encode([
-                'status' => 'Success',
-                'message' => 'Ceremony number updated to ' . $ceremony_number,
-                'reference_number' => $reference_number,
-            ]);
-        } else {
+
+        // Make sure the registration exists
+        $registration = $this->model->getRegistrationByReference($reference_number);
+        if (!$registration) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Registration not found']);
+            return;
+        }
+
+        // Persist the new ceremony number
+        if (!$this->model->updateCeremonyNumber($reference_number, $ceremony_number)) {
             http_response_code(500);
             echo json_encode(['error' => 'Failed to update convocation registration']);
+            return;
         }
+
+        // 🔔 Trigger SMS logic (balances looked‑up inside)
+        $this->notifyCeremonyNumber($reference_number);
+
+        http_response_code(200);
+        echo json_encode([
+            'status'           => 'success',
+            'ceremony_number'  => $ceremony_number,
+            'reference_number' => $reference_number,
+        ]);
     }
+
+
+
+
 
     public function updateCertificatePrintStatus($reference_number)
     {
@@ -599,5 +723,43 @@ class ConvocationRegistrationController
             echo json_encode(['error' => 'Failed to update convocation registration']);
         }
     }
+
+
+    // --- private helper ---------------------------
+    private function calculateStudentDueAmount(string $reference_number): array
+    {
+        $registration = $this->model->getRegistrationByReference($reference_number);
+        if (!$registration) {
+            // Let caller decide what to do.
+            throw new RuntimeException('Registration not found');
+        }
+
+        $studentNumber     = $registration['student_number'];
+        $package           = $this->packageController->model->getPackageById($registration['package_id']);
+
+        if (!$package) {
+            throw new RuntimeException('Package not found');
+        }
+
+        $convocationBalance = $registration['payment_amount'] - ($package['price'] + ($registration['additional_seats'] * PARENT_SEAT_RATE));
+        $courseBalance      = $this->CcEvaluationController->model->GetStudentBalance($studentNumber)['studentBalance'] ?? 0;
+
+        return [
+            'course_balance'      => (float) $courseBalance,
+            'convocation_balance' => (float) $convocationBalance,
+            'total_due'           => (float) ($courseBalance + $convocationBalance),
+        ];
+    }
+
+    public function GetStudentDueAmount(string $reference_number): void
+    {
+        try {
+            $balances = $this->calculateStudentDueAmount($reference_number);
+            http_response_code(200);
+            echo json_encode($balances);
+        } catch (RuntimeException $e) {
+            http_response_code(404);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+    }
 }
-// controllers/ConvocationRegistrationController.php

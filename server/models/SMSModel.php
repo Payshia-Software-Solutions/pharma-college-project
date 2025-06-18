@@ -54,6 +54,50 @@ class SMSModel
     }
 
 
+    public function sendCeremonyNumberSMS($mobile, $studentName, $ceremonyNumber)
+    {
+        // Load the SMS template from file
+        $template = file_get_contents('templates/ceremony-number-message.txt');
+        if (!$template) {
+            throw new Exception("Unable to load ceremony SMS template.");
+        }
+
+        // Replace placeholders with actual data
+        $message = str_replace(
+            ['{{FIRST_NAME}}', '{{CEREMONY_NUMBER}}'],
+            [$studentName, $ceremonyNumber],
+            $template
+        );
+
+        // Send SMS
+        return $this->sendSMS($mobile, $this->senderId, $message);
+    }
+
+
+    public function sendCeremonyDueBreakdownSMS($mobile, $studentName, $courseBalance, $convocationBalance)
+    {
+        // Load the SMS template from file
+        $template = file_get_contents('templates/ceremony-due-breakdown-message.txt');
+        if (!$template) {
+            throw new Exception("Unable to load due breakdown SMS template.");
+        }
+
+        // Calculate total
+        $totalDue = $courseBalance + $convocationBalance;
+
+        // Replace placeholders
+        $message = str_replace(
+            ['{{FIRST_NAME}}', '{{COURSE_BALANCE}}', '{{CONVOCATION_BALANCE}}', '{{TOTAL_DUE}}'],
+            [$studentName, number_format($courseBalance, 2), number_format($convocationBalance, 2), number_format($totalDue, 2)],
+            $template
+        );
+
+        // Send SMS
+        return $this->sendSMS($mobile, $this->senderId, $message);
+    }
+
+
+
     public function sendSMS($mobile, $senderId, $message)
     {
 
