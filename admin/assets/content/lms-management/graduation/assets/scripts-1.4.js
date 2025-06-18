@@ -936,7 +936,7 @@ function saveCertificateField(
   });
 }
 
-function SendCeremonyNumber(referenceId) {
+function SendCeremonyNumber(referenceId, studentNumber) {
   showOverlay();
 
   fetch(
@@ -951,7 +951,11 @@ function SendCeremonyNumber(referenceId) {
   )
     .then((response) => {
       if (response.ok) {
-        OpenAlert("success", "Done!", "Ceremony Number Sent successfully!");
+        OpenAlert(
+          "success",
+          "Done!",
+          "Ceremony Number Sent " + studentNumber + " successfully!"
+        );
       } else {
         throw new Error(
           `Failed to update ceremony number. Status: ${response.status}`
