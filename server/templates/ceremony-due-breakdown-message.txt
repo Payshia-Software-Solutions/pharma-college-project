@@ -5,4 +5,4 @@ Convocation: Rs. {{CONVOCATION_BALANCE}}
 Total: Rs. {{TOTAL_DUE}}
 
 Please complete payment.
-– Ceylon Pharma College
+-Ceylon Pharma College
