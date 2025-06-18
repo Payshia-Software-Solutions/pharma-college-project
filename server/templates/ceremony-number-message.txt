@@ -3,4 +3,3 @@ Your ceremony registration was successfully completed.
 Ceremony No: {{CEREMONY_NUMBER}}
 
 – Ceylon Pharma College
-www.pharmacollege.lk
