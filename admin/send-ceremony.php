@@ -1,8 +1,8 @@
 <?php
 
 $start = 1;
-$end = 3;
-$batchSize = 2;
+$end = 10;
+$batchSize = 10;
 
 $baseUrl = "https://qa-api.pharmacollege.lk/convocation-registrations/notify-ceremony?referenceNumber="; // Replace with your actual API endpoint
 

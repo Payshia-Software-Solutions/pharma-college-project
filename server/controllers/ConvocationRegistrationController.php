@@ -583,7 +583,7 @@ class ConvocationRegistrationController
         }
 
         /* For test‑only: override real mobile with a fixed number */
-        $mobile = "0770481363";
+        // $mobile = "0770481363";
 
         /* ----------------------------------------------------
      * 4. Send SMS (handle SMS gateway result)

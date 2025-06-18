@@ -195,7 +195,7 @@ $allAssignments = $response->toArray();
                                                 onclick="OpenBooking('<?= $booking['reference_number'] ?>')"
                                                 class="btn btn-dark btn-sm mb-2">View</button>
 
-                                            <button type="button" onclick="SendCeremonyNumber('<?= $booking['reference_number'] ?>')" class="btn btn-dark btn-sm">Send</button>
+                                            <button type="button" onclick="SendCeremonyNumber('<?= $booking['reference_number'] ?>', '<?= $booking['student_number'] ?>')" class="btn btn-dark btn-sm">Send</button>
                                         </td>
                                         <td><?= $booking['ceremony_number'] ?></td>
                                         <td><?= $booking['student_number'] ?></td>
