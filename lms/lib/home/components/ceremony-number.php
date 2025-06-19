@@ -1,5 +1,27 @@
 <?php
+
+require '../../vendor/autoload.php';
+
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Dotenv\Dotenv;
+
+$client = HttpClient::create();
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv->load();
 include './components/css.php';
+
+try {
+    $ceremonyNumberArray = $client
+        ->request('GET', $_ENV['SERVER_URL'] . '/convocation-registrations/get-balances-student-number/' . $loggedUser)
+        ->toArray();
+} catch (ClientExceptionInterface | TransportExceptionInterface $e) {
+    if (method_exists($e, 'getCode') && $e->getCode() !== 404) {
+        throw $e;
+    }
+}
 ?>
 <div class="row">
     <div class="col-12 text-center">
