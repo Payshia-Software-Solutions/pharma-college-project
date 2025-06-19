@@ -685,13 +685,13 @@ class ConvocationRegistrationController
      * 5. Success response
      * -------------------------------------------------- */
         http_response_code(200);
-        return [
+        echo json_encode([
             'status'            => 'success',
             'reference_number'  => $reference_number,
             'ceremony_number'   => $ceremonyNumber,
             'balances'          => $balances,
             'mobile'            => $mobile
-        ];
+        ]);
     }
 
 
