@@ -197,25 +197,27 @@ $courseDetails = getLmsBatchByCourse($course_code);
                 <div class="col-md-4">
                     <div class="row mt-3">
                         <div class="col-12 col-md-12">
-                            <?php
-                            if ($current_status == 1) {
-                            ?>
+                            <?php if ($current_status == 1): ?>
                                 <p class="mb-0 text-secondary">Status Update</p>
-                                <button onclick="UpdateStatusOrder('<?= $ref_id ?>', 2, '<?= $studentBatch ?>', '<?= $orderType ?>')" class="btn btn-success w-100 form-control" type="button"><i class="fa-solid fa-gift"></i> Mark as Packed</button>
-                            <?php
-                            }
-                            ?>
+                                <button
+                                    onclick="this.disabled=true; UpdateStatusOrder('<?= $ref_id ?>', 2, '<?= $studentBatch ?>', '<?= $orderType ?>')"
+                                    class="btn btn-success w-100 form-control"
+                                    type="button">
+                                    <i class="fa-solid fa-gift"></i> Mark as Packed
+                                </button>
+                            <?php endif; ?>
 
-                            <?php
-                            if ($current_status == 2) {
-                            ?>
-
+                            <?php if ($current_status == 2): ?>
                                 <p class="mb-0 text-secondary">Status Update</p>
-                                <button onclick="UpdateStatusOrder('<?= $ref_id ?>', 3, '<?= $studentBatch ?>', '<?= $orderType ?>')" class="btn btn-primary w-100 form-control" type="button"><i class="fa-solid fa-truck"></i> Mark as Delivered</button>
-                            <?php
-                            }
-                            ?>
+                                <button
+                                    onclick="this.disabled=true; UpdateStatusOrder('<?= $ref_id ?>', 3, '<?= $studentBatch ?>', '<?= $orderType ?>')"
+                                    class="btn btn-primary w-100 form-control"
+                                    type="button">
+                                    <i class="fa-solid fa-truck"></i> Mark as Delivered
+                                </button>
+                            <?php endif; ?>
                         </div>
+
                     </div>
                 </div>
             </div>

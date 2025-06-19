@@ -28,7 +28,6 @@ function OpenIndex() {
   fetch_data();
 }
 
-
 function OpenDownloadFile() {
   var userTheme = $("#userTheme").val();
   document.getElementById("index-content").innerHTML = InnerLoader;
@@ -575,8 +574,6 @@ function changePackage(bookingId, newPackageId) {
   });
 }
 
-
-
 function InactivePayment(recordId, referenceNumber) {
   Swal.fire({
     title: "Are you sure?",
@@ -623,27 +620,27 @@ function InactivePayment(recordId, referenceNumber) {
 }
 
 function OpenCourierListModel(courierOrderId) {
-    var userTheme = $("#userTheme").val();
-    OpenPopupRight();
-    $("#loading-popup-right").html(InnerLoader);
+  var userTheme = $("#userTheme").val();
+  OpenPopupRight();
+  $("#loading-popup-right").html(InnerLoader);
 
-    function fetch_data() {
-        $.ajax({
-            url: 'assets/content/lms-management/graduation/side-modals/courier-list-model.php',
-            method: "POST",
-            data: {
-                LoggedUser: LoggedUser,
-                UserLevel: UserLevel,
-                userTheme: userTheme,
-                company_id: company_id,
-                courierOrderId: courierOrderId
-            },
-            success: function (data) {
-                $("#loading-popup-right").html(data);
-            }
-        });
-    }
-    fetch_data();
+  function fetch_data() {
+    $.ajax({
+      url: "assets/content/lms-management/graduation/side-modals/courier-list-model.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        userTheme: userTheme,
+        company_id: company_id,
+        courierOrderId: courierOrderId,
+      },
+      success: function (data) {
+        $("#loading-popup-right").html(data);
+      },
+    });
+  }
+  fetch_data();
 }
 
 function OpenCertificateGeneratePage() {
@@ -666,4 +663,307 @@ function OpenCertificateGeneratePage() {
     });
   }
   fetch_data();
+}
+
+function triggerOpenTable() {
+  const courseCode = document.getElementById("courseSelect").value;
+  const sessionDropdown = document.getElementById("sessionDropdown").value;
+
+  if (!courseCode) {
+    alert("Please select a course.");
+    return;
+  }
+
+  if (!sessionDropdown) {
+    alert("Please select a session.");
+    return;
+  }
+  OpenCertificateGenerateTable(courseCode, sessionDropdown);
+}
+
+function OpenCertificateGenerateTable(courseCode, showSession) {
+  var userTheme = $("#userTheme").val();
+  $("#certification-table").html(InnerLoader);
+
+  function fetch_data() {
+    $.ajax({
+      url: "assets/content/lms-management/graduation/certificate-table.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        userTheme: userTheme,
+        company_id: company_id,
+        courseCode: courseCode,
+        showSession: showSession,
+      },
+      success: function (data) {
+        $("#certification-table").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
+
+function OpenCertificateModel(referenceId) {
+  OpenPopup();
+  document.getElementById("loading-popup").innerHTML = InnerLoader;
+
+  function fetch_data() {
+    $.ajax({
+      url: "./assets/content/lms-management/graduation/popup-modals/certiticate-model.php",
+      method: "POST",
+      data: {
+        LoggedUser: LoggedUser,
+        UserLevel: UserLevel,
+        referenceId: referenceId,
+      },
+      success: function (data) {
+        $("#loading-popup").html(data);
+      },
+    });
+  }
+  fetch_data();
+}
+
+function GenerateCertificate(
+  student_number,
+  type,
+  course_code,
+  print_status,
+  referenceId,
+  parentCourseCode
+) {
+  const data = {
+    student_number: student_number,
+    type: type,
+    course_code: course_code,
+    print_status: print_status,
+    print_by: LoggedUser, // This must be defined in global scope
+    parentCourseCode: parentCourseCode || null, // Optional, can be null
+    referenceId: referenceId || null, // Optional, can be null
+  };
+
+  const prettyType = type ?? "Certificate";
+
+  Swal.fire({
+    title: "Confirm save?",
+    html: `
+      <p>You're about to create a <b>${prettyType}</b> record for student
+      <b>${data.student_number}</b>.</p>
+      <p>This will trigger automatic certificate-ID generation on the server.</p>`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes, save it!",
+    cancelButtonText: "No, cancel",
+    reverseButtons: true,
+  }).then((result) => {
+    if (!result.isConfirmed) {
+      Swal.fire("Cancelled", "No changes were made.", "info");
+      return;
+    }
+
+    showOverlay();
+
+    fetch("https://qa-api.pharmacollege.lk/certificate-print-status", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          const msg = await response.text();
+          throw new Error(`Server responded ${response.status}: ${msg}`);
+        }
+        return response.json();
+      })
+      .then((result) => {
+        Swal.fire(
+          "Success",
+          `Certificate generated successfully.<br>ID: <b>${result.certificate_id}</b>`,
+          "success"
+        );
+        // Optional: refresh page or table
+        OpenCertificateModel(referenceId);
+        triggerOpenTable();
+      })
+      .catch((error) => {
+        Swal.fire("Error", error.message, "error");
+      })
+      .finally(() => hideOverlay());
+  });
+}
+
+function SetCeremonyNumber(
+  student_number,
+  ceremony_number,
+  referenceId = null
+) {
+  const data = {
+    student_number,
+    ceremony_number,
+    updated_by: LoggedUser, // must exist globally just like in GenerateCertificate
+  };
+
+  Swal.fire({
+    title: "Confirm save?",
+    html: `
+      <p>You're about to assign ceremony number
+      <b>${ceremony_number}</b> to student
+      <b>${student_number}</b>.</p>
+      <p>This will be stored in the convocation‑registration table.</p>`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes, save it!",
+    cancelButtonText: "No, cancel",
+    reverseButtons: true,
+  }).then((result) => {
+    if (!result.isConfirmed) {
+      Swal.fire("Cancelled", "No changes were made.", "info");
+      return;
+    }
+
+    showOverlay(); // same helper you already have
+
+    fetch(
+      `https://qa-api.pharmacollege.lk/convocation-registrations/ceremony-number/${referenceId}`,
+      {
+        method: "PUT", // change to PUT/PATCH if your backend requires
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      }
+    )
+      .then(async (response) => {
+        if (!response.ok) {
+          const msg = await response.text();
+          throw new Error(`Server responded ${response.status}: ${msg}`);
+        }
+        return response.json();
+      })
+      .then((result) => {
+        Swal.fire(
+          "Success",
+          `Ceremony number set successfully.<br>Registration ID: <b>${result.reference_number}</b>`,
+          "success"
+        );
+        // Optional UI refresh (swap in your own handler)
+        // if (referenceId) OpenCertificateModel(referenceId);
+        // triggerOpenTable();
+      })
+      .catch((error) => {
+        Swal.fire("Error", error.message, "error");
+      })
+      .finally(() => hideOverlay());
+  });
+}
+
+/**
+ * Persist a certificate field (name, ceremony number, etc.) for a student.
+ *
+ * @param {string|number} student_number  The student’s ID.
+ * @param {string|number} updatedValue    The value you want to save (e.g. ceremony number).
+ * @param {?string}       referenceId     Optional – opens the booking modal again when supplied.
+ */
+function saveCertificateField(
+  student_number,
+  updatedValue,
+  referenceId = null
+) {
+  // Basic front‑end guardrails
+  if (!updatedValue || updatedValue === "0") {
+    Swal.fire(
+      "Nothing to save",
+      "Please enter a value other than empty or zero before saving.",
+      "warning"
+    );
+    return;
+  }
+
+  const payload = {
+    student_number,
+    name_on_certificate: updatedValue, //  name this to match the API contract
+    updated_by: LoggedUser, // assumes you already define LoggedUser globally
+  };
+
+  Swal.fire({
+    title: "Confirm save?",
+    html: `
+      <p>You’re about to assign
+      <b>${updatedValue}</b> to student
+      <b>${student_number}</b>.</p>
+      <p>This will be stored in the User Details.</p>`,
+    icon: "question",
+    showCancelButton: true,
+    confirmButtonText: "Yes, save it!",
+    cancelButtonText: "No, cancel",
+    reverseButtons: true,
+  }).then((result) => {
+    if (!result.isConfirmed) {
+      Swal.fire("Cancelled", "No changes were made.", "info");
+      return;
+    }
+
+    showOverlay();
+
+    fetch(
+      // 🔀 change this path if your route is different
+      `https://qa-api.pharmacollege.lk/userFullDetails/update-certificate-name/${student_number}`,
+      {
+        method: "PUT", // or PATCH if that’s what your API uses
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    )
+      .then(async (res) => {
+        if (!res.ok) {
+          const msg = await res.text();
+          throw new Error(`Server responded ${res.status}: ${msg}`);
+        }
+        return res.json();
+      })
+      .then((result) => {
+        Swal.fire("Success", `Saved successfully.</b>`, "success");
+
+        // Refresh the UI (your own handler)
+        if (referenceId) OpenCertificateModel(referenceId);
+      })
+      .catch((err) => {
+        Swal.fire("Error", err.message, "error");
+      })
+      .finally(hideOverlay);
+  });
+}
+
+function SendCeremonyNumber(referenceId, studentNumber) {
+  showOverlay();
+
+  fetch(
+    `https://qa-api.pharmacollege.lk/convocation-registrations/notify-ceremony?referenceNumber=${referenceId}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(),
+    }
+  )
+    .then((response) => {
+      if (response.ok) {
+        OpenAlert(
+          "success",
+          "Done!",
+          "Ceremony Number Sent " + studentNumber + " successfully!"
+        );
+      } else {
+        throw new Error(
+          `Failed to update ceremony number. Status: ${response.status}`
+        );
+      }
+    })
+    .catch((error) => {
+      OpenAlert("error", "Error updating Ceremony Number", error.message);
+    })
+    .finally(() => hideOverlay());
 }

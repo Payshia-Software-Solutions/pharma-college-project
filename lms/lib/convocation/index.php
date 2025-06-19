@@ -16,7 +16,7 @@ $loggedUser = $_POST['LoggedUser'];
 $packageDueAmount = 0;
 
 // Registration status control
-$registrationsClosed = true; // Set to false to reopen registrations
+$registrationsClosed = false; // Set to false to reopen registrations
 
 try {
     $convocationRecord = $client->request('GET', $_ENV["SERVER_URL"] . '/convocation-registrations/check-duplicate/' . $loggedUser)->toArray()[0];
@@ -54,7 +54,8 @@ try {
 
     <?php if ($registrationsClosed): ?>
         <!-- Registration Closed Notice -->
-        <div class="alert alert-warning text-center mb-4" style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); border: 2px solid #f39c12; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.2);">
+        <div class="alert alert-warning text-center mb-4"
+            style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); border: 2px solid #f39c12; border-radius: 15px; padding: 20px; box-shadow: 0 4px 15px rgba(243, 156, 18, 0.2);">
             <div class="d-flex align-items-center justify-content-center mb-2">
                 <div class="text-center">
                     <i class="fas fa-exclamation-triangle me-3" style="font-size: 2rem; color: #e67e22;"></i>

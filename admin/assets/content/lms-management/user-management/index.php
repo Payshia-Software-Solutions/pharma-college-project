@@ -127,55 +127,55 @@ $InactiveCount = 0;
                                         return $item['unique_number'] == $referenceId;
                                     });
                             ?>
-                                    <tr>
-                                        <td><?= $referenceId; ?></td>
-                                        <td><?= $email_address; ?></td>
-                                        <td>
-                                            <?= $student_name; ?>
-                                            <p class="mb-0"><?= $nic_number; ?></p>
-                                            <p class="mb-0">Phone : <?= $phone_number; ?></p>
-                                            <p class="mb-0"><?= $address_l1; ?>, <?= $address_l2; ?></p>
-                                            <p class="mb-0">Register Date - <?= $formattedRegDate ?></p>
-                                        </td>
-                                        <td>
-                                            <?php
+                            <tr>
+                                <td><?= $referenceId; ?></td>
+                                <td><?= $email_address; ?></td>
+                                <td>
+                                    <?= $student_name; ?>
+                                    <p class="mb-0"><?= $nic_number; ?></p>
+                                    <p class="mb-0">Phone : <?= $phone_number; ?></p>
+                                    <p class="mb-0"><?= $address_l1; ?>, <?= $address_l2; ?></p>
+                                    <p class="mb-0">Register Date - <?= $formattedRegDate ?></p>
+                                </td>
+                                <td>
+                                    <?php
                                             if (!empty($filteredRequests)) {
                                                 foreach ($filteredRequests as $request) {
                                                     $slipUrl = $request['slip_path'];
                                                     if (!empty($slipUrl)) {
                                             ?>
-                                                        <a href="https://content-provider.pharmacollege.lk<?= $slipUrl ?>" target="_blank"
-                                                            class="btn btn-sm btn-primary mb-2">View
-                                                            Slip</a>
-                                                    <?php
+                                    <a href="https://content-provider.pharmacollege.lk<?= $slipUrl ?>" target="_blank"
+                                        class="btn btn-sm btn-primary mb-2">View
+                                        Slip</a>
+                                    <?php
                                                     } else {
                                                     ?>
-                                                        <span class="badge bg-warning">No Slip Available</span>
-                                            <?php
+                                    <span class="badge bg-warning">No Slip Available</span>
+                                    <?php
                                                     }
                                                 }
                                             } else {
                                                 echo '<span class="badge bg-warning">No Payment Request</span>';
                                             }
                                             ?>
-                                        </td>
-                                        <td class="text-center"><span
-                                                class="badge bg-<?= $color ?>"><?= $approved_status ?></span></td>
-                                        <td>
-                                            <div class="text-center">
-                                                <button class="btn btn-sm btn-dark view-button mb-2" type="button"
-                                                    onclick="OpenUserInfo('<?= $referenceId ?>')">
-                                                    <i class="fa-solid fa-eye"></i>
-                                                </button>
+                                </td>
+                                <td class="text-center"><span
+                                        class="badge bg-<?= $color ?>"><?= $approved_status ?></span></td>
+                                <td>
+                                    <div class="text-center">
+                                        <button class="btn btn-sm btn-dark view-button mb-2" type="button"
+                                            onclick="OpenUserInfo('<?= $referenceId ?>')">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
 
-                                                <button class="btn btn-sm btn-light" type="button"
-                                                    onclick="OpenEditUserInfo('<?= $referenceId ?>')">
-                                                    <i class="fa-solid fa-pencil"></i>
-                                                </button>
-                                            </div>
-                                        </td>
+                                        <button class="btn btn-sm btn-light" type="button"
+                                            onclick="OpenEditUserInfo('<?= $referenceId ?>')">
+                                            <i class="fa-solid fa-pencil"></i>
+                                        </button>
+                                    </div>
+                                </td>
 
-                                    </tr>
+                            </tr>
                             <?php
                                 }
                             }
@@ -226,34 +226,56 @@ $InactiveCount = 0;
                                     } else {
                                         $color = "success";
                                     }
-
+                                    $filteredRequests = array_filter($paymentRequests, function ($item) use ($referenceId) {
+                                        return $item['unique_number'] == $referenceId;
+                                    });
 
 
                             ?>
-                                    <tr>
-                                        <td>
-                                            <p class="mb-0">REF# <?= $referenceId; ?></p>
-                                            <h6 class="mb-0"><?= $index_number ?></h6>
-                                            <p class="mb-0"><?= $email_address; ?></p>
-                                            <p class="mb-0"><?= $student_name; ?></p>
-                                            <p class="mb-0"><?= $phone_number; ?></p>
-                                            <p class="mb-0 mt-1">
-                                                <?= $address_l1; ?>, <?= $address_l2; ?>
-                                            </p>
-                                            <span class="badge bg-<?= $color ?>"><?= $approved_status ?></span>
-                                            <?php
-                                            if ($UserLevel == "Admin" && $approved_status == "Rejected") {
-                                            ?><div class="mt-2">
-                                                    <button class="btn btn-sm btn-dark view-button" type="button"
-                                                        onclick="OpenUserInfo('<?= $referenceId ?>')">
-                                                        <i class="fa-solid fa-eye"></i> Update Status
-                                                    </button>
-                                                </div>
-                                            <?php
+                            <tr>
+                                <td>
+                                    <p class="mb-0">REF# <?= $referenceId; ?></p>
+                                    <h6 class="mb-0"><?= $index_number ?></h6>
+                                    <p class="mb-0"><?= $email_address; ?></p>
+                                    <p class="mb-0"><?= $student_name; ?></p>
+                                    <p class="mb-0"><?= $phone_number; ?></p>
+                                    <p class="mb-0 mt-1">
+                                        <?= $address_l1; ?>, <?= $address_l2; ?>
+                                    </p>
+                                    <span class="badge bg-<?= $color ?>"><?= $approved_status ?></span>
+                                    <?php
+                                            if (!empty($filteredRequests)) {
+                                                foreach ($filteredRequests as $request) {
+                                                    $slipUrl = $request['slip_path'];
+                                                    if (!empty($slipUrl)) {
+                                            ?>
+                                    <a href="https://content-provider.pharmacollege.lk<?= $slipUrl ?>" target="_blank"
+                                        class="btn btn-sm btn-primary mb-2">View
+                                        Slip</a>
+                                    <?php
+                                                    } else {
+                                                    ?>
+                                    <span class="badge bg-warning">No Slip Available</span>
+                                    <?php
+                                                    }
+                                                }
+                                            } else {
+                                                echo '<span class="badge bg-warning">No Payment Request</span>';
                                             }
                                             ?>
-                                        </td>
-                                    </tr>
+                                    <?php
+                                            if ($UserLevel == "Admin" && $approved_status == "Rejected") {
+                                            ?><div class="mt-2">
+                                        <button class="btn btn-sm btn-dark view-button" type="button"
+                                            onclick="OpenUserInfo('<?= $referenceId ?>')">
+                                            <i class="fa-solid fa-eye"></i> Update Status
+                                        </button>
+                                    </div>
+                                    <?php
+                                            }
+                                            ?>
+                                </td>
+                            </tr>
                             <?php
                                 }
                             }
@@ -271,26 +293,26 @@ $InactiveCount = 0;
 
 
 <script>
-    $(document).ready(function() {
-        $('#userTable').DataTable({
-            responsive: true,
-            dom: 'Bfrtip',
-            pageLength: 50,
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf'
-                // 'colvis'
-            ],
-            ordering: false
-        });
-
-        $('#approvedTable').DataTable({
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'pdf'
-                // 'colvis'
-            ],
-            pageLength: 6,
-            ordering: false
-        });
+$(document).ready(function() {
+    $('#userTable').DataTable({
+        responsive: true,
+        dom: 'Bfrtip',
+        pageLength: 50,
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf'
+            // 'colvis'
+        ],
+        order: [3, 'desc']
     });
+
+    $('#approvedTable').DataTable({
+        dom: 'Bfrtip',
+        buttons: [
+            'copy', 'csv', 'excel', 'pdf'
+            // 'colvis'
+        ],
+        pageLength: 6,
+        ordering: false
+    });
+});
 </script>

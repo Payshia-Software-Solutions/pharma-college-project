@@ -49,6 +49,22 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Get all registrations for a specific course
+    public function getRegistrationByStudentNumber($student_number)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE student_number = ?");
+        $stmt->execute([$student_number]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Get all registrations for a specific course and session
+    public function GetCeremonyNumberByStudentNumber($student_number)
+    {
+        $stmt = $this->pdo->prepare("SELECT ceremony_number FROM convocation_registrations WHERE student_number = ?");
+        $stmt->execute([$student_number]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
 
     // Create a new registration (reference_number set after insert)
     public function createRegistration($student_number, $course_id, $package_id, $event_id = null, $payment_status = 'pending', $payment_amount = null, $registration_status = 'pending', $hash_value = null, $image_path = null, $additional_seats = null, $session = 1)
@@ -203,4 +219,59 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     ");
         return $stmt->execute([$package_id, $reference_number]);
     }
+
+    public function GetListbyCourseAndSession($courseId, $session)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE FIND_IN_SET(?, course_id) AND `session` = ?");
+        $stmt->execute([$courseId, $session]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function GetListbyCourse($courseId)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE FIND_IN_SET(?, course_id)");
+        $stmt->execute([$courseId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function GetListbySession($session)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE `session` = ?");
+        $stmt->execute([$session]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateCeremonyNumber($reference_number, $ceremony_number)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET ceremony_number = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$ceremony_number, $reference_number]);
+    }
+
+
+    public function updateCertificatePrintStatus($certificate_print_status, $certificate_id, $reference_number)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET certificate_print_status = ?, certificate_id = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$certificate_print_status, $certificate_id, $reference_number]);
+    }
+
+    // Update advanced certificate print status
+    public function updateAdvancedCertificatePrintStatus($advanced_print_status, $advancedcertificate_id, $reference_number)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET advanced_print_status = ?, advanced_id = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$advanced_print_status, $advancedcertificate_id, $reference_number]);
+    }
 }
+// End of ConvocationRegistration class
+// Note: This class assumes that the PDO connection is passed to it when instantiated.

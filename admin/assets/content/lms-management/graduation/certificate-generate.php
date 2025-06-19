@@ -78,31 +78,45 @@ foreach ($mainCourses as $course) {
 
 
 
-<div class="row">
+<div class="row g-2 mt-3">
     <!-- Left Column - Course Selection -->
-    <div class="col-md-4">
+    <div class="col-md-3">
         <div class="card">
             <div class="card-body">
-                <h1 class="card-title mb-4">Please choose the Course</h1>
-                <div class="mb-3">
-                    <label for="courseSelect" class="form-label">Select Course:</label>
-                    <select class="form-select" id="courseSelect">
-                        <option value="">-- Choose a Course --</option>
-                        <?php foreach ($indexed_courses as $course): ?>
-                            <option value="<?= $course['id'] ?>"><?= $course['name'] ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <!-- Session Selection (Initially Hidden) -->
-                <div class="session-section mt-4" id="sessionSection">
-                    <h5>Select Session:</h5>
-                    <div class="d-flex flex-wrap">
-                        <button class="btn btn-outline-success session-btn" data-session="1">Session 1</button>
-                        <button class="btn btn-outline-success session-btn" data-session="2">Session 2</button>
+                <h6 class="card-title mb-4">Please choose the Course</h1>
+                    <div class="mb-3">
+                        <label for="courseSelect" class="form-label">Select Course</label>
+                        <select class="form-select" id="courseSelect">
+                            <option value="">-- Choose a Course --</option>
+                            <?php foreach ($indexed_courses as $course): ?>
+                                <option value="<?= $course['id'] ?>"><?= $course['id'] ?> - <?= $course['course_name'] ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
-                </div>
+
+                    <!-- Session Selection -->
+                    <div class="session-section mt-2" id="sessionSection">
+                        <label for="sessionDropdown">Select Session</h5>
+                            <select class="form-select" id="sessionDropdown">
+                                <option value="">-- Choose a Session --</option>
+                                <option value="1">Session 1</option>
+                                <option value="2">Session 2</option>
+                            </select>
+
+                            <!-- Trigger Button -->
+                            <button class="btn btn-primary w-100 mt-4" onclick="triggerOpenTable()">Open Certificate Table</button>
+                    </div>
             </div>
         </div>
     </div>
+
+
+    <div class="col-md-9" id="certification-table"></div>
+
+
 </div>
+<script>
+
+
+
+</script>

@@ -15,6 +15,18 @@ return [
         return $submissionController->getAllSubmissionsGroupedByStudent();
     },
 
+    'GET /submissions/average-grade\?studentId=([A-Za-z0-9]+)&courseCode=([A-Za-z0-9]+)/$' => function () use ($submissionController) {
+        $studentId = $_GET['studentId'] ?? null;
+        $courseCode = $_GET['courseCode'] ?? null;
+
+        if ($studentId && $courseCode) {
+            return $submissionController->getAverageGradeByStudentAndCourse($studentId, $courseCode);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required parameters. studentId and courseCode are required']);
+        }
+    },
+
     'GET /submissions/(\d+)/$' => function ($id) use ($submissionController) {
         return $submissionController->getSubmission($id);
     },

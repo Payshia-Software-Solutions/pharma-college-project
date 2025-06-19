@@ -21,8 +21,6 @@ return [
         return $convocationRegistrationController->getAdditionalSeatsCountsBySessions($sessionId);
     },
 
-
-
     // GET a single registration by ID
     'GET /convocation-registrations/(\d+)/$' => function ($registration_id) use ($convocationRegistrationController) {
         return $convocationRegistrationController->getRegistration($registration_id);
@@ -43,7 +41,6 @@ return [
         return $convocationRegistrationController->checkHashDupplicate($hashValue);
     },
 
-
     // GET a single registration by reference number (same as ID)
     'GET /convocation-registrations\?referenceNumber=[\d]+/$' => function () use ($convocationRegistrationController) {
         $reference_number = isset($_GET['referenceNumber']) ? $_GET['referenceNumber'] : null;
@@ -54,6 +51,21 @@ return [
         }
         return $convocationRegistrationController->getRegistrationByReference($reference_number);
     },
+
+    // Trigger SMS notification for ceremony number
+    // GET /convocation-registrations/notify-ceremony?referenceNumber=12345
+    'GET /convocation-registrations/notify-ceremony\?referenceNumber=[\d]+/$' => function () use ($convocationRegistrationController) {
+        $reference_number = $_GET['referenceNumber'] ?? null;
+        if (!$reference_number) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required parameter: referenceNumber']);
+            return;
+        }
+
+        echo json_encode($convocationRegistrationController->notifyCeremonyNumber($reference_number));
+    },
+
+
 
     // POST create a new registration
     'POST /convocation-registrations/$' => function () use ($convocationRegistrationController) {
@@ -88,5 +100,42 @@ return [
     // DELETE a registration
     'DELETE /convocation-registrations/(\d+)/$' => function ($registration_id) use ($convocationRegistrationController) {
         return $convocationRegistrationController->deleteRegistration($registration_id);
+    },
+
+    'GET /convocation-registrations-certificate\?courseCode=([A-Za-z0-9]+)&viewSession=([A-Za-z0-9]+)/$' => function ($courseCode, $viewSession) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->GetListbyCourseAndSession($courseCode, $viewSession);
+    },
+
+    'GET /convocation-registrations-certificate\?courseCode=([A-Za-z0-9]+)/$' => function ($courseCode) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->GetListbyCourse($courseCode);
+    },
+
+    'GET /convocation-registrations-certificate\?viewSession=([A-Za-z0-9]+)/$' => function ($viewSession) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->GetListbySession($viewSession);
+    },
+
+    // PUT update ceremony number only
+    'PUT /convocation-registrations/ceremony-number/([A-Za-z0-9]+)/$' => function ($registration_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->updateCeremonyNumber($registration_id);
+    },
+
+    'PUT /convocation-registrations/certificate-print-status/([A-Za-z0-9]+)/$' => function ($registration_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->updateCertificatePrintStatus($registration_id);
+    },
+
+    'PUT /convocation-registrations/advanced-certificate-print-status/([A-Za-z0-9]+)/$' => function ($registration_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->updateAdvancedCertificatePrintStatus($registration_id);
+    },
+
+    'GET /convocation-registrations/get-balances/([A-Za-z0-9]+)/$' => function ($registration_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->GetStudentDueAmount($registration_id);
+    },
+
+    'GET /convocation-registrations/get-balances-student-number/([A-Za-z0-9]+)/$' => function ($student_number) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->GetStudentDueAmountByStudentNumber($student_number);
+    },
+
+    'GET /convocation-registrations/get-ceremony-number/([A-Za-z0-9]+)/$' => function ($student_number) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->GetCeremonyNumberByStudentNumber($student_number);
     },
 ];
