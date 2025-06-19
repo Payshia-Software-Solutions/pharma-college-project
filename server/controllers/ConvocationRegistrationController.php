@@ -139,6 +139,7 @@ class ConvocationRegistrationController
         }
     }
 
+
     // GET a single registration by ID
     public function validateDuplicate($student_number)
     {
@@ -622,6 +623,61 @@ class ConvocationRegistrationController
         } catch (Exception $e) {
             http_response_code(502);   // Bad Gateway – downstream service failed
             echo json_encode(['status' => 'error', 'message' => 'SMS send failed: ' . $e->getMessage()]);
+            return;
+        }
+
+        /* ----------------------------------------------------
+     * 5. Success response
+     * -------------------------------------------------- */
+        http_response_code(200);
+        return [
+            'status'            => 'success',
+            'reference_number'  => $reference_number,
+            'ceremony_number'   => $ceremonyNumber,
+            'balances'          => $balances,
+            'mobile'            => $mobile
+        ];
+    }
+
+
+
+    // GET a single registration by student number (alphanumeric)
+    public function GetCeremonyNumberByStudentNumber($studentNumber)
+    {
+        /* ----------------------------------------------------
+     * 1. Validate & fetch registration
+     * -------------------------------------------------- */
+        $registration = $this->model->getRegistrationByStudentNumber($studentNumber);
+        if (!$registration) {
+            http_response_code(404);   // Not Found
+            echo json_encode(['status' => 'error', 'message' => 'Registration not found', 'student_number' => $studentNumber]);
+            return;
+        }
+
+        $reference_number  = $registration['reference_number'];
+        $ceremonyNumber = $registration['ceremony_number'] ?? 'Not Assigned';
+
+        /* ----------------------------------------------------
+     * 2. Calculate balances (helper throws on failure)
+     * -------------------------------------------------- */
+        try {
+            $balances = $this->calculateStudentDueAmount($reference_number);
+        } catch (RuntimeException $e) {
+            http_response_code(400);   // Bad Request (missing package, etc.)
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            return;
+        }
+
+        /* ----------------------------------------------------
+     * 3. Fetch contact info
+     * -------------------------------------------------- */
+        $studentInfo = $this->userFullDetailsController->model->getUserByUserName($studentNumber);
+        $mobile      = $studentInfo['telephone_1']        ?? null;
+        $studentName = $studentInfo['name_on_certificate'] ?? 'Student';
+
+        if (!$mobile) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Mobile number not found for student']);
             return;
         }
 
