@@ -125,15 +125,6 @@
     border-bottom: 1px solid #dee2e6;
 }
 
-.balance-item:last-child {
-    border-bottom: none;
-    font-weight: 600;
-    color: #2c3e50;
-    font-size: 1.1rem;
-    margin-top: 10px;
-    padding-top: 20px;
-    border-top: 2px solid #dee2e6;
-}
 
 .balance-label {
     color: #6c757d;

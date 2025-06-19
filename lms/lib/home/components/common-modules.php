@@ -1,4 +1,3 @@
-text/x-generic common-modules.php ( ASCII text )
 <div class="row">
     <div class="col-12">
         <h4 class="section-topic">Common Modules</h4>
