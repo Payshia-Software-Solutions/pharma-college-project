@@ -127,6 +127,18 @@ class ConvocationRegistrationController
         }
     }
 
+    // GET a single registration by student number (alphanumeric)
+    public function getRegistrationByStudentNumber($student_number)
+    {
+        $registration = $this->model->getRegistrationByStudentNumber($student_number);
+        if ($registration) {
+            echo json_encode($registration);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Registration not found']);
+        }
+    }
+
     // GET a single registration by ID
     public function validateDuplicate($student_number)
     {
@@ -751,10 +763,45 @@ class ConvocationRegistrationController
         ];
     }
 
+    private function calculateStudentDueAmountByStudentNumber(string $student_number): array
+    {
+        $registration = $this->model->getRegistrationByStudentNumber($student_number);
+        if (!$registration) {
+            // Let caller decide what to do.
+            throw new RuntimeException('Registration not found for student number: ' . $student_number);
+        }
+
+        $package = $this->packageController->model->getPackageById($registration['package_id']);
+        if (!$package) {
+            throw new RuntimeException('Package not found');
+        }
+
+        $convocationBalance = ($package['price'] + ($registration['additional_seats'] * PARENT_SEAT_RATE)) - $registration['payment_amount'];
+        $courseBalance      = $this->CcEvaluationController->model->GetStudentBalance($student_number)['studentBalance'] ?? 0;
+
+        return [
+            'course_balance'      => (float) $courseBalance,
+            'convocation_balance' => (float) $convocationBalance,
+            'total_due'           => (float) ($courseBalance + $convocationBalance),
+        ];
+    }
+
     public function GetStudentDueAmount(string $reference_number): void
     {
         try {
             $balances = $this->calculateStudentDueAmount($reference_number);
+            http_response_code(200);
+            echo json_encode($balances);
+        } catch (RuntimeException $e) {
+            http_response_code(404);
+            echo json_encode(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function GetStudentDueAmountByStudentNumber(string $student_number): void
+    {
+        try {
+            $balances = $this->calculateStudentDueAmountByStudentNumber($student_number);
             http_response_code(200);
             echo json_encode($balances);
         } catch (RuntimeException $e) {

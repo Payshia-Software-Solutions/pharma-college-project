@@ -49,6 +49,13 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Get all registrations for a specific course
+    public function getRegistrationByStudentNumber($student_number)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE student_number = ?");
+        $stmt->execute([$student_number]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
     // Create a new registration (reference_number set after insert)
     public function createRegistration($student_number, $course_id, $package_id, $event_id = null, $payment_status = 'pending', $payment_amount = null, $registration_status = 'pending', $hash_value = null, $image_path = null, $additional_seats = null, $session = 1)

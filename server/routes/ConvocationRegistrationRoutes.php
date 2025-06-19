@@ -130,4 +130,8 @@ return [
     'GET /convocation-registrations/get-balances/([A-Za-z0-9]+)/$' => function ($registration_id) use ($convocationRegistrationController) {
         return $convocationRegistrationController->GetStudentDueAmount($registration_id);
     },
+
+    'GET /convocation-registrations/get-balances-student-number/([A-Za-z0-9]+)/$' => function ($student_number) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->GetStudentDueAmountByStudentNumber($student_number);
+    },
 ];
