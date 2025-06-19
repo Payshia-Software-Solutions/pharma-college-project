@@ -690,7 +690,8 @@ class ConvocationRegistrationController
             'reference_number'  => $reference_number,
             'ceremony_number'   => $ceremonyNumber,
             'balances'          => $balances,
-            'mobile'            => $mobile
+            'mobile'            => $mobile,
+            'registration'      => $registration
         ]);
     }
 
