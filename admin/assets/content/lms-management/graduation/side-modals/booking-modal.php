@@ -42,7 +42,7 @@ $userInfo = $client->request('GET', $_ENV['SERVER_URL'] . '/get-student-full-inf
 $hashDupplicateStatus = $client->request('GET', $_ENV['SERVER_URL'] . '/convocation-registrations/check-hash?hashValue=' . $packageBooking['hash_value'])->toArray();
 
 try {
-    $getPaymentRecords = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal-requests/get-records?UniqueNumber=' . $packageBooking['student_number'] . '&Reason=convocation')->toArray();
+    $getPaymentRecords = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal-requests/by-reference/' . $packageBooking['student_number'])->toArray();
 } catch (\Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface $e) {
     if ($e->getResponse()->getStatusCode() === 404) {
         $getPaymentRecords = [];
@@ -117,7 +117,7 @@ $balance = $dueAmount - $totalPayments;
                                 $id = trim($id); // remove spaces
                                 if (isset($indexed_courses[$id])) {
                             ?>
-                                    <h5><?= $indexed_courses[$id]['course_name']; ?></h5>
+                            <h5><?= $indexed_courses[$id]['course_name']; ?></h5>
                             <?php
                                 }
                             }
@@ -170,8 +170,8 @@ $balance = $dueAmount - $totalPayments;
 
             <div class="row mt-3 g-2">
                 <?php if (!empty($getPaymentRecords)) : ?>
-                    <?php foreach ($getPaymentRecords as $index => $record) : ?>
-                        <?php
+                <?php foreach ($getPaymentRecords as $index => $record) : ?>
+                <?php
                         $uniqueId = $record['unique_number'] ?? ('record_' . $index);
                         try {
                             $checkHashInfo = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal-requests/check-hash?hashValue=' . $record['hash_value'])->toArray();
@@ -179,10 +179,10 @@ $balance = $dueAmount - $totalPayments;
                             $checkHashInfo = [];
                         }
                         ?>
-                        <div class="col-4 mb-4">
-                            <div class="card">
-                                <div class="card-body">
-                                    <?php
+                <div class="col-4 mb-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <?php
                                     $filePath = $record['slip_path'];
                                     $fullUrl = "https://content-provider.pharmacollege.lk" . $filePath;
                                     $fileExtension = strtolower(pathinfo($filePath, PATHINFO_EXTENSION));
@@ -199,38 +199,38 @@ $balance = $dueAmount - $totalPayments;
                                     }
                                     ?>
 
-                                    <?php if (!empty($checkHashInfo)) : ?>
-                                        <div class="mt-3">
-                                            <h6>Duplicate Payments (<?= count($checkHashInfo) ?>)</h6>
-                                            <ul class="list-group">
-                                                <?php foreach ($checkHashInfo as $dup) : ?>
-                                                    <li class="list-group-item">
-                                                        <strong>Reference:</strong> <?= htmlspecialchars($dup['payment_reference']) ?>
-                                                        <br>
-                                                        <strong>Amount:</strong> <?= htmlspecialchars($dup['paid_amount']) ?> <br>
-                                                        <strong> <a target="_blank" class="btn btn-dark btn-sm text-light"
-                                                                href="https://content-provider.pharmacollege.lk<?= $dup['slip_path'] ?>">Download
-                                                                Slip</a></strong>
-                                                    </li>
-                                                <?php endforeach; ?>
-                                            </ul>
-                                        </div>
-                                    <?php else : ?>
-                                        <p class="mt-3 text-muted">No duplicate payments found.</p>
-                                    <?php endif; ?>
+                            <?php if (!empty($checkHashInfo)) : ?>
+                            <div class="mt-3">
+                                <h6>Duplicate Payments (<?= count($checkHashInfo) ?>)</h6>
+                                <ul class="list-group">
+                                    <?php foreach ($checkHashInfo as $dup) : ?>
+                                    <li class="list-group-item">
+                                        <strong>Reference:</strong> <?= htmlspecialchars($dup['payment_reference']) ?>
+                                        <br>
+                                        <strong>Amount:</strong> <?= htmlspecialchars($dup['paid_amount']) ?> <br>
+                                        <strong> <a target="_blank" class="btn btn-dark btn-sm text-light"
+                                                href="https://content-provider.pharmacollege.lk<?= $dup['slip_path'] ?>">Download
+                                                Slip</a></strong>
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                            <?php else : ?>
+                            <p class="mt-3 text-muted">No duplicate payments found.</p>
+                            <?php endif; ?>
 
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php else : ?>
-                    <div class="col-12">
-                        <div class="card mt-2">
-                            <div class="card-body">
-                                <p class="text-center mb-0">No payment requests found.</p>
-                            </div>
                         </div>
                     </div>
+                </div>
+                <?php endforeach; ?>
+                <?php else : ?>
+                <div class="col-12">
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <p class="text-center mb-0">No payment requests found.</p>
+                        </div>
+                    </div>
+                </div>
                 <?php endif; ?>
             </div>
 
@@ -240,47 +240,47 @@ $balance = $dueAmount - $totalPayments;
                     <h5 class="table-title">Enrollments</h5>
                 </div>
                 <?php foreach ($userInfo['studentEnrollments'] as $enrollment) { ?>
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <p class="mb-0"><?= $enrollment['course_code'] ?> | <?= $enrollment['batch_name'] ?></p>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="mb-0"><?= $enrollment['course_code'] ?> | <?= $enrollment['batch_name'] ?></p>
 
-                                <div class="row g-2">
-                                    <?php
+                            <div class="row g-2">
+                                <?php
                                     $totalAssingmentMarks = 0;
                                     $courseAssignments = $enrollment['assignment_grades']['assignments'];
                                     foreach ($courseAssignments as $assignment) {
                                         $assignmentGrade = $assignment['grade'];
                                         $totalAssingmentMarks += $assignmentGrade;
                                     ?>
-                                        <div class="col-3">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <p class="mb-0"><?= $assignment['assignment_name'] ?></p>
-                                                    <h5><?= number_format($assignmentGrade, 2) ?>
-                                                    </h5>
-                                                </div>
-                                            </div>
+                                <div class="col-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <p class="mb-0"><?= $assignment['assignment_name'] ?></p>
+                                            <h5><?= number_format($assignmentGrade, 2) ?>
+                                            </h5>
                                         </div>
-                                    <?php
+                                    </div>
+                                </div>
+                                <?php
                                     }
 
                                     $avgMarks = (count($courseAssignments) != 0) ? $totalAssingmentMarks / count($courseAssignments) : 0;
                                     ?>
-                                    <div class="col-3">
-                                        <div class="card">
-                                            <div class="card-body">
-                                                <p class="mb-0">Average</p>
-                                                <h5><?= number_format($avgMarks, 2) ?>
-                                                </h5>
-                                            </div>
+                                <div class="col-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <p class="mb-0">Average</p>
+                                            <h5><?= number_format($avgMarks, 2) ?>
+                                            </h5>
                                         </div>
                                     </div>
-
                                 </div>
+
                             </div>
                         </div>
                     </div>
+                </div>
                 <?php
                 }
                 ?>
@@ -289,30 +289,30 @@ $balance = $dueAmount - $totalPayments;
             </div>
 
             <?php if (count($hashDupplicateStatus) > 1) : ?>
-                <div class="row g-2">
-                    <div class="col-12">
-                        <h5 class="table-title">Slip Dupplicate Status</h5>
-                    </div>
-                    <?php foreach ($hashDupplicateStatus as $hashRecord) {
+            <div class="row g-2">
+                <div class="col-12">
+                    <h5 class="table-title">Slip Dupplicate Status</h5>
+                </div>
+                <?php foreach ($hashDupplicateStatus as $hashRecord) {
                     ?>
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <p><?= $hashRecord['registration_id'] ?> | <?= $hashRecord['student_number'] ?></p>
-                                    <p>
-                                        <a target="_blank"
-                                            href="https://content-provider.pharmacollege.lk<?= $hashRecord['image_path'] ?>">Download
-                                            Slip</a>
-                                    </p>
-                                </div>
-                            </div>
-
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <p><?= $hashRecord['registration_id'] ?> | <?= $hashRecord['student_number'] ?></p>
+                            <p>
+                                <a target="_blank"
+                                    href="https://content-provider.pharmacollege.lk<?= $hashRecord['image_path'] ?>">Download
+                                    Slip</a>
+                            </p>
                         </div>
-                    <?php
+                    </div>
+
+                </div>
+                <?php
                     }
                     ?>
 
-                </div>
+            </div>
             <?php endif ?>
         </div>
 
@@ -328,17 +328,17 @@ $balance = $dueAmount - $totalPayments;
                             <p class="mb-0">Balance: <strong><?= number_format($balance, 2) ?></strong></p>
 
                             <?php if ($balance > 0) : ?>
-                                <p class="text-danger mb-0">Payment is pending.</p>
-                                <label for="paid_amount" class="mb-2">Payment Amount</label>
-                                <input type="text" class="form-control text-center" placeholder="Payment Amount"
-                                    name="paid_amount" id="paid_amount">
+                            <p class="text-danger mb-0">Payment is pending.</p>
+                            <label for="paid_amount" class="mb-2">Payment Amount</label>
+                            <input type="text" class="form-control text-center" placeholder="Payment Amount"
+                                name="paid_amount" id="paid_amount">
 
-                                <button onclick="UpdateConvocationPayment('<?= $referenceNumber ?>')"
-                                    class="w-100 btn btn-dark mt-2"
-                                    type="button"><?= strtolower($packageBooking['registration_status']) === 'paid' ? 'Add Payment' : 'Approve & Update Payment' ?>
-                                </button>
+                            <button onclick="UpdateConvocationPayment('<?= $referenceNumber ?>')"
+                                class="w-100 btn btn-dark mt-2"
+                                type="button"><?= strtolower($packageBooking['registration_status']) === 'paid' ? 'Add Payment' : 'Approve & Update Payment' ?>
+                            </button>
                             <?php else : ?>
-                                <p class="text-success mb-0">Payment is complete.</p>
+                            <p class="text-success mb-0">Payment is complete.</p>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -348,32 +348,32 @@ $balance = $dueAmount - $totalPayments;
 
             <div class="row">
                 <?php if (count($getPaymentTransactionRecords) > 0) : ?>
-                    <div class="col-12">
-                        <h5 class="table-title">Payment Transactions</h5>
-                    </div>
-                    <?php foreach ($getPaymentTransactionRecords as $record) : ?>
-                        <div class="col-12">
-                            <div class="card">
-                                <div class="card-body">
-                                    <p class="mb-0"><?= $record['reference'] ?></p>
-                                    <p class="mb-0"><?= $record['transaction_id'] ?>
-                                    <p class="mb-0"><?= $record['payment_amount'] ?></p>
-                                    <p class="mb-0"><?= $record['rec_time'] ?></p>
+                <div class="col-12">
+                    <h5 class="table-title">Payment Transactions</h5>
+                </div>
+                <?php foreach ($getPaymentTransactionRecords as $record) : ?>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <p class="mb-0"><?= $record['reference'] ?></p>
+                            <p class="mb-0"><?= $record['transaction_id'] ?>
+                            <p class="mb-0"><?= $record['payment_amount'] ?></p>
+                            <p class="mb-0"><?= $record['rec_time'] ?></p>
 
-                                    <button class="btn btn-danger btn-sm" type="button"
-                                        onclick="InactivePayment('<?= $record['id'] ?>', '<?= $referenceNumber ?>')">Inactive</button>
-                                </div>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                <?php else : ?>
-                    <div class="col-12">
-                        <div class="card mt-2">
-                            <div class="card-body">
-                                <p class="text-center mb-0">No payment transactions found.</p>
-                            </div>
+                            <button class="btn btn-danger btn-sm" type="button"
+                                onclick="InactivePayment('<?= $record['id'] ?>', '<?= $referenceNumber ?>')">Inactive</button>
                         </div>
                     </div>
+                </div>
+                <?php endforeach; ?>
+                <?php else : ?>
+                <div class="col-12">
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <p class="text-center mb-0">No payment transactions found.</p>
+                        </div>
+                    </div>
+                </div>
                 <?php endif; ?>
             </div>
 

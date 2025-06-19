@@ -3,7 +3,7 @@
         <div class="card border-0 shadow-sm ranking-card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="row">
                             <div class="col-4 col-md-2 col-lg-1">
                                 <img src="./lib/home/assets/images/trophy.png" class="ranking-icon">
@@ -16,7 +16,7 @@
 
 
                     </div>
-                    <div class="col-4">
+                    <div class="col-6">
                         <div class="row">
                             <div class="col-4 col-md-2 col-lg-1">
                                 <img src="./lib/home/assets/images/star.png" class="ranking-icon">
