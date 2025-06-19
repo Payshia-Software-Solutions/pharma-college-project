@@ -44,17 +44,20 @@ $totalGrade = 0;
 
         $totalGrade += $gradeValue;
     ?>
-        <div class="col-6 col-md-4 col-lg-3 col-xl-3 d-flex">
-            <div class="card bg-white rounded-4 shadow border-0 flex-fill">
-                <div class="card-body">
-                    <h4 class="text-muted fw-light border-bottom pb-1 text-center"><?= $assignment['assignment_name'] ?></h4>
-                    <h1 class="fw-bold text-center"><?= $gradeValue ?> %</h1>
-                    <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $gradeValue ?>" aria-valuemin="0" aria-valuemax="100">
-                        <div class="progress-bar bg-success" style="width:<?= $gradeValue ?>%"><?= $gradeValue ?> %</div>
-                    </div>
+    <div class="col-6 col-md-4 col-lg-3 col-xl-3 d-flex">
+        <div class="card bg-white rounded-4 shadow border-0 flex-fill">
+            <div class="card-body">
+                <h4 class="text-muted fw-light border-bottom pb-1 text-center"><?= $assignment['assignment_name'] ?>
+                </h4>
+                <h1 class="fw-bold text-center"><?= number_format($gradeValue, 2) ?> %</h1>
+                <div class="progress" role="progressbar" aria-label="Example with label"
+                    aria-valuenow="<?= $gradeValue ?>" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar bg-success" style="width:<?= number_format($gradeValue, 2) ?>%">
+                        <?= number_format($gradeValue, 2) ?> %</div>
                 </div>
             </div>
         </div>
+    </div>
     <?php
     endforeach;
     $assignmentCount = (count($assignmentsList) == 0) ? 1 : count($assignmentsList);
@@ -63,9 +66,11 @@ $totalGrade = 0;
         <div class="card bg-white rounded-4 shadow border-0 flex-fill">
             <div class="card-body">
                 <h4 class="fw-bold border-bottom pb-1 text-center">Average</h4>
-                <h1 class="fw-bold text-primary text-center"><?= $totalGrade ?> %</h1>
-                <div class="progress" role="progressbar" aria-label="Example with label" aria-valuenow="<?= $totalGrade ?>" aria-valuemin="0" aria-valuemax="100">
-                    <div class="progress-bar bg-primary" style="width:<?= $totalGrade ?>%"><?= $totalGrade ?> %</div>
+                <h1 class="fw-bold text-primary text-center"><?= number_format($totalGrade, 2) ?> %</h1>
+                <div class="progress" role="progressbar" aria-label="Example with label"
+                    aria-valuenow="<?= $totalGrade ?>" aria-valuemin="0" aria-valuemax="100">
+                    <div class="progress-bar bg-primary" style="width:<?= number_format($totalGrade, 2) ?>%">
+                        <?= number_format($totalGrade, 2) ?> %</div>
                 </div>
             </div>
         </div>
