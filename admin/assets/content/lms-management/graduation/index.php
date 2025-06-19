@@ -54,6 +54,9 @@ $response = $client->request('GET', $_ENV['SERVER_URL'] . '/assignmentsByCourse'
 $allAssignments = $response->toArray();
 
 
+$paymentRequests = $client->request('GET', $_ENV['SERVER_URL'] . '/payment-portal-requests/by-number-type/student_number/')->toArray();
+
+
 ?>
 
 <div class="row mt-5">
@@ -116,6 +119,8 @@ $allAssignments = $response->toArray();
                                     <th scope="col">Reference #</th>
                                     <th scope="col">Action</th>
                                     <th scope="col">Ceremony number</th>
+                                    <th scope="col">Due</th>
+                                    <th scope="col">2nd Payment</th>
                                     <th scope="col">Student Number</th>
                                     <th scope="col">Session</th>
                                     <th scope="col">Courses</th>
@@ -184,86 +189,118 @@ $allAssignments = $response->toArray();
 
                                     $course_ids = explode(',', $booking['course_id']);
                                     $orderedParentIds = array_map('trim', explode(',', $booking['course_id']));
+                                    $studentNumber = $booking['student_number'];
 
+                                    $filteredRequests = array_filter($paymentRequests, function ($item) use ($studentNumber) {
+                                        return $item['unique_number'] == $studentNumber;
+                                    });
+
+
+                                    $lastFiltered = end($filteredRequests);
                                 ?>
-                                    <tr>
-                                        <td><?= $booking['reference_number'] ?>
+                                <tr>
+                                    <td><?= $booking['reference_number'] ?></td>
+                                    <td>
+                                        <button type="button"
+                                            onclick="OpenBooking('<?= $booking['reference_number'] ?>')"
+                                            class="btn btn-dark btn-sm mb-2">View</button>
 
-                                        </td>
-                                        <td>
-                                            <button type="button"
-                                                onclick="OpenBooking('<?= $booking['reference_number'] ?>')"
-                                                class="btn btn-dark btn-sm mb-2">View</button>
+                                        <button type="button"
+                                            onclick="SendCeremonyNumber('<?= $booking['reference_number'] ?>', '<?= $booking['student_number'] ?>')"
+                                            class="btn btn-dark btn-sm">Send</button>
+                                    </td>
+                                    <td><?= $booking['ceremony_number'] ?></td>
+                                    <td><?= $dueAmount - $booking['payment_amount']  ?></td>
 
-                                            <button type="button" onclick="SendCeremonyNumber('<?= $booking['reference_number'] ?>', '<?= $booking['student_number'] ?>')" class="btn btn-dark btn-sm">Send</button>
-                                        </td>
-                                        <td><?= $booking['ceremony_number'] ?></td>
-                                        <td><?= $booking['student_number'] ?></td>
-                                        <td>
-                                            <select name="session"
-                                                onchange="changeBookingSession(<?= $booking['reference_number'] ?>, this.value)">
-                                                <option value="1" <?= $booking['session'] == 1 ? 'selected' : '' ?>>1
-                                                </option>
-                                                <option value="2" <?= $booking['session'] == 2 ? 'selected' : '' ?>>2
-                                                </option>
-                                            </select>
 
-                                        </td>
-                                        <td><?php
+                                    <td>
+                                        <?php
+                                            if (!empty($filteredRequests)) {
+                                                $slipUrl = $lastFiltered['slip_path'];
+                                                if (!empty($slipUrl)) {
+                                            ?>
+                                        <a href="https://content-provider.pharmacollege.lk<?= $slipUrl ?>"
+                                            target="_blank" class="btn btn-sm btn-primary mb-2">View
+                                            Slip</a>
+                                        <?php
+                                                } else {
+                                                ?>
+                                        <span class="badge bg-warning">No Slip Available</span>
+                                        <?php
+                                                }
+                                            } else {
+                                                echo '<span class="badge bg-warning">No Payment Request</span>';
+                                            }
+                                            ?>
+                                    </td>
+                                    <td><?= $booking['student_number'] ?></td>
+                                    <td>
+                                        <select name="session"
+                                            onchange="changeBookingSession(<?= $booking['reference_number'] ?>, this.value)">
+                                            <option value="1" <?= $booking['session'] == 1 ? 'selected' : '' ?>>1
+                                            </option>
+                                            <option value="2" <?= $booking['session'] == 2 ? 'selected' : '' ?>>2
+                                            </option>
+                                        </select>
+
+                                    </td>
+                                    <td><?php
                                             foreach ($course_ids as $id) {
                                                 $id = trim($id); // remove spaces
                                                 if (isset($indexed_courses[$id])) {
                                             ?>
-                                                    <p><?= $indexed_courses[$id]['course_name']; ?></p>
-                                            <?php
+                                        <p><?= $indexed_courses[$id]['course_name']; ?></p>
+                                        <?php
                                                 }
                                             }
                                             ?>
-                                        </td>
-                                        <td>
-                                            <select name="package"
-                                                onchange="changePackage(<?= $booking['reference_number'] ?>, this.value)">
-                                                <?php foreach ($graduationPackages as $package): ?>
-                                                    <option value="<?= $package['package_id'] ?>"
-                                                        <?= $booking['package_id'] == $package['package_id'] ? 'selected' : '' ?>>
-                                                        <?= htmlspecialchars($package['package_name']) ?>
-                                                    </option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="additional_seats"
-                                                onchange="changeAdditionalSeats(<?= $booking['reference_number'] ?>, this.value)">
-                                                <?php for ($i = 0; $i <= 8; $i++): ?>
-                                                    <option value="<?= $i ?>" <?= $booking['additional_seats'] == $i ? 'selected' : '' ?>><?= $i ?></option>
-                                                <?php endfor; ?>
-                                            </select>
-                                        </td>
+                                    </td>
+                                    <td>
+                                        <select name="package"
+                                            onchange="changePackage(<?= $booking['reference_number'] ?>, this.value)">
+                                            <?php foreach ($graduationPackages as $package): ?>
+                                            <option value="<?= $package['package_id'] ?>"
+                                                <?= $booking['package_id'] == $package['package_id'] ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($package['package_name']) ?>
+                                            </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <select name="additional_seats"
+                                            onchange="changeAdditionalSeats(<?= $booking['reference_number'] ?>, this.value)">
+                                            <?php for ($i = 0; $i <= 8; $i++): ?>
+                                            <option value="<?= $i ?>"
+                                                <?= $booking['additional_seats'] == $i ? 'selected' : '' ?>><?= $i ?>
+                                            </option>
+                                            <?php endfor; ?>
+                                        </select>
+                                    </td>
 
-                                        <td><?= number_format($dueAmount, 2) ?></td>
-                                        <td><?= $booking['payment_amount'] ?></td>
-                                        <td>
-                                            <a style="color: white !important;" class="btn btn-dark btn-sm"
-                                                href="http://content-provider.pharmacollege.lk<?= $booking['image_path'] ?>"
-                                                download target="_blank">
-                                                <i class="fa fa-download" aria-hidden="true"></i>
+                                    <td><?= number_format($dueAmount, 2) ?></td>
+                                    <td><?= $booking['payment_amount'] ?></td>
+                                    <td>
+                                        <a style="color: white !important;" class="btn btn-dark btn-sm"
+                                            href="http://content-provider.pharmacollege.lk<?= $booking['image_path'] ?>"
+                                            download target="_blank">
+                                            <i class="fa fa-download" aria-hidden="true"></i>
 
-                                            </a>
-                                        </td>
+                                        </a>
+                                    </td>
 
-                                        <td> <?php if (!empty($duplicate_error_message)): ?>
-                                                <div class="badge bg-danger" role="alert">
-                                                    <?= $duplicate_error_message ?>
-                                                </div>
-                                            <?php endif; ?>
-                                        </td>
-                                        <td>
-                                            <?php
+                                    <td> <?php if (!empty($duplicate_error_message)): ?>
+                                        <div class="badge bg-danger" role="alert">
+                                            <?= $duplicate_error_message ?>
+                                        </div>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php
 
                                             ?>
-                                            <span class="badge <?= $badgeClass ?>"><?= ucfirst($status) ?></span>
-                                        </td>
-                                    </tr>
+                                        <span class="badge <?= $badgeClass ?>"><?= ucfirst($status) ?></span>
+                                    </td>
+                                </tr>
                                 <?php
                                 }
                                 ?>
@@ -289,15 +326,16 @@ $allAssignments = $response->toArray();
 </div>
 
 <script>
-    $('#graduation-table').dataTable({
-        dom: 'Bfrtip',
-        pageLength: 50,
-        buttons: [
-            'pdf'
-            // 'colvis'
-        ],
-        order: [
-            [0, 'asc']
-        ]
-    })
+$('#graduation-table').dataTable({
+    dom: 'Bfrtip',
+    pageLength: 50,
+    buttons: [
+        'copy', 'csv', 'excel', 'pdf', 'print',
+        // 'colvis'
+    ],
+    order: [
+        [3, 'desc'], // 3rd column (index starts from 0)
+        [4, 'desc'] // 4th column
+    ]
+})
 </script>

@@ -126,4 +126,8 @@ return [
     'PUT /convocation-registrations/advanced-certificate-print-status/([A-Za-z0-9]+)/$' => function ($registration_id) use ($convocationRegistrationController) {
         return $convocationRegistrationController->updateAdvancedCertificatePrintStatus($registration_id);
     },
+
+    'GET /convocation-registrations/get-balances/([A-Za-z0-9]+)/$' => function ($registration_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->GetStudentDueAmount($registration_id);
+    },
 ];
