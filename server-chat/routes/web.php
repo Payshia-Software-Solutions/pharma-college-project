@@ -48,9 +48,9 @@ $routes['GET /'] = function () {
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = trim($_SERVER['REQUEST_URI'], '/');
 // Strip 'api' prefix if present
-if (str_starts_with($uri, 'api/')) {
-    $uri = substr($uri, 4); // remove 'api/' prefix
-}
+// if (str_starts_with($uri, 'api/')) {
+//     $uri = substr($uri, 4); // remove 'api/' prefix
+// }
 // Ensure URI always has a trailing slash
 if (substr($uri, -1) !== '/') {
     $uri .= '/';
