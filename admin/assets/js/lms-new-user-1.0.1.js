@@ -206,7 +206,10 @@ function getLastapprovedList() {
   fetch_data();
 }
 
-function SendMessageOrderStudyPack(indexNumber) {
+function SendMessageOrderStudyPack(phoneNumber) {
+  const payload = {
+    mobile: phoneNumber, //  name this to match the API contract
+  };
   Swal.fire({
     title: "Confirm save?",
     html: `
@@ -229,25 +232,30 @@ function SendMessageOrderStudyPack(indexNumber) {
 
     fetch(
       // 🔀 change this path if your route is different
-      `https://qa-api.pharmacollege.lk/userFullDetails/update-certificate-name/${student_number}`,
+      `https://qa-api.pharmacollege.lk/send-order-sms`,
       {
-        method: "PUT", // or PATCH if that’s what your API uses
+        method: "POST", // or PATCH if that’s what your API uses
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       }
     )
       .then(async (res) => {
         if (!res.ok) {
+          // read the body so we can surface any error text the API returned
           const msg = await res.text();
           throw new Error(`Server responded ${res.status}: ${msg}`);
         }
-        return res.json();
+        return res.json(); // ⬅️  the parsed JSON you showed above
       })
-      .then((result) => {
-        Swal.fire("Success", `Saved successfully.</b>`, "success");
+      .then((json) => {
+        const body = `
+    <p>${json.message}</p>
+    <p><b>Status:</b> ${json.data?.status ?? "—"}</p>
+    <p><b>To:</b> ${json.data?.to ?? phoneNumber}</p>
+    <p><b>Cost:</b> ${json.data?.cost ?? "N/A"}</p>
+  `;
 
-        // Refresh the UI (your own handler)
-        if (referenceId) OpenCertificateModel(referenceId);
+        Swal.fire("Success", body, "success");
       })
       .catch((err) => {
         Swal.fire("Error", err.message, "error");
