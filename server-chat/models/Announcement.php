@@ -20,8 +20,8 @@ class Announcement
     }
     public function create($data)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO announcements (id, title, content, date, author, category, is_new) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$data['id'], $data['title'], $data['content'], $data['date'], $data['author'], $data['category'], $data['is_new']]);
+        $stmt = $this->pdo->prepare("INSERT INTO announcements (title, content, date, author, category, is_new) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$data['title'], $data['content'], $data['date'], $data['author'], $data['category'], $data['is_new']]);
     }
     public function delete($id)
     {
