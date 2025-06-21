@@ -1,0 +1,98 @@
+{
+  "announcements": [
+    {
+      "title": "Semester Begins",
+      "content": "The new semester will start on July 1st.",
+      "author": "Dean Office",
+      "category": "Academic",
+      "is_new": true
+    },
+    {
+      "title": "Holiday Notice",
+      "content": "The institute will remain closed on August 15th for Independence Day.",
+      "author": "Admin",
+      "category": "General",
+      "is_new": true
+    }
+  ],
+  "tickets": [
+    {
+      "subject": "Issue with course registration",
+      "description": "Unable to register for elective subjects.",
+      "priority": "High",
+      "status": "Open",
+      "student_name": "Alice Perera",
+      "student_avatar": "https://example.com/avatar1.png",
+      "assigned_to": "Mr. Silva",
+      "assignee_avatar": "https://example.com/staff1.png",
+      "is_locked": false,
+      "locked_by_staff_id": null
+    },
+    {
+      "subject": "Transcript Request",
+      "description": "Requesting official transcripts for job application.",
+      "priority": "Medium",
+      "status": "In Progress",
+      "student_name": "Nimal Rajapaksha",
+      "student_avatar": "https://example.com/avatar2.png",
+      "assigned_to": "Ms. Fernando",
+      "assignee_avatar": "https://example.com/staff2.png",
+      "is_locked": true,
+      "locked_by_staff_id": "staff_124"
+    }
+  ],
+  "ticket_messages": [
+    {
+      "ticket_id": 1,
+      "from_role": "student",
+      "text": "Please help me with the registration issue.",
+      "time": "10:15 AM",
+      "avatar": "https://example.com/avatar1.png"
+    },
+    {
+      "ticket_id": 1,
+      "from_role": "staff",
+      "text": "We’re looking into the problem.",
+      "time": "10:30 AM",
+      "avatar": "https://example.com/staff1.png"
+    }
+  ],
+  "chats": [
+    {
+      "user_name": "Kavindu Dias",
+      "user_avatar": "https://example.com/avatar3.png",
+      "last_message_preview": "Can I get my ID card today?",
+      "last_message_time": "2:40 PM",
+      "unread_count": 1
+    },
+    {
+      "user_name": "Sajani Weerasinghe",
+      "user_avatar": "https://example.com/avatar4.png",
+      "last_message_preview": "Thanks for the quick reply!",
+      "last_message_time": "1:15 PM",
+      "unread_count": 0
+    }
+  ],
+  "chat_messages": [
+    {
+      "chat_id": 1,
+      "from_role": "student",
+      "text": "Can I get my ID card today?",
+      "time": "2:40 PM",
+      "avatar": "https://example.com/avatar3.png",
+      "attachment_type": null,
+      "attachment_url": null,
+      "attachment_name": null
+    },
+    {
+      "chat_id": 1,
+      "from_role": "staff",
+      "text": "Yes, please visit the admin office before 4 PM.",
+      "time": "2:45 PM",
+      "avatar": "https://example.com/staff1.png",
+      "attachment_type": "document",
+      "attachment_url": "https://example.com/idcard-instructions.pdf",
+      "attachment_name": "ID Card Instructions"
+    }
+  ]
+}
