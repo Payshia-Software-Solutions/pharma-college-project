@@ -28,7 +28,7 @@ return [
     'DELETE /api/tickets/(\w+)$' => fn($id) => $ticketController->delete($id),
 
     // --- Ticket Messages ---
-    'GET /api/ticket-messages/$' => fn() => $ticketController->getAll(),
+    'GET /api/ticket-messages/$' => fn() => $ticketMessageController->getAll(),
     'GET /api/ticket-messages/by-ticket/(\w+)$' => fn($ticketId) => $ticketMessageController->getByTicketId($ticketId),
     'POST /api/ticket-messages/$' => fn() => $ticketMessageController->create(),
     'DELETE /api/ticket-messages/(\w+)$' => fn($id) => $ticketMessageController->delete($id),
