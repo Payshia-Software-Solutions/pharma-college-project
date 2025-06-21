@@ -11,7 +11,7 @@ export default function GraduationClient() {
 
   useEffect(() => {
     const forceActive = searchParams.get("forceActive");
-    setIsActive(!!forceActive);
+    // setIsActive(!!forceActive);
     setIsLoading(false);
   }, [searchParams]);
 
