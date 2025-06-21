@@ -19,8 +19,8 @@ class Ticket
     }
     public function create($data)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO tickets (id, subject, description, priority, status, created_at, student_name, student_avatar, assigned_to, assignee_avatar, is_locked, locked_by_staff_id) VALUES (?, ?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$data['id'], $data['subject'], $data['description'], $data['priority'], $data['status'], $data['student_name'], $data['student_avatar'], $data['assigned_to'], $data['assignee_avatar'], $data['is_locked'], $data['locked_by_staff_id']]);
+        $stmt = $this->pdo->prepare("INSERT INTO tickets (subject, description, priority, status, created_at, student_name, student_avatar, assigned_to, assignee_avatar, is_locked, locked_by_staff_id) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$data['subject'], $data['description'], $data['priority'], $data['status'], $data['student_name'], $data['student_avatar'], $data['assigned_to'], $data['assignee_avatar'], $data['is_locked'], $data['locked_by_staff_id']]);
     }
     public function delete($id)
     {

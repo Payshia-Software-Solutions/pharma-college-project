@@ -18,8 +18,8 @@ class Chat
     }
     public function create($data)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO chats (id, user_name, user_avatar, last_message_preview, last_message_time, unread_count, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->execute([$data['id'], $data['user_name'], $data['user_avatar'], $data['last_message_preview'], $data['last_message_time'], $data['unread_count']]);
+        $stmt = $this->pdo->prepare("INSERT INTO chats ( user_name, user_avatar, last_message_preview, last_message_time, unread_count, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
+        $stmt->execute([$data['user_name'], $data['user_avatar'], $data['last_message_preview'], $data['last_message_time'], $data['unread_count']]);
     }
     public function delete($id)
     {
