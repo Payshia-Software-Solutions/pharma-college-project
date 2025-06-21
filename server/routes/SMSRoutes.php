@@ -41,4 +41,19 @@ return [
         // Call the controller method
         $smsController->sendWelcomeSMS($data['mobile'], $data['studentName'], $data['referenceNumber']);
     },
+
+    'POST /send-order-sms/$' => function () use ($smsController) {
+        // Get JSON input from the request body
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        // Validate input
+        if (!isset($data['mobile'])) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Mobile number and orderId are required']);
+            return;
+        }
+
+        // Call the controller method
+        $smsController->sendOrderSMS($data['mobile'], $data['studentName'] ?? 'Student');
+    }
 ];

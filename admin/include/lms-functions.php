@@ -1247,3 +1247,20 @@ function SaveEditedAssignmentGrade($assignmentId, $gradeValue, $studentNumber)
 
     return $error;
 }
+
+
+function GetOrdersByStudentNumber()
+{
+    global $lms_link;
+
+    $ArrayResult = array();
+    $sql = "SELECT * FROM `delivery_orders` ORDER BY `id` DESC";
+
+    $result = $lms_link->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ArrayResult[$row['index_number']] = $row;
+        }
+    }
+    return $ArrayResult;
+}
