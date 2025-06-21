@@ -22,6 +22,11 @@ $DistrictList = getDistricts($link);
 $LoggedUser = $_POST['LoggedUser'];
 $refId = $_POST['refId'];
 $studentBatch = $_POST['studentBatch'];
+
+if (!isset($CourseBatches[$studentBatch])) {
+    echo json_encode(array('status' => 'error', 'message' => 'Invalid Batch Selected!'));
+    exit;
+}
 $activeStatus = $_POST['activeStatus'];
 $createUserLevel = $_POST['createUserLevel'];
 $account_status = "Active";

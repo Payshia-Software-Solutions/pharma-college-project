@@ -139,4 +139,23 @@ class SMSModel
             return json_decode($response, true);
         }
     }
+
+    public function sendOrderSMS($mobile, $studentName)
+    {
+        // Load the order SMS template from file
+        $template = file_get_contents('templates/study-pack-not-order.txt');
+        if (!$template) {
+            throw new Exception("Unable to load order SMS template.");
+        }
+
+        // Replace placeholders with actual data
+        $message = str_replace(
+            ['{{FIRST_NAME}}'],
+            [$studentName],
+            $template
+        );
+
+        // Send SMS
+        return $this->sendSMS($mobile, $this->senderId, $message);
+    }
 }
