@@ -95,7 +95,7 @@ $deliveryOrders = GetOrdersByStudentNumber();
                                     if (!empty($orderDetails)) {
                                         echo "<p class='mb-0'>" . $orderDetails['id'] . "</p>";
                                     } else { ?>
-                                        <button type="button" onclick="SendMessageOrderStudyPack('<?= $indexNumber ?>', '<?= $telephone_1 ?>')" class="btn btn-sm btn-dark">Send message</button>
+                                        <button type="button" onclick="SendMessageOrderStudyPack('0770481363')" class="btn btn-sm btn-dark">Send message</button>
                                     <?php
                                     }
                                     ?>
