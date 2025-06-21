@@ -38,8 +38,6 @@ $routes = array_merge(
     $SupportRoutes
 );
 
-
-
 // Define the home route with trailing slash
 $routes['GET /'] = function () {
     // Serve the index.html file
