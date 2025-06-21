@@ -14,8 +14,8 @@ class ChatMessage
     }
     public function create($data)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO chat_messages (chat_id, from_role, text, time, avatar, attachment_type, attachment_url, attachment_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())");
-        $stmt->execute([$data['chat_id'], $data['from_role'], $data['text'], $data['time'], $data['avatar'], $data['attachment_type'], $data['attachment_url'], $data['attachment_name']]);
+        $stmt = $this->pdo->prepare("INSERT INTO chat_messages (chat_id, from_role, text, time, attachment_type, attachment_url, attachment_name, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+        $stmt->execute([$data['chat_id'], $data['from_role'], $data['text'], $data['time'],  $data['attachment_type'], $data['attachment_url'], $data['attachment_name']]);
     }
     public function delete($id)
     {
