@@ -29,13 +29,13 @@ return [
 
     // --- Ticket Messages ---
     'GET /api/ticket-messages/$' => fn() => $ticketMessageController->getAll(),
-    'GET /api/ticket-messages/by-ticket/(\w+)$' => fn($ticketId) => $ticketMessageController->getByTicketId($ticketId),
+    'GET /api/ticket-messages/by-ticket/(\w+)/$' => fn($ticketId) => $ticketMessageController->getByTicketId($ticketId),
     'POST /api/ticket-messages/$' => fn() => $ticketMessageController->create(),
     'DELETE /api/ticket-messages/(\w+)$' => fn($id) => $ticketMessageController->delete($id),
 
     // --- Chats ---
     'GET /api/chats/$' => fn() => $chatController->getAll(),
-    'GET /api/chats/(\w+)$' => fn($id) => $chatController->getById($id),
+    'GET /api/chats/(\w+)/$' => fn($id) => $chatController->getById($id),
     'POST /api/chats/$' => fn() => $chatController->create(),
     'DELETE /api/chats/(\w+)$' => fn($id) => $chatController->delete($id),
 
