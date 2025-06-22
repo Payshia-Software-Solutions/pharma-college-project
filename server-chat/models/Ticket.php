@@ -17,11 +17,36 @@ class Ticket
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    public function create($data)
+    public function create(array $data): void
     {
-        $stmt = $this->pdo->prepare("INSERT INTO tickets (subject, description, priority, status, created_at, student_name, student_avatar, assigned_to, assignee_avatar, is_locked, locked_by_staff_id) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$data['subject'], $data['description'], $data['priority'], $data['status'], $data['student_name'], $data['student_avatar'], $data['assigned_to'], $data['assignee_avatar'], $data['is_locked'], $data['locked_by_staff_id']]);
+        $sql = "
+        INSERT INTO tickets (
+            subject, description, priority, status, created_at,
+            student_name, student_avatar, assigned_to,
+            assignee_avatar, is_locked, locked_by_staff_id
+        )
+        VALUES (
+            ?, ?, ?, ?, NOW(),
+            ?, ?, ?, ?, ?, ?
+        )";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        // Use ?? null so any missing key becomes NULL
+        $stmt->execute([
+            $data['subject']            ?? null,
+            $data['description']        ?? null,
+            $data['priority']           ?? null,
+            $data['status']             ?? null,
+            $data['student_name']       ?? null,
+            $data['student_avatar']     ?? null,
+            $data['assigned_to']        ?? null,
+            $data['assignee_avatar']    ?? null,
+            $data['is_locked']          ?? null,
+            $data['locked_by_staff_id'] ?? null,
+        ]);
     }
+
     public function delete($id)
     {
         $stmt = $this->pdo->prepare("DELETE FROM tickets WHERE id = ?");
