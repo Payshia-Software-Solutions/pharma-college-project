@@ -17,7 +17,7 @@ class Ticket
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    public function create(array $data): void
+    public function create(array $data)
     {
         $sql = "
         INSERT INTO tickets (
@@ -45,6 +45,9 @@ class Ticket
             $data['is_locked']          ?? 0,
             $data['locked_by_staff_id'] ?? null,
         ]);
+
+        // Get last inserted ID
+        return $this->pdo->lastInsertId();
     }
     public function updateStatus($ticketId, $newStatus)
     {

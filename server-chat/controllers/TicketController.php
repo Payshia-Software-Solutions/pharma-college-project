@@ -18,6 +18,7 @@ class TicketController
         $record = $this->model->getById($id);
         echo $record ? json_encode($record) : json_encode(["error" => "Not found"]);
     }
+
     public function create()
     {
         $data = json_decode(file_get_contents("php://input"), true);
