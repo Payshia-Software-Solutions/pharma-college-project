@@ -25,8 +25,14 @@ class TicketController
         echo json_encode(["message" => "Ticket created"]);
     }
 
-    public function updateStatus($id, $newStatus)
+    public function updateStatus($id)
     {
+        $data = json_decode(file_get_contents("php://input"), true);
+        if (!isset($data['newStatus'])) {
+            echo json_encode(["error" => "New status is required"]);
+            return;
+        }
+        $newStatus = $data['newStatus'];
         $this->model->updateStatus($id, $newStatus);
         echo json_encode(["message" => "Ticket status updated"]);
     }
