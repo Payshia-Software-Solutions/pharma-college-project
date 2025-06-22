@@ -19,8 +19,8 @@ class TicketMessage
     }
     public function create($data)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO ticket_messages (ticket_id, from_role, text, time, avatar, created_at) VALUES (?, ?, ?, ?, ?, NOW())");
-        $stmt->execute([$data['ticket_id'], $data['from_role'], $data['text'], $data['time'], $data['avatar']]);
+        $stmt = $this->pdo->prepare("INSERT INTO ticket_messages (ticket_id, from_role, text, time, created_at) VALUES (?, ?, ?, ?, NOW())");
+        $stmt->execute([$data['ticket_id'], $data['from_role'], $data['text'], $data['time'],]);
     }
     public function delete($id)
     {
