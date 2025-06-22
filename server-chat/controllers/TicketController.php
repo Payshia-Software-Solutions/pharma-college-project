@@ -21,8 +21,12 @@ class TicketController
     public function create()
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        $this->model->create($data);
-        echo json_encode(["message" => "Ticket created"]);
+        $insertedId = $this->model->create($data);
+
+        echo json_encode([
+            "message" => "Ticket message created",
+            "ticket_id" => $insertedId
+        ]);
     }
 
     public function updateStatus($id)
