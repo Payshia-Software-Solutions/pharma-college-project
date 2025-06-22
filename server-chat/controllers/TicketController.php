@@ -26,7 +26,7 @@ class TicketController
 
         echo json_encode([
             "message" => "Ticket message created",
-            "ticket_id" => $insertedId
+            "id" => $insertedId
         ]);
     }
 
