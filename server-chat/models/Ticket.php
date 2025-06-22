@@ -42,7 +42,7 @@ class Ticket
             $data['student_avatar']     ?? null,
             $data['assigned_to']        ?? null,
             $data['assignee_avatar']    ?? null,
-            $data['is_locked']          ?? null,
+            $data['is_locked']          ?? 0,
             $data['locked_by_staff_id'] ?? null,
         ]);
     }
