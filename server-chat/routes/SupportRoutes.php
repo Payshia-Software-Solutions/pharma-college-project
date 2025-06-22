@@ -30,7 +30,7 @@ return [
 
     // --- Ticket Messages ---
     'GET /api/ticket-messages/$' => fn() => $ticketMessageController->getAll(),
-    'POST /api/ticket-messages/by-ticket/(\w+)/$' => fn($ticketId) => $ticketMessageController->getByTicketId($ticketId),
+    'GET /api/ticket-messages/by-ticket/(\w+)/$' => fn($ticketId) => $ticketMessageController->getByTicketId($ticketId),
     'POST /api/ticket-messages/$' => fn() => $ticketMessageController->create(),
     'DELETE /api/ticket-messages/(\w+)/$' => fn($id) => $ticketMessageController->delete($id),
 
