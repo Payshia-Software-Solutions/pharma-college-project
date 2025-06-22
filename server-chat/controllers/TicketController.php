@@ -24,6 +24,12 @@ class TicketController
         $this->model->create($data);
         echo json_encode(["message" => "Ticket created"]);
     }
+
+    public function updateStatus($id, $newStatus)
+    {
+        $this->model->updateStatus($id, $newStatus);
+        echo json_encode(["message" => "Ticket status updated"]);
+    }
     public function delete($id)
     {
         $this->model->delete($id);

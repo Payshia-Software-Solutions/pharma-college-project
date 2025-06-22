@@ -22,6 +22,10 @@ class TicketMessage
         $stmt = $this->pdo->prepare("INSERT INTO ticket_messages (ticket_id, from_role, text, time, created_at) VALUES (?, ?, ?, ?, NOW())");
         $stmt->execute([$data['ticket_id'], $data['from_role'], $data['text'], $data['time'],]);
     }
+
+
+
+
     public function delete($id)
     {
         $stmt = $this->pdo->prepare("DELETE FROM ticket_messages WHERE id = ?");

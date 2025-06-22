@@ -46,6 +46,11 @@ class Ticket
             $data['locked_by_staff_id'] ?? null,
         ]);
     }
+    public function updateStatus($ticketId, $newStatus)
+    {
+        $stmt = $this->pdo->prepare("UPDATE tickets SET status = ?, updated_at = NOW() WHERE id = ?");
+        $stmt->execute([$newStatus, $ticketId]);
+    }
 
     public function delete($id)
     {
