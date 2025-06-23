@@ -25,6 +25,7 @@ return [
     'GET /api/tickets/$' => fn() => $ticketController->getAll(),
     'GET /api/tickets/(\w+)/$' => fn($id) => $ticketController->getById($id),
     'POST /api/tickets/$' => fn() => $ticketController->create(),
+    'POST /api/tickets/(\w+)/assign/$' => fn($id) => $ticketController->assignTicket($id),
     'POST /api/tickets/(\w+)/status/$' => fn($id) => $ticketController->updateStatus($id),
     'DELETE /api/tickets/(\w+)/$' => fn($id) => $ticketController->delete($id),
 

@@ -41,6 +41,24 @@ class TicketController
         $this->model->updateStatus($id, $newStatus);
         echo json_encode(["message" => "Ticket status updated"]);
     }
+
+    public function assignTicket($id)
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        if (!isset($data['assignedTo']) || !isset($data['assigneeAvatar']) || !isset($data['assignedTo']) || !isset($data['assigneeAvatar'])) {
+            echo json_encode(["error" => "Assigned to and assignee avatar are required"]);
+            return;
+        }
+        $this->model->assignTicket(
+            $id,
+            $data['assignedTo'],
+            $data['assigneeAvatar'],
+            $data['isLocked'],
+            $data['lockedByStaffId']
+        );
+        echo json_encode(["message" => "Ticket assigned"]);
+    }
+
     public function delete($id)
     {
         $this->model->delete($id);
