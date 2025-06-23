@@ -866,16 +866,4 @@ class ConvocationRegistrationController
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
-
-    public function GetRecordsByStudentNumber(string $student_number)
-    {
-        try {
-            $records = $this->model->getRegistrationByStudentNumber($student_number);
-            http_response_code(200);
-            echo json_encode($records);
-        } catch (RuntimeException $e) {
-            http_response_code(404);
-            echo json_encode(['error' => $e->getMessage()]);
-        }
-    }
 }
