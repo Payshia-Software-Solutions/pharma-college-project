@@ -55,6 +55,28 @@ class Ticket
         $stmt->execute([$newStatus, $ticketId]);
     }
 
+    public function assignTicket($ticketId, $assignedTo, $assigneeAvatar, $isLocked = 0, $lockedByStaffId)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE tickets 
+        SET 
+            assigned_to = ?, 
+            assignee_avatar = ?, 
+            is_locked = ?, 
+            locked_by_staff_id = ?, 
+            updated_at = NOW() 
+        WHERE id = ?
+    ");
+
+        $stmt->execute([
+            $assignedTo,
+            $assigneeAvatar,
+            $isLocked,
+            $lockedByStaffId,
+            $ticketId
+        ]);
+    }
+
     public function delete($id)
     {
         $stmt = $this->pdo->prepare("DELETE FROM tickets WHERE id = ?");
