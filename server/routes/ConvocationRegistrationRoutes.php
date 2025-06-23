@@ -136,7 +136,7 @@ return [
     },
 
     'GET /convocation-registrations/get-records-student-number/([A-Za-z0-9]+)/$' => function ($student_number) use ($convocationRegistrationController) {
-        return $convocationRegistrationController->GetRecordsByStudentNumber($student_number);
+        return $convocationRegistrationController->getRegistrationByStudentNumber($student_number);
     },
 
     'GET /convocation-registrations/get-ceremony-number/([A-Za-z0-9]+)/$' => function ($student_number) use ($convocationRegistrationController) {
