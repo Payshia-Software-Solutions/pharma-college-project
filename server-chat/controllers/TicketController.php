@@ -69,6 +69,19 @@ class TicketController
         }
     }
 
+    public function unlockTicket($id)
+    {
+        $this->model->unlockTicket($id);
+
+        $ticket = $this->model->getById($id);
+        if ($ticket) {
+            echo json_encode($ticket);
+        } else {
+            http_response_code(404);
+            echo json_encode(["error" => "Ticket not found"]);
+        }
+    }
+
 
     public function delete($id)
     {
