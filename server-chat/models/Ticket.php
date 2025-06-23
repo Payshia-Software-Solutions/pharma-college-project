@@ -77,6 +77,15 @@ class Ticket
         ]);
     }
 
+    public function unlockTicket($id)
+    {
+        $stmt = $this->pdo->prepare("UPDATE tickets 
+        SET is_locked = 0, locked_by_staff_id = NULL, updated_at = NOW() 
+        WHERE id = ?");
+        $stmt->execute([$id]);
+    }
+
+
     public function delete($id)
     {
         $stmt = $this->pdo->prepare("DELETE FROM tickets WHERE id = ?");
