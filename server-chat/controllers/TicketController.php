@@ -45,19 +45,30 @@ class TicketController
     public function assignTicket($id)
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        if (!isset($data['assignedTo']) || !isset($data['assigneeAvatar']) || !isset($data['assignedTo']) || !isset($data['assigneeAvatar'])) {
+
+        // Validate required fields
+        if (!isset($data['assignedTo']) || !isset($data['assigneeAvatar'])) {
             echo json_encode(["error" => "Assigned to and assignee avatar are required"]);
             return;
         }
-        $this->model->assignTicket(
-            $id,
-            $data['assignedTo'],
-            $data['assigneeAvatar'],
-            $data['isLocked'],
-            $data['lockedByStaffId']
-        );
-        echo json_encode(["message" => "Ticket assigned"]);
+
+        // Default optional fields
+        $isLocked = isset($data['isLocked']) ? (int)$data['isLocked'] : 0;
+        $lockedBy = $data['lockedByStaffId'] ?? null;
+
+        // Assign ticket
+        $this->model->assignTicket($id, $data['assignedTo'], $data['assigneeAvatar'], $isLocked, $lockedBy);
+
+        // Return full ticket details
+        $ticket = $this->model->getById($id);
+        if ($ticket) {
+            echo json_encode($ticket);
+        } else {
+            http_response_code(404);
+            echo json_encode(["error" => "Ticket not found"]);
+        }
     }
+
 
     public function delete($id)
     {
