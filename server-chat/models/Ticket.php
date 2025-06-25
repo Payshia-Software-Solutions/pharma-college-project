@@ -23,11 +23,11 @@ class Ticket
         INSERT INTO tickets (
             subject, description, priority, status, created_at,
             student_name, student_avatar, assigned_to,
-            assignee_avatar, is_locked, locked_by_staff_id
+            assignee_avatar, is_locked, locked_by_staff_id, category
         )
         VALUES (
             ?, ?, ?, ?, NOW(),
-            ?, ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?, ?, ?
         )";
 
         $stmt = $this->pdo->prepare($sql);
@@ -44,6 +44,7 @@ class Ticket
             $data['assignee_avatar']    ?? null,
             $data['is_locked']          ?? 0,
             $data['locked_by_staff_id'] ?? null,
+            $data['category'] ?? null,
         ]);
 
         // Get last inserted ID
