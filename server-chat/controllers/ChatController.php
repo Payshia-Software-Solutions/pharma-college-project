@@ -40,7 +40,7 @@ class ChatController
             'user_avatar' => $data['user_avatar'] ?? null,
             'last_message_preview' => $data['last_message_preview'] ?? null,
             'last_message_time' => $data['last_message_time'] ?? null,
-            'unread_count' => $data['unread_count'] ?? null,
+            'unread_count' => $data['unread_count'] ?? 0,
         ];
 
         $this->model->create($validatedData);
