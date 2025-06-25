@@ -39,6 +39,7 @@ return [
     // --- Chats ---
     'GET /api/chats/$' => fn() => $chatController->getAll(),
     'GET /api/chats/(\w+)/$' => fn($id) => $chatController->getById($id),
+    'GET /api/chats/username/(\w+)/$' => fn($id) => $chatController->getByUsername($user_name),
     'POST /api/chats/$' => fn() => $chatController->create(),
     'DELETE /api/chats/(\w+)/$' => fn($id) => $chatController->delete($id),
 
