@@ -19,6 +19,11 @@ class TicketController
         echo $record ? json_encode($record) : json_encode(["error" => "Not found"]);
     }
 
+    public function getByUsername($user_name)
+    {
+        echo json_encode($this->model->getByUsername($user_name));
+    }
+
     public function create()
     {
         $data = json_decode(file_get_contents("php://input"), true);
