@@ -19,7 +19,6 @@ return [
     'PUT /users/{id}' => [$userController, 'updateUser'],
     'DELETE /users/{id}' => [$userController, 'deleteUser'],
 
-    // ✅ New login route
     'POST /users/login/' => function () use ($userController) {
         $userController->login();
     }
