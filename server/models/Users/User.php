@@ -89,5 +89,11 @@ class User
         $stmt->execute(['value' => $value]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    
+
+    public function getRecordByUsername($username)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM users WHERE username = :username");
+        $stmt->execute(['username' => $username]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
