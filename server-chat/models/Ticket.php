@@ -17,6 +17,14 @@ class Ticket
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getByUsername($user_name)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM tickets WHERE student_name = ?");
+        $stmt->execute([$user_name]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function create(array $data)
     {
         $sql = "

@@ -15,6 +15,11 @@ class TicketMessageController
     {
         echo json_encode($this->model->getAll());
     }
+
+    public function getByUsername($user_name)
+    {
+        echo json_encode($this->model->getByUsername($user_name));
+    }
     public function getByTicketId($ticketId)
     {
         echo json_encode($this->model->getByTicketId($ticketId));

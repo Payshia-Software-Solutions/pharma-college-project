@@ -24,6 +24,7 @@ return [
     // --- Tickets ---
     'GET /api/tickets/$' => fn() => $ticketController->getAll(),
     'GET /api/tickets/(\w+)/$' => fn($id) => $ticketController->getById($id),
+    'GET /api/tickets/username/(\w+)/$' => fn($user_name) => $ticketController->getByUsername($user_name),
     'POST /api/tickets/$' => fn() => $ticketController->create(),
     'POST /api/tickets/(\w+)/assign/$' => fn($id) => $ticketController->assignTicket($id),
     'POST /api/tickets/(\w+)/unlock/$' => fn($id) => $ticketController->unlockTicket($id),
