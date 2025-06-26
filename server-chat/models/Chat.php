@@ -28,7 +28,7 @@ class Chat
         $user_avatar = $data['user_avatar'] ?? null;
         $last_message_preview = $data['last_message_preview'] ?? null;
         $last_message_time = $data['last_message_time'] ?? null;
-        $unread_count = $data['unread_count'] ?? null;
+        $unread_count = $data['unread_count'] ?? 0;
 
         $stmt = $this->pdo->prepare("
         INSERT INTO chats (user_name, user_avatar, last_message_preview, last_message_time, unread_count, created_at)
