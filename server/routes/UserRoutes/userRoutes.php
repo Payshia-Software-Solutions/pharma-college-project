@@ -18,8 +18,5 @@ return [
     'PUT /users/username/{username}' => [$userController, 'UpdateUserByUsername'],
     'PUT /users/{id}' => [$userController, 'updateUser'],
     'DELETE /users/{id}' => [$userController, 'deleteUser'],
-
-    'POST /users/login/' => function () use ($userController) {
-        $userController->login();
-    }
+    'POST /users/login' => [$userController, 'login'],
 ];
