@@ -22,7 +22,7 @@ class Ticket
     {
         $stmt = $this->pdo->prepare("SELECT * FROM tickets WHERE student_name = ?");
         $stmt->execute([$user_name]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function create(array $data)
