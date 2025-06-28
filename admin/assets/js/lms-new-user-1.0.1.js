@@ -208,54 +208,53 @@ function getLastapprovedList() {
 
 function SendMessageOrderStudyPack(phoneNumber) {
   const payload = {
-    mobile: phoneNumber, //  name this to match the API contract
+    mobile: phoneNumber,
   };
+
   Swal.fire({
-    title: "Confirm save?",
+    title: "Confirm sending SMS?",
     html: `
-      <p>You’re about to assign
-      <b>${updatedValue}</b> to student
-      <b>${student_number}</b>.</p>
-      <p>This will be stored in the User Details.</p>`,
+      <p>You’re about to send an order SMS to:</p>
+      <p><b>${phoneNumber}</b></p>
+    `,
     icon: "question",
     showCancelButton: true,
-    confirmButtonText: "Yes, save it!",
+    confirmButtonText: "Yes, send it!",
     cancelButtonText: "No, cancel",
     reverseButtons: true,
   }).then((result) => {
     if (!result.isConfirmed) {
-      Swal.fire("Cancelled", "No changes were made.", "info");
+      Swal.fire("Cancelled", "No SMS was sent.", "info");
       return;
     }
 
     showOverlay();
 
-    fetch(
-      // 🔀 change this path if your route is different
-      `https://qa-api.pharmacollege.lk/send-order-sms`,
-      {
-        method: "POST", // or PATCH if that’s what your API uses
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      }
-    )
+    fetch(`https://qa-api.pharmacollege.lk/send-order-sms`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    })
       .then(async (res) => {
         if (!res.ok) {
-          // read the body so we can surface any error text the API returned
           const msg = await res.text();
           throw new Error(`Server responded ${res.status}: ${msg}`);
         }
-        return res.json(); // ⬅️  the parsed JSON you showed above
+        return res.json();
       })
       .then((json) => {
         const body = `
-    <p>${json.message}</p>
-    <p><b>Status:</b> ${json.data?.status ?? "—"}</p>
-    <p><b>To:</b> ${json.data?.to ?? phoneNumber}</p>
-    <p><b>Cost:</b> ${json.data?.cost ?? "N/A"}</p>
-  `;
+          <p>${json.message}</p>
+          <p><b>Status:</b> ${json.data?.status ?? "—"}</p>
+          <p><b>To:</b> ${json.data?.to ?? phoneNumber}</p>
+          <p><b>Cost:</b> ${json.data?.cost ?? "N/A"}</p>
+        `;
 
-        Swal.fire("Success", body, "success");
+        Swal.fire({
+          title: "Success",
+          html: body,
+          icon: "success",
+        });
       })
       .catch((err) => {
         Swal.fire("Error", err.message, "error");

@@ -84,40 +84,42 @@ $deliveryOrders = GetOrdersByStudentNumber();
                                 }
                             }
                     ?>
-                            <tr>
-                                <td><?= $indexNumber ?></td>
-                                <td><?= $studentName ?></td>
-                                <td>
-                                    <?php
+                    <tr>
+                        <td><?= $indexNumber ?></td>
+                        <td><?= $studentName ?></td>
+                        <td>
+                            <?php
                                     $orderDetails = $deliveryOrders[$indexNumber] ?? [];
 
                                     // outputArray($orderDetails);
                                     if (!empty($orderDetails)) {
                                         echo "<p class='mb-0'>" . $orderDetails['id'] . "</p>";
                                     } else { ?>
-                                        <button type="button" onclick="SendMessageOrderStudyPack('0770481363')" class="btn btn-sm btn-dark">Send message</button>
-                                    <?php
+                            <button type="button" onclick="SendMessageOrderStudyPack('<?= $telephone_1 ?>')"
+                                class="btn btn-sm btn-dark">Send message</button>
+                            <?php
                                     }
                                     ?>
-                                <td><?= $addressL1 ?>, <?= $addressL2 ?>, <?= $cityName ?>, <?= $districtName ?>, <?= $postalCode ?></td>
-                                <td><?= $telephone_1 ?></td>
-                                <td><?= $nameWithInitials ?></td>
-                                <td><?= $nameOnCertificate ?></td>
-                                <td class="text-center">
-                                    <?php
+                        <td><?= $addressL1 ?>, <?= $addressL2 ?>, <?= $cityName ?>, <?= $districtName ?>,
+                            <?= $postalCode ?></td>
+                        <td><?= $telephone_1 ?></td>
+                        <td><?= $nameWithInitials ?></td>
+                        <td><?= $nameOnCertificate ?></td>
+                        <td class="text-center">
+                            <?php
                                     if (!empty($enrollmentArray)) {
                                         foreach ($enrollmentArray as $enrollment) {
                                     ?>
-                                            <p class="mb-0">
-                                                <?= $enrollment['course_code'] ?>
-                                            </p>
-                                    <?php
+                            <p class="mb-0">
+                                <?= $enrollment['course_code'] ?>
+                            </p>
+                            <?php
                                         }
                                     }
                                     ?>
-                                </td>
+                        </td>
 
-                            </tr>
+                    </tr>
 
                     <?php
                         }
@@ -132,12 +134,12 @@ $deliveryOrders = GetOrdersByStudentNumber();
     </div>
 </div>
 <script>
-    $(document).ready(function() {
-        $('#report-table').DataTable({
-            dom: 'Bfrtip',
-            buttons: ['copy', 'csv', 'excel', 'pdf', `colvis`],
-            // ordering: false,
-            // searching: false, // Disable search input   
-        });
+$(document).ready(function() {
+    $('#report-table').DataTable({
+        dom: 'Bfrtip',
+        buttons: ['copy', 'csv', 'excel', 'pdf', `colvis`],
+        // ordering: false,
+        // searching: false, // Disable search input   
     });
+});
 </script>

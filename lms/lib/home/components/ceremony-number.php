@@ -29,6 +29,7 @@ $UserDetails =  GetUserDetails($link, $loggedUser);
     <div class="col-12 text-center">
         <?php if (!empty($ceremonyNumberArray)) {
             $balances = $ceremonyNumberArray['balances'] ?? [];
+            $registrationInfo = $ceremonyNumberArray['registration'] ?? [];
         ?>
         <div class="ceremony-card">
             <div class="header">
@@ -53,6 +54,36 @@ $UserDetails =  GetUserDetails($link, $loggedUser);
                     Name on Certificate
                 </div>
                 <div class="ceremony-number"><?= $UserDetails['name_on_certificate'] ?></div>
+
+                <!-- Registration Information Section -->
+                <div class="registration-info">
+                    <div class="info-title">
+                        📋 Registration Details
+                    </div>
+
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div class="info-label">Session</div>
+                            <div class="info-value"><?= $registrationInfo['session'] ?></div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">Additional Seats</div>
+                            <div class="info-value"><?= $registrationInfo['additional_seats'] ?></div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">Reference Number</div>
+                            <div class="info-value"><?= $registrationInfo['reference_number'] ?></div>
+                        </div>
+
+                        <div class="info-item">
+                            <div class="info-label">Payment Amount</div>
+                            <div class="info-value">Rs. <?= $registrationInfo['payment_amount'] ?></div>
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
 

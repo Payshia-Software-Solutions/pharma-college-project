@@ -24,8 +24,11 @@ return [
     // --- Tickets ---
     'GET /api/tickets/$' => fn() => $ticketController->getAll(),
     'GET /api/tickets/(\w+)/$' => fn($id) => $ticketController->getById($id),
+    'GET /api/tickets/username/(\w+)/$' => fn($user_name) => $ticketController->getByUsername($user_name),
     'POST /api/tickets/$' => fn() => $ticketController->create(),
-    'POST api/tickets/(\w+)/assign$' => fn($id) => $ticketController->assignTicket($id),
+    'POST /api/tickets/(\w+)/assign/$' => fn($id) => $ticketController->assignTicket($id),
+    'POST /api/tickets/(\w+)/unlock/$' => fn($id) => $ticketController->unlockTicket($id),
+    'POST /api/tickets/(\w+)/status/$' => fn($id) => $ticketController->updateStatus($id),
     'DELETE /api/tickets/(\w+)/$' => fn($id) => $ticketController->delete($id),
 
     // --- Ticket Messages ---
@@ -37,6 +40,7 @@ return [
     // --- Chats ---
     'GET /api/chats/$' => fn() => $chatController->getAll(),
     'GET /api/chats/(\w+)/$' => fn($id) => $chatController->getById($id),
+    'GET /api/chats/username/(\w+)/$' => fn($user_name) => $chatController->getByUsername($user_name),
     'POST /api/chats/$' => fn() => $chatController->create(),
     'DELETE /api/chats/(\w+)/$' => fn($id) => $chatController->delete($id),
 

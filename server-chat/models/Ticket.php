@@ -17,11 +17,84 @@ class Ticket
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    public function create($data)
+
+    public function getByUsername($user_name)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO tickets (subject, description, priority, status, created_at, student_name, student_avatar, assigned_to, assignee_avatar, is_locked, locked_by_staff_id) VALUES (?, ?, ?, ?, NOW(), ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$data['subject'], $data['description'], $data['priority'], $data['status'], $data['student_name'], $data['student_avatar'], $data['assigned_to'], $data['assignee_avatar'], $data['is_locked'], $data['locked_by_staff_id']]);
+        $stmt = $this->pdo->prepare("SELECT * FROM tickets WHERE student_name = ?");
+        $stmt->execute([$user_name]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function create(array $data)
+    {
+        $sql = "
+        INSERT INTO tickets (
+            subject, description, priority, status, created_at,
+            student_name, student_avatar, assigned_to,
+            assignee_avatar, is_locked, locked_by_staff_id, category
+        )
+        VALUES (
+            ?, ?, ?, ?, NOW(),
+            ?, ?, ?, ?, ?, ?, ?
+        )";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        // Use ?? null so any missing key becomes NULL
+        $stmt->execute([
+            $data['subject']            ?? null,
+            $data['description']        ?? null,
+            $data['priority']           ?? null,
+            $data['status']             ?? null,
+            $data['student_name']       ?? null,
+            $data['student_avatar']     ?? null,
+            $data['assigned_to']        ?? null,
+            $data['assignee_avatar']    ?? null,
+            $data['is_locked']          ?? 0,
+            $data['locked_by_staff_id'] ?? null,
+            $data['category'] ?? null,
+        ]);
+
+        // Get last inserted ID
+        return $this->pdo->lastInsertId();
+    }
+    public function updateStatus($ticketId, $newStatus)
+    {
+        $stmt = $this->pdo->prepare("UPDATE tickets SET status = ?, updated_at = NOW() WHERE id = ?");
+        $stmt->execute([$newStatus, $ticketId]);
+    }
+
+    public function assignTicket($ticketId, $assignedTo, $assigneeAvatar, $isLocked = 0, $lockedByStaffId)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE tickets 
+        SET 
+            assigned_to = ?, 
+            assignee_avatar = ?, 
+            is_locked = ?, 
+            locked_by_staff_id = ?, 
+            updated_at = NOW() 
+        WHERE id = ?
+    ");
+
+        $stmt->execute([
+            $assignedTo,
+            $assigneeAvatar,
+            $isLocked,
+            $lockedByStaffId,
+            $ticketId
+        ]);
+    }
+
+    public function unlockTicket($id)
+    {
+        $stmt = $this->pdo->prepare("UPDATE tickets 
+        SET is_locked = 0, locked_by_staff_id = NULL, updated_at = NOW() 
+        WHERE id = ?");
+        $stmt->execute([$id]);
+    }
+
+
     public function delete($id)
     {
         $stmt = $this->pdo->prepare("DELETE FROM tickets WHERE id = ?");
