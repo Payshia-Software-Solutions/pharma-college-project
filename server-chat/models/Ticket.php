@@ -27,4 +27,22 @@ class Ticket
         $stmt = $this->pdo->prepare("DELETE FROM tickets WHERE id = ?");
         $stmt->execute([$id]);
     }
+
+    public function assignToStaff($data)
+    {
+        $stmt = $this->pdo->prepare("UPDATE tickets SET 
+        assigned_to = ?, 
+        assignee_avatar = ?, 
+        is_locked = ?, 
+        locked_by_staff_id = ? 
+        WHERE id = ?");
+
+        $stmt->execute([
+            $data['assigned_to'],
+            $data['assignee_avatar'],
+            $data['is_locked'],
+            $data['locked_by_staff_id'],
+            $data['id'] // ID of the ticket to update
+        ]);
+    }
 }
