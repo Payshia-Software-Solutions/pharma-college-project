@@ -13,13 +13,11 @@ $client = HttpClient::create();
 
 ini_set('display_errors', 1);
 
-
 require_once('../../../include/config.php');
 include '../../../include/function-update.php';
 include '../../../include/finance-functions.php';
 include '../../../include/reporting-functions.php';
 include '../../../include/lms-functions.php';
-
 include '../../../assets/content/lms-management/assets/lms_methods/d-pad-methods.php';
 
 $location_id = $_GET['locationId'];
