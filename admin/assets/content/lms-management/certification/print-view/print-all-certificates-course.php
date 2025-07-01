@@ -22,6 +22,11 @@ require_once('../../../../../vendor/phpqrcode/qrlib.php');
 $courseCode = isset($_GET['courseCode']) ? $_GET['courseCode'] : null;
 $showSession = isset($_GET['showSession']) ? $_GET['showSession'] : null;
 
+if ($courseCode == 1) {
+    $courseName = "Certificate course in Pharmacy Practice";
+} else {
+    $courseName = "Advanced course in Pharmacy Practice";
+}
 
 if (isset($courseCode) && isset($showSession)) {
     $packageBookings = $client->request(
@@ -29,96 +34,316 @@ if (isset($courseCode) && isset($showSession)) {
         $_ENV['SERVER_URL'] . '/convocation-registrations-certificate?courseCode=' . $courseCode . '&viewSession=' . $showSession
     )->toArray();
 }
+?>
+<title><?= $courseName ?> Print Session <?= $showSession ?></title>
+
+<style>
+    @import url('https://fonts.cdnfonts.com/css/chaparral-pro?styles=15266');
+    @import url(https://db.onlinewebfonts.com/c/5c0d13eb3af810e996bce6c3482f881c?family=Chaparral+Pro+Bold+Italic);
+
+    /* 
+        font-family: 'Courier Prime', monospace;
+        font-family: 'IBM Plex Mono', monospace;
+    */
+
+    * {
+        padding: 0px !important;
+        margin: 0px !important;
+    }
+
+    .certificate-container {
+        position: relative;
+        width: 210mm;
+        height: 297mm;
+        /* A4 full height */
+        page-break-inside: avoid;
+        padding: 0;
+        margin: 0;
+        overflow: hidden;
+    }
+
+
+    .back-image {
+        width: 210mm;
+        height: 209.8mm;
+    }
+
+    .name-box {
+        padding-left: 0mm !important;
+    }
+
+    .pv-number {
+        position: absolute;
+        left: <?= 210 - 30 ?>mm;
+        top: 5mm
+    }
+
+    .certificate-user {
+        font-family: "Chaparral Pro Bold Italic";
+        width: calc(210mm - 100px);
+        font-size: 35px;
+        /*text-align: center !important;*/
+        font-weight: 800 !important;
+        position: absolute;
+        top: 0 !important;
+    }
+
+    .qr-code {
+        left: 12mm !important;
+        top: 246mm !important;
+        position: absolute;
+        width: 20mm !important;
+    }
+
+    .sign {
+        left: 150mm !important;
+        top: 253mm !important;
+        position: absolute;
+        width: 40mm !important;
+    }
+
+    .sign-dot {
+        left: 150mm !important;
+        top: 260mm !important;
+        position: absolute;
+        width: 40mm !important;
+    }
+
+    .director {
+        left: 163mm !important;
+        top: 265mm !important;
+        position: absolute;
+        width: 40mm !important;
+    }
+
+    .print-date {
+        left: 12mm !important;
+        top: 268mm !important;
+        position: absolute;
+        font-family: 'Courier Prime', monospace;
+    }
+
+    .print-number {
+        left: 12mm !important;
+        top: 272mm !important;
+        position: absolute;
+        font-family: 'Courier Prime', monospace;
+    }
+
+    .certificate-number {
+        left: 12mm !important;
+        top: 276mm !important;
+        position: absolute;
+        font-family: 'Courier Prime', monospace;
+
+    }
+
+    .pv-number2 {
+        left: 180mm !important;
+        top: 286mm !important;
+        position: absolute;
+        font-family: 'Courier Prime', monospace;
+    }
+
+    .page-break {
+        page-break-after: always;
+    }
+</style>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
+    rel="stylesheet">
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .certificate {
+        /* background-image: url('cer.jpeg'); */
+        width: 210mm;
+        height: 297mm;
+        display: flex;
+        /* border: 1px solid black; */
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        page-break-inside: avoid;
+    }
+
+    .certificate-title {
+        position: absolute;
+        font-size: 25px;
+        font-weight: bold;
+        color: #333;
+        top: 90mm;
+        letter-spacing: 1px;
+    }
+
+    .awarded-to {
+        position: absolute;
+        font-size: 20px;
+        font-family: 'Roboto', sans-serif;
+        color: #333;
+        top: 110mm;
+    }
+
+    .recipient-line {
+        position: absolute;
+        width: 120mm;
+        height: 1px;
+        top: 119mm;
+        font-weight: 900;
+        font-size: 25px;
+    }
+
+    .recognition-text {
+        position: absolute;
+        font-size: 20px;
+        font-family: 'Roboto', sans-serif;
+        color: #333;
+        top: 132mm;
+        line-height: 1.3;
+    }
+
+    .course-line {
+        position: absolute;
+        width: 150mm;
+        height: 1px;
+        top: 150mm;
+        font-weight: 900;
+        font-size: 20px;
+    }
+
+    .offered-by {
+        position: absolute;
+        font-size: 20px;
+        color: #333;
+        top: 160mm;
+    }
+
+    .institution {
+        position: absolute;
+        font-size: 20px;
+        font-weight: bold;
+        color: #333;
+        top: 168mm;
+    }
+
+    .ceremony-details {
+        position: absolute;
+        font-size: 16px;
+        color: #333;
+        line-height: 1.4;
+        top: 176mm;
+    }
+
+    @media print {
+        body {
+            margin: 0;
+            padding: 0;
+            background: white;
+        }
+
+        .certificate {
+            background: white;
+            margin: 0;
+            box-shadow: none;
+        }
+    }
+</style>
+<?php
 
 
 function formatNameForCertificate($fullName, $maxLength = 30)
 {
-    // Normalize spaces and dots
-    $fullName = preg_replace('/\s+/', ' ', $fullName); // Remove extra spaces
-    $fullName = preg_replace('/(?<=\w)\.(?=\w)/', '. ', $fullName); // Add space after dots if missing (e.g. H.Virajini => H. Virajini)
-    $fullName = trim($fullName);
+    // Step 1: Normalize whitespace
+    $fullName = preg_replace('/\s+/', ' ', trim($fullName));
 
-    // Capitalize words properly
-    $fullName = ucwords(strtolower($fullName));
+    // Step 2: Fix squashed initials like H.D.N.C. => H. D. N. C.
+    $fullName = preg_replace('/(?<=\b[A-Za-z])\.(?=[A-Za-z]\b)/', '. ', $fullName);
 
-    // If within character limit, return as-is
-    if (strlen($fullName) <= $maxLength) {
-        return $fullName;
-    }
+    // Step 3: Fix missing space after dot when followed by any letter (e.g., S.Madushani or S.madushani)
+    $fullName = preg_replace('/([A-Za-z])\.([A-Za-z])/', '$1. $2', $fullName);
 
-    // Break into words
+    // Step 4: Split into words
     $words = explode(' ', $fullName);
-    $numWords = count($words);
 
-    if ($numWords < 3) {
-        return substr($fullName, 0, $maxLength); // fallback for short names
-    }
-
-    // Last two full words (first name + surname)
-    $lastTwo = array_slice($words, -2);
-    $lastTwoStr = implode(' ', $lastTwo);
-
-    // Initials from earlier words
-    $initials = '';
-    for ($i = 0; $i < $numWords - 2; $i++) {
-        $word = $words[$i];
-        // If word ends with a dot, keep it as-is (already an initial)
-        if (preg_match('/^[a-zA-Z]\.$/', $word)) {
-            $initials .= $word;
-        } else {
-            $initials .= strtoupper(substr($word, 0, 1)) . '.';
+    // Step 5: Add dot to single letters (e.g., K => K.)
+    foreach ($words as &$word) {
+        if (preg_match('/^[A-Za-z]$/', $word)) {
+            $word .= '.';
         }
     }
 
-    $final = $initials . ' ' . $lastTwoStr;
+    // Step 6: Reassemble and capitalize
+    $fullName = implode(' ', $words);
+    $fullName = ucwords(strtolower($fullName));
 
-    // Still too long? Truncate first of last two names
-    if (strlen($final) > $maxLength) {
-        $firstOfLastTwo = $lastTwo[0];
-        $secondOfLastTwo = $lastTwo[1];
-        $allowedLengthForFirst = $maxLength - strlen($initials) - strlen($secondOfLastTwo) - 2;
-        $firstOfLastTwo = substr($firstOfLastTwo, 0, $allowedLengthForFirst);
-        $final = $initials . ' ' . $firstOfLastTwo . ' ' . $secondOfLastTwo;
+    // Step 7: Recalculate words
+    $words = explode(' ', $fullName);
+    $numWords = count($words);
+
+    if ($numWords < 2) {
+        return substr($fullName, 0, $maxLength); // fallback
     }
 
-    return $final;
+    // Step 8: Extract surname (last word) and initials (rest)
+    $surname = array_pop($words);
+    $initials = '';
+    foreach ($words as $word) {
+        if (preg_match('/^[A-Za-z]\.$/', $word)) {
+            $initials .= strtoupper($word) . ' ';
+        } else {
+            $initials .= strtoupper(substr($word, 0, 1)) . '. ';
+        }
+    }
+
+    $final = trim($initials) . ' ' . ucfirst($surname);
+
+    // Step 9: Trim if still too long
+    if (strlen($final) > $maxLength) {
+        $allowedSurnameLength = $maxLength - strlen(trim($initials)) - 1;
+        $surname = substr($surname, 0, $allowedSurnameLength);
+        $final = trim($initials) . ' ' . ucfirst($surname);
+    }
+
+    return trim($final);
 }
+
+
+
+
+$count = 1;
 
 foreach ($packageBookings as $booking) {
 
-    $loggedUser = $_GET['PrintedId'];
+
     $s_user_name = $booking['student_number'];
-    $PrintDate = $_GET['issuedDate'];
-    $CourseCode = $_GET['selectedCourse'];
-    $templateId = $_GET['certificateTemplate'];
-    $backImageStatus = $_GET['backImageStatus'];
-    $TemplateDetails = GetTemplate($templateId);
-    // var_dump($TemplateDetails);
+    $CourseCode = 1;
+
     $batchStudents =  GetLmsStudents();
     $studentDetailsArray = $batchStudents[$s_user_name];
 
-    if (isset($TemplateDetails[$templateId])) {
-        $Template = $TemplateDetails[$templateId];
-    }
+    $certificateId = ($courseCode == 1) ? $booking['certificate_id'] : $booking['advanced_id'];
+    $certificateInfo = CertificatePrintStatusByCertificateId($certificateId);
 
-    $qr_position_from_left = $Template['left_to_qr'];
-    $qr_position_from_top = $Template['top_to_qr'];
-    $qr_code_width = $Template['qr_width'];
+    // var_dump($certificateInfo);
 
-    $date_position_from_left = $Template['left_to_date'];
-    $date_position_from_top = $Template['top_to_date'];
 
-    $name_position_from_left = $Template['left_margin'];
-    $name_position_from_top = $Template['top_to_name'];
-    $backImage = $Template['back_image'];
-
-    $printDate = date("Y-m-d H:i:s");
+    $PrintDate = date("Y-m-d H:i:s");
     // $certificateEntryResult = EnterCertificateEntry($printDate, 1, $loggedUser, 'Workshop-Certificate', $s_user_name, $CourseCode);
     // var_dump($certificateEntryResult);
 
     // Include the qrlib file
 
-    $text = "https://pharmacollege.lk/result-view.php?CourseCode=" . $CourseCode . "&LoggedUser=" . $s_user_name;
+    $text = "https://pharmacollege.lk/result-view.php?CourseCode=" . $certificateInfo[0]['course_code'] . "&LoggedUser=" . $s_user_name;
     $ecc = 'L';
     $pixel_Size = 10;
     $frame_Size = 0;
@@ -128,233 +353,22 @@ foreach ($packageBookings as $booking) {
     QRcode::png($text, null, QR_ECLEVEL_L, 10, 0);
     $image_data = ob_get_contents();
     ob_end_clean();
-
-
-
-
 ?>
 
-    <title><?= $s_user_name ?> - <?= $CourseCode ?> - Certificate Print</title>
-
-    <style>
-        @import url('https://fonts.cdnfonts.com/css/chaparral-pro?styles=15266');
-        @import url(https://db.onlinewebfonts.com/c/5c0d13eb3af810e996bce6c3482f881c?family=Chaparral+Pro+Bold+Italic);
-
-        /* 
-        font-family: 'Courier Prime', monospace;
-        font-family: 'IBM Plex Mono', monospace;
-    */
-
-        * {
-            padding: 0px !important;
-            margin: 0px !important;
-        }
-
-        .certificate-container {
-            position: relative;
-            width: 210mm;
-            height: 297mm;
-            /* A4 full height */
-            page-break-inside: avoid;
-            padding: 0;
-            margin: 0;
-            overflow: hidden;
-        }
 
 
-        .back-image {
-            width: 210mm;
-            height: 209.8mm;
-        }
-
-        .name-box {
-            padding-left: <?= $name_position_from_left ?>mm !important;
-        }
-
-        .pv-number {
-            position: absolute;
-            left: <?= 210 - 30 ?>mm;
-            top: 5mm
-        }
-
-        .certificate-user {
-
-            /* border: 1px solid black; */
-
-            font-family: "Chaparral Pro Bold Italic";
-            width: calc(210mm - 100px);
-            font-size: 35px;
-            /*text-align: center !important;*/
-            font-weight: 800 !important;
-            position: absolute;
-            top: <?= $name_position_from_top ?> !important;
-        }
-
-        .qr-code {
-            left: <?= $qr_position_from_left ?> !important;
-            top: <?= $qr_position_from_top ?> !important;
-            position: absolute;
-            width: <?= $qr_code_width ?>mm !important;
-        }
-
-        .print-date {
-            left: <?= $date_position_from_left ?> !important;
-            top: <?= $date_position_from_top ?> !important;
-            position: absolute;
-            font-family: 'Courier Prime', monospace;
-        }
-
-        .print-number {
-            left: <?= $date_position_from_left ?> !important;
-            top: <?= $date_position_from_top + (16 * 1) ?> !important;
-            position: absolute;
-            font-family: 'Courier Prime', monospace;
-        }
-
-        .certificate-number {
-            left: <?= $date_position_from_left ?> !important;
-            top: <?= $date_position_from_top + (16 * 2) ?> !important;
-            position: absolute;
-            font-family: 'Courier Prime', monospace;
-
-        }
-
-        .pv-number2 {
-
-            left: <?= $date_position_from_left ?> !important;
-            top: <?= $date_position_from_top + (16 * 3) ?> !important;
-            position: absolute;
-            font-family: 'Courier Prime', monospace;
-        }
-
-        .page-break {
-            page-break-after: always;
-        }
-    </style>
-
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Poppins', sans-serif;
-            /* background: #f8f8f8; */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .certificate {
-            /* background-image: url('cer.jpeg'); */
-            width: 210mm;
-            height: 297mm;
-            display: flex;
-            border: 1px solid black;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            page-break-inside: avoid;
-            position: relative;
-        }
-
-        .certificate-title {
-            font-size: 25px;
-            font-weight: bold;
-            color: #333;
-            margin-top: 90mm;
-            letter-spacing: 1px;
-        }
-
-        .awarded-to {
-            font-size: 20px;
-            font-family: 'Roboto', sans-serif;
-            color: #333;
-            margin-top: 10mm;
-        }
-
-        .recipient-line {
-            width: 120mm;
-            height: 1px;
-            margin-top: 3mm;
-            font-weight: 900;
-            font-size: 25px;
-        }
-
-        .recognition-text {
-            font-size: 20px;
-            font-family: 'Roboto', sans-serif;
-            color: #333;
-            margin-top: 12mm;
-            line-height: 1.3;
-        }
-
-        .course-line {
-            width: 150mm;
-            height: 1px;
-            margin-top: 4mm;
-            font-weight: 900;
-            font-size: 20px;
-        }
-
-        .offered-by {
-            font-size: 20px;
-            color: #333;
-            margin-top: 10mm;
-        }
-
-        .institution {
-            font-size: 20px;
-            font-weight: bold;
-            color: #333;
-        }
-
-        .ceremony-details {
-            font-size: 16px;
-            color: #333;
-            line-height: 1.4;
-        }
-
-        @media print {
-            body {
-                margin: 0;
-                padding: 0;
-                background: white;
-            }
-
-            .certificate {
-                background: white;
-                margin: 0;
-                box-shadow: none;
-            }
-        }
-    </style>
-
-    <?php
-    if ($backImage != "" && $backImageStatus == 1) {
-    ?>
-        <img class="back-image" src="../assets/images/certificate-back/<?= $backImage ?>">
-    <?php
-    }
-    ?>
     <div class="certificate-container">
         <div class="certificate">
             <h1 class="certificate-title">CERTIFICATE OF COMPLETION</h1>
 
             <p class="awarded-to">This certificate is awarded to</p>
-            <div class="recipient-line">G. T. R. K. Doloswala</div>
+            <div class="recipient-line"><?= formatNameForCertificate($studentDetailsArray['name_on_certificate']) ?></div>
 
             <div class="recognition-text">
                 in recognition of the<br>
                 successful completion of the
             </div>
-            <div class="course-line">Certificate course in Pharmacy Practise</div>
+            <div class="course-line"><?= $courseName ?></div>
 
             <p class="offered-by">offered by</p>
             <div class="institution">Ceylon Pharma College</div>
@@ -365,12 +379,25 @@ foreach ($packageBookings as $booking) {
         </div>
 
         <img class="qr-code" src="data:image/png;base64,<?= base64_encode($image_data) ?>">
-        <p class="print-date">Date:<?= $PrintDate ?></p>
+        <?php
+        if ($courseCode == 2) { ?>
+            <img class="sign" src="sign.png" alt="">
+            <div>
+            </div>
+            <p class="sign-dot">...................................................</p>
+            <p class="director">Director</p>
+        <?php } ?>
+        <p class="print-date">Date: <?= date("F j, Y", strtotime("2025-06-30")) ?></p>
         <p class="print-number">Index Number:<?= $s_user_name ?></p>
-        <p class="certificate-number">Certificate ID:<?= GetCertificateID('Certificate', $s_user_name, $CourseCode) ?></p>
+        <p class="certificate-number">Certificate
+            ID:<?= ($courseCode == 1) ? $booking['certificate_id'] : $booking['advanced_id'] ?></p>
         <p class="pv-number2">PV00253555</p>
     </div>
 <?php
+    $count++;
+    if ($count == 3) {
+        // break;
+    }
     // Add a page break after each certificate except the last one
     if ($packageBookings !== end($packageBookings)) {
         echo '<div style="page-break-after: always;"></div>';
