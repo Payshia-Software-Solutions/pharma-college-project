@@ -367,9 +367,6 @@ foreach ($packageBookings as $booking) {
     $image_data = ob_get_contents();
     ob_end_clean();
 ?>
-
-
-
     <div class="certificate-container">
         <div class="certificate">
             <h1 class="certificate-title">CERTIFICATE OF COMPLETION</h1>
