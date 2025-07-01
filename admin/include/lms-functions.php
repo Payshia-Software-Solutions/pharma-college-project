@@ -188,6 +188,23 @@ function CertificatePrintStatusByCourse($courseCode, $type)
     return $ArrayResult;
 }
 
+function CertificatePrintStatusByCertificateId($certificateId)
+{
+
+    $ArrayResult = array();
+    global $lms_link;
+
+    $sql = "SELECT `id`, `student_number`, `certificate_id`, `print_date`, `print_status`, `print_by`, `type`, `course_code` FROM `user_certificate_print_status` WHERE `certificate_id` LIKE '$certificateId'";
+    $result = $lms_link->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ArrayResult[] = $row;
+        }
+    }
+    return $ArrayResult;
+}
+
+
 function CertificatePrintStatusByCourseStudent($courseCode, $studentNumber)
 {
 
@@ -1247,7 +1264,6 @@ function SaveEditedAssignmentGrade($assignmentId, $gradeValue, $studentNumber)
 
     return $error;
 }
-
 
 function GetOrdersByStudentNumber()
 {
