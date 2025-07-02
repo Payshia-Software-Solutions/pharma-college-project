@@ -115,7 +115,7 @@ function formatNameForCertificate($fullName, $maxLength = 30)
 
                 <div class="col-6">
                     <div>Print Name</div>
-                    <strong><?= formatNameForCertificate($studentInfo['studentInfo']['name_on_certificate']) ?></strong>
+                    <strong><?= $studentInfo['studentInfo']['name_on_certificate'] ?></strong>
                 </div>
             </div>
 
@@ -203,7 +203,7 @@ function formatNameForCertificate($fullName, $maxLength = 30)
                     <input type="text" name="name-on-certificate" id="name-on-certificate"
                         class="form-control form-control-sm"
                         onblur="saveCertificateField('<?= $bookingInfo['student_number'] ?>', this.value, '<?= $bookingInfo['reference_number'] ?>')"
-                        value="<?= formatNameForCertificate($studentInfo['studentInfo']['name_on_certificate']) ?>" />
+                        value="<?= $studentInfo['studentInfo']['name_on_certificate'] ?>" />
                 </div>
                 <div class="col-4">
                     <label for="ceromany_mnumber">Ceromany Number</label>
