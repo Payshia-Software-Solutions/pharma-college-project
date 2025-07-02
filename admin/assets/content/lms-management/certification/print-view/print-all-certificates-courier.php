@@ -19,33 +19,14 @@ include '../../../../../include/function-update.php';
 include '../../../../../include/lms-functions.php';
 require_once('../../../../../vendor/phpqrcode/qrlib.php');
 
-$courseCode = isset($_GET['courseCode']) ? $_GET['courseCode'] : null;
-$showSession = isset($_GET['showSession']) ? $_GET['showSession'] : null;
-
 if ($courseCode == 1) {
     $courseName = "Certificate Course in Pharmacy Practice";
 } else {
     $courseName = "Advanced Course in Pharmacy Practice";
 }
 
-if (isset($courseCode) && isset($showSession)) {
-    $packageBookings = $client->request(
-        'GET',
-        $_ENV['SERVER_URL'] . '/convocation-registrations-certificate?courseCode=' . $courseCode . '&viewSession=' . $showSession
-    )->toArray();
+$coureirList = $client->request('GET', $_ENV['SERVER_URL'] . '/certificate-orders')->toArray();
 
-    if ($courseCode == 1) {
-        // Sort by certificate_id (ascending)
-        usort($packageBookings, function ($a, $b) {
-            return strcmp($a['certificate_id'], $b['certificate_id']);
-        });
-    } else {
-        // Sort by advanced_id (ascending)
-        usort($packageBookings, function ($a, $b) {
-            return strcmp($a['advanced_id'], $b['advanced_id']);
-        });
-    }
-}
 ?>
 <title><?= $courseName ?> Print Session <?= $showSession ?></title>
 
