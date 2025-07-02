@@ -13,7 +13,29 @@ class CertificateOrder
     // Read all certificate orders
     public function getAllOrders()
     {
-        $sql = "SELECT * FROM cc_certificate_order";
+        $sql = "SELECT 
+    o.`id`, 
+    o.`created_by`, 
+    o.`created_at`, 
+    o.`updated_at`, 
+    o.`course_code`, 
+    o.`mobile`, 
+    o.`address_line1`, 
+    o.`address_line2`, 
+    o.`city_id`, 
+    o.`district`, 
+    o.`type`, 
+    o.`payment`, 
+    o.`package_id`, 
+    o.`certificate_id`, 
+    o.`certificate_status`, 
+    o.`cod_amount`, 
+    o.`is_active`,
+    u.`name_on_certificate`
+FROM 
+    `cc_certificate_order` o
+LEFT JOIN 
+    `user_full_details` u ON o.`created_by` = u.`username`;";
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }

@@ -107,7 +107,7 @@ function formatNameForCertificate($fullName, $maxLength = 30)
                         <div class="ceremony-icon">👤</div>
                         Name on Certificate
                     </div>
-                    <div class="ceremony-number"><?= formatNameForCertificate($UserDetails['name_on_certificate']) ?></div>
+                    <div class="ceremony-number"><?= $UserDetails['name_on_certificate'] ?></div>
 
                     <!-- Registration Information Section -->
                     <div class="registration-info">
