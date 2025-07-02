@@ -19,6 +19,7 @@ include '../../../../../include/function-update.php';
 include '../../../../../include/lms-functions.php';
 require_once('../../../../../vendor/phpqrcode/qrlib.php');
 
+$courseCode = 1;
 if ($courseCode == 1) {
     $courseName = "Certificate Course in Pharmacy Practice";
 } else {
@@ -253,89 +254,34 @@ $coureirList = $client->request('GET', $_ENV['SERVER_URL'] . '/certificate-order
 </style>
 <?php
 
-
-function formatNameForCertificate($fullName, $maxLength = 30)
-{
-    // Step 1: Normalize whitespace
-    $fullName = preg_replace('/\s+/', ' ', trim($fullName));
-
-    // Step 2: Fix squashed initials like H.D.N.C. => H. D. N. C.
-    $fullName = preg_replace('/(?<=\b[A-Za-z])\.(?=[A-Za-z]\b)/', '. ', $fullName);
-
-    // Step 3: Fix missing space after dot when followed by any letter (e.g., S.Madushani or S.madushani)
-    $fullName = preg_replace('/([A-Za-z])\.([A-Za-z])/', '$1. $2', $fullName);
-
-    // Step 4: Split into words
-    $words = explode(' ', $fullName);
-
-    // Step 5: Add dot to single letters (e.g., K => K.)
-    foreach ($words as &$word) {
-        if (preg_match('/^[A-Za-z]$/', $word)) {
-            $word .= '.';
-        }
-    }
-
-    // Step 6: Reassemble and capitalize
-    $fullName = implode(' ', $words);
-    $fullName = ucwords(strtolower($fullName));
-
-    // Step 7: Recalculate words
-    $words = explode(' ', $fullName);
-    $numWords = count($words);
-
-    if ($numWords < 2) {
-        return substr($fullName, 0, $maxLength); // fallback
-    }
-
-    // Step 8: Extract surname (last word) and initials (rest)
-    $surname = array_pop($words);
-    $initials = '';
-    foreach ($words as $word) {
-        if (preg_match('/^[A-Za-z]\.$/', $word)) {
-            $initials .= strtoupper($word) . ' ';
-        } else {
-            $initials .= strtoupper(substr($word, 0, 1)) . '. ';
-        }
-    }
-
-    $final = trim($initials) . ' ' . ucfirst($surname);
-
-    // Step 9: Trim if still too long
-    if (strlen($final) > $maxLength) {
-        $allowedSurnameLength = $maxLength - strlen(trim($initials)) - 1;
-        $surname = substr($surname, 0, $allowedSurnameLength);
-        $final = trim($initials) . ' ' . ucfirst($surname);
-    }
-
-    return trim($final);
-}
-
 $count = 1;
-foreach ($packageBookings as $booking) {
+foreach ($coureirList as $booking) {
     // break;
-    $s_user_name = $booking['student_number'];
+    $s_user_name = $booking['created_by'];
     // $CourseCode = 1;
 
     $batchStudents =  GetLmsStudents();
     $studentDetailsArray = $batchStudents[$s_user_name];
+    $PrintDate = date("Y-m-d H:i:s");
 
-    $certificateId = ($courseCode == 1) ? $booking['certificate_id'] : $booking['advanced_id'];
-    $certificateInfo = CertificatePrintStatusByCertificateId($certificateId);
+    $certificateId = $batchCode = "";
+
+    // $certificateId = ($courseCode == 1) ? $booking['certificate_id'] : $booking['advanced_id'];
+    // $certificateInfo = CertificatePrintStatusByCertificateId($certificateId);
     // var_dump($certificateInfo);
 
-    $PrintDate = date("Y-m-d H:i:s");
     // $certificateEntryResult = EnterCertificateEntry($printDate, 1, $loggedUser, 'Workshop-Certificate', $s_user_name, $CourseCode);
     // var_dump($certificateEntryResult);
 
     // Include the qrlib file 
-    if (empty($certificateId)) {
-        $certificateInfo = CertificatePrintStatusByParentCourse($courseCode, 'Certificate', $s_user_name);
-        // var_dump($certificateInfo);
-        $certificateId = $certificateInfo[$s_user_name]['certificate_id'];
-        $batchCode = $certificateInfo[$s_user_name]['course_code'];
-    } else {
-        $batchCode = $certificateInfo[0]['course_code'];
-    }
+    // if (empty($certificateId)) {
+    //     $certificateInfo = CertificatePrintStatusByParentCourse($courseCode, 'Certificate', $s_user_name);
+    //     // var_dump($certificateInfo);
+    //     $certificateId = $certificateInfo[$s_user_name]['certificate_id'];
+    //     $batchCode = $certificateInfo[$s_user_name]['course_code'];
+    // } else {
+    //     $batchCode = $certificateInfo[0]['course_code'];
+    // }
 
     $text = "https://pharmacollege.lk/result-view.php?CourseCode=" . $batchCode . "&LoggedUser=" . $s_user_name;
     $ecc = 'L';
@@ -393,7 +339,7 @@ foreach ($packageBookings as $booking) {
         // break;
     }
     // Add a page break after each certificate except the last one
-    if ($packageBookings !== end($packageBookings)) {
+    if ($coureirList !== end($coureirList)) {
         echo '<div style="page-break-after: always;"></div>';
     }
 }
