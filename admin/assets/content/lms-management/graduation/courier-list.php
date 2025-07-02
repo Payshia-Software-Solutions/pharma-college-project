@@ -31,6 +31,7 @@ $courierOrders = $response->toArray();
                             <tr>
                                 <th>#</th>
                                 <th>Student Number</th>
+                                <th>Student Name</th>
                                 <th>Course Code</th>
                                 <th>Mobile</th>
                                 <th>Status</th>
@@ -43,13 +44,13 @@ $courierOrders = $response->toArray();
                                 <tr>
                                     <td><?= $index + 1 ?></td>
                                     <td><?= htmlspecialchars($order['created_by']) ?></td>
+                                    <td><?= $order['name_on_certificate'] ?></td>
                                     <td><?= htmlspecialchars($order['course_code']) ?></td>
                                     <td><?= htmlspecialchars($order['mobile']) ?></td>
                                     <td>
                                         <span
                                             class="badge 
-                                            <?= $order['certificate_status'] === 'Pending' ? 'bg-warning text-dark' :
-                                                ($order['certificate_status'] === 'Delivered' ? 'bg-success' : 'bg-secondary') ?>">
+                                            <?= $order['certificate_status'] === 'Pending' ? 'bg-warning text-dark' : ($order['certificate_status'] === 'Delivered' ? 'bg-success' : 'bg-secondary') ?>">
                                             <?= htmlspecialchars($order['certificate_status']) ?>
                                         </span>
                                     </td>
@@ -77,6 +78,8 @@ $courierOrders = $response->toArray();
         buttons: [
             'copy', 'csv', 'excel', 'pdf'
         ],
-        order: [[0, 'asc']]
+        order: [
+            [0, 'asc']
+        ]
     });
 </script>
