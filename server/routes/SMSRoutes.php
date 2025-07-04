@@ -62,32 +62,35 @@ return [
         // Get JSON input from the request body
         $data = json_decode(file_get_contents('php://input'), true);
 
-        // Validate input
-        if (!isset($data['mobile']) || empty($data['mobile'])) {
+        // Basic input validation with reusable helper
+        function respondWithError($message)
+        {
             http_response_code(400);
-            echo json_encode(['status' => 'error', 'message' => 'Mobile number is required']);
-            return;
+            echo json_encode(['status' => 'error', 'message' => $message]);
+            exit;
         }
 
-        if (!isset($data['studentNameOnCertificate']) || empty(trim($data['studentNameOnCertificate']))) {
-            http_response_code(400);
-            echo json_encode(['status' => 'error', 'message' => 'Student name on certificate is required']);
-            return;
+        // Validate input fields
+        if (empty($data['mobile'])) {
+            respondWithError('Mobile number is required');
         }
 
-        if (!isset($data['studenNumber']) || empty(trim($data['studenNumber']))) {
-            http_response_code(400);
-            echo json_encode(['status' => 'error', 'message' => 'Student number is required']);
-            return;
+        if (empty(trim($data['studentNameOnCertificate'] ?? ''))) {
+            respondWithError('Student name on certificate is required');
         }
 
-        // Call the controller method
+        if (empty(trim($data['studenNumber'] ?? ''))) {
+            respondWithError('Student number is required');
+        }
+
+        // All validated — call the controller
         $smsController->sendNameOnCertificateSMS(
             $data['mobile'],
             $data['studentNameOnCertificate'],
             $data['studenNumber']
         );
     }
+
 
 
 ];
