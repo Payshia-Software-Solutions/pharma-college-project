@@ -26,6 +26,7 @@ class ConvocationRegistration
     p.created_at AS package_created_at, 
     p.updated_at AS package_updated_at,
     u.name_on_certificate
+    u.telephone_1
 FROM convocation_registrations cr
 LEFT JOIN packages p ON cr.package_id = p.package_id
 LEFT JOIN user_full_details u ON cr.student_number = u.username;
