@@ -62,7 +62,7 @@ class TicketController
         $lockedBy = $data['lockedByStaffId'] ?? null;
 
         // Assign ticket
-        $this->model->assignTicket($id, $data['assignedTo'], $data['assigneeAvatar'], $isLocked, $lockedBy);
+        $this->model->assignTicket($id, $data['assignedTo'], $data['assigneeAvatar'], $lockedBy, $isLocked);
 
         // Return full ticket details
         $ticket = $this->model->getById($id);
