@@ -55,5 +55,38 @@ return [
 
         // Call the controller method
         $smsController->sendOrderSMS($data['mobile'], $data['studentName'] ?? 'Student');
+    },
+
+    'POST /send-name-on-certificate-sms/$' => function () use ($smsController) {
+        // Get JSON input from the request body
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        // Validate input
+        if (!isset($data['mobile']) || empty($data['mobile'])) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Mobile number is required']);
+            return;
+        }
+
+        if (!isset($data['studentNameOnCertificate']) || empty(trim($data['studentNameOnCertificate']))) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Student name on certificate is required']);
+            return;
+        }
+
+        if (!isset($data['studenNumber']) || empty(trim($data['studenNumber']))) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Student number is required']);
+            return;
+        }
+
+        // Call the controller method
+        $smsController->sendNameOnCertificateSMS(
+            $data['mobile'],
+            $data['studentNameOnCertificate'],
+            $data['studenNumber']
+        );
     }
+
+
 ];

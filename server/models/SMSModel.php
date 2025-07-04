@@ -73,6 +73,25 @@ class SMSModel
         return $this->sendSMS($mobile, $this->senderId, $message);
     }
 
+    public function sendNameOnCertificateSMS($mobile, $studentName, $studenNumber)
+    {
+        // Load the SMS template from file
+        $template = file_get_contents('templates/server/templates/name-on-certificate-message.txt');
+        if (!$template) {
+            throw new Exception("Unable to load ceremony SMS template.");
+        }
+
+        // Replace placeholders with actual data
+        $message = str_replace(
+            ['{{STUDENT_NUMBER}}', '{{NAME_ON_CERTIFICATE}}'],
+            [$studenNumber, $studentName],
+            $template
+        );
+
+        // Send SMS
+        return $this->sendSMS($mobile, $this->senderId, $message);
+    }
+
 
     public function sendCeremonyDueBreakdownSMS($mobile, $studentName, $courseBalance, $convocationBalance)
     {

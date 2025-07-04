@@ -61,4 +61,15 @@ class SMSController
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
+
+    public function sendNameOnCertificateSMS($mobile, $studentName, $studenNumber)
+    {
+        try {
+            $response = $this->smsModel->sendNameOnCertificateSMS($mobile, $studentName, $studenNumber);
+            echo json_encode($response);
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
 }

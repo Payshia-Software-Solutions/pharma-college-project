@@ -362,7 +362,7 @@ foreach ($packageBookings as $booking) {
             <h1 class="certificate-title">CERTIFICATE OF COMPLETION</h1>
 
             <p class="awarded-to">This certificate is awarded to</p>
-            <div class="recipient-line"><?= formatNameForCertificate($studentDetailsArray['name_on_certificate']) ?></div>
+            <div class="recipient-line"><?= $studentDetailsArray['name_on_certificate'] ?></div>
 
             <div class="recognition-text">
                 in recognition of the<br>
