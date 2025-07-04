@@ -76,7 +76,7 @@ class SMSModel
     public function sendNameOnCertificateSMS($mobile, $studentName, $studenNumber)
     {
         // Load the SMS template from file
-        $template = file_get_contents('templates/server/templates/name-on-certificate-message.txt');
+        $template = file_get_contents('templates/name-on-certificate-message.txt');
         if (!$template) {
             throw new Exception("Unable to load ceremony SMS template.");
         }
