@@ -99,7 +99,7 @@ class SMSModel
         $message = trim($message);
 
         // Send SMS
-        $mobile = '0770481363';
+        // $mobile = '0770481363';
         return $this->sendSMS($mobile, $this->senderId, $message);
     }
 
