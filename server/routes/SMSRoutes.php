@@ -57,6 +57,7 @@ return [
         $smsController->sendOrderSMS($data['mobile'], $data['studentName'] ?? 'Student');
     },
 
+    // Name SMS for Certificate
     'POST /send-name-on-certificate-sms/$' => function () use ($smsController) {
         // Get JSON input from the request body
         $data = json_decode(file_get_contents('php://input'), true);
