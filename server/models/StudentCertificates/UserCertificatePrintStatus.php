@@ -36,7 +36,24 @@ class UserCertificatePrintStatus
     public function getRecordsByStudentNumber($studentNumber)
     {
         try {
-            $stmt = $this->pdo->prepare("SELECT * FROM user_certificate_print_status WHERE student_number = :student_number");
+            $stmt = $this->pdo->prepare("
+            SELECT 
+                u.id, 
+                u.student_number, 
+                u.certificate_id, 
+                u.print_date, 
+                u.print_status, 
+                u.print_by, 
+                u.type, 
+                u.course_code,
+                c.parent_course_id
+            FROM 
+                user_certificate_print_status u
+            LEFT JOIN 
+                course c ON u.course_code = c.course_code
+            WHERE 
+                u.student_number = :student_number
+        ");
             $stmt->execute(['student_number' => $studentNumber]);
             return $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
