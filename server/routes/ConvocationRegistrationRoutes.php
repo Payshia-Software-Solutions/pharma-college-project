@@ -142,4 +142,10 @@ return [
     'GET /convocation-registrations/get-ceremony-number/([A-Za-z0-9]+)/$' => function ($student_number) use ($convocationRegistrationController) {
         return $convocationRegistrationController->GetCeremonyNumberByStudentNumber($student_number);
     },
+
+
+    // PUT update course List
+    'PUT /convocation-registrations/update-courses/([A-Za-z0-9]+)/$' => function ($registration_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->updateCourses($registration_id);
+    },
 ];

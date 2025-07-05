@@ -49,7 +49,9 @@ if (isset($courseCode) && isset($showSession)) {
     }
 
     .transcript {
-        padding: 15px;
+        font-family: 'Poppins', sans-serif;
+        padding: 25px;
+        padding-left: 80px;
         width: 210mm;
         height: 297mm;
         display: flex;
@@ -66,10 +68,16 @@ if (isset($courseCode) && isset($showSession)) {
         font-size: 1.5em;
     }
 
+    h2 {
+        font-size: 1.2em;
+        margin-bottom: 10px;
+    }
+
     .modules {
         position: absolute;
         margin: 20px 0;
-        top: 80mm;
+        top: 78mm;
+        font-size: 15px;
     }
 
     .modules ul {
@@ -80,16 +88,21 @@ if (isset($courseCode) && isset($showSession)) {
     .details {
         margin-top: 30px;
         position: absolute;
-        top: 165mm;
+        top: 200mm;
+        font-size: 15px;
     }
 
     .details dt {
         font-weight: bold;
-        margin-top: 10px;
+        margin-top: 50px;
+    }
+
+    .details p {
+        margin: 0 0 10px;
     }
 
     .details dd {
-        margin: 0 0 10px 20px;
+        margin: 0 0 20px 40px;
     }
 
     .signature-qr {
@@ -97,27 +110,43 @@ if (isset($courseCode) && isset($showSession)) {
         justify-content: space-between;
         align-items: center;
         margin-top: 40px;
+        position: absolute;
+        top: 155mm;
     }
 
     .signature {
-        text-align: center;
+        position: absolute;
+        top: 220mm;
+        left: 138mm;
     }
 
     .signature img {
+        position: absolute;
+        top: -5mm;
+        left: 0mm;
         width: 150px;
         height: auto;
     }
 
     .signature p {
-        margin: 5px 0 0;
+        /* margin: 5px 0 0; */
         font-weight: bold;
     }
 
     .qr-code img {
         position: absolute;
-        left: 140mm;
+        left: 150mm;
+        width: 80px;
+        height: 80px;
+        top: 4mm;
+    }
+
+    .qr-code p {
+        position: absolute;
+        left: 150mm;
+        top: 26mm;
         width: 100px;
-        height: 100px;
+        font-size: 12px;
     }
 
     .footer {
@@ -136,26 +165,46 @@ if (isset($courseCode) && isset($showSession)) {
 
     .signature-qr {
         position: absolute;
-        top: 220mm;
+        top: 230mm;
     }
 
     .footer {
-        left: 0mm;
-        /* background-color: #666; */
-        width: 210mm;
+        left: 80px;
         position: absolute;
-        text-align: center;
-        top: 250mm;
+        top: 262mm;
     }
 
     .module-name {
         font-size: 16px;
     }
 
+    .dots {
+        font-family: 'Times New Roman', Times, serif;
+        color: #808080;
+    }
+
     .pv-number2 {
         position: absolute;
-        top: 290mm;
-        left: 185mm;
+        top: 277mm;
+        font-size: 0.8em;
+        left: 170mm;
+    }
+
+    .grade {
+        position: absolute;
+        top: 260mm;
+        left: 80px;
+        font-size: 1.5em;
+    }
+
+    .grade-scale {
+        top: 285mm;
+        left: 0px;
+        width: 210mm;
+        text-align: center;
+        position: absolute;
+        font-size: 0.5em;
+        color: #808080;
     }
 </style>
 
@@ -203,42 +252,51 @@ foreach ($packageBookings as $booking) {
                     <li>Understanding Prescriptions & Dispensing Essentials</li>
                     <li>Routes of Drug Administration & Dosage Forms</li>
                     <li>Pharmaceutical Calculations</li>
-                    <li>Gastro intestinal medicines</li>
-                    <li>Cardio Vascular Medicines</li>
+                    <li>Gastrointestinal Medicines</li>
+                    <li>Cardiovascular Medicines</li>
                     <li>Respiratory Medicines</li>
                     <li>Anti-Infective Medicines</li>
-                    <li>Endocrine medicines</li>
+                    <li>Endocrine Medicines</li>
                     <li>Ophthalmic & ENT Medicines</li>
                     <li>Dermatological Medicines</li>
-                    <li>Central Nervous Medicines</li>
+                    <li>Central Nervous System Medicines</li>
                     <li>Pharmaceutical Law & Regulations</li>
                     <li>Assist in Dispensing Medications</li>
+
                 </ul>
             </section>
 
             <div class="details">
                 <p><strong>Candidate Name:</strong> <?= $studentDetailsArray['name_on_certificate'] ?></p>
-                <p><strong>DOB:</strong> 28/05/1991</p>
-                <p><strong>Centre Name:</strong> Ceylon Pharma College</p>
-                <p><strong>Award Date:</strong> 03/12/2024</p>
-                <p><strong>Candidate Number:</strong> BRD62485</p>
-                <p><strong>Certificate Number:</strong> 2024/GA/81510</p>
-                <p><strong>GLH:</strong> 1200</p>
+                <p><strong>Duration:</strong> 6 Months</p>
+                <p><strong>Completed Date:</strong> <?= date("F j, Y", strtotime("2025-06-30")) ?></p>
+                <p><strong>Student Number:</strong> <?= $s_user_name ?></p>
+                <p><strong>Certificate Number:</strong> </p>
             </div>
 
 
+            <p class="grade"><strong>Grade:</strong> A+</strong></p>
+
+            <div class="signature">
+                <!-- Replace src with actual signature image -->
+                <img src="sign.png" alt="Signature of Katie Powell">
+                <p class="dots">....................................................</p>
+                <p>Dilip Fonseka,<br>Executive Director</p>
+            </div>
             <div class="signature-qr">
-                <div class="signature">
-                    <!-- Replace src with actual signature image -->
-                    <img src="sign.png" alt="Signature of Katie Powell">
-                    <p>....................................................</p>
-                    <p>Dilip Fonseka,<br>Executive Director</p>
-                </div>
+
                 <div class="qr-code">
+                    <img class="" src="data:image/png;base64,<?= base64_encode($image_data) ?>">
+                    <p>Scan & Verify</p>
                     <!-- Replace src with actual QR code image -->
-                    <img src="#" alt="QR Code">
                 </div>
             </div>
+
+            <p class="grade-scale">
+                <strong>Grade Scale:</strong>
+                A+ (90–100), A (85–89), A− (80–84), B+ (75–79), B (70–74), B− (65–69),
+                C+ (60–64), C (55–59), C− (50–54), F (&lt;50)
+            </p>
 
             <div class="footer">
                 TRNS/2103/240703/L7SME/0017
@@ -249,7 +307,7 @@ foreach ($packageBookings as $booking) {
     </div>
 <?php
     $count++;
-    if ($count == 3) {
+    if ($count == 2) {
         break;
     }
     // Add a page break after each certificate except the last one

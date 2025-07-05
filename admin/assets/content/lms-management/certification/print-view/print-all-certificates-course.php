@@ -1,4 +1,6 @@
 <?php
+
+set_time_limit(300);
 require __DIR__ . '/../../../../../vendor/autoload.php';
 define('PARENT_SEAT_RATE', 500);
 
@@ -45,6 +47,12 @@ if (isset($courseCode) && isset($showSession)) {
             return strcmp($a['advanced_id'], $b['advanced_id']);
         });
     }
+
+    usort($packageBookings, function ($a, $b) {
+        $numA = (int) preg_replace('/[^0-9]/', '', $a['ceremony_number']);
+        $numB = (int) preg_replace('/[^0-9]/', '', $b['ceremony_number']);
+        return $numA - $numB;
+    });
 }
 ?>
 <title><?= $courseName ?> Print Session <?= $showSession ?></title>
@@ -109,7 +117,7 @@ if (isset($courseCode) && isset($showSession)) {
 
     .sign {
         left: 150mm !important;
-        top: 253mm !important;
+        top: 255mm !important;
         position: absolute;
         width: 40mm !important;
     }
@@ -208,7 +216,7 @@ if (isset($courseCode) && isset($showSession)) {
 
     .recipient-line {
         position: absolute;
-        width: 120mm;
+        width: 180mm;
         height: 1px;
         top: 119mm;
         font-weight: 900;
@@ -271,64 +279,6 @@ if (isset($courseCode) && isset($showSession)) {
     }
 </style>
 <?php
-
-
-function formatNameForCertificate($fullName, $maxLength = 30)
-{
-    // Step 1: Normalize whitespace
-    $fullName = preg_replace('/\s+/', ' ', trim($fullName));
-
-    // Step 2: Fix squashed initials like H.D.N.C. => H. D. N. C.
-    $fullName = preg_replace('/(?<=\b[A-Za-z])\.(?=[A-Za-z]\b)/', '. ', $fullName);
-
-    // Step 3: Fix missing space after dot when followed by any letter (e.g., S.Madushani or S.madushani)
-    $fullName = preg_replace('/([A-Za-z])\.([A-Za-z])/', '$1. $2', $fullName);
-
-    // Step 4: Split into words
-    $words = explode(' ', $fullName);
-
-    // Step 5: Add dot to single letters (e.g., K => K.)
-    foreach ($words as &$word) {
-        if (preg_match('/^[A-Za-z]$/', $word)) {
-            $word .= '.';
-        }
-    }
-
-    // Step 6: Reassemble and capitalize
-    $fullName = implode(' ', $words);
-    $fullName = ucwords(strtolower($fullName));
-
-    // Step 7: Recalculate words
-    $words = explode(' ', $fullName);
-    $numWords = count($words);
-
-    if ($numWords < 2) {
-        return substr($fullName, 0, $maxLength); // fallback
-    }
-
-    // Step 8: Extract surname (last word) and initials (rest)
-    $surname = array_pop($words);
-    $initials = '';
-    foreach ($words as $word) {
-        if (preg_match('/^[A-Za-z]\.$/', $word)) {
-            $initials .= strtoupper($word) . ' ';
-        } else {
-            $initials .= strtoupper(substr($word, 0, 1)) . '. ';
-        }
-    }
-
-    $final = trim($initials) . ' ' . ucfirst($surname);
-
-    // Step 9: Trim if still too long
-    if (strlen($final) > $maxLength) {
-        $allowedSurnameLength = $maxLength - strlen(trim($initials)) - 1;
-        $surname = substr($surname, 0, $allowedSurnameLength);
-        $final = trim($initials) . ' ' . ucfirst($surname);
-    }
-
-    return trim($final);
-}
-
 $count = 1;
 foreach ($packageBookings as $booking) {
     // break;
@@ -369,8 +319,7 @@ foreach ($packageBookings as $booking) {
 ?>
 
 
-
-    <div class="certificate-container">
+    <div class="certificate-container d-none">
         <div class="certificate">
             <h1 class="certificate-title">CERTIFICATE OF COMPLETION</h1>
 
