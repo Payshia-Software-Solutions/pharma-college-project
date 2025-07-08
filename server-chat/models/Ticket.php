@@ -64,7 +64,7 @@ class Ticket
         $stmt->execute([$newStatus, $ticketId]);
     }
 
-    public function assignTicket($ticketId, $assignedTo, $assigneeAvatar, $isLocked = 0, $lockedByStaffId)
+    public function assignTicket($ticketId, $assignedTo, $assigneeAvatar, $lockedByStaffId, $isLocked = 0)
     {
         $stmt = $this->pdo->prepare("
         UPDATE tickets 

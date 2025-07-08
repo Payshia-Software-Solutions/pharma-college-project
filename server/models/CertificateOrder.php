@@ -31,7 +31,8 @@ class CertificateOrder
     o.`certificate_status`, 
     o.`cod_amount`, 
     o.`is_active`,
-    u.`name_on_certificate`
+    u.`name_on_certificate`,
+    u.telephone_1
 FROM 
     `cc_certificate_order` o
 LEFT JOIN 

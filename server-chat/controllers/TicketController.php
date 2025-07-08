@@ -62,7 +62,7 @@ class TicketController
         $lockedBy = $data['lockedByStaffId'] ?? null;
 
         // Assign ticket
-        $this->model->assignTicket($id, $data['assignedTo'], $data['assigneeAvatar'], $isLocked, $lockedBy);
+        $this->model->assignTicket($id, $data['assignedTo'], $data['assigneeAvatar'], $lockedBy, $isLocked);
 
         // Return full ticket details
         $ticket = $this->model->getById($id);
@@ -94,18 +94,18 @@ class TicketController
         echo json_encode(["message" => "Ticket deleted"]);
     }
 
-    public function assignTicket($id)
-    {
-        // Decode the incoming JSON request body
-        $data = json_decode(file_get_contents("php://input"), true);
+    // public function assignTicket($id)
+    // {
+    //     // Decode the incoming JSON request body
+    //     $data = json_decode(file_get_contents("php://input"), true);
 
-        // Merge the ticket ID into the data array (if not already included)
-        $data['id'] = $id;
+    //     // Merge the ticket ID into the data array (if not already included)
+    //     $data['id'] = $id;
 
-        // Assign the ticket using the model
-        $this->model->assignToStaff($data);
+    //     // Assign the ticket using the model
+    //     $this->model->assignToStaff($data);
 
-        // Return a success response
-        echo json_encode(["message" => "Ticket Assigned"]);
-    }
+    //     // Return a success response
+    //     echo json_encode(["message" => "Ticket Assigned"]);
+    // }
 }

@@ -73,6 +73,36 @@ class SMSModel
         return $this->sendSMS($mobile, $this->senderId, $message);
     }
 
+    public function sendNameOnCertificateSMS($mobile, $studentName, $studenNumber)
+    {
+        $templatePath = 'templates/name-on-certificate-message.txt';
+
+        // Check if template file exists
+        if (!file_exists($templatePath)) {
+            throw new Exception("SMS template file not found at path: $templatePath");
+        }
+
+        // Read template content
+        $template = file_get_contents($templatePath);
+        if ($template === false || trim($template) === '') {
+            throw new Exception("Unable to read or empty SMS template.");
+        }
+
+        // Replace placeholders
+        $message = str_replace(
+            ['{{STUDENT_NUMBER}}', '{{NAME_ON_CERTIFICATE}}'],
+            [$studenNumber, $studentName],
+            $template
+        );
+
+        // Optionally trim and sanitize the message (for SMS length limit)
+        $message = trim($message);
+
+        // Send SMS
+        // $mobile = '0770481363';
+        return $this->sendSMS($mobile, $this->senderId, $message);
+    }
+
 
     public function sendCeremonyDueBreakdownSMS($mobile, $studentName, $courseBalance, $convocationBalance)
     {

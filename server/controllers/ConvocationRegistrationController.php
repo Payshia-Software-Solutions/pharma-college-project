@@ -866,4 +866,30 @@ class ConvocationRegistrationController
             echo json_encode(['error' => $e->getMessage()]);
         }
     }
+
+    public function updateCourses($registration_id)
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (!isset($data['course_id']) || empty($data['course_id'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required course_id field']);
+            return;
+        }
+
+        $courseIds = is_array($data['course_id']) ? $data['course_id'] : [$data['course_id']];
+        $courseIdsString = implode(',', $courseIds);
+
+        $updated = $this->model->updateCourses($registration_id, $courseIdsString);
+        if ($updated) {
+            http_response_code(201);
+            echo json_encode([
+                'status' => 'Success',
+                'message' => 'Courses updated successfully',
+                'registration_id' => $registration_id,
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to update convocation registration']);
+        }
+    }
 }
