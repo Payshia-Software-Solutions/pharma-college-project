@@ -111,8 +111,8 @@ if (isset($courseCode) && isset($showSession)) {
     }
 
     .qr-code {
-        left: 12mm !important;
-        top: 246mm !important;
+        left: 16mm !important;
+        top: 240mm !important;
         position: absolute;
         width: 20mm !important;
     }
@@ -139,30 +139,30 @@ if (isset($courseCode) && isset($showSession)) {
     }
 
     .print-date {
-        left: 12mm !important;
-        top: 268mm !important;
+        left: 16mm !important;
+        top: 262mm !important;
         position: absolute;
         font-family: 'Courier Prime', monospace;
     }
 
     .print-number {
-        left: 12mm !important;
-        top: 272mm !important;
+        left: 16mm !important;
+        top: 266mm !important;
         position: absolute;
         font-family: 'Courier Prime', monospace;
     }
 
     .certificate-number {
-        left: 12mm !important;
-        top: 276mm !important;
+        left: 16mm !important;
+        top: 270mm !important;
         position: absolute;
         font-family: 'Courier Prime', monospace;
 
     }
 
     .pv-number2 {
-        left: 180mm !important;
-        top: 286mm !important;
+        left: 172mm !important;
+        top: 281mm !important;
         position: absolute;
         font-family: 'Courier Prime', monospace;
     }

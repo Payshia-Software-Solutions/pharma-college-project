@@ -75,6 +75,7 @@ $courseCode = isset($_GET['courseCode']) ? $_GET['courseCode'] : null;
 $showSession = isset($_GET['showSession']) ? $_GET['showSession'] : null;
 $tableMode = isset($_GET['tableMode']) ? $_GET['tableMode'] : 1;
 // echo $tableMode;
+$courseCode = 2;
 
 if ($courseCode == 1) {
     $courseName = "Certificate Course in Pharmacy Practice";
@@ -400,21 +401,13 @@ if (isset($courseCode) && isset($showSession)) {
                     <section class="modules">
                         <h2 class="module-name">Module Name</h2>
                         <ul>
-                            <li>Introduction to Pharmacy Practice & Professional Ethics</li>
-                            <li>Fundamental Principles of Pharmacology & Drug Action</li>
-                            <li>Understanding Prescriptions & Dispensing Essentials</li>
-                            <li>Routes of Drug Administration & Dosage Forms</li>
-                            <li>Pharmaceutical Calculations</li>
-                            <li>Gastrointestinal Medicines</li>
-                            <li>Cardiovascular Medicines</li>
-                            <li>Respiratory Medicines</li>
-                            <li>Anti-Infective Medicines</li>
-                            <li>Endocrine Medicines</li>
-                            <li>Ophthalmic & ENT Medicines</li>
-                            <li>Dermatological Medicines</li>
-                            <li>Central Nervous Medicines</li>
-                            <li>Pharmaceutical Law & Regulations</li>
+                            <li>Medical Terminology </li>
+                            <li>Pharmaceutical Calculations </li>
+                            <li>Pharmaceutical Formulations</li>
+                            <li>Basic Pharmacology and Therapeutics</li>
                             <li>Assist in Dispensing Medications</li>
+                            <li>Drug Storage and Quality Assurance</li>
+                            <li>Drug Information & Medication Safety</li>
 
                         </ul>
                     </section>
