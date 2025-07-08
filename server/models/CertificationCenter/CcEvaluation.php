@@ -412,7 +412,22 @@ class CcEvaluation extends DeliveryOrder
         $ArrayResult = [];
         try {
             $studentId = $this->GetLmsStudentsByUserName($userName)['student_id'];
-            $sql = "SELECT `id`, `course_code`, `student_id`, `enrollment_key`, `created_at` FROM `student_course` WHERE `student_id` LIKE ? ORDER BY `id` DESC";
+            $sql = "SELECT 
+    sc.id,
+    sc.course_code,
+    sc.student_id,
+    sc.enrollment_key,
+    sc.created_at,
+    c.parent_course_id
+FROM 
+    student_course sc
+JOIN 
+    course c ON sc.course_code = c.course_code
+WHERE 
+    sc.student_id LIKE ?
+ORDER BY 
+    sc.id DESC;
+";
             $stmt = $this->pdo->prepare($sql);
             $stmt->execute([$studentId]);
             $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
