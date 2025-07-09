@@ -55,13 +55,15 @@ $packageBookings = $response->toArray();
             flex-wrap: wrap;
             page-break-after: always;
             justify-content: space-between;
+            padding: 0 10mm;
+            box-sizing: border-box;
         }
 
         .label-box {
             width: calc(50% - 10px);
-            /* 2 columns per row */
-            height: 48%;
-            /* Fit 2 rows per page */
+            /* 2 per row */
+            height: 190px;
+            /* 5 rows = ~950px page height */
             border: 1px dashed #000;
             padding: 10px;
             margin-bottom: 10px;
@@ -75,7 +77,7 @@ $packageBookings = $response->toArray();
         .label-box strong {
             display: block;
             margin-bottom: 5px;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .label-box p {
@@ -99,14 +101,12 @@ $packageBookings = $response->toArray();
         }
     </style>
 
+
 </head>
 
 <body>
-
-    <h1><?= $courseName ?> - Courier Address Labels</h1>
-
     <?php
-    $chunked = array_chunk($packageBookings, 8); // 8 boxes per page
+    $chunked = array_chunk($packageBookings, 10); // 8 boxes per page
     foreach ($chunked as $pageSet) {
         echo '<div class="page">';
         foreach ($pageSet as $booking) {
@@ -124,7 +124,6 @@ $packageBookings = $response->toArray();
                     <p>Tel: <?= htmlspecialchars($booking['telephone_1']) ?></p>
                 <?php endif; ?>
                 <p>Ref #: <?= htmlspecialchars($booking['id']) ?></p>
-                <p>Certificate ID: <?= htmlspecialchars($booking['certificate_id']) ?></p>
             </div>
     <?php
         }
