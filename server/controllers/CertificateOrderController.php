@@ -165,14 +165,14 @@ class CertificateOrderController
     public function updateCourses($orderId)
     {
         $data = json_decode(file_get_contents('php://input'), true);
-        if (!isset($data['course_id']) || !is_array($data['course_id'])) {
+        if (!isset($data['course_code']) || !is_array($data['course_code'])) {
             http_response_code(400);
-            echo json_encode(['error' => 'Missing or invalid course_id']);
+            echo json_encode(['error' => 'Missing or invalid course_code']);
             return;
         }
 
-        // Convert course_ids array to a comma-separated string
-        $courseIdsString = implode(',', $data['course_id']);
+        // Convert course_codes array to a comma-separated string
+        $courseIdsString = implode(',', $data['course_code']);
 
         $success = $this->model->updateCourses($orderId, $courseIdsString);
         if ($success) {
