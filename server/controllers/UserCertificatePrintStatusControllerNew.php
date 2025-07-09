@@ -23,6 +23,8 @@ class UserCertificatePrintStatusControllerNew
         echo json_encode($statuses);
     }
 
+
+
     public function getStatusById($id)
     {
         $status = $this->model->getStatusById($id);
