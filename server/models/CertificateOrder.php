@@ -96,4 +96,11 @@ LEFT JOIN
         $stmt->execute([$certificate_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Update courses in a certificate order
+    public function updateCourses($orderId, $courses)
+    {
+        $stmt = $this->pdo->prepare("UPDATE cc_certificate_order SET course_code = ? WHERE id = ?");
+        return $stmt->execute([$courses, $orderId]);
+    }
 }
