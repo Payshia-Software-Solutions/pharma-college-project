@@ -39,7 +39,7 @@ return [
         return $certificateOrderController->deleteOrder($order_id);
     },
 
-    'PUT /certificate-orders/update-courses/{orderId}/$' => function ($orderId) use ($certificateOrderController) {
+    'PUT /certificate-orders/update-courses/(\d+)/$' => function ($orderId) use ($certificateOrderController) {
         return $certificateOrderController->updateCourses($orderId);
     },
 ];
