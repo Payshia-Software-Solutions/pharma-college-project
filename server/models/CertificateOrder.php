@@ -40,6 +40,43 @@ LEFT JOIN
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getOrdersWithCourseCode($courseCode)
+    {
+        $sql = "SELECT 
+        o.`id`, 
+        o.`created_by`, 
+        o.`created_at`, 
+        o.`updated_at`, 
+        o.`course_code`, 
+        o.`mobile`, 
+        o.`address_line1`, 
+        o.`address_line2`, 
+        o.`city_id`, 
+        o.`district`, 
+        o.`type`, 
+        o.`payment`, 
+        o.`package_id`, 
+        o.`certificate_id`, 
+        o.`certificate_status`, 
+        o.`cod_amount`, 
+        o.`is_active`,
+        u.`name_on_certificate`,
+        u.`telephone_1`
+    FROM 
+        `cc_certificate_order` o
+    LEFT JOIN 
+        `user_full_details` u ON o.`created_by` = u.`username`
+    WHERE 
+        FIND_IN_SET(?, o.`course_code`)";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$courseCode]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+
     // Create a new certificate order
     public function createOrder($created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active)
     {

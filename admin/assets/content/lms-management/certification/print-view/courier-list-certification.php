@@ -22,7 +22,6 @@ include '../../../../../include/lms-functions.php';
 require_once('../../../../../vendor/phpqrcode/qrlib.php');
 
 $courseCode = isset($_GET['courseCode']) ? $_GET['courseCode'] : null;
-$showSession = isset($_GET['showSession']) ? $_GET['showSession'] : null;
 $tableMode = isset($_GET['tableMode']) ? $_GET['tableMode'] : 1;
 // echo $tableMode;
 
@@ -32,7 +31,7 @@ if ($courseCode == 1) {
     $courseName = "Advanced Course in Pharmacy Practice";
 }
 
-if (isset($courseCode) && isset($showSession)) {
+if (isset($courseCode)) {
     $packageBookings = $client->request(
         'GET',
         $_ENV['SERVER_URL'] . '/certificate-orders'
@@ -47,28 +46,21 @@ if (isset($courseCode) && isset($showSession)) {
 <link rel="stylesheet" href="cerificate-styles.css">
 
 <?php if ($tableMode == 1) { ?>
-<?= $courseName ?> Print Session <?= $showSession ?>
-<table border="1" cellspacing="0">
-    <tr>
-        <th>#</th>
-        <th style="padding: 10px;">Name on Certificate</th>
-        <th>batchCode</th>
-        <th style="padding: 10px;">Certificate ID</th>
-        <th style="padding: 10px;">Username</th>
-    </tr>
+    <?= $courseName ?>
+    <table border="1" cellspacing="0">
+        <tr>
+            <th>#</th>
+            <th style="padding: 10px;">Name on Certificate</th>
+            <th>batchCode</th>
+            <th style="padding: 10px;">Certificate ID</th>
+            <th style="padding: 10px;">Username</th>
+        </tr>
     <?php } ?>
     <?php
     $count = 1;
     foreach ($packageBookings as $booking) {
         // break;
         $s_user_name = $booking['created_by'];
-
-        $enrollments = $packageBookings = $client->request(
-            'GET',
-            $_ENV['SERVER_URL'] . '/studentEnrollments/user/' . $s_user_name
-        )->toArray();
-
-        // $CourseCode = 1;
 
         $batchStudents =  GetLmsStudents();
         $studentDetailsArray = $batchStudents[$s_user_name];
@@ -82,14 +74,15 @@ if (isset($courseCode) && isset($showSession)) {
         // var_dump($certificateEntryResult);
 
         // Include the qrlib file 
-        // if (empty($certificateId)) {
-        //     $certificateInfo = CertificatePrintStatusByParentCourse($courseCode, 'Certificate', $s_user_name);
-        //     // var_dump($certificateInfo);
-        //     $certificateId = $certificateInfo[$s_user_name]['certificate_id'];
-        //     $batchCode = $certificateInfo[$s_user_name]['course_code'];
-        // } else {
-        //     $batchCode = $certificateInfo[0]['course_code'];
-        // }
+        if (empty($certificateId)) {
+            $certificateInfo = CertificatePrintStatusByParentCourse($courseCode, 'Certificate', $s_user_name);
+            var_dump($certificateInfo);
+            // var_dump($certificateInfo);
+            $certificateId = $certificateInfo[$s_user_name]['certificate_id'];
+            $batchCode = $certificateInfo[$s_user_name]['course_code'];
+        } else {
+            $batchCode = $certificateInfo[0]['course_code'];
+        }
         $batchCode = 1;
 
         $text = "https://pharmacollege.lk/result-view.php?CourseCode=" . $batchCode . "&LoggedUser=" . $s_user_name;
@@ -104,57 +97,55 @@ if (isset($courseCode) && isset($showSession)) {
         ob_end_clean();
     ?>
 
-    <?php if ($tableMode == 1) { ?>
+        <?php if ($tableMode == 1) { ?>
 
-    <tr>
-        <td><?= $count++ ?></td>
-        <td style="padding: 10px;"><?= $studentDetailsArray['name_on_certificate'] ?></td>
-        <td><?php foreach ($enrollments as $enrollment) {
-                        echo $enrollment['course_code'] . ", ";
-                    } ?></td>
-        <td style="padding: 10px;"><?= $certificateId ?></td>
-        <td style="padding: 10px;"><?= $s_user_name ?></td>
-    </tr>
-    <?php } else { ?>
-    <div class="certificate-container d-none">
-        <div class="certificate">
-            <h1 class="certificate-title">CERTIFICATE OF COMPLETION</h1>
+            <tr>
+                <td><?= $count++ ?></td>
+                <td style="padding: 10px;"><?= $studentDetailsArray['name_on_certificate'] ?></td>
+                <td><?= $batchCode ?></td>
+                <td style="padding: 10px;"><?= $certificateId ?></td>
+                <td style="padding: 10px;"><?= $s_user_name ?></td>
+            </tr>
+        <?php } else { ?>
+            <div class="certificate-container d-none">
+                <div class="certificate">
+                    <h1 class="certificate-title">CERTIFICATE OF COMPLETION</h1>
 
-            <p class="awarded-to">This certificate is awarded to</p>
-            <div class="recipient-line"><?= $studentDetailsArray['name_on_certificate'] ?></div>
+                    <p class="awarded-to">This certificate is awarded to</p>
+                    <div class="recipient-line"><?= $studentDetailsArray['name_on_certificate'] ?></div>
 
-            <div class="recognition-text">
-                in recognition of the<br>
-                successful completion of the
-            </div>
-            <div class="course-line"><?= $courseName ?></div>
+                    <div class="recognition-text">
+                        in recognition of the<br>
+                        successful completion of the
+                    </div>
+                    <div class="course-line"><?= $courseName ?></div>
 
-            <p class="offered-by">offered by</p>
-            <div class="institution">Ceylon Pharma College</div>
-            <div class="ceremony-details">
-                The certificate award ceremony was held at the<br>
-                BMICH, Colombo, Sri Lanka.
-            </div>
-        </div>
+                    <p class="offered-by">offered by</p>
+                    <div class="institution">Ceylon Pharma College</div>
+                    <div class="ceremony-details">
+                        The certificate award ceremony was held at the<br>
+                        BMICH, Colombo, Sri Lanka.
+                    </div>
+                </div>
 
-        <img class="qr-code" src="data:image/png;base64,<?= base64_encode($image_data) ?>">
-        <?php
+                <img class="qr-code" src="data:image/png;base64,<?= base64_encode($image_data) ?>">
+                <?php
                 if ($courseCode == 2) { ?>
-        <img class="sign" src="sign.png" alt="">
-        <div>
-        </div>
-        <p class="sign-dot">...................................................</p>
-        <p class="director">Director</p>
+                    <img class="sign" src="sign.png" alt="">
+                    <div>
+                    </div>
+                    <p class="sign-dot">...................................................</p>
+                    <p class="director">Director</p>
+                <?php } ?>
+                <p class="print-date">Date: <?= date("F j, Y", strtotime("2025-06-30")) ?></p>
+                <p class="print-number">Index Number:<?= $s_user_name ?></p>
+                <p class="certificate-number">Certificate
+                    ID:<?= $certificateId ?></p>
+                <p class="pv-number2">PV00253555</p>
+            </div>
         <?php } ?>
-        <p class="print-date">Date: <?= date("F j, Y", strtotime("2025-06-30")) ?></p>
-        <p class="print-number">Index Number:<?= $s_user_name ?></p>
-        <p class="certificate-number">Certificate
-            ID:<?= $certificateId ?></p>
-        <p class="pv-number2">PV00253555</p>
-    </div>
-    <?php } ?>
 
-    <?php
+        <?php
         if ($count == 8) {
             break;
         }
@@ -164,5 +155,5 @@ if (isset($courseCode) && isset($showSession)) {
         }
     }
     if ($tableMode == 1) { ?>
-</table>
+    </table>
 <?php }  ?>
