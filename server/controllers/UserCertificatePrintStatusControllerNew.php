@@ -56,7 +56,6 @@ class UserCertificatePrintStatusControllerNew
         $certificateId = $this->model->createStatus($data);
 
         if ($source == "courier") {
-            $certificateIdStatus = "OK";
             // For other sources, we can handle them here if needed
             if ($parentCourseCode == "1") {
                 $certificateIdStatus = $this->convocationRegistrationModel->updateCertificatePrintStatusCourier("Generated", $certificateId, $reference_number);
