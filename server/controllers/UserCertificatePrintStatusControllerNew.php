@@ -49,16 +49,29 @@ class UserCertificatePrintStatusControllerNew
         $data = json_decode(file_get_contents("php://input"), true);
         $parentCourseCode = $data['parentCourseCode'] ?? null;
         $reference_number = $data['referenceId'] ?? null;
+        $source = $data['source'] ?? null;
+        $certificateIdStatus = null;
 
         // The model now gives us the generated certificate_id
         $certificateId = $this->model->createStatus($data);
 
-        if ($parentCourseCode == "1") {
-            // Update the convocation registration with the new certificate_id
-            $certificateIdStatus = $this->convocationRegistrationModel->updateCertificatePrintStatus("Generated", $certificateId, $reference_number);
-        } else if ($parentCourseCode == "2") {
-            // Update the convocation registration with the new certificate_id
-            $certificateIdStatus = $this->convocationRegistrationModel->updateAdvancedCertificatePrintStatus("Generated", $certificateId, $reference_number);
+        if ($source == "courier") {
+            // For other sources, we can handle them here if needed
+            if ($parentCourseCode == "1") {
+                $certificateIdStatus = $this->convocationRegistrationModel->updateCertificatePrintStatusCourier("Generated", $certificateId, $reference_number);
+            } else if ($parentCourseCode == "2") {
+                // Update the convocation registration with the new certificate_id
+                $certificateIdStatus = $this->convocationRegistrationModel->updateAdvancedCertificatePrintStatusCourier("Generated", $certificateId, $reference_number);
+            }
+        } else {
+            // Send SMS notification for convocation
+            if ($parentCourseCode == "1") {
+                // Update the convocation registration with the new certificate_id
+                $certificateIdStatus = $this->convocationRegistrationModel->updateCertificatePrintStatus("Generated", $certificateId, $reference_number);
+            } else if ($parentCourseCode == "2") {
+                // Update the convocation registration with the new certificate_id
+                $certificateIdStatus = $this->convocationRegistrationModel->updateAdvancedCertificatePrintStatus("Generated", $certificateId, $reference_number);
+            }
         }
 
         http_response_code(201);
