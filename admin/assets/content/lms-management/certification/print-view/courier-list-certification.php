@@ -39,240 +39,35 @@ if (isset($courseCode) && isset($showSession)) {
     )->toArray();
 }
 ?>
+<!DOCTYPE html>
 <title><?= $courseName ?> Print Session <?= $showSession ?></title>
-
-<style>
-    @import url('https://fonts.cdnfonts.com/css/chaparral-pro?styles=15266');
-    @import url(https://db.onlinewebfonts.com/c/5c0d13eb3af810e996bce6c3482f881c?family=Chaparral+Pro+Bold+Italic);
-
-    * {
-        padding: 0px !important;
-        margin: 0px !important;
-    }
-
-    .certificate-container {
-        position: relative;
-        width: 210mm;
-        height: 297mm;
-        /* A4 full height */
-        page-break-inside: avoid;
-        padding: 0;
-        margin: 0;
-        overflow: hidden;
-    }
-
-
-    .back-image {
-        width: 210mm;
-        height: 209.8mm;
-    }
-
-    .name-box {
-        padding-left: 0mm !important;
-    }
-
-    .pv-number {
-        position: absolute;
-        left: <?= 210 - 30 ?>mm;
-        top: 5mm
-    }
-
-    .certificate-user {
-        font-family: "Chaparral Pro Bold Italic";
-        width: calc(210mm - 100px);
-        font-size: 35px;
-        /*text-align: center !important;*/
-        font-weight: 800 !important;
-        position: absolute;
-        top: 0 !important;
-    }
-
-    .qr-code {
-        left: 16mm !important;
-        top: 240mm !important;
-        position: absolute;
-        width: 20mm !important;
-    }
-
-    .sign {
-        left: 150mm !important;
-        top: 255mm !important;
-        position: absolute;
-        width: 40mm !important;
-    }
-
-    .sign-dot {
-        left: 150mm !important;
-        top: 260mm !important;
-        position: absolute;
-        width: 40mm !important;
-    }
-
-    .director {
-        left: 163mm !important;
-        top: 265mm !important;
-        position: absolute;
-        width: 40mm !important;
-    }
-
-    .print-date {
-        left: 16mm !important;
-        top: 262mm !important;
-        position: absolute;
-        font-family: 'Courier Prime', monospace;
-    }
-
-    .print-number {
-        left: 16mm !important;
-        top: 266mm !important;
-        position: absolute;
-        font-family: 'Courier Prime', monospace;
-    }
-
-    .certificate-number {
-        left: 16mm !important;
-        top: 270mm !important;
-        position: absolute;
-        font-family: 'Courier Prime', monospace;
-
-    }
-
-    .pv-number2 {
-        left: 172mm !important;
-        top: 281mm !important;
-        position: absolute;
-        font-family: 'Courier Prime', monospace;
-    }
-
-    .page-break {
-        page-break-after: always;
-    }
-</style>
-
 <link
     href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
     rel="stylesheet">
-
-<style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: 'Poppins', sans-serif;
-    }
-
-    .certificate {
-        /* background-image: url('cer.jpeg'); */
-        width: 210mm;
-        height: 297mm;
-        display: flex;
-        /* border: 1px solid black; */
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        page-break-inside: avoid;
-    }
-
-    .certificate-title {
-        position: absolute;
-        font-size: 25px;
-        font-weight: bold;
-        color: #333;
-        top: 90mm;
-        letter-spacing: 1px;
-    }
-
-    .awarded-to {
-        position: absolute;
-        font-size: 20px;
-        font-family: 'Roboto', sans-serif;
-        color: #333;
-        top: 110mm;
-    }
-
-    .recipient-line {
-        position: absolute;
-        width: 180mm;
-        height: 1px;
-        top: 119mm;
-        font-weight: 900;
-        font-size: 25px;
-    }
-
-    .recognition-text {
-        position: absolute;
-        font-size: 20px;
-        font-family: 'Roboto', sans-serif;
-        color: #333;
-        top: 132mm;
-        line-height: 1.3;
-    }
-
-    .course-line {
-        position: absolute;
-        width: 150mm;
-        height: 1px;
-        top: 150mm;
-        font-weight: 900;
-        font-size: 20px;
-    }
-
-    .offered-by {
-        position: absolute;
-        font-size: 20px;
-        color: #333;
-        top: 160mm;
-    }
-
-    .institution {
-        position: absolute;
-        font-size: 20px;
-        font-weight: bold;
-        color: #333;
-        top: 168mm;
-    }
-
-    .ceremony-details {
-        position: absolute;
-        font-size: 16px;
-        color: #333;
-        line-height: 1.4;
-        top: 176mm;
-    }
-
-    @media print {
-        body {
-            margin: 0;
-            padding: 0;
-            background: white;
-        }
-
-        .certificate {
-            background: white;
-            margin: 0;
-            box-shadow: none;
-        }
-    }
-</style>
+<link rel="stylesheet" href="cerificate-styles.css">
 
 <?php if ($tableMode == 1) { ?>
-    <table border="1" cellspacing="0">
-        <tr>
-            <th>#</th>
-            <th style="padding: 10px;">Name on Certificate</th>
-            <th>batchCode</th>
-            <th style="padding: 10px;">Certificate ID</th>
-            <th style="padding: 10px;">Username</th>
-        </tr>
+<?= $courseName ?> Print Session <?= $showSession ?>
+<table border="1" cellspacing="0">
+    <tr>
+        <th>#</th>
+        <th style="padding: 10px;">Name on Certificate</th>
+        <th>batchCode</th>
+        <th style="padding: 10px;">Certificate ID</th>
+        <th style="padding: 10px;">Username</th>
+    </tr>
     <?php } ?>
     <?php
     $count = 1;
     foreach ($packageBookings as $booking) {
         // break;
         $s_user_name = $booking['created_by'];
+
+        $enrollments = $packageBookings = $client->request(
+            'GET',
+            $_ENV['SERVER_URL'] . '/studentEnrollments/user/' . $s_user_name
+        )->toArray();
+
         // $CourseCode = 1;
 
         $batchStudents =  GetLmsStudents();
@@ -309,56 +104,58 @@ if (isset($courseCode) && isset($showSession)) {
         ob_end_clean();
     ?>
 
-        <?php if ($tableMode == 1) { ?>
+    <?php if ($tableMode == 1) { ?>
 
-            <tr>
-                <td><?= $count++ ?></td>
-                <td style="padding: 10px;"><?= $studentDetailsArray['name_on_certificate'] ?></td>
-                <td><?= $batchCode ?></td>
-                <td style="padding: 10px;"><?= $certificateId ?></td>
-                <td style="padding: 10px;"><?= $s_user_name ?></td>
-            </tr>
-        <?php } else { ?>
-            <div class="certificate-container d-none">
-                <div class="certificate">
-                    <h1 class="certificate-title">CERTIFICATE OF COMPLETION</h1>
+    <tr>
+        <td><?= $count++ ?></td>
+        <td style="padding: 10px;"><?= $studentDetailsArray['name_on_certificate'] ?></td>
+        <td><?php foreach ($enrollments as $enrollment) {
+                        echo $enrollment['course_code'] . ", ";
+                    } ?></td>
+        <td style="padding: 10px;"><?= $certificateId ?></td>
+        <td style="padding: 10px;"><?= $s_user_name ?></td>
+    </tr>
+    <?php } else { ?>
+    <div class="certificate-container d-none">
+        <div class="certificate">
+            <h1 class="certificate-title">CERTIFICATE OF COMPLETION</h1>
 
-                    <p class="awarded-to">This certificate is awarded to</p>
-                    <div class="recipient-line"><?= $studentDetailsArray['name_on_certificate'] ?></div>
+            <p class="awarded-to">This certificate is awarded to</p>
+            <div class="recipient-line"><?= $studentDetailsArray['name_on_certificate'] ?></div>
 
-                    <div class="recognition-text">
-                        in recognition of the<br>
-                        successful completion of the
-                    </div>
-                    <div class="course-line"><?= $courseName ?></div>
-
-                    <p class="offered-by">offered by</p>
-                    <div class="institution">Ceylon Pharma College</div>
-                    <div class="ceremony-details">
-                        The certificate award ceremony was held at the<br>
-                        BMICH, Colombo, Sri Lanka.
-                    </div>
-                </div>
-
-                <img class="qr-code" src="data:image/png;base64,<?= base64_encode($image_data) ?>">
-                <?php
-                if ($courseCode == 2) { ?>
-                    <img class="sign" src="sign.png" alt="">
-                    <div>
-                    </div>
-                    <p class="sign-dot">...................................................</p>
-                    <p class="director">Director</p>
-                <?php } ?>
-                <p class="print-date">Date: <?= date("F j, Y", strtotime("2025-06-30")) ?></p>
-                <p class="print-number">Index Number:<?= $s_user_name ?></p>
-                <p class="certificate-number">Certificate
-                    ID:<?= $certificateId ?></p>
-                <p class="pv-number2">PV00253555</p>
+            <div class="recognition-text">
+                in recognition of the<br>
+                successful completion of the
             </div>
-        <?php } ?>
+            <div class="course-line"><?= $courseName ?></div>
 
+            <p class="offered-by">offered by</p>
+            <div class="institution">Ceylon Pharma College</div>
+            <div class="ceremony-details">
+                The certificate award ceremony was held at the<br>
+                BMICH, Colombo, Sri Lanka.
+            </div>
+        </div>
+
+        <img class="qr-code" src="data:image/png;base64,<?= base64_encode($image_data) ?>">
         <?php
-        if ($count == 4) {
+                if ($courseCode == 2) { ?>
+        <img class="sign" src="sign.png" alt="">
+        <div>
+        </div>
+        <p class="sign-dot">...................................................</p>
+        <p class="director">Director</p>
+        <?php } ?>
+        <p class="print-date">Date: <?= date("F j, Y", strtotime("2025-06-30")) ?></p>
+        <p class="print-number">Index Number:<?= $s_user_name ?></p>
+        <p class="certificate-number">Certificate
+            ID:<?= $certificateId ?></p>
+        <p class="pv-number2">PV00253555</p>
+    </div>
+    <?php } ?>
+
+    <?php
+        if ($count == 8) {
             break;
         }
         // Add a page break after each certificate except the last one
@@ -367,5 +164,5 @@ if (isset($courseCode) && isset($showSession)) {
         }
     }
     if ($tableMode == 1) { ?>
-    </table>
+</table>
 <?php }  ?>

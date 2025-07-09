@@ -160,4 +160,26 @@ class CertificateOrderController
             echo json_encode(['error' => 'Order not found or deletion failed']);
         }
     }
+
+    // PUT update courses in a certificate order
+    public function updateCourses($orderId)
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+        if (!isset($data['course_id']) || !is_array($data['course_id'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing or invalid course_id']);
+            return;
+        }
+
+        // Convert course_ids array to a comma-separated string
+        $courseIdsString = implode(',', $data['course_id']);
+
+        $success = $this->model->updateCourses($orderId, $courseIdsString);
+        if ($success) {
+            echo json_encode(['message' => 'Courses updated successfully']);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Order not found or update failed']);
+        }
+    }
 }
