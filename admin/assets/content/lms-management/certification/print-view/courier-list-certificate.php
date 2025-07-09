@@ -21,7 +21,7 @@ include '../../../../../include/function-update.php';
 include '../../../../../include/lms-functions.php';
 require_once('../../../../../vendor/phpqrcode/qrlib.php');
 
-$courseCode = isset($_GET['courseCode']) ? $_GET['courseCode'] : null;
+$courseCode = isset($_GET['courseCode']) ? $_GET['courseCode'] : 1;
 $tableMode = isset($_GET['tableMode']) ? $_GET['tableMode'] : 1;
 // echo $tableMode;
 
@@ -50,6 +50,7 @@ if (isset($courseCode)) {
     <table border="1" cellspacing="0">
         <tr>
             <th>#</th>
+            <th>Order Ref</th>
             <th style="padding: 10px;">Name on Certificate</th>
             <th>batchCode</th>
             <th style="padding: 10px;">Certificate ID</th>
@@ -60,7 +61,7 @@ if (isset($courseCode)) {
     $count = 1;
     foreach ($packageBookings as $booking) {
         // break;
-        var_dump($booking);
+        // var_dump($booking);
         $s_user_name = $booking['created_by'];
 
         $batchStudents =  GetLmsStudents();
@@ -77,14 +78,13 @@ if (isset($courseCode)) {
         // Include the qrlib file 
         if (empty($certificateId)) {
             $certificateInfo = CertificatePrintStatusByParentCourse($courseCode, 'Certificate', $s_user_name);
-            var_dump($certificateInfo);
+            // var_dump($certificateInfo);
             // var_dump($certificateInfo);
             $certificateId = $certificateInfo[$s_user_name]['certificate_id'];
             $batchCode = $certificateInfo[$s_user_name]['course_code'];
         } else {
             $batchCode = $certificateInfo[0]['course_code'];
         }
-        $batchCode = 1;
 
         $text = "https://pharmacollege.lk/result-view.php?CourseCode=" . $batchCode . "&LoggedUser=" . $s_user_name;
         $ecc = 'L';
@@ -102,6 +102,7 @@ if (isset($courseCode)) {
 
             <tr>
                 <td><?= $count++ ?></td>
+                <td><?= $booking['id'] ?></td>
                 <td style="padding: 10px;"><?= $studentDetailsArray['name_on_certificate'] ?></td>
                 <td><?= $batchCode ?></td>
                 <td style="padding: 10px;"><?= $certificateId ?></td>
