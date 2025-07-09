@@ -35,57 +35,86 @@ $packageBookings = $response->toArray();
     <title><?= $courseName ?> - Courier Address Labels</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        @page {
+            margin: 10mm;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
         }
 
         h1 {
             text-align: center;
-            margin-bottom: 40px;
+            margin: 20px 0;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+        .page {
+            display: flex;
+            flex-wrap: wrap;
+            page-break-after: always;
+            justify-content: space-between;
         }
 
         .label-box {
-            border: 2px dashed #333;
-            padding: 15px;
-            height: 200px;
+            width: calc(50% - 10px);
+            /* 2 columns per row */
+            height: 48%;
+            /* Fit 2 rows per page */
+            border: 1px dashed #000;
+            padding: 10px;
+            margin-bottom: 10px;
             box-sizing: border-box;
+            page-break-inside: avoid;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .label-box strong {
             display: block;
             margin-bottom: 5px;
+            font-size: 16px;
         }
 
         .label-box p {
             margin: 2px 0;
+            font-size: 13px;
             line-height: 1.4;
-            font-size: 14px;
+        }
+
+        @media print {
+            body {
+                margin: 0;
+            }
+
+            .label-box {
+                break-inside: avoid;
+            }
+
+            .no-print {
+                display: none;
+            }
         }
     </style>
+
 </head>
 
 <body>
 
     <h1><?= $courseName ?> - Courier Address Labels</h1>
 
-    <div class="grid">
-        <?php
-        foreach ($packageBookings as $booking) {
-            // Optional filter by courseCode
-            // if ($booking['course_code'] != $courseCode) continue;
-
+    <?php
+    $chunked = array_chunk($packageBookings, 8); // 8 boxes per page
+    foreach ($chunked as $pageSet) {
+        echo '<div class="page">';
+        foreach ($pageSet as $booking) {
             $fullAddress = $booking['address_line1'];
             if (!empty($booking['address_line2'])) {
                 $fullAddress .= ', ' . $booking['address_line2'];
             }
-        ?>
+    ?>
             <div class="label-box">
                 <strong><?= htmlspecialchars($booking['name_on_certificate']) ?></strong>
                 <p><?= htmlspecialchars($fullAddress) ?></p>
@@ -97,8 +126,12 @@ $packageBookings = $response->toArray();
                 <p>Ref #: <?= htmlspecialchars($booking['id']) ?></p>
                 <p>Certificate ID: <?= htmlspecialchars($booking['certificate_id']) ?></p>
             </div>
-        <?php } ?>
-    </div>
+    <?php
+        }
+        echo '</div>'; // end .page
+    }
+    ?>
+
 
 </body>
 
