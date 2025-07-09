@@ -59,6 +59,8 @@ LEFT JOIN
         o.`package_id`, 
         o.`certificate_id`, 
         o.`certificate_status`, 
+        o.`advanced_id`, 
+        o.`advanced_id_status`, 
         o.`cod_amount`, 
         o.`is_active`,
         u.`name_on_certificate`,

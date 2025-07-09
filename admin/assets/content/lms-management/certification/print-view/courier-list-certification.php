@@ -34,7 +34,7 @@ if ($courseCode == 1) {
 if (isset($courseCode)) {
     $packageBookings = $client->request(
         'GET',
-        $_ENV['SERVER_URL'] . '/certificate-orders'
+        $_ENV['SERVER_URL'] . '/certificate-orders/course/' . $courseCode
     )->toArray();
 }
 ?>
@@ -60,6 +60,7 @@ if (isset($courseCode)) {
     $count = 1;
     foreach ($packageBookings as $booking) {
         // break;
+        var_dump($booking);
         $s_user_name = $booking['created_by'];
 
         $batchStudents =  GetLmsStudents();
