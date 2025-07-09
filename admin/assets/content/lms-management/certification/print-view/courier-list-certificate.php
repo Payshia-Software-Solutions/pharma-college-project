@@ -149,7 +149,7 @@ if (isset($courseCode)) {
 
         <?php
         if ($count == 8) {
-            break;
+            // break;
         }
         // Add a page break after each certificate except the last one
         if ($packageBookings !== end($packageBookings)) {

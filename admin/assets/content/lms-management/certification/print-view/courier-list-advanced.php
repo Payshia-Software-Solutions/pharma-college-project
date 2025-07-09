@@ -265,8 +265,11 @@ if (isset($courseCode)) {
 <?php if ($tableMode == 1) { ?>
     <table border="1" cellspacing="0">
         <tr>
+
+            <th>#</th>
             <th style="padding: 10px;">Order Ref</th>
             <th style="padding: 10px;">Name on Certificate</th>
+            <th>Batch code</th>
             <th style="padding: 10px;">Certificate ID</th>
             <th style="padding: 10px;">Username</th>
         </tr>
@@ -314,8 +317,10 @@ if (isset($courseCode)) {
         <?php if ($tableMode == 1) { ?>
 
             <tr>
+                <td><?= $count++ ?></td>
                 <td style="padding: 10px;"><?= $booking['id'] ?></td>
                 <td style="padding: 10px;"><?= $studentDetailsArray['name_on_certificate'] ?></td>
+                <td><?= $batchCode ?></td>
                 <td style="padding: 10px;"><?= $certificateId ?></td>
                 <td style="padding: 10px;"><?= $s_user_name ?></td>
             </tr>
@@ -360,7 +365,7 @@ if (isset($courseCode)) {
 
         <?php
         if ($count == 10) {
-            break;
+            // break;
         }
         // Add a page break after each certificate except the last one
         if ($packageBookings !== end($packageBookings)) {
