@@ -20,7 +20,6 @@ include '../../../../../include/lms-functions.php';
 require_once('../../../../../vendor/phpqrcode/qrlib.php');
 
 $courseCode = isset($_GET['courseCode']) ? $_GET['courseCode'] : null;
-$showSession = isset($_GET['showSession']) ? $_GET['showSession'] : null;
 
 if ($courseCode == 1) {
     $courseName = "Certificate Course in Pharmacy Practice";
@@ -53,7 +52,8 @@ if (isset($courseCode) && isset($showSession)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
     <title><?= $courseName ?> Print Session <?= $showSession ?></title>
 </head>
 

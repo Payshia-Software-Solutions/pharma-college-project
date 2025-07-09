@@ -22,6 +22,18 @@ class CertificateOrderController
         echo json_encode($orders);
     }
 
+    // GET all certificate orders by course code
+    public function getOrdersByCourseCode($courseCode)
+    {
+        $orders = $this->model->getOrdersWithCourseCode($courseCode);
+        if ($orders) {
+            echo json_encode($orders);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No orders found for this course code']);
+        }
+    }
+
     // GET a single certificate order by ID
     public function getOrder($order_id)
     {
