@@ -1,5 +1,5 @@
 <?php
-require_once './models/StudentCourseModel.php';
+require_once './models/StudentCourseModelNew.php';
 
 class StudentCourseController
 {
@@ -7,7 +7,7 @@ class StudentCourseController
 
     public function __construct($pdo)
     {
-        $this->model = new StudentCourseModel($pdo);
+        $this->model = new StudentCourseModelNew($pdo);
     }
 
     // GET all student enrollments with user details
