@@ -1,7 +1,7 @@
 <?php
 require_once './models/StudentCourseModelNew.php';
 
-class StudentCourseController
+class StudentCourseControllerNew
 {
     private $model;
 
