@@ -1,6 +1,6 @@
 <?php
 
-class StudentCourseModel
+class StudentCourseModelNew
 {
     private $pdo;
 
