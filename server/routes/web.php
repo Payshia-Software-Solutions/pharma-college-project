@@ -128,6 +128,7 @@ $transactionPaymentRoutes = require './routes/transactionPaymentRoutes.php';
 $WordListRoutes = require './routes/WordListRoutes.php';
 $EnWordSubmissionRoutes = require './routes/EnWordSubmissionRoutes.php';
 $UserCertificatePrintStatusRoutesNew = require './routes/UserCertificatePrintStatusRoutesNew.php';
+$studentEnrollmentRoutes = require './routes/studentEnrollmentRoutes.php';
 
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
 
@@ -233,7 +234,8 @@ $routes = array_merge(
     $convocationRoutes,
     $WordListRoutes,
     $EnWordSubmissionRoutes,
-    $UserCertificatePrintStatusRoutesNew
+    $UserCertificatePrintStatusRoutesNew,
+    $studentEnrollmentRoutes
 );
 
 
