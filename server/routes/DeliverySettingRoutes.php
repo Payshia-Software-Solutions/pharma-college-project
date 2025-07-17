@@ -10,6 +10,10 @@ return [
         $deliverySettingController->getAll();
     },
 
+    'GET /delivery-settings/by-course/([\w\-]+)/$' => function ($courseId) use ($deliverySettingController) {
+        $deliverySettingController->getByCourseId($courseId);
+    },
+
     'GET /delivery-settings/(\d+)/$' => function ($id) use ($deliverySettingController) {
         $deliverySettingController->getById($id);
     },
@@ -26,7 +30,4 @@ return [
         $deliverySettingController->delete($id);
     },
 
-    'GET /delivery-settings/course/(\d+)/$' => function ($courseId) use ($deliverySettingController) {
-        $deliverySettingController->getByCourseId($courseId);
-    },
 ];

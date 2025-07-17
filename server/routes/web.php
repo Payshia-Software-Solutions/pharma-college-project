@@ -237,7 +237,7 @@ $routes = array_merge(
     $EnWordSubmissionRoutes,
     $UserCertificatePrintStatusRoutesNew,
     $studentEnrollmentRoutes,
-    $DeliverySettingRoutes,
+    $DeliverySettingRoutes
 );
 
 
