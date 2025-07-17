@@ -19,6 +19,11 @@ return [
         return $studentCourseController->getById($id);
     },
 
+    // GET a single student course enrollment with user details by ID
+    'GET /student-courses-new/course-code/(\d+)/$' => function ($courseCode) use ($studentCourseController) {
+        return $studentCourseController->getByCourseCodeId($courseCode);
+    },
+
     // POST create a new student course enrollment
     'POST /student-courses-new/$' => function () use ($studentCourseController) {
         return $studentCourseController->create();

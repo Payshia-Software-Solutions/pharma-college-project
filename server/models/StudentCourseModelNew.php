@@ -107,6 +107,47 @@ class StudentCourseModelNew
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Read single enrollment by course code
+    public function getByCourseCodeId($courseCode)
+    {
+        $stmt = $this->pdo->prepare("
+            SELECT 
+                sc.id AS student_course_id,
+                sc.course_code,
+                sc.student_id,
+                sc.enrollment_key,
+                sc.created_at,
+
+                ufd.id AS user_id,
+                ufd.username,
+                ufd.civil_status,
+                ufd.first_name,
+                ufd.last_name,
+                ufd.gender,
+                ufd.address_line_1,
+                ufd.address_line_2,
+                ufd.city,
+                ufd.district,
+                ufd.postal_code,
+                ufd.telephone_1,
+                ufd.telephone_2,
+                ufd.nic,
+                ufd.e_mail,
+                ufd.birth_day,
+                ufd.updated_by,
+                ufd.updated_at,
+                ufd.full_name,
+                ufd.name_with_initials,
+                ufd.name_on_certificate
+
+            FROM student_course sc
+            INNER JOIN user_full_details ufd ON sc.student_id = ufd.student_id
+            WHERE sc.course_code = ?
+        ");
+        $stmt->execute([$courseCode]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     // Update enrollment by ID
     public function update($id, $data)
     {
