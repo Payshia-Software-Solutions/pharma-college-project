@@ -145,7 +145,7 @@ class StudentCourseModelNew
             WHERE sc.course_code = ?
         ");
         $stmt->execute([$courseCode]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Update enrollment by ID
