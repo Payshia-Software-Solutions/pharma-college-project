@@ -6,27 +6,27 @@ $pdo = $GLOBALS['pdo'];
 $deliverySettingController = new DeliverySettingController($pdo);
 
 return [
-    'GET /delivery-settings/' => function () use ($deliverySettingController) {
+    'GET /delivery-settings/$' => function () use ($deliverySettingController) {
         $deliverySettingController->getAll();
     },
 
-    'GET /delivery-settings/{id}/' => function ($id) use ($deliverySettingController) {
+    'GET /delivery-settings/(\d+)/$' => function ($id) use ($deliverySettingController) {
         $deliverySettingController->getById($id);
     },
 
-    'POST /delivery-settings/' => function () use ($deliverySettingController) {
+    'POST /delivery-settings/$' => function () use ($deliverySettingController) {
         $deliverySettingController->create();
     },
 
-    'PUT /delivery-settings/{id}/' => function ($id) use ($deliverySettingController) {
+    'PUT /delivery-settings/(\d+)/$' => function ($id) use ($deliverySettingController) {
         $deliverySettingController->update($id);
     },
 
-    'DELETE /delivery-settings/{id}/' => function ($id) use ($deliverySettingController) {
+    'DELETE /delivery-settings/(\d+)/$' => function ($id) use ($deliverySettingController) {
         $deliverySettingController->delete($id);
     },
-    'GET /delivery-settings/course/{courseId}/' => function ($courseId) use ($deliverySettingController) {
+
+    'GET /delivery-settings/course/(\d+)/$' => function ($courseId) use ($deliverySettingController) {
         $deliverySettingController->getByCourseId($courseId);
     },
-
 ];
