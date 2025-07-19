@@ -24,6 +24,11 @@ return [
         return $studentCourseController->getByCourseCodeId($courseCode);
     },
 
+    // GET a single student course enrollment with user details by course code
+    'GET /student-courses-new/course-code/([A-Za-z0-9]+)/$' => function ($userName) use ($studentCourseController) {
+        return $studentCourseController->getByStudentNumber($userName);
+    },
+
     // POST create a new student course enrollment
     'POST /student-courses-new/$' => function () use ($studentCourseController) {
         return $studentCourseController->create();
