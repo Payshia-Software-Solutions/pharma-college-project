@@ -25,7 +25,7 @@ return [
     },
 
     // GET a single student course enrollment with user details by course code
-    'GET /student-courses-new/course-code/([A-Za-z0-9]+)/$' => function ($userName) use ($studentCourseController) {
+    'GET /student-courses-new/student-number/([A-Za-z0-9]+)/$' => function ($userName) use ($studentCourseController) {
         return $studentCourseController->getByStudentNumber($userName);
     },
 
