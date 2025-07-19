@@ -28,10 +28,20 @@ class StudentPaymentNew
     // Create new student payment
     public function create($data)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO `student_payment` (`receipt_number`, `course_code`, `student_id`, `paid_amount`, `discount_amount`, `payment_status`, `payment_type`, `paid_date`, `created_at`, `created_by`) 
-                                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        // Generate receipt number with timestamp (e.g., CPCREC1628194738)
+        $receiptNumber = 'CPCREC' . time();
+
+        // Get current date and time for created_at
+        $createdAt = date('Y-m-d H:i:s');
+
+        // Prepare the SQL statement
+        $stmt = $this->pdo->prepare("INSERT INTO `student_payment` 
+        (`receipt_number`, `course_code`, `student_id`, `paid_amount`, `discount_amount`, `payment_status`, `payment_type`, `paid_date`, `created_at`, `created_by`) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+
+        // Execute the statement with the data
         $stmt->execute([
-            $data['receipt_number'],
+            $receiptNumber,
             $data['course_code'],
             $data['student_id'],
             $data['paid_amount'],
@@ -39,11 +49,14 @@ class StudentPaymentNew
             $data['payment_status'],
             $data['payment_type'],
             $data['paid_date'],
-            $data['created_at'],
+            $createdAt,
             $data['created_by']
         ]);
+
+        // Return the last inserted ID (primary key)
         return $this->pdo->lastInsertId();
     }
+
 
     // Update student payment
     public function update($id, $data)
