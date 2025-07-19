@@ -40,6 +40,13 @@ return [
         return $paymentRequestController->updateRecord($id);
     },
 
+
+    // Update a payment request status by ID
+    'PUT /payment-portal-requests/update-status/(\d+)/$' => function ($id) use ($paymentRequestController) {
+        return $paymentRequestController->updatePaymentStatus($id);
+    },
+
+
     // Delete a payment request by ID
     'DELETE /payment-portal-requests/(\d+)/$' => function ($id) use ($paymentRequestController) {
         return $paymentRequestController->deleteRecord($id);
