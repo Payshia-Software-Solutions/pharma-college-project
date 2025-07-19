@@ -25,7 +25,7 @@ class StudentCourse
     }
 
     // Get LMS student details by username
-    public function getFullStudentCourseData($userName = null)
+    public function getLmsStudentByUsername($userName = null)
     {
         $query = "
         SELECT 
