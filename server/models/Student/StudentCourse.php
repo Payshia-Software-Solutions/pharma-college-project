@@ -25,13 +25,56 @@ class StudentCourse
     }
 
     // Get LMS student details by username
-    public function getLmsStudentByUsername($userName)
+    public function getFullStudentCourseData($userName = null)
     {
-        $cleanUsername = rtrim($userName, "/");
-        $stmt = $this->pdo->prepare("SELECT * FROM user_full_details WHERE username = :username");
-        $stmt->execute(['username' => $cleanUsername]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        $query = "
+        SELECT 
+            sc.id AS student_course_id,
+            sc.course_code,
+            sc.student_id,
+            sc.enrollment_key,
+            sc.created_at,
+            sc.updated_at,
+            
+            ufd.id AS user_id,
+            ufd.username,
+            ufd.civil_status,
+            ufd.first_name,
+            ufd.last_name,
+            ufd.gender,
+            ufd.address_line_1,
+            ufd.address_line_2,
+            ufd.city,
+            ufd.district,
+            ufd.postal_code,
+            ufd.telephone_1,
+            ufd.telephone_2,
+            ufd.nic,
+            ufd.e_mail,
+            ufd.birth_day,
+            ufd.updated_by,
+            ufd.updated_at,
+            ufd.full_name,
+            ufd.name_with_initials,
+            ufd.name_on_certificate
+        FROM student_course sc
+        INNER JOIN user_full_details ufd ON sc.student_id = ufd.student_id
+    ";
+
+        if ($userName) {
+            // Adding filter based on username if provided
+            $cleanUsername = rtrim($userName, "/");
+            $query .= " WHERE ufd.username = :username";
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute(['username' => $cleanUsername]);
+        } else {
+            // Otherwise, return all data
+            $stmt = $this->pdo->query($query);
+        }
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
 
 
 
