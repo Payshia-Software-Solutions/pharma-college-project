@@ -34,7 +34,7 @@ class StudentPaymentControllerNew
     {
         $data = json_decode(file_get_contents("php://input"), true);
 
-        if ($data && isset($data['receipt_number'], $data['course_code'], $data['student_id'], $data['paid_amount'], $data['discount_amount'], $data['payment_status'], $data['payment_type'], $data['paid_date'], $data['created_at'], $data['created_by'])) {
+        if ($data && isset($data['course_code'], $data['student_id'], $data['paid_amount'], $data['discount_amount'], $data['payment_status'], $data['payment_type'], $data['paid_date'], $data['created_by'])) {
             $id = $this->model->create($data);
             http_response_code(201);
             echo json_encode(['message' => 'Payment created successfully', 'id' => $id]);
@@ -49,7 +49,7 @@ class StudentPaymentControllerNew
     {
         $data = json_decode(file_get_contents("php://input"), true);
 
-        if ($data && isset($data['receipt_number'], $data['course_code'], $data['student_id'], $data['paid_amount'], $data['discount_amount'], $data['payment_status'], $data['payment_type'], $data['paid_date'], $data['created_at'], $data['created_by'])) {
+        if ($data && isset($data['course_code'], $data['student_id'], $data['paid_amount'], $data['discount_amount'], $data['payment_status'], $data['payment_type'], $data['paid_date'], $data['created_by'])) {
             $existing = $this->model->getById($id);
             if (!$existing) {
                 http_response_code(404);
