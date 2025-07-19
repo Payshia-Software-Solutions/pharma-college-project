@@ -249,6 +249,23 @@ class PaymentPortalRequestController
         return $stmt->fetchColumn() > 0;
     }
 
+    // Update payment status by ID
+    public function updatePaymentStatus($id)
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        // Check if 'payment_status' is provided in the request
+        if (!isset($data['payment_status'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required field: payment_status']);
+            return;
+        }
+
+        // Update the payment status
+        $this->model->updatePaymentStatus($id, $data['payment_status']);
+        echo json_encode(['message' => 'Payment status updated successfully']);
+    }
+
     // Delete a payment request
     public function deleteRecord($id)
     {

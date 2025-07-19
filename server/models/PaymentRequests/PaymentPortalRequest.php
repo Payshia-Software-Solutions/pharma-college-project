@@ -113,6 +113,23 @@ class PaymentPortalRequest
         return $stmtSelect->fetch(PDO::FETCH_ASSOC);
     }
 
+    // Update payment status by ID
+    public function updatePaymentStatus($id, $status)
+    {
+        $stmt = $this->pdo->prepare("UPDATE payment_requests SET payment_status = :status WHERE id = :id");
+        $stmt->execute(['status' => $status, 'id' => $id]);
+
+        // Fetch the updated record
+        $selectSql = "SELECT id, unique_number, number_type, payment_reson, paid_amount, payment_reference, bank, branch, slip_path, paid_date, created_at, is_active, hash_value, payment_status 
+                  FROM payment_requests 
+                  WHERE id = :id";
+        $stmtSelect = $this->pdo->prepare($selectSql);
+        $stmtSelect->execute(['id' => $id]);
+
+        // Return the updated record
+        return $stmtSelect->fetch(PDO::FETCH_ASSOC);
+    }
+
 
     // Delete a payment request
     public function deleteRecord($id)
