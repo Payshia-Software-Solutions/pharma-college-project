@@ -7,27 +7,27 @@ $studentPaymentController = new StudentPaymentControllerNew($pdo);
 
 return [
     // Get all student payments
-    'GET /student-payments/$' => function () use ($studentPaymentController) {
+    'GET /student-payments-new/$' => function () use ($studentPaymentController) {
         $studentPaymentController->getAll();
     },
 
     // Get student payment by ID
-    'GET /student-payments/(\d+)/$' => function ($id) use ($studentPaymentController) {
+    'GET /student-payments-new/(\d+)/$' => function ($id) use ($studentPaymentController) {
         $studentPaymentController->getById($id);
     },
 
     // Create a new student payment
-    'POST /student-payments/$' => function () use ($studentPaymentController) {
+    'POST /student-payments-new/$' => function () use ($studentPaymentController) {
         $studentPaymentController->create();
     },
 
     // Update student payment
-    'PUT /student-payments/(\d+)/$' => function ($id) use ($studentPaymentController) {
+    'PUT /student-payments-new/(\d+)/$' => function ($id) use ($studentPaymentController) {
         $studentPaymentController->update($id);
     },
 
     // Delete student payment
-    'DELETE /student-payments/(\d+)/$' => function ($id) use ($studentPaymentController) {
+    'DELETE /student-payments-new/(\d+)/$' => function ($id) use ($studentPaymentController) {
         $studentPaymentController->delete($id);
     }
 ];
