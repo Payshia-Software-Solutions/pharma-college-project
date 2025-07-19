@@ -40,6 +40,18 @@ class StudentCourseControllerNew
         }
     }
 
+    // GET single student enrollment by student number
+    public function getByStudentNumber($userName)
+    {
+        $record = $this->model->getByStudentNumber($userName);
+        if ($record) {
+            echo json_encode($record);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Student not found']);
+        }
+    }
+
     // POST create student enrollment
     public function create()
     {
