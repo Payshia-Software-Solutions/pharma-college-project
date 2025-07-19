@@ -22,6 +22,18 @@ class CertificateOrderController
         echo json_encode($orders);
     }
 
+    // GET all certificate orders by course code
+    public function getOrdersByCourseCode($courseCode)
+    {
+        $orders = $this->model->getOrdersWithCourseCode($courseCode);
+        if ($orders) {
+            echo json_encode($orders);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No orders found for this course code']);
+        }
+    }
+
     // GET a single certificate order by ID
     public function getOrder($order_id)
     {
@@ -158,6 +170,36 @@ class CertificateOrderController
         } else {
             http_response_code(404);
             echo json_encode(['error' => 'Order not found or deletion failed']);
+        }
+    }
+
+    // PUT update courses in a certificate order
+    public function updateCourses($orderId)
+    {
+        $data = json_decode(file_get_contents('php://input'), true);
+
+        if (!isset($data['course_code'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing course_code']);
+            return;
+        }
+
+        // Handle both string "2,1" and array [2,1]
+        if (is_array($data['course_code'])) {
+            $courseIds = $data['course_code'];
+        } else {
+            $courseIds = array_map('trim', explode(',', $data['course_code']));
+        }
+
+        // Filter out any empty values and re-implode
+        $courseIdsString = implode(',', array_filter($courseIds));
+
+        $success = $this->model->updateCourses($orderId, $courseIdsString);
+        if ($success) {
+            echo json_encode(['message' => 'Courses updated successfully']);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Order not found or update failed']);
         }
     }
 }

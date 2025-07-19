@@ -113,6 +113,7 @@ $TestimonialRoutes = require './routes/TestimonialRoutes.php';
 $DistrictsRoutes = require './routes/District/DistrictsRoutes.php';
 $ECertificateRoutes = require './routes/ecertificates/ECertificateRoutes.php';
 $paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.php';
+$DeliverySettingRoutes = require './routes/DeliverySettingRoutes.php';
 
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ContactRoutes.php
 
@@ -128,6 +129,8 @@ $transactionPaymentRoutes = require './routes/transactionPaymentRoutes.php';
 $WordListRoutes = require './routes/WordListRoutes.php';
 $EnWordSubmissionRoutes = require './routes/EnWordSubmissionRoutes.php';
 $UserCertificatePrintStatusRoutesNew = require './routes/UserCertificatePrintStatusRoutesNew.php';
+$studentEnrollmentRoutes = require './routes/studentEnrollmentRoutes.php';
+$StudentPaymentRoutes = require './routes/StudentPaymentRoutes.php';
 
 // if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
 
@@ -233,7 +236,10 @@ $routes = array_merge(
     $convocationRoutes,
     $WordListRoutes,
     $EnWordSubmissionRoutes,
-    $UserCertificatePrintStatusRoutesNew
+    $UserCertificatePrintStatusRoutesNew,
+    $studentEnrollmentRoutes,
+    $DeliverySettingRoutes,
+    $StudentPaymentRoutes
 );
 
 

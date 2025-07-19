@@ -124,6 +124,7 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
                         <thead>
                             <tr>
                                 <th scope="col">Reference #</th>
+                                <th scope="col">Ceremony #</th>
                                 <th scope="col">Student Number</th>
                                 <th scope="col">Student Name</th>
                                 <th scope="col">Course Balance</th>
@@ -205,6 +206,7 @@ $allStudentSubmissions = $client->request('GET', $_ENV['SERVER_URL'] . '/submiss
                             ?>
                                 <tr>
                                     <td><?= $booking['reference_number'] ?></td>
+                                    <td><?= $booking['ceremony_number'] ?></td>
                                     <td><?= $booking['student_number'] ?></td>
                                     <td><?= $booking['name_on_certificate'] ?></td>
                                     <td><?= number_format($paymentInfo['studentBalance'], 2) ?></td>

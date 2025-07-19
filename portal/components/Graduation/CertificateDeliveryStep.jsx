@@ -17,7 +17,7 @@ const CertificateDeliveryStep = ({
     const fetchConvocation = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}convocations/1`
+          `${process.env.NEXT_PUBLIC_API_URL}/convocations/1`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch convocation data");
@@ -34,7 +34,7 @@ const CertificateDeliveryStep = ({
     const fetchRegistrations = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}convocation-registrations/get-counts-by-sessions/`
+          `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations/get-counts-by-sessions/`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch session registrations");

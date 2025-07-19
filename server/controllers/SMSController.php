@@ -50,4 +50,35 @@ class SMSController
             echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
         }
     }
+
+    public function sendOrderSMS($mobile, $studentName)
+    {
+        try {
+            $response = $this->smsModel->sendOrderSMS($mobile, $studentName);
+            echo json_encode($response);
+        } catch (Exception $e) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+
+    public function sendNameOnCertificateSMS($mobile, $studentName, $studenNumber)
+    {
+        try {
+            // Validate inputs
+            if (empty($mobile) || empty($studentName) || empty($studenNumber)) {
+                throw new Exception("Mobile number, student name, and student number are required.");
+            }
+
+            // Call model method to send SMS
+            $response = $this->smsModel->sendNameOnCertificateSMS($mobile, $studentName, $studenNumber);
+
+            // Return success response
+            echo json_encode(['status' => 'success', 'message' => 'SMS sent successfully', 'data' => $response]);
+        } catch (Exception $e) {
+            // Return error response with HTTP 400
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
 }

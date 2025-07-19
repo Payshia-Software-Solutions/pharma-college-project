@@ -17,5 +17,6 @@ return [
     'GET /users/search/{value}' => [$userController, 'getRecordByUsernameOrName'],
     'PUT /users/username/{username}' => [$userController, 'UpdateUserByUsername'],
     'PUT /users/{id}' => [$userController, 'updateUser'],
-    'DELETE /users/{id}' => [$userController, 'deleteUser']
+    'DELETE /users/{id}' => [$userController, 'deleteUser'],
+    'POST /users/login' => [$userController, 'login'],
 ];

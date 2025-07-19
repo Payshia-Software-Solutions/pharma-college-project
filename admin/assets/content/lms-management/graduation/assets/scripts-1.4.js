@@ -954,7 +954,11 @@ function SendCeremonyNumber(referenceId, studentNumber) {
         OpenAlert(
           "success",
           "Done!",
-          "Ceremony Number Sent " + studentNumber + " successfully!"
+          "Ceremony Number Sent REF " +
+            referenceId +
+            " & " +
+            studentNumber +
+            " successfully!"
         );
       } else {
         throw new Error(

@@ -25,7 +25,8 @@ class ConvocationRegistration
     p.is_active, 
     p.created_at AS package_created_at, 
     p.updated_at AS package_updated_at,
-    u.name_on_certificate
+    u.name_on_certificate,
+    u.telephone_1
 FROM convocation_registrations cr
 LEFT JOIN packages p ON cr.package_id = p.package_id
 LEFT JOIN user_full_details u ON cr.student_number = u.username;
@@ -272,6 +273,41 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     ");
         return $stmt->execute([$advanced_print_status, $advancedcertificate_id, $reference_number]);
     }
+
+    public function updateCertificatePrintStatusCourier($advanced_print_status, $certificate_id, $reference_number)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE `cc_certificate_order`
+        SET `certificate_id` = ?, `certificate_status` = ?
+        WHERE `id` = ?;
+    ");
+        return $stmt->execute([$certificate_id, $advanced_print_status, $reference_number]);
+    }
+
+    public function updateAdvancedCertificatePrintStatusCourier($advanced_print_status, $certificate_id, $reference_number)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE `cc_certificate_order`
+        SET `advanced_id` = ?, `advanced_id_status` = ?
+        WHERE `id` = ?;
+    ");
+        return $stmt->execute([$certificate_id, $advanced_print_status, $reference_number]);
+    }
+
+
+
+
+
+    public function updateCourses($reference_number, $course_id)
+    {
+        $stmt = $this->pdo->prepare("
+        UPDATE convocation_registrations 
+        SET course_id = ?
+        WHERE reference_number = ?
+    ");
+        return $stmt->execute([$course_id, $reference_number]);
+    }
 }
+
 // End of ConvocationRegistration class
 // Note: This class assumes that the PDO connection is passed to it when instantiated.

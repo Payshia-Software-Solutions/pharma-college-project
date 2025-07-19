@@ -188,6 +188,57 @@ function CertificatePrintStatusByCourse($courseCode, $type)
     return $ArrayResult;
 }
 
+function CertificatePrintStatusByParentCourse($courseCode, $type, $studentNumber)
+{
+    $ArrayResult = array();
+    global $lms_link;
+
+    $sql = "SELECT 
+                ucps.id,
+                ucps.student_number,
+                ucps.certificate_id,
+                ucps.print_date,
+                ucps.print_status,
+                ucps.print_by,
+                ucps.type,
+                ucps.course_code,
+                c.parent_course_id
+            FROM 
+                user_certificate_print_status ucps
+            JOIN 
+                course c ON ucps.course_code = c.course_code
+            WHERE 
+                c.parent_course_id LIKE '$courseCode' AND
+                ucps.type LIKE '$type' AND
+                ucps.student_number LIKE '$studentNumber'";
+
+    $result = $lms_link->query($sql);
+    if ($result && $result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ArrayResult[$row['student_number']] = $row;
+        }
+    }
+
+    return $ArrayResult;
+}
+
+function CertificatePrintStatusByCertificateId($certificateId)
+{
+
+    $ArrayResult = array();
+    global $lms_link;
+
+    $sql = "SELECT `id`, `student_number`, `certificate_id`, `print_date`, `print_status`, `print_by`, `type`, `course_code` FROM `user_certificate_print_status` WHERE `certificate_id` LIKE '$certificateId'";
+    $result = $lms_link->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ArrayResult[] = $row;
+        }
+    }
+    return $ArrayResult;
+}
+
+
 function CertificatePrintStatusByCourseStudent($courseCode, $studentNumber)
 {
 
@@ -1246,4 +1297,20 @@ function SaveEditedAssignmentGrade($assignmentId, $gradeValue, $studentNumber)
     }
 
     return $error;
+}
+
+function GetOrdersByStudentNumber()
+{
+    global $lms_link;
+
+    $ArrayResult = array();
+    $sql = "SELECT * FROM `delivery_orders` ORDER BY `id` DESC";
+
+    $result = $lms_link->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ArrayResult[$row['index_number']] = $row;
+        }
+    }
+    return $ArrayResult;
 }
