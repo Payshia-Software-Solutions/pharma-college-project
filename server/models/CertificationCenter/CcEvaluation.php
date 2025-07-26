@@ -424,6 +424,9 @@ class CcEvaluation extends DeliveryOrder
 
         if (!empty($paymentRecords)) {
             foreach ($paymentRecords as $selectedArray) {
+                if ($selectedArray['course_code'] !== $CourseCode) {
+                    continue; // Skip if course code does not match
+                }
                 $paymentRecord = 0;
                 $paymentRecord = ($selectedArray['paid_amount'] + $selectedArray['discount_amount']);
                 $TotalStudentPaymentRecords += $paymentRecord;
