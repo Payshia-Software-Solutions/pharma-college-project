@@ -19,6 +19,11 @@ return [
         return $certificateOrderController->getOrdersByCourseCode($courseCode);
     },
 
+    // GET all certificate orders by student number
+    'GET /certificate-orders/student/([A-Za-z0-9]+)/$' => function ($studentNumber) use ($certificateOrderController) {
+        return $certificateOrderController->getOrdersByStudentNumber($studentNumber);
+    },
+
     // GET a single certificate order by ID
     'GET /certificate-orders/(\d+)/$' => function ($order_id) use ($certificateOrderController) {
         return $certificateOrderController->getOrder($order_id);
