@@ -401,6 +401,50 @@ class CcEvaluation extends DeliveryOrder
         ];
     }
 
+
+    public function GetStudentBalanceCourseCode($userName, $CourseCode)
+    {
+        $totalPaymentAmount = $TotalStudentPaymentRecords = $studentBalance = $TotalRegistrationFee = 0;
+        $paymentRecords = $this->getStudentPaymentDetails($userName);
+        $studentEnrollments = $this->getUserEnrollments($userName);
+        $courseList = $this->getLmsBatches();
+
+        if (!empty($studentEnrollments)) {
+            foreach ($studentEnrollments as $selectedArray) {
+                if ($selectedArray['course_code'] !== $CourseCode) {
+                    continue; // Skip if course code does not match
+                }
+                $totalCourseFee = 0;
+                $courseDetails = $courseList[$selectedArray['course_code']];
+                $totalCourseFee = $courseDetails['course_fee'] + $courseDetails['registration_fee'];
+                $TotalRegistrationFee += $courseDetails['registration_fee'];
+                $totalPaymentAmount += $totalCourseFee;
+            }
+        }
+
+        if (!empty($paymentRecords)) {
+            foreach ($paymentRecords as $selectedArray) {
+                $paymentRecord = 0;
+                $paymentRecord = ($selectedArray['paid_amount'] + $selectedArray['discount_amount']);
+                $TotalStudentPaymentRecords += $paymentRecord;
+            }
+        }
+
+        $studentBalance = $totalPaymentAmount - $TotalStudentPaymentRecords;
+
+        // Construct Result Array
+        return [
+            'title' => "Student Payment Details",
+            'userName' => $userName,
+            'totalPaymentAmount' => $totalPaymentAmount,
+            'TotalStudentPaymentRecords' => $TotalStudentPaymentRecords,
+            'studentBalance' => $studentBalance,
+            'TotalRegistrationFee' => $TotalRegistrationFee,
+            'paymentRecords' => $paymentRecords,
+        ];
+    }
+
+
     /**
      * Get user enrollments.
      *
@@ -531,7 +575,7 @@ ORDER BY
                 $assignmentGrades = $this->calculateAssignmentsGrades($row['course_code'], $userName);
                 $deliveryOrders = $this->getRecordByIndexNumberAndCourse($userName, $row['course_code']);
                 $certificateRecords = $this->certificatePrintStatus->getRecordsByStudentNumberCourseCode($userName, $row['course_code']);
-                $studentBalance = $this->GetStudentBalance($userName);
+                $studentBalance = $this->GetStudentBalanceCourseCode($userName, $row['course_code']);
 
                 // Append the data to the course details
                 $row['ceylon_pharmacy'] = $recoveredPatients;
