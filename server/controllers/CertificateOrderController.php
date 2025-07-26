@@ -58,6 +58,18 @@ class CertificateOrderController
         }
     }
 
+    // GET all certificate orders by student number
+    public function getOrdersByStudentNumber($studentNumber)
+    {
+        $orders = $this->model->getOrdersByStudentNumber($studentNumber);
+        if ($orders) {
+            echo json_encode($orders);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No orders found for this student number']);
+        }
+    }
+
     // POST create a new certificate order (no id in input)
     public function createOrder()
     {

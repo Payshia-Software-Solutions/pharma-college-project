@@ -46,6 +46,8 @@ ORDER BY
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
+
     public function getOrdersWithCourseCode($courseCode)
     {
         $sql = "SELECT 
@@ -85,6 +87,44 @@ ORDER BY
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+
+    public function getOrdersByStudentNumber($studentNumber)
+    {
+        $sql = "SELECT 
+        o.`id`, 
+        o.`created_by`, 
+        o.`created_at`, 
+        o.`updated_at`, 
+        o.`course_code`, 
+        o.`mobile`, 
+        o.`address_line1`, 
+        o.`address_line2`, 
+        o.`city_id`, 
+        o.`district`, 
+        o.`type`, 
+        o.`payment`, 
+        o.`package_id`, 
+        o.`certificate_id`, 
+        o.`certificate_status`, 
+        o.`advanced_id`, 
+        o.`advanced_id_status`, 
+        o.`cod_amount`, 
+        o.`is_active`,
+        u.`name_on_certificate`,
+        u.`telephone_1`
+    FROM
+        `cc_certificate_order` o
+    LEFT JOIN
+        `user_full_details` u ON o.`created_by` = u.`username`
+    WHERE
+        u.`username` = ?
+    ORDER BY
+        o.`id`";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$studentNumber]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
 
     // Create a new certificate order
