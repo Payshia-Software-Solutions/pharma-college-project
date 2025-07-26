@@ -542,6 +542,8 @@ ORDER BY
                 $row['certificateRecords'] = $certificateRecords;
                 $row['studentBalance'] = $studentBalance['studentBalance'];
 
+                // echo "Balance - " . $studentBalance['studentBalance'];
+
                 $criteriaIds = [];
 
                 if (!empty($row['criteria_list'])) {
@@ -583,7 +585,7 @@ ORDER BY
                                 break;
 
                             case 6: // Due Payments
-                                $criteriaResult['currentValue'] = (float) ($this->studentBalance['studentBalance'] ?? 0);
+                                $criteriaResult['currentValue'] = (float) ($studentBalance['studentBalance']);
                                 break;
                             case 7: // Pharmer Hunter Pro
                                 $criteriaResult['currentValue'] = (int) ($row['pharma_hunter_pro']['results']['correctCount'] ?? 0);
