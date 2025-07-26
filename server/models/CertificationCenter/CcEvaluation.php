@@ -315,7 +315,7 @@ class CcEvaluation extends DeliveryOrder
             $result[] = [
                 'assignment_id' => $assignment['assignment_id'],
                 'assignment_name' => $assignment['assignment_name'],
-                'grade' => $gradeValue,
+                'grade' => number_format($gradeValue, 2),
             ];
         }
 
