@@ -28,8 +28,10 @@ $reasonList = $WinpharmaReasons->fetchAll();
             <h3 class="mb-0">Common Reasons</h3>
         </div>
         <div class="col-6 text-end">
-            <button class="btn btn-dark btn-sm" onclick="OpenCommonReasons()" type="button"><i class="fa solid fa-rotate-left"></i> Reload</button>
-            <button class="btn btn-light btn-sm" onclick="ClosePopUPRight(1)" type="button"><i class="fa solid fa-xmark"></i> Close</button>
+            <button class="btn btn-dark btn-sm" onclick="OpenCommonReasons()" type="button"><i
+                    class="fa solid fa-rotate-left"></i> Reload</button>
+            <button class="btn btn-light btn-sm" onclick="ClosePopUPRight(1)" type="button"><i
+                    class="fa solid fa-xmark"></i> Close</button>
         </div>
         <div class="col-12">
             <div class="border-bottom border-5 my-2"></div>
@@ -38,7 +40,8 @@ $reasonList = $WinpharmaReasons->fetchAll();
 
     <div class="row g-3">
         <div class="col-12 text-end">
-            <button type="button" class="btn btn-dark btn-sm" onclick="NewReason()"><i class="fa-solid fa-plus"></i> Add New</button>
+            <button type="button" class="btn btn-dark btn-sm" onclick="NewReason()"><i class="fa-solid fa-plus"></i> Add
+                New</button>
             <div class="border-bottom mt-2"></div>
         </div>
         <div class="col-12">
@@ -71,8 +74,10 @@ $reasonList = $WinpharmaReasons->fetchAll();
                                         <div class="badge <?= $statusBgColor ?>"><?= $activeStatus ?></div>
                                     </td>
                                     <td>
-                                        <button type="button" class="btn btn-primary btn-sm" onclick="NewReason('<?= $reason['id'] ?>')">Open</button>
-                                        <button type="button" class="btn btn-danger btn-sm" onclick="DeleteReason('<?= $reason['id'] ?>')">Delete</button>
+                                        <button type="button" class="btn btn-primary btn-sm"
+                                            onclick="NewReason('<?= $reason['id'] ?>')">Open</button>
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            onclick="DeleteReason('<?= $reason['id'] ?>')">Delete</button>
                                     </td>
                                 </tr>
                             <?php endforeach ?>
