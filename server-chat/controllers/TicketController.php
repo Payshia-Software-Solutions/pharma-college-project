@@ -178,7 +178,7 @@ class TicketController
 
             echo json_encode([
                 "message" => "Ticket message created",
-                "id" =>  $this->model->getById($newTicketId)
+                "ticket" =>  $this->model->getById($newTicketId)
             ]);
         } else {
             // Handle JSON request (without file upload)
