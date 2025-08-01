@@ -118,7 +118,7 @@ class TicketController
         if ($_SERVER['CONTENT_TYPE'] && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
 
             $data = $_POST;
-            $file = $_FILES['image'] ?? null; // Uploaded image file
+            $file = $_FILES['attachments'] ?? null; // Uploaded image file
 
             $newTicketId = $this->model->create($data);
             if (!$newTicketId) {
@@ -178,7 +178,7 @@ class TicketController
 
             echo json_encode([
                 "message" => "Ticket message created",
-                "id" => $newTicketId
+                "id" =>  $this->model->getById($newTicketId)
             ]);
         } else {
             // Handle JSON request (without file upload)
@@ -186,6 +186,7 @@ class TicketController
             return;
         }
     }
+
     public function updateStatus($id)
     {
         $data = json_decode(file_get_contents("php://input"), true);
