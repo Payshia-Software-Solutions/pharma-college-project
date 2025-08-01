@@ -116,42 +116,42 @@ include './components/banner.php';
 <div class="row mt-4">
     <div class="col-12">
         <?php if (!empty($notReceivedOrders)) { ?>
-        <div class="alert alert-warning">
-            <p class="mb-0">
-                Please click the "Received" button if you have received your order. This will help us update the
-                status of your order promptly. Thank you!<br>
-                ඔබගේ ඇනවුම ලබා ගත්තා නම් "Received" බටනය ඔබා එය තත්වය යාවත්කාලීන කිරීමේදි අපට උදව් කරන්න. ස්තූතියි!
-            </p>
-        </div>
+            <div class="alert alert-warning">
+                <p class="mb-0">
+                    Please click the "Received" button if you have received your order. This will help us update the
+                    status of your order promptly. Thank you!<br>
+                    ඔබගේ ඇනවුම ලබා ගත්තා නම් "Received" බටනය ඔබා එය තත්වය යාවත්කාලීන කිරීමේදි අපට උදව් කරන්න. ස්තූතියි!
+                </p>
+            </div>
 
-        <?php foreach ($notReceivedOrders as $selectedArray) { ?>
-        <div class="col-md-4 pb-3">
-            <div class="card border-0 shadow-sm clickable other-card flex-fill" onclick="">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-3">
-                            <img src="<?= $_ENV['IMG_PATH_BASE'] ?>/lib/delivery/assets/images/<?= $selectedArray['icon'] ?>"
-                                class="w-100">
-                        </div>
-                        <div class="col-9">
-                            <h4 class="mb-0"><?= $selectedArray['delivery_title'] ?></h4>
-                            <h6 class="text-end mb-0">Tracking # <?= $selectedArray['tracking_number'] ?></h6>
+            <?php foreach ($notReceivedOrders as $selectedArray) { ?>
+                <div class="col-md-4 pb-3">
+                    <div class="card border-0 shadow-sm clickable other-card flex-fill" onclick="">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-3">
+                                    <img src="<?= $_ENV['IMG_PATH_BASE'] ?>/lib/delivery/assets/images/<?= $selectedArray['icon'] ?>"
+                                        class="w-100">
+                                </div>
+                                <div class="col-9">
+                                    <h4 class="mb-0"><?= $selectedArray['delivery_title'] ?></h4>
+                                    <h6 class="text-end mb-0">Tracking # <?= $selectedArray['tracking_number'] ?></h6>
 
-                            <div class="row mt-2">
-                                <div class="col-12">
-                                    <button type="button"
-                                        onclick="UpdateOrderReceivedStatus('<?= $selectedArray['id'] ?>', 'Received')"
-                                        class="w-100 btn btn-dark">
-                                        Received
-                                    </button>
+                                    <div class="row mt-2">
+                                        <div class="col-12">
+                                            <button type="button"
+                                                onclick="UpdateOrderReceivedStatus('<?= $selectedArray['id'] ?>', 'Received')"
+                                                class="w-100 btn btn-dark">
+                                                Received
+                                            </button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
-        <?php } ?>
+            <?php } ?>
         <?php } ?>
     </div>
 </div>

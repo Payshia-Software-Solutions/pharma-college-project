@@ -21,7 +21,8 @@ $InactiveCount = 0;
 <div class="loading-popup-content">
     <div class="row">
         <div class="col-12 w-100 text-end">
-            <button class="btn btn-sm btn-dark" onclick="ClosePopUP()"><i class="fa-regular fa-circle-xmark"></i></button>
+            <button class="btn btn-sm btn-dark" onclick="ClosePopUP()"><i
+                    class="fa-regular fa-circle-xmark"></i></button>
         </div>
     </div>
     <div class="row mt-3">
@@ -30,14 +31,17 @@ $InactiveCount = 0;
             <div class="row">
                 <div class="col-4 offset-4">
                     <p class="text-secondary mb-0">Batch</p>
-                    <select class="form-control" name="studentBatch" id="studentBatch" onchange="GetUploadExcel(this.value, document.getElementById('orderType').value)">
+                    <select class="form-control" name="studentBatch" id="studentBatch"
+                        onchange="GetUploadExcel(this.value, document.getElementById('orderType').value)">
                         <option value="0">All</option>
                         <?php
                         if (!empty($CourseBatches)) {
                             foreach ($CourseBatches as $selectedArray) {
 
                         ?>
-                                <option <?= ($studentBatch ==  $selectedArray['course_code']) ? 'selected' : '' ?> value="<?= $selectedArray['course_code'] ?>"><?= $selectedArray['course_code'] ?> - <?= $selectedArray['course_name'] ?></option>
+                                <option <?= ($studentBatch ==  $selectedArray['course_code']) ? 'selected' : '' ?>
+                                    value="<?= $selectedArray['course_code'] ?>"><?= $selectedArray['course_code'] ?> -
+                                    <?= $selectedArray['course_name'] ?></option>
                         <?php
                             }
                         }
@@ -46,13 +50,15 @@ $InactiveCount = 0;
                 </div>
                 <div class="col-4">
                     <p class="text-secondary mb-0">Order Type</p>
-                    <select class="form-control" name="orderType" id="orderType" onchange="GetUploadExcel(document.getElementById('studentBatch').value, this.value)">
+                    <select class="form-control" name="orderType" id="orderType"
+                        onchange="GetUploadExcel(document.getElementById('studentBatch').value, this.value)">
                         <option value="0">All</option>
                         <?php
                         if (!empty($Deliveries)) {
                             foreach ($Deliveries as $selectedArray) {
                         ?>
-                                <option <?= ($orderType ==  $selectedArray['id']) ? 'selected' : '' ?> value=" <?= $selectedArray['id'] ?>"><?= $selectedArray['delivery_title'] ?></option>
+                                <option <?= ($orderType ==  $selectedArray['id']) ? 'selected' : '' ?>
+                                    value=" <?= $selectedArray['id'] ?>"><?= $selectedArray['delivery_title'] ?></option>
                         <?php
                             }
                         }
@@ -67,6 +73,10 @@ $InactiveCount = 0;
                         <tr>
                             <th scope="col">waybill_number</th>
                             <th scope="col">order_no</th>
+                            <th scope="col">Student Number</th>
+                            <th scope="col">Order Date</th>
+                            <th scope="col">Packed Date</th>
+                            <th scope="col">Delivered Date</th>
                             <th scope="col">customer_name</th>
                             <th scope="col">customer_phone</th>
                             <th scope="col">customer_secondary_phone</th>
@@ -144,12 +154,14 @@ $InactiveCount = 0;
                                 if ($trackingNumber == "") {
                                     continue;
                                 }
-
-
                         ?>
                                 <tr>
                                     <td><?= $trackingNumber ?></td>
                                     <td><?= $ref_id ?></td>
+                                    <td><?= $indexNumber ?></td>
+                                    <td><?= $orderDate ?></td>
+                                    <td><?= $packed_date ?></td>
+                                    <td><?= $send_date ?></td>
                                     <td><?= $full_name ?></td>
                                     <td><?= $phone_1 ?></td>
                                     <td><?= $phone_2 ?></td>

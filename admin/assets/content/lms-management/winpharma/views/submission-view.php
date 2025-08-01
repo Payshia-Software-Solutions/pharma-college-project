@@ -30,6 +30,12 @@ $WinpharmaReasons = new WinpharmaReasons($db);
 
 $submission = $submissions->fetchById($submissionId);
 $reasonList = $WinpharmaReasons->fetchAll();
+$reindexedReasonList = [];
+
+foreach ($reasonList as $reason) {
+    $reindexedReasonList[$reason['id']] = $reason;
+}
+
 
 
 $defaultCourse = $submission['course_code'];
@@ -52,9 +58,13 @@ $file_extension = strtolower(pathinfo($submit_file, PATHINFO_EXTENSION));
         <div class="col-6">
             <h3 class="mb-0">Submission Details</h3>
         </div>
+
         <div class="col-6 text-end">
-            <button class="btn btn-dark btn-sm" onclick="OpenSubmission('<?= $submissionId ?>', '<?= $requestStatus ?>')" type="button"><i class="fa solid fa-rotate-left"></i> Reload</button>
-            <button class="btn btn-light btn-sm" onclick="ClosePopUPRight(1)" type="button"><i class="fa solid fa-xmark"></i> Close</button>
+            <button class="btn btn-dark btn-sm"
+                onclick="OpenSubmission('<?= $submissionId ?>', '<?= $requestStatus ?>')" type="button"><i
+                    class="fa solid fa-rotate-left"></i> Reload</button>
+            <button class="btn btn-light btn-sm" onclick="ClosePopUPRight(1)" type="button"><i
+                    class="fa solid fa-xmark"></i> Close</button>
         </div>
         <div class="col-12">
             <div class="border-bottom border-5 my-2"></div>
@@ -73,20 +83,24 @@ $file_extension = strtolower(pathinfo($submit_file, PATHINFO_EXTENSION));
             if ($file_extension == 'jpg' || $file_extension == 'jpeg' || $file_extension == 'png' || $file_extension == 'webp') { ?>
 
                 <!-- Preview Submitted File -->
-                <img class="rounded-4 shadow-sm w-100" id="myImage" src="<?= $rootFolder ?>/uploads/tasks/submission/<?= $submission["index_number"] ?>/<?= $submission["resource_id"]  ?>/<?= $submission["submission"] ?>">
+                <img class="rounded-4 shadow-sm w-100" id="myImage"
+                    src="<?= $rootFolder ?>/uploads/tasks/submission/<?= $submission["index_number"] ?>/<?= $submission["resource_id"]  ?>/<?= $submission["submission"] ?>">
 
                 <!-- Rotate Button -->
-                <button type="button" class="btn btn-primary rounded-2 mt-3 d-block" onclick="rotateImage()">Rotate Image</button>
+                <button type="button" class="btn btn-primary rounded-2 mt-3 d-block" onclick="rotateImage()">Rotate
+                    Image</button>
 
                 <!-- Download Button -->
-                <a class="d-block" target="_blank" href="<?= $rootFolder ?>/uploads/tasks/submission/<?= $submission["index_number"] ?>/<?= $submission["resource_id"]  ?>/<?= $submission["submission"] ?>">
+                <a class="d-block" target="_blank"
+                    href="<?= $rootFolder ?>/uploads/tasks/submission/<?= $submission["index_number"] ?>/<?= $submission["resource_id"]  ?>/<?= $submission["submission"] ?>">
                     <button class="btn btn-warning rounded-2 mt-3">Download <?= $submission["submission"] ?></button>
                 </a>
 
             <?php
             } else { ?>
                 <p>
-                    <a target="_blank" href="<?= $rootFolder ?>/uploads/tasks/submission/<?= $submission["index_number"] ?>/<?= $submission["resource_id"]  ?>/<?= $submission["submission"] ?>"><?= $submission["submission"] ?></a>
+                    <a target="_blank"
+                        href="<?= $rootFolder ?>/uploads/tasks/submission/<?= $submission["index_number"] ?>/<?= $submission["resource_id"]  ?>/<?= $submission["submission"] ?>"><?= $submission["submission"] ?></a>
                 </p>
             <?php
             }
@@ -94,7 +108,8 @@ $file_extension = strtolower(pathinfo($submit_file, PATHINFO_EXTENSION));
         </div>
 
         <div class="col-md-4">
-            <h5 class="">Submission for <?= $levelInfo["level_name"] ?> & <?= $taskInfo["resource_title"] ?> of <?= $submission["index_number"] ?></h5>
+            <h5 class="">Submission for <?= $levelInfo["level_name"] ?> & <?= $taskInfo["resource_title"] ?> of
+                <?= $submission["index_number"] ?></h5>
 
             <form id="grade-form" method="post">
                 <h4 class="card-title border-bottom pb-2 mb-2">Grading</h4>
@@ -112,18 +127,25 @@ $file_extension = strtolower(pathinfo($submit_file, PATHINFO_EXTENSION));
 
                     <div class="col-md-6">
                         <label>Grade Status</label>
-                        <select onchange="ChangeGradeValue()" name="grade_status" id="grade_status" class="form-control form-control-sm" required>
-                            <option <?= ($submission["grade_status"] == "Completed") ? 'selected' : '' ?> value="Completed">Completed</option>
-                            <option <?= ($submission["grade_status"] == "Pending") ? '' : '' ?> value="Pending">Pending</option>
-                            <option <?= ($submission["grade_status"] == "Sp-Pending") ? 'selected' : '' ?> value="Sp-Pending">Sp-Pending</option>
-                            <option <?= ($submission["grade_status"] == "Try Again") ? 'selected' : '' ?> value="Try Again">Try Again</option>
-                            <option <?= ($submission["grade_status"] == "Re-Correction") ? 'selected' : '' ?> value="Re-Correction">Re-Correction</option>
+                        <select onchange="ChangeGradeValue()" name="grade_status" id="grade_status"
+                            class="form-control form-control-sm" required>
+                            <option <?= ($submission["grade_status"] == "Completed") ? 'selected' : '' ?>
+                                value="Completed">Completed</option>
+                            <option <?= ($submission["grade_status"] == "Pending") ? '' : '' ?> value="Pending">Pending
+                            </option>
+                            <option <?= ($submission["grade_status"] == "Sp-Pending") ? 'selected' : '' ?>
+                                value="Sp-Pending">Sp-Pending</option>
+                            <option <?= ($submission["grade_status"] == "Try Again") ? 'selected' : '' ?>
+                                value="Try Again">Try Again</option>
+                            <option <?= ($submission["grade_status"] == "Re-Correction") ? 'selected' : '' ?>
+                                value="Re-Correction">Re-Correction</option>
                         </select>
                     </div>
 
                     <div class="col-md-6">
                         <label>Grade Value %</label>
-                        <input name="grade" id="grade" type="number" class="form-control form-control-sm" placeholder="85%" required value="<?= $submission["grade"] ?>">
+                        <input name="grade" id="grade" type="number" class="form-control form-control-sm"
+                            placeholder="85%" required value="<?= $submission["grade"] ?>">
                     </div>
 
                     <!-- HTML with multiple select and added list display -->
@@ -150,14 +172,23 @@ $file_extension = strtolower(pathinfo($submit_file, PATHINFO_EXTENSION));
 
                     <div class="col-md-12">
                         <label>Reason</label>
-                        <input name="reason" id="reason" type="text" class="form-control form-control-sm" placeholder="Reason" value="<?= $submission["reason"] ?>">
+                        <input name="reason" id="reason" type="text" class="form-control form-control-sm"
+                            placeholder="Reason" value="<?= $submission["reason"] ?>">
+
+                        <div>
+                            <?= $reindexedReasonList[$submission["reason"]]['reason'] ?>
+                        </div>
                     </div>
                     <div class="col-6 text-end mt-3 d-flex">
-                        <button onclick="ViewResource('<?= $resourceID ?>')" type="button" class="btn btn-success btn-lg w-100 flex-fill"><i class="fa-solid fa-eye"></i> View Resource</button>
+                        <button onclick="ViewResource('<?= $resourceID ?>')" type="button"
+                            class="btn btn-success btn-lg w-100 flex-fill"><i class="fa-solid fa-eye"></i> View
+                            Resource</button>
                     </div>
 
                     <div class="col-6 text-end mt-3 d-flex">
-                        <button type="button" class="btn btn-lg btn-dark rounded-2 text-white flex-fill w-100" onclick="SaveGrade('<?= $submissionId ?>', '<?= $defaultCourse ?>', '<?= $requestStatus ?>') "><i class="fa-solid fa-floppy-disk"></i> Save Grade</button>
+                        <button type="button" class="btn btn-lg btn-dark rounded-2 text-white flex-fill w-100"
+                            onclick="SaveGrade('<?= $submissionId ?>', '<?= $defaultCourse ?>', '<?= $requestStatus ?>') "><i
+                                class="fa-solid fa-floppy-disk"></i> Save Grade</button>
                     </div>
 
                 </div>
@@ -220,7 +251,8 @@ $file_extension = strtolower(pathinfo($submit_file, PATHINFO_EXTENSION));
             selectedOptions.forEach(option => {
                 if (option.value) {
                     const listItem = document.createElement('li');
-                    listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+                    listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between',
+                        'align-items-center');
 
                     // Reason text
                     const reasonText = document.createElement('span');
