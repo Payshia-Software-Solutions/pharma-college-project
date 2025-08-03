@@ -204,15 +204,18 @@ class TicketMessageController
                     "message_ids" => $newMessageIds
                 ]);
             } else {
-                // http_response_code(400);
-                // echo json_encode(['error' => 'No files uploaded']);
-                // return;
+                // No files uploaded, return 200 with the appropriate message
+                http_response_code(200);
+                echo json_encode([
+                    "message" => "Messages added"
+                ]);
             }
         } else {
             http_response_code(400);
             echo json_encode(['error' => 'Unsupported content type']);
         }
     }
+
 
 
 
