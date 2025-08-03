@@ -124,7 +124,7 @@ class TicketMessageController
                 $newMessageId = $this->model->create($data);
             }
 
-            var_dump($data);
+            // var_dump($data);
 
             if ($newMessageId) {
                 $newMessageIds[] = $newMessageId;
