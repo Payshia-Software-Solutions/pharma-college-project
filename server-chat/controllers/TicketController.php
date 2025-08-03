@@ -196,7 +196,8 @@ class TicketController
         }
         $newStatus = $data['newStatus'];
         $this->model->updateStatus($id, $newStatus);
-        echo json_encode(["message" => "Ticket status updated"]);
+        $ticket = $this->model->getById($id);
+        echo json_encode(["message" => "Ticket status updated", "ticket" => $ticket]);
     }
 
     public function assignTicket($id)
