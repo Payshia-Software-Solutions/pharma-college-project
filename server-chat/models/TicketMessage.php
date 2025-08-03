@@ -19,13 +19,14 @@ class TicketMessage
     }
     public function create($data)
     {
-        $stmt = $this->pdo->prepare("INSERT INTO ticket_messages (ticket_id, from_role, text, time, created_at, img_url) VALUES (?, ?, ?, ?, NOW(), ?)");
+        $stmt = $this->pdo->prepare("INSERT INTO ticket_messages (ticket_id, from_role, text, time, created_at, img_url, created_by) VALUES (?, ?, ?, ?, NOW(), ?, ?)");
         $stmt->execute([
             $data['ticket_id'],
             $data['from_role'],
             $data['text'],
             $data['time'],
-            $data['img_url'] ?? null
+            $data['img_url'] ?? null,
+            $data['created_by']
         ]);
 
         // Get last inserted ID

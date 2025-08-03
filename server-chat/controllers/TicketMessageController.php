@@ -119,7 +119,13 @@ class TicketMessageController
             $data = $_POST;
             $files = $_FILES['attachments'] ?? null;
 
-            $newMessageId = $this->model->create($data);
+            if (isset($data['text'])) {
+                // Create a new message with text
+                $newMessageId = $this->model->create($data);
+            }
+
+            var_dump($data);
+
             if ($newMessageId) {
                 $newMessageIds[] = $newMessageId;
             } else {
@@ -174,7 +180,8 @@ class TicketMessageController
                                     'from_role' => $data['from_role'],
                                     'text' => '', // Image-only message
                                     'time' => $data['time'],
-                                    'img_url' => $ftpPath
+                                    'img_url' => $ftpPath,
+                                    'created_by' => $data['created_by']
                                 ];
 
                                 $newMessageId = $this->model->create($messageData);
