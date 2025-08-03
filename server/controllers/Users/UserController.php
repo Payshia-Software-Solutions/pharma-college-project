@@ -99,4 +99,10 @@ class UserController
             echo json_encode(['error' => 'Record not found']);
         }
     }
+
+    public function getStaffUsers()
+    {
+        $staffUsers = $this->model->getStaffUsers();
+        echo json_encode($staffUsers);
+    }
 }

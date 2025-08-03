@@ -96,4 +96,10 @@ class User
         $stmt->execute(['username' => $username]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function getStaffUsers()
+    {
+        $stmt = $this->pdo->query("SELECT * FROM users WHERE userlevel != 'Student' AND status = 'Active'");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

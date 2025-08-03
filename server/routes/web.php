@@ -1,5 +1,5 @@
 <?php
-
+// routes/web.php
 
 // Set CORS headers for every response
 header("Access-Control-Allow-Origin: *");
@@ -13,13 +13,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 }
 
 ini_set('memory_limit', '256M');
-
-// Report all PHP errors
 error_reporting(E_ALL);
-
-// Display errors in the browser (for development)
 ini_set('display_errors', 1);
-// routes/web.php
 
 // Access environment variables
 $authToken = $_ENV['SMS_AUTH_TOKEN'];
@@ -33,7 +28,6 @@ $convocationTemplatePath = __DIR__ . '/../templates/convocation-payment-message.
 $assignmentRoutes = require './routes/Assignment/AssignmentRoutes.php';
 $submissionRoutes = require './routes/Assignment/submissionRoutes.php';
 $appointmentRoutes = require './routes/OtherRoutes/appointmentRoutes.php';
-// $eCertificateRoutes = require './routes/OtherRoutes/eCertificateRoutes.php';
 $courseAssignmentRoutes = require './routes/OtherRoutes/courseAssignmentRoutes.php';
 $courseAssignmentSubmissionRoutes = require './routes/OtherRoutes/courseAssignmentSubmissionRoutes.php';
 $reportRoutes = require './routes/OtherRoutes/reportRoutes.php';
@@ -114,9 +108,6 @@ $DistrictsRoutes = require './routes/District/DistrictsRoutes.php';
 $ECertificateRoutes = require './routes/ecertificates/ECertificateRoutes.php';
 $paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.php';
 $DeliverySettingRoutes = require './routes/DeliverySettingRoutes.php';
-
-// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ContactRoutes.php
-
 $DpadRoutes = require './routes/Dpad/DpadRoutes.php';
 $SMSRoutes = require './routes/SMSRoutes.php';
 $bankRoutes = require './routes/bankRoutes.php';
@@ -125,28 +116,20 @@ $PackageRoutes  = require './routes/PackageRoutes.php';
 $CertificateOrderRoutes = require './routes/CertificateOrderRoutes.php';
 $convocationRoutes = require './routes/convocationRoutes.php';
 $transactionPaymentRoutes = require './routes/transactionPaymentRoutes.php';
-
 $WordListRoutes = require './routes/WordListRoutes.php';
 $EnWordSubmissionRoutes = require './routes/EnWordSubmissionRoutes.php';
 $UserCertificatePrintStatusRoutesNew = require './routes/UserCertificatePrintStatusRoutesNew.php';
 $studentEnrollmentRoutes = require './routes/studentEnrollmentRoutes.php';
 $StudentPaymentRoutes = require './routes/StudentPaymentRoutes.php';
 
-// if (!is_array($paymentRequestRoutes)) { CertificateVerificationRoutes ecertificates  ECertificateRoutes
-
-
-//      throw new Exception("paymentRequestRoutes is not an array");
-// }
 
 // Combine all routes
-
 $routes = array_merge(
     $userRoutes,
     $transactionPaymentRoutes,
     $assignmentRoutes,
     $submissionRoutes,
     $appointmentRoutes,
-    // $eCertificateRoutes,
     $courseAssignmentRoutes,
     $courseAssignmentSubmissionRoutes,
     $hpSaveAnswerRoutes,
@@ -243,7 +226,6 @@ $routes = array_merge(
 );
 
 
-
 // Define the home route with trailing slash
 $routes['GET /'] = function () {
     // Serve the index.html file
@@ -268,8 +250,6 @@ if ($_SERVER['HTTP_HOST'] === 'localhost') {
     $uri = '/' . $uri;
 }
 
-
-
 // Set the header for JSON responses, except for HTML pages
 if ($uri !== '/') {
     header('Content-Type: application/json');
@@ -280,27 +260,19 @@ error_log("Method: $method");
 error_log("URI: $uri");
 // echo $uri . '<br>';
 
-
 // Route matching
 foreach ($routes as $route => $handler) {
     list($routeMethod, $routeUri) = explode(' ', $route, 2);
 
     // Convert route URI to regex (without query parameters){trackingNumber} student_number
     $routeRegex = str_replace(
-
         ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{course_code}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}', '{value}', '{course_code}', '{studentId}', '{tracking_number}', '{index_number}', '{provinceId}', '{student_number}'],
         ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)',],
-
-
         $routeUri
     );
 
     // Ensure route regex matches the path only, not query parameters
     $routeRegex = "#^" . rtrim($routeRegex, '/') . "/?$#";
-
-    // Debugging output
-    // echo ("Checking route: $routeRegex <br>");
-    // echo ("Uri : $uri<br>");
 
     // Check if the method and path match
     if ($method === $routeMethod && preg_match($routeRegex, $uri, $matches)) {
