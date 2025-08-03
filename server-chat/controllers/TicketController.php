@@ -204,17 +204,17 @@ class TicketController
         $data = json_decode(file_get_contents("php://input"), true);
 
         // Validate required fields
-        if (!isset($data['assignedTo'])) {
+        if (!isset($data['assigned_to'])) {
             echo json_encode(["error" => "Assigned to and assignee avatar are required"]);
             return;
         }
 
         // Default optional fields
-        $isLocked = isset($data['isLocked']) ? (int)$data['isLocked'] : 0;
-        $lockedBy = $data['lockedByStaffId'] ?? null;
+        $isLocked = isset($data['is_locked']) ? (int)$data['is_locked'] : 0;
+        $lockedBy = $data['locked_by_staff_id'] ?? null;
 
         // Assign ticket
-        $this->model->assignTicket($id, $data['assignedTo'], 'No Avatar', $lockedBy, $isLocked);
+        $this->model->assignTicket($id, $data['assigned_to'], 'No Avatar', $lockedBy, $isLocked);
 
         // Return full ticket details
         $ticket = $this->model->getById($id);
