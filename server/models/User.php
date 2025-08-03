@@ -62,7 +62,7 @@ class User
     }
 
 
-    
+
     // public function getRecordByUsernameOrName($value)
     // {
     //     $stmt = $this->pdo->prepare("
@@ -85,17 +85,20 @@ class User
             AND status = 'Active'
             LIMIT 5
         ");
-        
+
         // Bind parameters separately for username, fname, lname
         $stmt->execute([
             'username' => "%" . $value . "%",
             'fname' => "%" . $value . "%",
             'lname' => "%" . $value . "%"
         ]);
-        
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);  // Return all matches (max 6)
     }
-    
 
-    
+    public function getStaffUsers()
+    {
+        $stmt = $this->pdo->query("SELECT * FROM users WHERE userlevel != 'Student' AND status = 'Active'");
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

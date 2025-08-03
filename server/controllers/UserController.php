@@ -125,4 +125,10 @@ class UserController
             'user' => $user
         ]);
     }
+
+    public function getStaffUsers()
+    {
+        $staffUsers = $this->model->getStaffUsers();
+        echo json_encode($staffUsers);
+    }
 }
