@@ -119,7 +119,7 @@ class TicketMessageController
             $data = $_POST;
             $files = $_FILES['attachments'] ?? null;
 
-            if (isset($data['text'])) {
+            if (isset($data['text']) && !empty($data['text'])) {
                 // Create a new message with text
                 $newMessageId = $this->model->create($data);
             }
