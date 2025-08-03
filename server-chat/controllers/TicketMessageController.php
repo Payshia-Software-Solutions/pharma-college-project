@@ -174,7 +174,8 @@ class TicketMessageController
                                     'from_role' => $data['from_role'],
                                     'text' => '', // Image-only message
                                     'time' => $data['time'],
-                                    'img_url' => $ftpPath
+                                    'img_url' => $ftpPath,
+                                    'created_by' => $data['created_by']
                                 ];
 
                                 $newMessageId = $this->model->create($messageData);
