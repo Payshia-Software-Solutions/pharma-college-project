@@ -113,13 +113,13 @@ class TicketController
 
     public function create()
     {
-
         // Check if the request is multipart/form-data (with file upload)
         if ($_SERVER['CONTENT_TYPE'] && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
 
             $data = $_POST;
-            $file = $_FILES['attachments'] ?? null; // Uploaded image file
+            $files = $_FILES['attachments'] ?? null; // Multiple files
 
+            // Create the ticket first
             $newTicketId = $this->model->create($data);
             if (!$newTicketId) {
                 http_response_code(500);
@@ -127,58 +127,71 @@ class TicketController
                 return;
             }
 
-            //  Handle image upload if provided
-            $imageUrl = $data['imageUrl'] ?? null; // Default/fallback image URL
+            $imageUrls = []; // Array to store URLs of uploaded images
 
-            if (!empty($file) && $file['error'] === UPLOAD_ERR_OK) {
-                // Validate image
-                $validationError = $this->validateImage($file);
-                if ($validationError) {
-                    http_response_code(400);
-                    echo json_encode(['error' => $validationError]);
-                    return;
+            if (!empty($files) && is_array($files['name'])) {
+                // Loop through each uploaded file
+                foreach ($files['name'] as $index => $fileName) {
+                    $file = [
+                        'name' => $files['name'][$index],
+                        'type' => $files['type'][$index],
+                        'tmp_name' => $files['tmp_name'][$index],
+                        'error' => $files['error'][$index],
+                        'size' => $files['size'][$index],
+                    ];
+
+                    // Validate image
+                    $validationError = $this->validateImage($file);
+                    if ($validationError) {
+                        http_response_code(400);
+                        echo json_encode(['error' => $validationError]);
+                        return;
+                    }
+
+                    $fileTmpPath = $file['tmp_name'];
+
+                    // Create directory structure and sanitize file name
+                    $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
+                    $originalFileName = pathinfo($file['name'], PATHINFO_FILENAME);
+                    $sanitizedFileName = preg_replace('/[^a-zA-Z0-9\-_]/', '', $originalFileName);
+                    $fileName = $sanitizedFileName . '-' . uniqid() . '.' . $fileExtension;
+
+                    $localUploadPath = './uploads/' . $fileName;
+                    $ftpFilePath = "/ticket-images/" . $fileName;
+
+                    // Ensure the local upload directory exists
+                    if (!is_dir('./uploads/')) {
+                        mkdir('./uploads/', 0777, true);
+                    }
+
+                    // Move the file locally first
+                    if (!move_uploaded_file($fileTmpPath, $localUploadPath)) {
+                        http_response_code(400);
+                        echo json_encode(['error' => 'File upload failed']);
+                        return;
+                    }
+
+                    // Upload to FTP server
+                    if ($this->uploadToFTP($localUploadPath, $ftpFilePath)) {
+                        $imageUrls[] = $ftpFilePath; // Add FTP path to the array
+                        unlink($localUploadPath); // Remove local file after successful FTP upload
+                    } else {
+                        http_response_code(500);
+                        echo json_encode(['error' => 'FTP upload failed']);
+                        return;
+                    }
                 }
 
-                $fileTmpPath = $file['tmp_name'];
+                // After all attachments are uploaded, store their URLs as a comma-separated value
+                $csvImageUrls = implode(',', $imageUrls); // Create comma-separated list of file paths
 
-                // Create directory structure based on event ID
-                $fileExtension = pathinfo($file['name'], PATHINFO_EXTENSION);
-                $originalFileName = pathinfo($file['name'], PATHINFO_FILENAME);
-                $sanitizedFileName = preg_replace('/[^a-zA-Z0-9\-_]/', '', $originalFileName);
-                $fileName = $sanitizedFileName . '-' . uniqid() . '.' . $fileExtension;
-
-                $localUploadPath = './uploads/' . $fileName;
-                $ftpFilePath = "/ticket-images/" . $fileName; // Path: event-images/eventid/imagename
-
-                // Ensure the local upload directory exists
-                if (!is_dir('./uploads/')) {
-                    mkdir('./uploads/', 0777, true);
-                }
-
-                // Move the file locally first
-                if (!move_uploaded_file($fileTmpPath, $localUploadPath)) {
-                    http_response_code(400);
-                    echo json_encode(['error' => 'File upload failed']);
-                    return;
-                }
-
-                // Upload to FTP server
-                if ($this->uploadToFTP($localUploadPath, $ftpFilePath)) {
-                    $imageUrl = $ftpFilePath; // Use FTP path as image URL
-                    unlink($localUploadPath); // Remove local file after successful FTP upload
-
-                    // Update the event with the image URL
-
-                } else {
-                    http_response_code(500);
-                    echo json_encode(['error' => 'FTP upload failed']);
-                    return;
-                }
+                // Update the ticket with the attachments' URLs (assuming you have a column 'attachments' in your tickets table)
+                $this->model->updateAttachments($newTicketId, $csvImageUrls);
             }
 
             echo json_encode([
                 "message" => "Ticket message created",
-                "ticket" =>  $this->model->getById($newTicketId)
+                "ticket" => $this->model->getById($newTicketId)
             ]);
         } else {
             // Handle JSON request (without file upload)
@@ -186,6 +199,7 @@ class TicketController
             return;
         }
     }
+
 
     public function updateStatus($id)
     {
