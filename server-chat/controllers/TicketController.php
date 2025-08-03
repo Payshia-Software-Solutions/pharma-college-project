@@ -140,6 +140,7 @@ class TicketController
                         'size' => $files['size'][$index],
                     ];
 
+
                     // Validate image
                     $validationError = $this->validateImage($file);
                     if ($validationError) {
@@ -174,6 +175,8 @@ class TicketController
                     // Upload to FTP server
                     if ($this->uploadToFTP($localUploadPath, $ftpFilePath)) {
                         $imageUrls[] = $ftpFilePath; // Add FTP path to the array
+
+                        echo "Success uploading file: " . $ftpFilePath . "\n";
                         unlink($localUploadPath); // Remove local file after successful FTP upload
                     } else {
                         http_response_code(500);
