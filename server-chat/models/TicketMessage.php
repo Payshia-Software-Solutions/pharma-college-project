@@ -76,4 +76,18 @@ class TicketMessage
         $stmt = $this->pdo->prepare("DELETE FROM ticket_messages WHERE id = ?");
         $stmt->execute([$id]);
     }
+
+    public function updateReadStatus($id, $readStatus)
+    {
+        $stmt = $this->pdo->prepare("UPDATE ticket_messages SET read_status = ? WHERE id = ?");
+        $stmt->execute([$readStatus, $id]);
+        return $stmt->rowCount();
+    }
+
+    public function getUnreadMessages($id, $readStatus, $fromRole)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM ticket_messages WHERE ticket_id = ? AND read_status = ? AND from_role = ? ORDER BY created_at ASC");
+        $stmt->execute([$id, $readStatus, $fromRole]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

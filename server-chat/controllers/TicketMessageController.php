@@ -225,4 +225,33 @@ class TicketMessageController
         $this->model->delete($id);
         echo json_encode(["message" => "Message deleted"]);
     }
+
+    public function updateReadStatus($id)
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        if (!isset($data['read_status'])) {
+            echo json_encode(["error" => "Read status is required"]);
+            return;
+        }
+        $readStatus = $data['read_status'];
+        $this->model->updateReadStatus($id, $readStatus);
+        echo json_encode(["message" => "Message read status updated"]);
+    }
+
+    public function getUnreadMessages($id)
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        if (!isset($data['read_status'])) {
+            echo json_encode(["error" => "Read status is required"]);
+            return;
+        }
+        $readStatus = $data['read_status'];
+        if (!isset($data['from_role'])) {
+            echo json_encode(["error" => "From role is required"]);
+            return;
+        }
+        $fromRole = $data['from_role'];
+        $unreadMessages = $this->model->getUnreadMessages($id, $readStatus, $fromRole);
+        echo json_encode($unreadMessages);
+    }
 }

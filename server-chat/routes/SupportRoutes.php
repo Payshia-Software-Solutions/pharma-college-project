@@ -35,6 +35,8 @@ return [
     'GET /api/ticket-messages/$' => fn() => $ticketMessageController->getAll(),
     'GET /api/ticket-messages/by-ticket/(\w+)/$' => fn($ticketId) => $ticketMessageController->getByTicketId($ticketId),
     'POST /api/ticket-messages/$' => fn() => $ticketMessageController->create(),
+    'PUT /api/ticket-messages/update-read-status/(\w+)/$' => fn($id) => $ticketMessageController->updateReadStatus($id),
+    'PUT /api/ticket-messages/get-unread-messages/(\w+)/$' => fn($id) => $ticketMessageController->getUnreadMessages($id),
     'DELETE /api/ticket-messages/(\w+)/$' => fn($id) => $ticketMessageController->delete($id),
 
     // --- Chats ---
