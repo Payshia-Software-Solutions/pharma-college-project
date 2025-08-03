@@ -130,9 +130,9 @@ class TicketMessageController
             if ($newMessageId) {
                 $newMessageIds[] = $newMessageId;
             } else {
-                http_response_code(500);
-                echo json_encode(['error' => 'Failed to create image message']);
-                return;
+                // http_response_code(500);
+                // echo json_encode(['error' => 'Failed to create image message']);
+                // return;
             }
 
             if (!empty($files)) {
