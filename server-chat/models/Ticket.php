@@ -58,6 +58,86 @@ class Ticket
         // Get last inserted ID
         return $this->pdo->lastInsertId();
     }
+
+    public function update($id, array $data)
+    {
+        $fields = [];
+        $params = [];
+
+        // Dynamically add fields to update based on the provided data
+        if (isset($data['subject'])) {
+            $fields[] = "subject = ?";
+            $params[] = $data['subject'];
+        }
+        if (isset($data['description'])) {
+            $fields[] = "description = ?";
+            $params[] = $data['description'];
+        }
+        if (isset($data['priority'])) {
+            $fields[] = "priority = ?";
+            $params[] = $data['priority'];
+        }
+        if (isset($data['status'])) {
+            $fields[] = "status = ?";
+            $params[] = $data['status'];
+        }
+        if (isset($data['student_name'])) {
+            $fields[] = "student_name = ?";
+            $params[] = $data['student_name'];
+        }
+        if (isset($data['student_avatar'])) {
+            $fields[] = "student_avatar = ?";
+            $params[] = $data['student_avatar'];
+        }
+        if (isset($data['assigned_to'])) {
+            $fields[] = "assigned_to = ?";
+            $params[] = $data['assigned_to'];
+        }
+        if (isset($data['assignee_avatar'])) {
+            $fields[] = "assignee_avatar = ?";
+            $params[] = $data['assignee_avatar'];
+        }
+        if (isset($data['is_locked'])) {
+            $fields[] = "is_locked = ?";
+            $params[] = $data['is_locked'];
+        }
+        if (isset($data['locked_by_staff_id'])) {
+            $fields[] = "locked_by_staff_id = ?";
+            $params[] = $data['locked_by_staff_id'];
+        }
+        if (isset($data['category'])) {
+            $fields[] = "category = ?";
+            $params[] = $data['category'];
+        }
+        if (isset($data['attachments'])) {
+            $fields[] = "attachments = ?";
+            $params[] = $data['attachments'];
+        }
+
+        if (empty($fields)) {
+            return 0; // Nothing to update
+        }
+
+        // Add the ticket ID to the parameters for the WHERE clause
+        $params[] = $id;
+
+        // Prepare the SQL query with the dynamic fields
+        $sql = "UPDATE tickets SET " . implode(", ", $fields) . " WHERE id = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+
+        // Return the number of rows affected
+        return $stmt->rowCount();
+    }
+
+    public function updateAttachments($ticketId, $csvImageUrls)
+    {
+        $sql = "UPDATE tickets SET attachments = ? WHERE id = ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$csvImageUrls, $ticketId]);
+        return $stmt->rowCount(); // Return the number of rows affected
+    }
+
     public function updateStatus($ticketId, $newStatus)
     {
         $stmt = $this->pdo->prepare("UPDATE tickets SET status = ?, updated_at = NOW() WHERE id = ?");
