@@ -5,6 +5,10 @@ require_once './controllers/TicketController.php';
 require_once './controllers/TicketMessageController.php';
 require_once './controllers/ChatController.php';
 require_once './controllers/ChatMessageController.php';
+require_once './controllers/BnfChapterController.php';
+require_once './controllers/BnfPageController.php';
+require_once './controllers/BnfWordIndexController.php';
+require_once './controllers/BnfListItemController.php';
 
 $pdo = $GLOBALS['pdo'];
 
@@ -13,6 +17,10 @@ $ticketController = new TicketController($pdo);
 $ticketMessageController = new TicketMessageController($pdo);
 $chatController = new ChatController($pdo);
 $chatMessageController = new ChatMessageController($pdo);
+$bnfChapterController = new BnfChapterController($pdo);
+$bnfPageController = new BnfPageController($pdo);
+$bnfWordIndexController = new BnfWordIndexController($pdo);
+$bnfListItemController = new BnfListItemController($pdo);
 
 return [
     // --- Announcements ---
