@@ -50,4 +50,31 @@ return [
     'GET /api/chat-messages/by-chat/(\w+)/$' => fn($chatId) => $chatMessageController->getByChatId($chatId),
     'POST /api/chat-messages/$' => fn() => $chatMessageController->create(),
     'DELETE /api/chat-messages/(\w+)/$' => fn($id) => $chatMessageController->delete($id),
+
+    // --- BNF Chapters ---
+    'GET /api/bnf/chapters/$' => fn() => $bnfChapterController->getAll(),
+    'GET /api/bnf/chapters/(\d+)/$' => fn($id) => $bnfChapterController->getById($id),
+    'POST /api/bnf/chapters/$' => fn() => $bnfChapterController->create(),
+    'PUT /api/bnf/chapters/(\d+)/$' => fn($id) => $bnfChapterController->update($id),
+    'DELETE /api/bnf/chapters/(\d+)/$' => fn($id) => $bnfChapterController->delete($id),
+
+    // --- BNF Pages ---
+    'GET /api/bnf/pages/$' => fn() => $bnfPageController->getAll(),
+    'GET /api/bnf/pages/(\d+)/$' => fn($id) => $bnfPageController->getById($id),
+    'GET /api/bnf/pages/chapter/(\d+)/$' => fn($chapter_id) => $bnfPageController->getByChapterId($chapter_id),
+    'POST /api/bnf/pages/$' => fn() => $bnfPageController->create(),
+    'PUT /api/bnf/pages/(\d+)/$' => fn($id) => $bnfPageController->update($id),
+    'DELETE /api/bnf/pages/(\d+)/$' => fn($id) => $bnfPageController->delete($id),
+
+    // --- BNF Word Index ---
+    'GET /api/bnf/word-index/$' => fn() => $bnfWordIndexController->getAll(),
+    'GET /api/bnf/word-index/(\w+)/$' => fn($word) => $bnfWordIndexController->getByWord($word),
+    'POST /api/bnf/word-index/$' => fn() => $bnfWordIndexController->create(),
+    'DELETE /api/bnf/word-index/(\d+)/$' => fn($id) => $bnfWordIndexController->delete($id),
+
+    // --- Optional: BNF Page List Items ---
+    'GET /api/bnf/list-items/page/(\d+)/$' => fn($page_id) => $bnfListItemController->getByPageId($page_id),
+    'POST /api/bnf/list-items/$' => fn() => $bnfListItemController->create(),
+    'PUT /api/bnf/list-items/(\d+)/$' => fn($id) => $bnfListItemController->update($id),
+    'DELETE /api/bnf/list-items/(\d+)/$' => fn($id) => $bnfListItemController->delete($id),
 ];
