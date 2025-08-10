@@ -121,6 +121,7 @@ $EnWordSubmissionRoutes = require './routes/EnWordSubmissionRoutes.php';
 $UserCertificatePrintStatusRoutesNew = require './routes/UserCertificatePrintStatusRoutesNew.php';
 $studentEnrollmentRoutes = require './routes/studentEnrollmentRoutes.php';
 $StudentPaymentRoutes = require './routes/StudentPaymentRoutes.php';
+$CommisionSetupRoutes = require './routes/CommisionSetupRoutes.php';
 
 
 // Combine all routes
@@ -222,7 +223,8 @@ $routes = array_merge(
     $UserCertificatePrintStatusRoutesNew,
     $studentEnrollmentRoutes,
     $DeliverySettingRoutes,
-    $StudentPaymentRoutes
+    $StudentPaymentRoutes,
+    $CommisionSetupRoutes
 );
 
 

@@ -53,7 +53,7 @@ class Ticket
             $data['is_locked']          ?? 0,
             $data['locked_by_staff_id'] ?? null,
             $data['category'] ?? null,
-            $data['rating_value'] ?? null
+            $data['rating_value'] ?? 0
         ]);
 
         // Get last inserted ID
