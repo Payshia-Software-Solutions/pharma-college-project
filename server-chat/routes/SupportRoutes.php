@@ -38,6 +38,7 @@ return [
     'POST /api/tickets/(\w+)/unlock/$' => fn($id) => $ticketController->unlockTicket($id),
     'POST /api/tickets/(\w+)/status/$' => fn($id) => $ticketController->updateStatus($id),
     'DELETE /api/tickets/(\w+)/$' => fn($id) => $ticketController->delete($id),
+    'PUT /api/tickets/update-rating/(\w+)/$' => fn($id) => $ticketController->updateRating($id),
 
     // --- Ticket Messages ---
     'GET /api/ticket-messages/$' => fn() => $ticketMessageController->getAll(),

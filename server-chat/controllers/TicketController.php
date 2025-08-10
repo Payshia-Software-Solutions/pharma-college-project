@@ -264,6 +264,33 @@ class TicketController
         echo json_encode(["message" => "Ticket deleted"]);
     }
 
+    public function updateRating($id)
+    {
+        // Check if the request is JSON
+        if ($_SERVER['CONTENT_TYPE'] !== 'application/json') {
+            http_response_code(400);
+            echo json_encode(["error" => "Invalid request format"]);
+            return;
+        }
+        // Check if the ID is valid
+        if (!is_numeric($id) || $id <= 0) {
+            http_response_code(400);
+            echo json_encode(["error" => "Invalid ticket ID"]);
+            return;
+        }
+        // Decode the incoming JSON request body
+        $data = json_decode(file_get_contents("php://input"), true);
+        if (!isset($data['rating_value'])) {
+            echo json_encode(["error" => "Rating value is required"]);
+            return;
+        }
+        $ratingValue = $data['rating_value'];
+        $this->model->updateRating($id, $ratingValue);
+        $ticket = $this->model->getById($id);
+        echo json_encode(["message" => "Ticket rating updated", "ticket" => $ticket]);
+    }
+
+
     // public function assignTicket($id)
     // {
     //     // Decode the incoming JSON request body
