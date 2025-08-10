@@ -31,11 +31,11 @@ class Ticket
         INSERT INTO tickets (
             subject, description, priority, status, created_at,
             student_name, student_avatar, assigned_to,
-            assignee_avatar, is_locked, locked_by_staff_id, category
+            assignee_avatar, is_locked, locked_by_staff_id, category, rating_value
         )
         VALUES (
             ?, ?, ?, ?, NOW(),
-            ?, ?, ?, ?, ?, ?, ?
+            ?, ?, ?, ?, ?, ?, ?, ?
         )";
 
         $stmt = $this->pdo->prepare($sql);
@@ -112,6 +112,10 @@ class Ticket
         if (isset($data['attachments'])) {
             $fields[] = "attachments = ?";
             $params[] = $data['attachments'];
+        }
+        if (isset($data['rating_value'])) {
+            $fields[] = "rating_value = ?";
+            $params[] = $data['rating_value'];
         }
 
         if (empty($fields)) {
@@ -197,5 +201,19 @@ class Ticket
             $data['locked_by_staff_id'],
             $data['id'] // ID of the ticket to update
         ]);
+    }
+
+    public function getTicketsByCategory($category)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM tickets WHERE category = ? ORDER BY created_at DESC");
+        $stmt->execute([$category]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateRating($ticketId, $ratingValue)
+    {
+        $stmt = $this->pdo->prepare("UPDATE tickets SET rating_value = ? WHERE id = ?");
+        $stmt->execute([$ratingValue, $ticketId]);
+        return $stmt->rowCount(); // Return the number of rows affected
     }
 }
