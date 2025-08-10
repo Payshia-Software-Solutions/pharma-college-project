@@ -1,4 +1,7 @@
 <?php
+
+// --- controllers/CommisionSetupController.php ---
+require_once './models/CommisionSetup.php';
 class CommisionSetupController
 {
     private $model;
