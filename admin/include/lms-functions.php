@@ -95,6 +95,22 @@ function GetLmsStudentsByUserName($userName)
     return $ArrayResult[$userName];
 }
 
+function GetLmsStudentsByUserIdwithId($user_id)
+{
+    $ArrayResult = array();
+    global $lms_link;
+
+    $sql = "SELECT `id`, `student_id`, `username`, `civil_status`, `first_name`, `last_name`, `gender`, `address_line_1`, `address_line_2`, `city`, `district`, `postal_code`, `telephone_1`, `telephone_2`, `nic`, `e_mail`, `birth_day`, `updated_by`, `updated_at`, `full_name`, `name_with_initials`, `name_on_certificate` FROM `user_full_details` WHERE `student_id` LIKE '$user_id'  ORDER BY `id` DESC";
+    $result = $lms_link->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ArrayResult[$row['student_id']] = $row;
+        }
+    }
+    return $ArrayResult[$user_id];
+}
+
+
 function getAllUserEnrollments()
 {
     $ArrayResult = array();
