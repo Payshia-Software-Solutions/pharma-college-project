@@ -11,9 +11,9 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
 $dotenv->load();
 
 // Fetch values from .env
-$host = $_ENV['MAIL_HOST'];
-$username = $_ENV['MAIL_USERNAME'];
-$password = $_ENV['MAIL_PASSWORD'];
+$host = $_ENV['SMTP_HOST'];
+$username = $_ENV['SMTP_USERNAME'];
+$password = $_ENV['SMTP_PASSWORD'];
 
 // Define template
 $fromEmail = 'info@pharmacollege.lk';

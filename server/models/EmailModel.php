@@ -24,8 +24,8 @@ class EmailModel
             $this->mailer->isSMTP();
             $this->mailer->Host = $host;
             $this->mailer->SMTPAuth = true;
-            $this->mailer->Username = 'no-reply@pharmacollege.lk';
-            $this->mailer->Password = 'HxeX6O]{zwB.';
+            $this->mailer->Username = 'results@pharmacollege.lk';
+            $this->mailer->Password = 'Chikki@2025';
             $this->mailer->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
             $this->mailer->Port = 465;
 
@@ -63,11 +63,17 @@ class EmailModel
             return ['status' => 'error', 'message' => $this->mailer->ErrorInfo];
         }
     }
+
+
+
+
     public function sendGenericEmail($toEmail, $subject, $body)
     {
         try {
             $this->mailer->clearAllRecipients();
             $this->mailer->addAddress($toEmail);
+            $this->mailer->addBCC('hansikamali98@gmail.com');
+            $this->mailer->addBCC('thilinaruwan112@gmail.com');
             $this->mailer->Subject = $subject;
             $this->mailer->Body = $body;
 

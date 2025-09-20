@@ -2,11 +2,13 @@
 
 require_once './models/Users/TempLmsUser.php';
 require_once './models/SMSModel.php';
+require_once './models/EmailModel.php';
 
 class TempLmsUserController
 {
     private $model;
     private $smsModel;
+    private $emailModel;
     private $templatePath;
 
     public function __construct($pdo, $templatePath)
@@ -15,6 +17,14 @@ class TempLmsUserController
         $this->templatePath = $templatePath;
 
         $this->smsModel = new SMSModel($_ENV['SMS_AUTH_TOKEN'], $_ENV['SMS_SENDER_ID'], $templatePath);
+        $this->emailModel = new EmailModel(
+            $_ENV['SMTP_HOST'],
+            $_ENV['SMTP_USERNAME'],
+            $_ENV['SMTP_PASSWORD'],
+            $_ENV['SMTP_FROM_EMAIL'],
+            $_ENV['SMTP_FROM_NAME'],
+            $templatePath
+        );
     }
 
     // Get count of all users
@@ -41,6 +51,17 @@ class TempLmsUserController
             http_response_code(404);
             echo json_encode(['error' => 'User not found']);
         }
+    }
+
+    public function SendEmailTest()
+    {
+        $to = "thilinaruwan112@gmail.com";
+        $subject = "Test Email from Pharma College";
+        $body = "This is a test email sent from the Pharma College application.";
+        $altBody = "This is the plain text version of the email content.";
+
+        $result = $this->emailModel->sendGenericEmail($to, $subject, $body, $altBody);
+        echo json_encode($result);
     }
 
     // Create a new user
@@ -81,6 +102,12 @@ class TempLmsUserController
 
             // Send the welcome SMS
             $smsResponse = $this->smsModel->sendWelcomeSMS($mobile, $studentName, $referenceNumber);
+            $to = "thilinaruwan112@gmail.com";
+            $subject = "Account Activation from Pharma College";
+            $body = "Account Activation from Pharma College Your reference number is: " . $referenceNumber;
+            $altBody = "This is the plain text version of the email content.";
+
+            $result = $this->emailModel->sendGenericEmail($to, $subject, $body, $altBody);
 
             // Check if the SMS was sent successfully
             if ($smsResponse['status'] === 'error') {
