@@ -6,5 +6,7 @@ Temporary Password: {{TEMP_PASSWORD}}
 
 Login here: https://lms.pharmacollege.lk/login?UserName={{GENERATED_USER_NAME}}&TempPassword={{TEMP_PASSWORD}}
 
+How to Order Study Pack - https://www.youtube.com/shorts/1xd3TAjbtYw
+
 Ceylon Pharma College
 www.pharmacollege.lk
