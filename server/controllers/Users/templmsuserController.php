@@ -103,7 +103,7 @@ class TempLmsUserController
             // Send the welcome SMS
             $smsResponse = $this->smsModel->sendWelcomeSMS($mobile, $studentName, $referenceNumber);
             $to = "thilinaruwan112@gmail.com";
-            $subject = "Account Activation from Pharma College";
+            $subject = $referenceNumber . " | Account Activation from Pharma College";
             $body = "Account Activation from Pharma College Your reference number is: " . $referenceNumber;
             $altBody = "This is the plain text version of the email content.";
 
