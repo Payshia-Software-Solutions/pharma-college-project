@@ -79,7 +79,7 @@ class EmailModel
 
             $this->mailer->send();
 
-            echo json_encode(['status' => 'success', 'message' => $body . 'Email sent successfully.']);
+            return json_encode(['status' => 'success', 'message' => $body . 'Email sent successfully.']);
         } catch (Exception $e) {
             return ['status' => 'error', 'message' => $this->mailer->ErrorInfo];
         }
