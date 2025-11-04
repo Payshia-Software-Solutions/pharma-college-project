@@ -1,19 +1,17 @@
 <?php
-// routes/careInstructionPreRoutes.php
+// routes/Care/careInstructionPreRoutes.php
 
-require_once './controllers/Care/CareInstructionPreController.php';
+require_once __DIR__ . '/../../controllers/ceylonPharmacy/CareInstructionPreController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];
 $careInstructionPreController = new CareInstructionPreController($pdo);
 
-// Define care instruction routes
+// Define routes
 return [
-    'GET /care-instructions-pre' => [$careInstructionPreController, 'getCareInstructions'],
-    'POST /care-instructions-pre' => [$careInstructionPreController, 'createCareInstruction'],
-    'GET /care-instructions-pre/{id}' => [$careInstructionPreController, 'getCareInstruction'],
-    'PUT /care-instructions-pre/{id}' => [$careInstructionPreController, 'updateCareInstruction'],
-    'DELETE /care-instructions-pre/{id}' => [$careInstructionPreController, 'deleteCareInstruction'],
-    'GET /care-instructions-pre/role/{role}' => [$careInstructionPreController, 'getInstructionsByRole'],
-    'GET /care-instructions-correct/' => [$careInstructionPreController, 'getCorrectInstructions'],
+    'GET /care-instruction-pres' => [$careInstructionPreController, 'getAll'],
+    'GET /care-instruction-pres/{id}' => [$careInstructionPreController, 'getById'],
+    'POST /care-instruction-pres' => [$careInstructionPreController, 'create'],
+    'PUT /care-instruction-pres/{id}' => [$careInstructionPreController, 'update'],
+    'DELETE /care-instruction-pres/{id}' => [$careInstructionPreController, 'delete']
 ];

@@ -129,6 +129,12 @@ $careAnswerSubmitRoutes = require './routes/ceylonPharmacy/CareAnswerSubmitRoute
 $careCenterCourseRoutes = require './routes/ceylonPharmacy/CareCenterCourseRoutes.php';
 $careCenterRecoveryRoutes = require './routes/ceylonPharmacy/CareCenterRecoveryRoutes.php';
 $careContentRoutes = require './routes/ceylonPharmacy/CareContentRoutes.php';
+$carePaymentRoutes = require './routes/ceylonPharmacy/CarePaymentRoutes.php';
+$carePrescriptionRoutes = require './routes/ceylonPharmacy/carePrescriptionRoutes.php';
+$carePaymentAnswerRoutes = require './routes/ceylonPharmacy/carePaymentAnswerRoutes.php';
+$careSavedAnswersRoutes = require './routes/ceylonPharmacy/careSavedAnswersRoutes.php';
+$careStartRoutes = require './routes/ceylonPharmacy/careStartRoutes.php';
+
 
 
 // Combine all routes
@@ -238,7 +244,12 @@ $routes = array_merge(
     $careAnswerSubmitRoutes,
     $careCenterCourseRoutes,
     $careCenterRecoveryRoutes,
-    $careContentRoutes
+    $careContentRoutes,
+    $carePaymentRoutes,
+    $carePrescriptionRoutes,
+    $carePaymentAnswerRoutes,
+    $careSavedAnswersRoutes,
+    $careStartRoutes
 );
 
 

@@ -1,7 +1,7 @@
 <?php
-// routes/Care/careInstructionRoutes.php
+// routes/ceylonPharmacy/CareInstructionRoutes.php
 
-require_once __DIR__ . '/../../controllers/ceylonPharmacy/CareInstructionController.php';
+require_once './controllers/ceylonPharmacy/CareInstructionController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];
