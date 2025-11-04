@@ -14,26 +14,52 @@ class CarePatientController
 
     public function getAll()
     {
-        return $this->carePatientModel->getAllCarePatients();
+        $patients = $this->carePatientModel->getAllCarePatients();
+        echo json_encode($patients);
     }
 
     public function getById($id)
     {
-        return $this->carePatientModel->getCarePatientById($id);
+        $patient = $this->carePatientModel->getCarePatientById($id);
+        if ($patient) {
+            echo json_encode($patient);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Patient not found']);
+        }
     }
 
-    public function create($data)
+    public function create()
     {
-        return $this->carePatientModel->createCarePatient($data);
+        $data = json_decode(file_get_contents("php://input"), true);
+        if ($data) {
+            $lastId = $this->carePatientModel->createCarePatient($data);
+            http_response_code(201);
+            echo json_encode([
+                'message' => 'Patient created successfully',
+                'id' => $lastId
+            ]);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid input']);
+        }
     }
 
-    public function update($id, $data)
+    public function update($id)
     {
-        return $this->carePatientModel->updateCarePatient($id, $data);
+        $data = json_decode(file_get_contents("php://input"), true);
+        if ($data) {
+            $this->carePatientModel->updateCarePatient($id, $data);
+            echo json_encode(['message' => 'Patient updated successfully']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid input']);
+        }
     }
 
     public function delete($id)
     {
-        return $this->carePatientModel->deleteCarePatient($id);
+        $this->carePatientModel->deleteCarePatient($id);
+        echo json_encode(['message' => 'Patient deleted successfully']);
     }
 }
