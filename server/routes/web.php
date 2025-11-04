@@ -125,6 +125,7 @@ $CommisionSetupRoutes = require './routes/CommisionSetupRoutes.php';
 $CourseContentTitleRoutes = require './routes/CourseContentTitleRoutes.php';
 $carePatientRoutes = require './routes/ceylonPharmacy/CarePatientRoutes.php';
 $careAnswerRoutes = require './routes/ceylonPharmacy/CareAnswerRoutes.php';
+$careAnswerSubmitRoutes = require './routes/ceylonPharmacy/CareAnswerSubmitRoutes.php';
 
 
 // Combine all routes
@@ -230,7 +231,8 @@ $routes = array_merge(
     $CommisionSetupRoutes,
     $CourseContentTitleRoutes,
     $carePatientRoutes,
-    $careAnswerRoutes
+    $careAnswerRoutes,
+    $careAnswerSubmitRoutes
 );
 
 
