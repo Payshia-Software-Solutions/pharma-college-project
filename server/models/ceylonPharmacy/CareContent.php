@@ -52,4 +52,11 @@ class CareContent
         $stmt->execute([$id]);
         return $stmt->rowCount();
     }
+
+    public function getCareContentByPresCode($presCode)
+    {
+        $stmt = $this->pdo->prepare('SELECT cover_id, content FROM care_content WHERE pres_code = ?');
+        $stmt->execute([$presCode]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

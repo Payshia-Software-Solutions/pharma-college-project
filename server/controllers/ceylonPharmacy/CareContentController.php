@@ -62,4 +62,15 @@ class CareContentController
         $this->careContentModel->deleteCareContent($id);
         echo json_encode(['message' => 'Content deleted successfully']);
     }
+
+    public function getByPresCode($presCode)
+    {
+        $content = $this->careContentModel->getCareContentByPresCode($presCode);
+        if ($content) {
+            echo json_encode($content);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Content not found']);
+        }
+    }
 }
