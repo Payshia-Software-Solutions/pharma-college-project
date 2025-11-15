@@ -29,6 +29,17 @@ class CareAnswerController
         }
     }
 
+    public function getAnswersByPrescriptionAndCover($presId, $coverId)
+    {
+        $answers = $this->careAnswerModel->getAnswersByPrescriptionAndCover($presId, $coverId);
+        if ($answers) {
+            echo json_encode($answers);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Answers not found']);
+        }
+    }
+
     public function create()
     {
         $data = json_decode(file_get_contents("php://input"), true);

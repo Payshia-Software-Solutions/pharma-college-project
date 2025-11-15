@@ -23,6 +23,13 @@ class CareAnswer
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getAnswersByPrescriptionAndCover($presId, $coverId)
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM care_answer WHERE pres_id = ? AND cover_id = ?');
+        $stmt->execute([$presId, $coverId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function createCareAnswer($data)
     {
         $stmt = $this->pdo->prepare('INSERT INTO care_answer (answer_id, pres_id, cover_id, date, name, drug_name, drug_type, drug_qty, morning_qty, afternoon_qty, evening_qty, night_qty, meal_type, using_type, at_a_time, hour_qty, additional_description, created_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
