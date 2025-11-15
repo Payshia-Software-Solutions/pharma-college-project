@@ -18,17 +18,17 @@ class CareCenterCourseController
     public function getAll()
     {
         $courses = $this->careCenterCourseModel->getAllCareCenterCourses();
-        return json_encode($courses);
+        echo json_encode($courses);
     }
 
     public function getById($id)
     {
         $course = $this->careCenterCourseModel->getCareCenterCourseById($id);
         if ($course) {
-            return json_encode($course);
+            echo json_encode($course);
         } else {
             http_response_code(404);
-            return json_encode(['error' => 'Course not found']);
+            echo json_encode(['error' => 'Course not found']);
         }
     }
 
@@ -38,13 +38,13 @@ class CareCenterCourseController
         if ($data) {
             $lastId = $this->careCenterCourseModel->createCareCenterCourse($data);
             http_response_code(201);
-            return json_encode([
+            echo json_encode([
                 'message' => 'Course created successfully',
                 'id' => $lastId
             ]);
         } else {
             http_response_code(400);
-            return json_encode(['error' => 'Invalid input']);
+            echo json_encode(['error' => 'Invalid input']);
         }
     }
 
@@ -53,17 +53,17 @@ class CareCenterCourseController
         $data = json_decode(file_get_contents("php://input"), true);
         if ($data) {
             $this->careCenterCourseModel->updateCareCenterCourse($id, $data);
-            return json_encode(['message' => 'Course updated successfully']);
+            echo json_encode(['message' => 'Course updated successfully']);
         } else {
             http_response_code(400);
-            return json_encode(['error' => 'Invalid input']);
+            echo json_encode(['error' => 'Invalid input']);
         }
     }
 
     public function delete($id)
     {
         $this->careCenterCourseModel->deleteCareCenterCourse($id);
-        return json_encode(['message' => 'Course deleted successfully']);
+        echo json_encode(['message' => 'Course deleted successfully']);
     }
 
     public function getPrescriptionIdsByCourseCode($courseCode)
@@ -78,10 +78,10 @@ class CareCenterCourseController
                     $patientData[$prescriptionId] = $patient;
                 }
             }
-            return json_encode($patientData);
+            echo json_encode($patientData);
         } else {
             http_response_code(404);
-            return json_encode(['error' => 'No prescriptions found for this course']);
+            echo json_encode(['error' => 'No prescriptions found for this course']);
         }
     }
 }
