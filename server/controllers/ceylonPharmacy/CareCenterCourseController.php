@@ -62,4 +62,15 @@ class CareCenterCourseController
         $this->careCenterCourseModel->deleteCareCenterCourse($id);
         echo json_encode(['message' => 'Course deleted successfully']);
     }
+
+    public function getPrescriptionIdsByCourseCode($courseCode)
+    {
+        $prescriptionIds = $this->careCenterCourseModel->getPrescriptionIdsByCourseCode($courseCode);
+        if ($prescriptionIds) {
+            echo json_encode($prescriptionIds);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No prescriptions found for this course']);
+        }
+    }
 }
