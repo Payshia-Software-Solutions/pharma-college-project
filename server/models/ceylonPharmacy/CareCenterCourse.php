@@ -57,6 +57,6 @@ class CareCenterCourse
     {
         $stmt = $this->pdo->prepare('SELECT prescription_id FROM care_center_course WHERE CourseCode = ?');
         $stmt->execute([$courseCode]);
-        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
