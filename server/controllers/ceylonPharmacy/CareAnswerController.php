@@ -40,6 +40,18 @@ class CareAnswerController
         }
     }
 
+    public function getDistinctNames()
+    {
+        $names = $this->careAnswerModel->getDistinctNames();
+        echo json_encode($names);
+    }
+
+    public function getFormSelectionData()
+    {
+        $selectionData = $this->careAnswerModel->getFormSelectionData();
+        echo json_encode($selectionData);
+    }
+
     public function create()
     {
         $data = json_decode(file_get_contents("php://input"), true);

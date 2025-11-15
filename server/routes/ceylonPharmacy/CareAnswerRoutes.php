@@ -13,6 +13,14 @@ return [
     'GET /care-answers/$' => function () use ($careAnswerController) {
         $careAnswerController->getAll();
     },
+    // Get all distinct names
+    'GET /care-answers/names/$' => function () use ($careAnswerController) {
+        $careAnswerController->getDistinctNames();
+    },
+    // Get data for form selections
+    'GET /care-answers/form-selection-data/$' => function () use ($careAnswerController) {
+        $careAnswerController->getFormSelectionData();
+    },
     // Get care answer by ID
     'GET /care-answers/(\d+)/$' => function ($id) use ($careAnswerController) {
         $careAnswerController->getById($id);
