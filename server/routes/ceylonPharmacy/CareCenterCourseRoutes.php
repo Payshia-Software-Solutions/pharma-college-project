@@ -9,10 +9,22 @@ $careCenterCourseController = new CareCenterCourseController($pdo);
 
 // Define routes
 return [
-    'GET /care-center-courses' => [$careCenterCourseController, 'getAll'],
-    'GET /care-center-courses/{id}' => [$careCenterCourseController, 'getById'],
-    'POST /care-center-courses' => [$careCenterCourseController, 'create'],
-    'PUT /care-center-courses/{id}' => [$careCenterCourseController, 'update'],
-    'DELETE /care-center-courses/{id}' => [$careCenterCourseController, 'delete'],
-    'GET /care-center-courses/course/{courseCode}' => [$careCenterCourseController, 'getPrescriptionIdsByCourseCode']
+    'GET /care-center-courses/$' => function () use ($careCenterCourseController) {
+        return $careCenterCourseController->getAll();
+    },
+    'GET /care-center-courses/(\d+)/$' => function ($id) use ($careCenterCourseController) {
+        return $careCenterCourseController->getById($id);
+    },
+    'POST /care-center-courses/$' => function () use ($careCenterCourseController) {
+        return $careCenterCourseController->create();
+    },
+    'PUT /care-center-courses/(\d+)/$' => function ($id) use ($careCenterCourseController) {
+        return $careCenterCourseController->update($id);
+    },
+    'DELETE /care-center-courses/(\d+)/$' => function ($id) use ($careCenterCourseController) {
+        return $careCenterCourseController->delete($id);
+    },
+    'GET /care-center-courses/course/([^/]+)/$' => function ($courseCode) use ($careCenterCourseController) {
+        return $careCenterCourseController->getPrescriptionIdsByCourseCode($courseCode);
+    }
 ];
