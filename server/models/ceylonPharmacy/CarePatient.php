@@ -23,6 +23,13 @@ class CarePatient
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getCarePatientByPrescriptionId($prescriptionId)
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM care_patient WHERE prescription_id = ?');
+        $stmt->execute([$prescriptionId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function createCarePatient($data)
     {
         $stmt = $this->pdo->prepare('INSERT INTO care_patient (prescription_id, prescription_name, prescription_status, created_at, created_by, Pres_Name, pres_date, Pres_Age, Pres_Method, doctor_name, notes, patient_description, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
