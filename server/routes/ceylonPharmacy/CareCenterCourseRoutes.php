@@ -13,5 +13,6 @@ return [
     'GET /care-center-courses/{id}' => [$careCenterCourseController, 'getById'],
     'POST /care-center-courses' => [$careCenterCourseController, 'create'],
     'PUT /care-center-courses/{id}' => [$careCenterCourseController, 'update'],
-    'DELETE /care-center-courses/{id}' => [$careCenterCourseController, 'delete']
+    'DELETE /care-center-courses/{id}' => [$careCenterCourseController, 'delete'],
+    'GET /care-center-courses/course/{courseCode}' => [$careCenterCourseController, 'getPrescriptionIdsByCourseCode']
 ];
