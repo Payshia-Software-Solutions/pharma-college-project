@@ -1,5 +1,5 @@
 <?php
-// routes/ceylonPharmacy/careStartRoutes.php
+// server/routes/ceylonPharmacy/careStartRoutes.php
 
 require_once __DIR__ . '/../../controllers/ceylonPharmacy/CareStartController.php';
 
@@ -9,9 +9,28 @@ $careStartController = new CareStartController($pdo);
 
 // Define routes
 return [
-    'GET /care-starts' => [$careStartController, 'getAll'],
-    'GET /care-starts/{id}' => [$careStartController, 'getById'],
-    'POST /care-starts' => [$careStartController, 'create'],
-    'PUT /care-starts/{id}' => [$careStartController, 'update'],
-    'DELETE /care-starts/{id}' => [$careStartController, 'delete']
+    // Get all care starts
+    'GET /care-starts/$' => function () use ($careStartController) {
+        $careStartController->getAll();
+    },
+    // Get care start by student_id and PresCode
+    'GET /care-starts/student/([^/]+)/pres-code/([^/]+)/$' => function ($student_id, $PresCode) use ($careStartController) {
+        $careStartController->getByStudentIdAndPresCode($student_id, $PresCode);
+    },
+    // Get care start by ID
+    'GET /care-starts/(\d+)/$' => function ($id) use ($careStartController) {
+        $careStartController->getById($id);
+    },
+    // Create new care start
+    'POST /care-starts/$' => function () use ($careStartController) {
+        $careStartController->create();
+    },
+    // Update care start
+    'PUT /care-starts/(\d+)/$' => function ($id) use ($careStartController) {
+        $careStartController->update($id);
+    },
+    // Delete care start
+    'DELETE /care-starts/(\d+)/$' => function ($id) use ($careStartController) {
+        $careStartController->delete($id);
+    },
 ];

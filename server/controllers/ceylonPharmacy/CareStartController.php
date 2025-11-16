@@ -29,6 +29,17 @@ class CareStartController
         }
     }
 
+    public function getByStudentIdAndPresCode($student_id, $PresCode)
+    {
+        $start = $this->careStartModel->getCareStartByStudentIdAndPresCode($student_id, $PresCode);
+        if ($start) {
+            echo json_encode($start);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Start not found']);
+        }
+    }
+
     public function create()
     {
         $data = json_decode(file_get_contents("php://input"), true);

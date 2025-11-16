@@ -23,6 +23,13 @@ class CareStart
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getCareStartByStudentIdAndPresCode($student_id, $PresCode)
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM care_start WHERE student_id = ? AND PresCode = ?');
+        $stmt->execute([$student_id, $PresCode]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function createCareStart($data)
     {
         $stmt = $this->pdo->prepare('INSERT INTO care_start (student_id, PresCode, time, created_at, patient_status) VALUES (?, ?, ?, ?, ?)');
