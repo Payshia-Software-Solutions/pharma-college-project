@@ -5,11 +5,13 @@ require_once __DIR__ . '/../../models/ceylonPharmacy/CareCenterCourse.php';
 require_once __DIR__ . '/../../models/ceylonPharmacy/CarePatient.php';
 require_once __DIR__ . '/../../models/ceylonPharmacy/CareStart.php';
 
+
 class CareCenterCourseController
 {
     private $careCenterCourseModel;
     private $carePatientModel;
     private $careStartModel;
+
 
     public function __construct($pdo)
     {
@@ -77,19 +79,11 @@ class CareCenterCourseController
             foreach ($prescriptionIds as $row) {
                 $prescriptionId = $row['prescription_id'];
                 $patient = $this->carePatientModel->getCarePatientByPrescriptionId($prescriptionId);
-                $careStartData = $this->careStartModel->getCareStartByStudentIdAndPresCode($student_number, $prescriptionId);
-
-                if ($patient && $careStartData) {
-                    $patientData[$prescriptionId] = array_merge($patient, $careStartData);
+                if ($patient) {
+                    $patientData[$prescriptionId] = $patient;
                 }
             }
-
-            if (!empty($patientData)) {
-                echo json_encode($patientData);
-            } else {
-                http_response_code(404);
-                echo json_encode(['error' => 'No matching prescriptions found for the student in this course.']);
-            }
+            echo json_encode($patientData);
         } else {
             http_response_code(404);
             echo json_encode(['error' => 'No prescriptions found for this course']);
