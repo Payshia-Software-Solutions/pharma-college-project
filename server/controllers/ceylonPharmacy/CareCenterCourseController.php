@@ -79,8 +79,10 @@ class CareCenterCourseController
             foreach ($prescriptionIds as $row) {
                 $prescriptionId = $row['prescription_id'];
                 $patient = $this->carePatientModel->getCarePatientByPrescriptionId($prescriptionId);
-                if ($patient) {
-                    $patientData[$prescriptionId] = $patient;
+                $careStartData = $this->careStartModel->getCareStartByStudentIdAndPresCode($student_number, $prescriptionId);
+
+                if ($patient && $careStartData) {
+                    $patientData[$prescriptionId] = array_merge($patient, $careStartData);
                 }
             }
             echo json_encode($patientData);
