@@ -73,7 +73,6 @@ class CareCenterCourseController
 
     public function getPrescriptionIdsByCourseCode($courseCode, $student_number)
     {
-        echo $courseCode;
         $prescriptionIds = $this->careCenterCourseModel->getPrescriptionIdsByCourseCode($courseCode);
         if ($prescriptionIds) {
             $patientData = [];
