@@ -82,7 +82,7 @@ class CareCenterCourseController
                 $careStartData = $this->careStartModel->getCareStartByStudentIdAndPresCode($student_number, $prescriptionId);
 
                 if ($patient && $careStartData) {
-                    $patientData[$prescriptionId] = array_merge($patient, $careStartData);
+                    $patientData[$prescriptionId] = ["patient" => $patient, "start_data" => $careStartData];
                 }
             }
             echo json_encode($patientData);
