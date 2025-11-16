@@ -24,7 +24,7 @@ return [
     'DELETE /care-center-courses/(\d+)/$' => function ($id) use ($careCenterCourseController) {
         return $careCenterCourseController->delete($id);
     },
-    'GET /care-center-courses/student_number/([^/]+)/course/([^/]+)/$' => function $student_number, $courseCode) use ($careCenterCourseController) {
+    'GET /care-center-courses/student/([^/]+)/course/([^/]+)/$' => function($student_number, $courseCode) use ($careCenterCourseController) {
         return $careCenterCourseController->getPrescriptionIdsByCourseCode($courseCode, $student_number);
     }
 ];
