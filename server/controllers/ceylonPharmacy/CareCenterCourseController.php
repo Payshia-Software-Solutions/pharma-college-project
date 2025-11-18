@@ -81,7 +81,7 @@ class CareCenterCourseController
                 $patient = $this->carePatientModel->getCarePatientByPrescriptionId($prescriptionId);
                 $careStartData = $this->careStartModel->getCareStartByStudentIdAndPresCode($student_number, $prescriptionId);
 
-                if ($patient) {
+                if ($patient && $careStartData) {
                     $patientData[$prescriptionId] = ["patient" => $patient, "start_data" => $careStartData];
                 }
             }
