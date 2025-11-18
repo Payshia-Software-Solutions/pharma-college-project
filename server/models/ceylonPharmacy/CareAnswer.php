@@ -10,6 +10,22 @@ class CareAnswer
         $this->pdo = $pdo;
     }
 
+    // Get all records from the care_answer table
+    public function getAllCareAnswers()
+    {
+        $stmt = $this->pdo->query('SELECT * FROM care_answer');
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Get a single record by its primary key
+    public function getCareAnswerById($id)
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM care_answer WHERE id = ?');
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+    
+    // Get the correct answer record for validation purposes
     public function getAnswerByPrescriptionAndCover($presId, $coverId)
     {
         $stmt = $this->pdo->prepare('SELECT * FROM care_answer WHERE pres_id = ? AND cover_id = ?');
@@ -17,5 +33,36 @@ class CareAnswer
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // ... other methods
+    // Create a new record
+    public function createCareAnswer($data)
+    {
+        $columns = '`' . implode('`, `', array_keys($data)) . '`';
+        $placeholders = ':' . implode(', :', array_keys($data));
+        $sql = "INSERT INTO `care_answer` ($columns) VALUES ($placeholders)";
+        $stmt = $this->pdo->prepare($sql);
+        if ($stmt->execute($data)) {
+            return $this->pdo->lastInsertId();
+        }
+        return false;
+    }
+
+    // Update an existing record
+    public function updateCareAnswer($id, $data)
+    {
+        $setPart = [];
+        foreach ($data as $key => $value) {
+            $setPart[] = "`$key` = :$key";
+        }
+        $sql = "UPDATE care_answer SET " . implode(', ', $setPart) . " WHERE id = :id";
+        $data['id'] = $id;
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($data);
+    }
+
+    // Delete a record
+    public function deleteCareAnswer($id)
+    {
+        $stmt = $this->pdo->prepare('DELETE FROM care_answer WHERE id = ?');
+        return $stmt->execute([$id]);
+    }
 }
