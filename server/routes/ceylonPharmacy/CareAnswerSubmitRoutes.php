@@ -3,15 +3,11 @@
 
 require_once './controllers/ceylonPharmacy/CareAnswerSubmitController.php';
 
-// Instantiate the controller
-$pdo = $GLOBALS['pdo'];
-$careAnswerSubmitController = new CareAnswerSubmitController($pdo);
+// ... (other routes)
 
-// Define routes
-return [
-    'GET /care-answer-submits' => [$careAnswerSubmitController, 'getAll'],
-    'GET /care-answer-submits/{id}' => [$careAnswerSubmitController, 'getById'],
-    'POST /care-answer-submits' => [$careAnswerSubmitController, 'create'],
-    'PUT /care-answer-submits/{id}' => [$careAnswerSubmitController, 'update'],
-    'DELETE /care-answer-submits/{id}' => [$careAnswerSubmitController, 'delete']
-];
+// Add this new route
+$routes['POST /care-answer-submits/validate'] = function () use ($careAnswerSubmitController) {
+    $careAnswerSubmitController->validateAndCreate();
+};
+
+return $routes;
