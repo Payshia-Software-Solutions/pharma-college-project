@@ -15,6 +15,7 @@ class CareAnswer
         $stmt = $this->pdo->query('SELECT * FROM care_answer');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+    // test
 
     public function getCareAnswerById($id)
     {
