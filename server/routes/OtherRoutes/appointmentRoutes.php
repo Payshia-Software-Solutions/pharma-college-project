@@ -11,7 +11,10 @@ $appointmentController = new AppointmentController($pdo);
 return [
     'GET /appointments/' => [$appointmentController, 'getAppointments'],
     'GET /appointments/{id}/' => [$appointmentController, 'getAppointment'],
+    'GET /appointments/{username}/' => [$appointmentController, 'getAppointmentsByusername'],
     'POST /appointments/' => [$appointmentController, 'createAppointment'],
     'PUT /appointments/{id}/' => [$appointmentController, 'updateAppointment'],
     'DELETE /appointments/{id}/' => [$appointmentController, 'deleteAppointment']
 ];
+
+?>

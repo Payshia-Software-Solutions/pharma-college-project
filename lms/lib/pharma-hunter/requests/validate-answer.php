@@ -34,15 +34,18 @@ $savedAnswers = $saveAnswer->savedAnswersByUserMedicine($medicineId, $loggedUser
 $Medicine = $medicineStore->fetchByMedicineId($medicineId);
 $medicineInfo = $medicines->fetchById($medicineId);
 
-$Mark = $WrongCount = $AttemptCount = 0;
+$Mark = 0;
+$WrongCount = 0;
+$AttemptCount = (!empty($savedAnswers)) ? count($savedAnswers) : 0;
+$errorMessages = [];
 
-$AttemptCount = (!empty($savedAnswers)) ? count($savedAnswers) : '';
 // Validate Answer
 if ($Medicine['rack_id'] == $racksId) {
     $Mark += 10;
 } else {
     $WrongCount = 1;
     $Mark -= 5;
+    $errorMessages[] = "Incorrect Rack";
 }
 
 if ($medicineInfo['category_id'] == $drugCategoryId) {
@@ -50,6 +53,7 @@ if ($medicineInfo['category_id'] == $drugCategoryId) {
 } else {
     $WrongCount = 1;
     $Mark -= 5;
+    $errorMessages[] = "Incorrect Drug Category";
 }
 
 if ($Medicine['dosageID'] == $dosageFormId) {
@@ -57,6 +61,7 @@ if ($Medicine['dosageID'] == $dosageFormId) {
 } else {
     $WrongCount = 1;
     $Mark -= 5;
+    $errorMessages[] = "Incorrect Dosage Form";
 }
 
 if ($WrongCount == 0) {
@@ -71,7 +76,8 @@ if ($WrongCount == 0) {
 } else {
     $AnswerStatus = "In-Correct";
     $ScoreType = "Non";
-    $error = array('status' => 'error', 'message' => 'Your Answer is In-Correct');
+    $errorMessage = implode(", ", $errorMessages);
+    $error = array('status' => 'error', 'message' => $errorMessage);
 }
 
 $dataset = [

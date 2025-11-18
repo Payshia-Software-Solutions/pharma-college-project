@@ -1,0 +1,449 @@
+<?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once '../../vendor/autoload.php';
+
+use Symfony\Component\HttpClient\HttpClient;
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
+use Symfony\Contracts\HttpClient\Exception\ClientExceptionInterface;
+use Dotenv\Dotenv;
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../')->load();
+$client = HttpClient::create();
+$LoggedUser = $_POST["LoggedUser"];
+
+$selectedWord = [];
+$studentEntries = [];
+$total_words = $correct_count = $incorrect_count = $grade = 0;
+
+// Get New Word for Student
+$selectedWord = $client->request('GET', $_ENV["SERVER_URL"] . '/word-list/get-word-for-game/' . $LoggedUser)->toArray();
+try {
+} catch (ClientExceptionInterface | TransportExceptionInterface $e) {
+    if (method_exists($e, 'getCode') && $e->getCode() !== 404) {
+        throw $e; // rethrow if it's not a 404
+    }
+}
+
+try {
+    $studentEntries = $client->request('GET', $_ENV["SERVER_URL"] . '/en-word-submissions/student-grades/' . $LoggedUser)->toArray();
+    // var_dump($studentEntries);
+
+    $total_words = $studentEntries['total_words'] ?? 0;
+    $correct_count = $studentEntries['correct_count'] ?? 0;
+    $incorrect_count = $studentEntries['incorrect_count'] ?? 0;
+    $grade = $studentEntries['grade'] ?? 0;
+} catch (ClientExceptionInterface | TransportExceptionInterface $e) {
+    if (method_exists($e, 'getCode') && $e->getCode() !== 404) {
+        throw $e;
+    }
+}
+?>
+
+<!-- Floating Background Elements -->
+<div class="floating-elements">
+    <div class="floating-element">📚</div>
+    <div class="floating-element">🎯</div>
+    <div class="floating-element">💭</div>
+    <div class="floating-element">⭐</div>
+</div>
+
+<div class="">
+    <div class="game-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="game-logo">
+                <img src="./lib/home/assets/images/rumor.gif" style="width: 60px; height: 60px; border-radius: 50%;"
+                    alt="Game Logo">
+            </div>
+            <h1 class="game-title">Word Pallet</h1>
+            <p class="mb-0 opacity-75">Test Your Vocabulary Skills</p>
+        </div>
+
+        <!-- Game Statistics Section -->
+        <div class="stats-section mb-4">
+            <div class="row g-3">
+                <!-- Total Words -->
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3 class="stat-number"><?= number_format($total_words) ?></h3>
+                        <p class="stat-label">Total Words</p>
+                    </div>
+                </div>
+
+                <!-- Correct Answers -->
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon correct">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3 class="stat-number text-success"><?= number_format($correct_count) ?></h3>
+                        <p class="stat-label">Correct</p>
+                    </div>
+                </div>
+
+                <!-- Incorrect Answers -->
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon incorrect">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <h3 class="stat-number text-danger"><?= number_format($incorrect_count) ?></h3>
+                        <p class="stat-label">Incorrect</p>
+                    </div>
+                </div>
+
+                <!-- Grade Percentage -->
+                <div class="col-6 col-md-3">
+                    <div class="stat-card text-center">
+                        <div class="stat-icon grade">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <h3 class="stat-number text-primary"><?= number_format($grade * 100, 1) ?>%</h3>
+                        <p class="stat-label">Grade</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-section mt-3">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="progress-label">Overall Progress</span>
+                    <span class="progress-percentage"><?= number_format($grade * 100, 1) ?>%</span>
+                </div>
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar bg-primary"
+                        role="progressbar"
+                        style="width: <?= ($grade * 100) ?>%"
+                        aria-valuenow="<?= ($grade * 100) ?>"
+                        aria-valuemin="0"
+                        aria-valuemax="100">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .stats-section {
+                background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+                padding: 1.5rem;
+                border-radius: 15px;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                margin-bottom: 2rem;
+            }
+
+            .stat-card {
+                background: white;
+                padding: 1.5rem 1rem;
+                border-radius: 12px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+                border: 1px solid rgba(0, 0, 0, 0.05);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+
+            .stat-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+            }
+
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1rem;
+                background: #6c757d;
+                color: white;
+                font-size: 1.2rem;
+            }
+
+            .stat-icon.correct {
+                background: linear-gradient(135deg, #28a745, #20c997);
+            }
+
+            .stat-icon.incorrect {
+                background: linear-gradient(135deg, #dc3545, #fd7e14);
+            }
+
+            .stat-icon.grade {
+                background: linear-gradient(135deg, #007bff, #6610f2);
+            }
+
+            .stat-number {
+                font-size: 2rem;
+                font-weight: 700;
+                margin-bottom: 0.5rem;
+                color: #2c3e50;
+            }
+
+            .stat-label {
+                font-size: 0.9rem;
+                color: #6c757d;
+                font-weight: 500;
+                margin-bottom: 0;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .progress-section {
+                background: white;
+                padding: 1rem;
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            }
+
+            .progress-label {
+                font-weight: 600;
+                color: #495057;
+                font-size: 0.9rem;
+            }
+
+            .progress-percentage {
+                font-weight: 700;
+                color: #007bff;
+                font-size: 1rem;
+            }
+
+            .progress {
+                border-radius: 10px;
+                background-color: #e9ecef;
+                overflow: hidden;
+            }
+
+            .progress-bar {
+                border-radius: 10px;
+                transition: width 0.6s ease;
+                background: linear-gradient(90deg, #007bff, #0056b3);
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 768px) {
+                .stat-number {
+                    font-size: 1.5rem;
+                }
+
+                .stat-icon {
+                    width: 40px;
+                    height: 40px;
+                    font-size: 1rem;
+                }
+
+                .stats-section {
+                    padding: 1rem;
+                }
+            }
+        </style>
+
+        <!-- Content Section -->
+        <div class="content-section">
+            <?php if (!empty($selectedWord)): ?>
+                <div class="row g-4">
+                    <!-- Image Section -->
+                    <div class="col-12 col-lg-7">
+                        <div class="image-container">
+                            <img class="word-image"
+                                src="https://content-provider.pharmacollege.lk/<?= $selectedWord['word_img'] ?>"
+                                alt="Image of <?= $selectedWord['question'] ?>">
+                            <div class="image-overlay">
+                                <h5><i class="fas fa-eye me-2"></i>Study the image carefully</h5>
+                                <p class="mb-0">What word best describes what you see?</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question Section -->
+                    <div class="col-12 col-lg-5">
+                        <div class="question-section">
+                            <h6 class="section-title">
+                                <i class="fas fa-question-circle"></i>
+                                Choose the Correct Answer!
+                            </h6>
+
+                            <!-- Tip Card -->
+                            <?php if (!empty($selectedWord['word_tip'])): ?>
+                                <div class="tip-card">
+                                    <h4 class="tip-title">💡 Helpful Tip</h4>
+                                    <p class="mb-0"><?= htmlspecialchars($selectedWord['word_tip']) ?></p>
+                                </div>
+                            <?php endif; ?>
+
+                            <!-- Answer Options -->
+                            <div class="answers-container">
+                                <?php foreach ($selectedWord['options'] as $index => $option): ?>
+                                    <div class="answer-card" data-answer="<?= htmlspecialchars($option['text']) ?>"
+                                        onclick="selectAnswer(this, '<?= htmlspecialchars($option['text']) ?>')">
+                                        <div class="card-body">
+                                            <h4 class="answer-text">
+                                                <?= htmlspecialchars($option['text']) ?>
+                                                <i class="fas fa-arrow-right answer-icon"></i>
+                                            </h4>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Next Button -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <button type="button" class="next-button w-100" id="nextButton" onclick="proceedToNext()">
+                            <i class="fas fa-forward me-2"></i>
+                            Continue to Next Word
+                            <i class="fas fa-forward ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            <?php else: ?>
+                <div class="alert alert-danger text-center border-0 shadow-lg" role="alert">
+                    <i class="fas fa-skull-crossbones me-2 fs-3"></i>
+                    <h2 class="alert-heading mb-3">GAME OVER</h2>
+                    <p class="mb-0 fs-5">Better luck next time!</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+<script>
+    var selectedAnswer = null;
+    var wordId = '<?= $selectedWord['word_id'] ?>';
+
+    function selectAnswer(element, answer) {
+        // Remove previous selection
+        document.querySelectorAll('.answer-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+
+        // Highlight selected answer
+        element.classList.add('selected');
+        selectedAnswer = answer;
+
+        // Add success animation
+        element.style.transform = 'translateY(-8px) scale(1.05)';
+        setTimeout(() => {
+            element.style.transform = 'translateY(-5px) scale(1.02)';
+        }, 200);
+
+        // Update button state
+        updateNextButton();
+    }
+
+    function updateNextButton() {
+        const button = document.getElementById('nextButton');
+        if (selectedAnswer) {
+            button.innerHTML = `
+                    <i class="fas fa-check me-2"></i>
+                    Great Choice! Continue
+                    <i class="fas fa-arrow-right ms-2"></i>
+                `;
+            button.style.background = 'var(--success-gradient)';
+        }
+    }
+
+    function proceedToNext() {
+        if (!selectedAnswer) {
+            // Show shake animation for unselected state
+            const answers = document.querySelector('.answers-container');
+            answers.classList.add('shake');
+
+            setTimeout(() => {
+                answers.classList.remove('shake');
+            }, 500);
+
+            // Show alert or toast notification
+            showNotification('Please select an answer first!', 'warning');
+            return;
+        }
+
+        // Show loading state
+        const button = document.getElementById('nextButton');
+        const originalContent = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-spinner spinner me-2"></i>Processing...';
+        button.disabled = true;
+
+        // Call your original PHP function
+        SubmitWordAnswer(wordId, selectedAnswer);
+    }
+
+
+
+    function resetButton() {
+        const button = document.getElementById('nextButton');
+        button.innerHTML = `
+                <i class="fas fa-forward me-2"></i>
+                Continue to Next Word
+                <i class="fas fa-forward ms-2"></i>
+            `;
+        button.disabled = false;
+        button.style.background = 'var(--primary-gradient)';
+    }
+
+    function showNotification(message, type) {
+        // Create notification element
+        const notification = document.createElement('div');
+        notification.className =
+            `alert alert-${type === 'success' ? 'success' : type === 'warning' ? 'warning' : 'danger'} position-fixed`;
+        notification.style.cssText = `
+                top: 20px;
+                right: 20px;
+                z-index: 9999;
+                min-width: 300px;
+                animation: slideIn 0.3s ease-out;
+            `;
+        notification.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'times-circle'} me-2"></i>
+                ${message}
+            `;
+
+        // Add slide-in animation
+        const style = document.createElement('style');
+        style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+        document.head.appendChild(style);
+
+        document.body.appendChild(notification);
+
+        // Remove notification after 3 seconds
+        setTimeout(() => {
+            notification.style.animation = 'slideIn 0.3s ease-out reverse';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+
+    // Add keyboard support
+    document.addEventListener('keydown', function(e) {
+        if (e.key >= '1' && e.key <= '4') {
+            const index = parseInt(e.key) - 1;
+            const cards = document.querySelectorAll('.answer-card');
+            if (cards[index]) {
+                const answer = cards[index].getAttribute('data-answer');
+                selectAnswer(cards[index], answer);
+            }
+        } else if (e.key === 'Enter' && selectedAnswer) {
+            proceedToNext();
+        }
+    });
+
+    // Preload next image for better performance
+    window.addEventListener('load', function() {
+        // Add any initialization code here
+        console.log('Word Pallet Game loaded successfully');
+    });
+</script>

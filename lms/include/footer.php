@@ -23,9 +23,36 @@
                 <img src="./assets/images/logo.png" style="height: 40px">
             </div>
             <div class="col-4 text-end mb-2">
-                <button class="btn btn-sm btn-light x-button" onclick="ClosePopUP()"><i class="fa-solid fa-xmark"></i></button>
+                <button class="btn btn-sm btn-light x-button" onclick="ClosePopUP()"><i
+                        class="fa-solid fa-xmark"></i></button>
             </div>
         </div>
         <div id="pop-content"></div>
     </div>
+</div>
+
+
+
+<style>
+    /* Floating Button Styles */
+    .floating-button {
+        position: fixed;
+        bottom: 12px;
+        right: 20px;
+        background-color: #007bff;
+        color: #fff;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        cursor: pointer;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+</style>
+<div onclick="redirectToURL('live-chat')" class="floating-button" id="chatButton">
+    <i class="fas fa-comment-alt"></i>
 </div>

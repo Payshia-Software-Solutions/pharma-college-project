@@ -1,0 +1,339 @@
+"use client";
+import React from "react";
+
+import { useState, useEffect } from "react"; // Added useEffect for better state management
+import { motion } from "framer-motion";
+import { User, Loader } from "lucide-react";
+
+import { useSearchParams } from "next/navigation";
+
+export default function StudentInfoStep({
+  formData,
+  updateFormData,
+  setIsValid,
+}) {
+  const [error, setError] = useState("");
+  const [studentInfo, setStudentInfo] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [duplicateRecords, setDuplicateRecords] = useState(null);
+
+  const searchParams = useSearchParams();
+  const getStudentNumber = searchParams.get("studentNumber");
+
+  // Use useEffect to update formData with the student number from URL if available
+  useEffect(() => {
+    if (getStudentNumber) {
+      updateFormData("studentNumber", getStudentNumber);
+    }
+  }, [getStudentNumber, updateFormData]);
+
+  // Validate student number format
+  const validateStudentNumber = (value) => {
+    if (!value) {
+      setError("Student number is required.");
+      return false;
+    }
+    if (!/^PA\d{5,}$/.test(value)) {
+      setError(
+        "Student number must start with 'PA' followed by at least 5 digits."
+      );
+      return false;
+    }
+    setError("");
+    return true;
+  };
+
+  // Check for duplicate registrations
+  const checkDuplicateRegistration = async (studentNumber) => {
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/convocation-registrations/check-duplicate/${studentNumber}`
+      );
+      if (!response.ok) {
+        if (response.status === 404) {
+          // Handle 404 without logging an error
+          return false;
+        }
+        throw new Error("Error checking duplicate registration");
+      }
+      const data = await response.json();
+      if (data.length > 0) {
+        setDuplicateRecords(data);
+        setIsValid(false);
+        setError("This student has already registered for convocation.");
+        return true;
+      }
+      setDuplicateRecords(null);
+      return false;
+    } catch (error) {
+      // Only log if it's not a 404
+      if (error.message !== "Error checking duplicate registration") {
+        console.error("Error checking duplicate:", error);
+      }
+      setDuplicateRecords(null);
+      return false;
+    }
+  };
+
+  // Fetch student details from API
+  const fetchStudentDetails = async (studentNumber) => {
+    setLoading(true);
+    try {
+      // First check for duplicates
+      const hasDuplicates = await checkDuplicateRegistration(studentNumber);
+      if (hasDuplicates) {
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/userFullDetails/username/${studentNumber}`
+      );
+      if (!response.ok) {
+        throw new Error("Student not found");
+      }
+      const data = await response.json();
+      setStudentInfo(data);
+      updateFormData("studentName", `${data.first_name} ${data.last_name}`);
+      setIsValid(true);
+    } catch (error) {
+      setStudentInfo(null);
+      setError("Student not found. Please check the student number.");
+      setIsValid(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle input change
+  const handleChange = (e) => {
+    const value = e.target.value.toUpperCase();
+    updateFormData("studentNumber", value);
+    if (validateStudentNumber(value)) {
+      fetchStudentDetails(value);
+    } else {
+      setStudentInfo(null);
+      setDuplicateRecords(null);
+      setIsValid(false);
+    }
+  };
+
+  // Sync isValid with initial load or formData changes
+  useEffect(() => {
+    if (
+      formData.studentNumber &&
+      validateStudentNumber(formData.studentNumber)
+    ) {
+      if (!studentInfo && !duplicateRecords) {
+        fetchStudentDetails(formData.studentNumber);
+      } else if (studentInfo && !duplicateRecords) {
+        setIsValid(true);
+      }
+    } else {
+      setIsValid(false);
+    }
+  }, [formData.studentNumber]);
+
+  // Masking functions
+  const maskEmail = (email) => {
+    if (!email) return "N/A";
+    const [local, domain] = email.split("@");
+    if (local.length <= 4) {
+      // Too short to show first 2 and last 2, just partially mask
+      return `${local[0]}***@${domain}`;
+    }
+    const firstTwo = local.slice(0, 2);
+    const lastTwo = local.slice(-2);
+    const masked = "*".repeat(local.length - 4);
+    return `${firstTwo}${masked}${lastTwo}@${domain}`;
+  };
+
+  const maskPhone = (phone) =>
+    phone ? phone.replace(/\d(?=\d{3})/g, "*") : "N/A";
+
+  const maskNIC = (nic) =>
+    nic && nic.length > 4
+      ? `${nic.slice(0, 2)}***${nic.slice(-2)}`
+      : nic || "N/A";
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 50 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -50 }}
+      transition={{ duration: 0.3 }}
+      className="bg-white rounded-xl shadow-lg p-6 space-y-6"
+    >
+      <div className="space-y-4">
+        <div className="bg-green-50 p-4 rounded-lg flex items-start space-x-3">
+          <User className="w-5 h-5 text-green-500 mt-0.5" />
+          <div>
+            <h3 className="font-medium text-green-800">Student Information</h3>
+            <p className="text-sm text-green-600">
+              Please enter your student details
+            </p>
+          </div>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Student Number
+            </label>
+            <div className="relative">
+              <input
+                type="text"
+                name="studentNumber"
+                value={formData.studentNumber}
+                onChange={handleChange}
+                disabled={loading} // Disable input during fetch
+                className={`w-full p-3 pr-10 border rounded-lg focus:ring-2 ${
+                  error
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-green-500"
+                }`}
+                placeholder="e.g., PA12345"
+              />
+              <User className="w-5 h-5 text-gray-400 absolute right-3 top-3" />
+            </div>
+            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+          </div>
+
+          {loading && (
+            <div className="flex items-center text-green-600">
+              <Loader className="w-5 h-5 animate-spin mr-2" />
+              Fetching student details...
+            </div>
+          )}
+
+          {studentInfo && (
+            <div className="bg-green-50 rounded-lg p-3">
+              <h1 className="font-medium text-xl mb-2 border-b text-gray-800">
+                Student Information
+              </h1>
+
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <div>
+                    <div className="text-sm text-gray-500">
+                      Name on Certificate
+                    </div>
+                    <div className="text-gray-700 font-medium">
+                      {studentInfo.name_on_certificate}
+                    </div>
+                  </div>
+                </div>
+                <div className="flex justify-between">
+                  <div>
+                    <div className="text-sm text-gray-500">Email Address</div>
+                    <div className="text-gray-700 font-medium">
+                      {maskEmail(studentInfo.e_mail)}
+                    </div>
+                  </div>
+                  <span className="text-2xl">📧</span>
+                </div>
+                <div className="flex justify-between">
+                  <div>
+                    <div className="text-sm text-gray-500">Phone Number</div>
+                    <div className="text-gray-700 font-medium">
+                      {maskPhone(studentInfo.telephone_1)}
+                    </div>
+                  </div>
+                  <span className="text-2xl">📱</span>
+                </div>
+                <div className="flex justify-between">
+                  <div>
+                    <div>
+                      <div className="text-sm text-gray-500">NIC Number</div>
+                      <div className="text-gray-700 font-medium">
+                        {maskNIC(studentInfo.nic)}
+                      </div>
+                    </div>
+                  </div>
+                  <span className="text-2xl">🪪</span>
+                </div>
+              </div>
+              <div className="mt-2 p-4 bg-orange-50 rounded-xl border border-orange-100">
+                <div className="flex items-start">
+                  <span className="text-xl mr-3">⚠️</span>
+                  <p className="text-sm text-orange-700">
+                    Please verify that this information is correct. If you
+                    notice any discrepancies, contact student support
+                    immediately.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {duplicateRecords && (
+            <div className="bg-red-50 rounded-lg p-3">
+              <h1 className="font-medium text-xl mb-2 border-b text-gray-800">
+                Existing Registration Found
+              </h1>
+              {duplicateRecords.map((record) => (
+                <div key={record.id} className="space-y-2">
+                  <div className="flex justify-between">
+                    <div>
+                      <div className="text-sm text-gray-500">
+                        Reference Number
+                      </div>
+                      <div className="text-gray-700 font-medium">
+                        {record.reference_number}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>
+                      <div className="text-sm text-gray-500">
+                        Registration Status
+                      </div>
+                      <div className="text-gray-700 font-medium">
+                        {record.registration_status}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>
+                      <div className="text-sm text-gray-500">
+                        Payment Status
+                      </div>
+                      <div className="text-gray-700 font-medium">
+                        {record.payment_status}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-between">
+                    <div>
+                      <div className="text-sm text-gray-500">Registered At</div>
+                      <div className="text-gray-700 font-medium">
+                        {new Date(record.registered_at).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                  {record.image_path && (
+                    <div>
+                      <div className="text-sm text-gray-500">Payment Slip</div>
+                      <div className="text-gray-700 font-medium">Uploaded</div>
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              <div className="mt-2 p-4 bg-orange-50 rounded-xl border border-orange-100">
+                <div className="flex items-start">
+                  <span className="text-xl mr-3">⚠️</span>
+                  <p className="text-sm text-orange-700">
+                    This student has already registered. Please contact support
+                    if you believe this is an error or if you need to modify the
+                    existing registration.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+}

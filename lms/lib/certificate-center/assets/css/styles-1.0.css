@@ -1,0 +1,48 @@
+.certificate-img {
+  margin-top: -55px;
+  width: 100px;
+}
+
+.certificate-img-box {
+  background-color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.knowledge-title {
+  position: relative;
+  display: inline-block;
+}
+
+.rectangle {
+  display: inline-block;
+  background-color: var(--bg-color);
+  width: 10px;
+  height: 10px;
+  margin-right: 5px;
+}
+
+.knowledge-card:hover {
+  background-color: #f7f7f5;
+  transform: translateY(-2px);
+}
+
+.desktop-view {
+  display: block; /* Show desktop form */
+}
+
+.mobile-view {
+  display: none; /* Hide mobile form */
+}
+
+/* Mobile View Styles */
+@media (max-width: 768px) {
+  .desktop-view {
+    display: none;
+  }
+  .mobile-view {
+    display: block;
+  }
+}

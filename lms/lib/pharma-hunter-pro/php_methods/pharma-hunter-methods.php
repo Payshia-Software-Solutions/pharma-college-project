@@ -98,6 +98,19 @@ function savedAnswersByUserMedicine($link, $loggedUser, $medicine_id)
     return $ArrayResult;
 }
 
+function savedCorrectAnswersByUserMedicine($link, $loggedUser, $medicine_id)
+{
+    $ArrayResult = array();
+    $sql = "SELECT `id`, `index_number`, `category_id`, `medicine_id`, `rack_id`, `dosage_id`, `drug_type`, `answer_status`, `created_at`, `score`, `score_type`, `attempts` FROM `hp_save_answer` WHERE `index_number` LIKE '$loggedUser' AND `medicine_id` LIKE '$medicine_id' AND answer_status LIKE 'Correct'";
+    $result = $link->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ArrayResult[] = $row;
+        }
+    }
+    return $ArrayResult;
+}
+
 
 
 

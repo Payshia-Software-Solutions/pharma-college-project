@@ -9,7 +9,7 @@ $courseAssignmentSubmissionController = new CourseAssignmentSubmissionController
 
 // Define course assignment submission routes
 return [
-    'GET /submissions/' => [$courseAssignmentSubmissionController, 'getSubmissions'],
+    'GET /course_assignments_submissions/' => [$courseAssignmentSubmissionController, 'getSubmissions'],
     'GET /submissions/course/{course_code}/' => [$courseAssignmentSubmissionController, 'getSubmissionsByCourse'],
     'GET /submissions/{id}/' => [$courseAssignmentSubmissionController, 'getSubmission'],
     'GET /submissions/user/{username}/' => [$courseAssignmentSubmissionController, 'getSubmissionsByUser'],

@@ -10,6 +10,24 @@ $DefaultCourse = $_POST["defaultCourseCode"];
 
 
 ?>
+<div class="alert alert-info mb-4">
+    <h3 class="text-center">Welcome to the Ceylon Pharma College Winpharma Game</h3>
+    <p class="text-center">Learn, Play, and Level up your Pharmacy skills..</p>
+
+    <div class="mt-3">
+        <p class="mb-1">Your results will be updated within 48 hours</p>
+        <p class="mb-1">We greatly appreciate your kind patience..</p>
+        <p class="mb-3">Please Complete your all Levels before August 30th of 2025.</p>
+
+        <p class="mb-1">Thank you..</p>
+
+        <hr>
+
+        <p class="mb-1">ඔබගේ ප්‍රතිඵල පැය 48ක් තුල යාවත්කාලීන වනු ඇත.</p>
+        <p class="mb-1">අගෝස්තු මස 30 දිනට පෙර අවසන් කරන්න.</p>
+    </div>
+</div>
+
 <div class="site-title">
     <?php $UserDetails =  GetUserDetails($link, $LoggedUser); ?>
     <div class="row">

@@ -132,3 +132,32 @@ function GetStudentBalance($userName)
     );
     return $resultArray;
 }
+
+function GetAssignments($courseCode)
+{
+    global $link;
+    $ArrayResult = array();
+    $sql = "SELECT * FROM `assignment` WHERE `course_code` LIKE '$courseCode'";
+    $result = $link->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $ArrayResult[$row["assignment_id"]] = $row;
+        }
+    }
+    return $ArrayResult;
+}
+
+function GetAssignmentSubmissionsByUser($studentNumber)
+{
+    global $link;
+    $ArrayResult = array();
+    $sql = "SELECT `id`, `assignment_id`, `file_path`, `created_by`, `created_at`, `status`, `grade` FROM `assignment_submittion` WHERE `created_by` = '$studentNumber'";
+    $result = $link->query($sql);
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $assignmentId = $row["assignment_id"];
+            $ArrayResult[$assignmentId] = $row;
+        }
+    }
+    return $ArrayResult;
+}

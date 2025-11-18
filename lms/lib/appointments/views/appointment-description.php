@@ -1,9 +1,11 @@
 <?php
+// Initialize variables
+$date = $time = $selection = $description = null;
+
 // Check if the request method is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['date3'], $_POST['time3'], $_POST['selectionBox'], $_POST['description3'])) {
-        // Sanitize and retrieve form data
-        $date = htmlspecialchars($_POST['date3']);
+    if (isset($_POST['appointmentDate'], $_POST['time3'], $_POST['selectionBox'], $_POST['description3'])) {
+        $date = htmlspecialchars($_POST['appointmentDate']);
         $time = htmlspecialchars($_POST['time3']);
         $selection = htmlspecialchars($_POST['selectionBox']);
         $description = htmlspecialchars($_POST['description3']);
@@ -55,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </div>
     <div class="text-start mt-3">
-        <?php if ($bookingStatus === 0): ?>
+        <?php if (isset($bookingStatus) && $bookingStatus === 0): ?>
             <button class="btn btn-primary" disabled>Book Now</button>
         <?php else: ?>
             <!-- Pass the JSON-encoded data to the SucceedMessage function -->

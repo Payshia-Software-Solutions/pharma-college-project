@@ -1,7 +1,18 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-admin
-client
+admin/vendor
+admin/node_modules
+admin/pos-system
+
+client/vendor
+client/node_modules
+client/web-admin
+client/web-admin-2.0
 
 server/config/database.php
+
+backend/node_modules
+
+server-chat/config/database.php
+server-chat/vendor

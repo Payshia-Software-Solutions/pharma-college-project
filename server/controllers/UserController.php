@@ -57,4 +57,78 @@ class UserController
         $this->model->deleteUser($id);
         echo json_encode(['status' => 'User deleted']);
     }
+
+    public function getUserCount()
+    {
+        $count = $this->model->getUserCount();
+        echo json_encode(['user_count' => $count]);
+    }
+
+
+    //   // get user by username,fname,lname
+    //   public function getRecordByUsernameOrName($value)
+    //   {
+    //       // Ensure the value is properly sanitized for wildcard search
+    //       $record = $this->model->getRecordByUsernameOrName($value);
+
+    //       if ($record) {
+    //           echo json_encode($record);
+    //       } else {
+    //           http_response_code(404);
+    //           echo json_encode(['error' => 'Record not found']);
+    //       }
+    //   }
+    public function getRecordByUsernameOrName($value)
+    {
+        // Ensure the value is properly sanitized for wildcard search
+        $record = $this->model->getRecordByUsernameOrName($value);
+
+        if ($record) {
+            echo json_encode($record);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Record not found']);
+        }
+    }
+
+    public function login()
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        // var_dump($data);
+
+        if (!$data || !isset($data['username']) || !isset($data['password'])) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Email and password are required']);
+            return;
+        }
+
+        $user = $this->model->getByUsername($data['username']);
+
+        if (!$user) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Invalid email or password']);
+            return;
+        }
+
+        // Verify password
+        if (!password_verify($data['password'], $user['password'])) {
+            http_response_code(401);
+            echo json_encode(['error' => 'Invalid email or password']);
+            return;
+        }
+
+        // Login success - remove password from response
+        unset($user['password']);
+
+        echo json_encode([
+            'message' => 'Login successful',
+            'user' => $user
+        ]);
+    }
+
+    public function getStaffUsers()
+    {
+        $staffUsers = $this->model->getStaffUsers();
+        echo json_encode($staffUsers);
+    }
 }

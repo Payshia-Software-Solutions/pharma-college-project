@@ -3,7 +3,7 @@
 require_once './models/UserFullDetails.php';
 class UserFullDetailsController
 {
-    private $model;
+    public $model;
 
     public function __construct($pdo)
     {
@@ -35,6 +35,20 @@ class UserFullDetailsController
         } else {
             http_response_code(404);
             echo json_encode(['error' => 'User not found']);
+        }
+    }
+
+    public function updateCertificateNameByUserName($username)
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        if (isset($data['name_on_certificate'])) {
+            $this->model->updateCertificateNameByUserName($username, $data['name_on_certificate']);
+
+            http_response_code(201);
+            echo json_encode(['message' => 'Certificate name updated successfully']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required field: name_on_certificate']);
         }
     }
 

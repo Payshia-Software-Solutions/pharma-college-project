@@ -25,8 +25,14 @@ if (!empty($SubmissionArray)) {
     }
 }
 $instructions = GetAllInstructions($link);
+$dropDownOptions = GetDropdownOptions($link, $prescriptionID, $coverID);
 $correctAnswer =  GetCorrectInstructions($link, $prescriptionID, $coverID);
 $instructionsCount = count($correctAnswer);
+if ($UserLevel != "Student") {
+    $selectValues = $instructions;
+} else {
+    $selectValues = $dropDownOptions;
+}
 
 $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $coverID);
 ?>
@@ -92,8 +98,8 @@ $userAnswers = GetSavedAnswersByUser($link, $loggedUser, $prescriptionID, $cover
                             <label>Choice Instruction</label>
                             <select id="instructionSelect" class="form-control">
                                 <?php
-                                if (!empty($instructions)) {
-                                    foreach ($instructions as $selectedArray) {
+                                if (!empty($selectValues)) {
+                                    foreach ($selectValues as $selectedArray) {
                                 ?>
                                         <option value="<?= $selectedArray['id'] ?>"><?= $selectedArray['id'] ?> - <?= $selectedArray['instruction'] ?></option>
                                 <?php
