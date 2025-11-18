@@ -22,15 +22,9 @@ class CareAnswer
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    
 
-    public function getAnswersByPrescriptionAndCover($presId, $coverId)
-    {
-        $stmt = $this->pdo->prepare('SELECT * FROM care_answer WHERE pres_id = ? AND cover_id = ?');
-        $stmt->execute([$presId, $coverId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getAnswerByPrescriptionAndCover($presId, $coverId) 
+    public function getAnswersByPrescriptionAndCover($presId, $coverId) 
     {
         $stmt = $this->pdo->prepare('SELECT * FROM care_answer WHERE pres_id = ? AND cover_id = ?');
         $stmt->execute([$presId, $coverId]);
