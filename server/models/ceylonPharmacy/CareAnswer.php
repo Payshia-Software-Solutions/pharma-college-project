@@ -15,7 +15,6 @@ class CareAnswer
         $stmt = $this->pdo->query('SELECT * FROM care_answer');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-    // test
 
     public function getCareAnswerById($id)
     {
@@ -30,6 +29,14 @@ class CareAnswer
         $stmt->execute([$presId, $coverId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function getAnswerByPrescriptionAndCover($presId, $coverId) 
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM care_answer WHERE pres_id = ? AND cover_id = ?');
+        $stmt->execute([$presId, $coverId]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
 
     public function getDistinctNames()
     {
@@ -57,63 +64,31 @@ class CareAnswer
 
     public function createCareAnswer($data)
     {
-        $stmt = $this->pdo->prepare('INSERT INTO care_answer (answer_id, pres_id, cover_id, date, name, drug_name, drug_type, drug_qty, morning_qty, afternoon_qty, evening_qty, night_qty, meal_type, using_type, at_a_time, hour_qty, additional_description, created_at, created_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        $stmt->execute([
-            $data['answer_id'],
-            $data['pres_id'],
-            $data['cover_id'],
-            $data['date'],
-            $data['name'],
-            $data['drug_name'],
-            $data['drug_type'],
-            $data['drug_qty'],
-            $data['morning_qty'],
-            $data['afternoon_qty'],
-            $data['evening_qty'],
-            $data['night_qty'],
-            $data['meal_type'],
-            $data['using_type'],
-            $data['at_a_time'],
-            $data['hour_qty'],
-            $data['additional_description'],
-            $data['created_at'],
-            $data['created_by']
-        ]);
-        return $this->pdo->lastInsertId();
+        $columns = '`' . implode('`, `', array_keys($data)) . '`';
+        $placeholders = ':' . implode(', :', array_keys($data));
+        $sql = "INSERT INTO `care_answer` ($columns) VALUES ($placeholders)";
+        $stmt = $this->pdo->prepare($sql);
+        if ($stmt->execute($data)) {
+            return $this->pdo->lastInsertId();
+        }
+        return false;
     }
 
     public function updateCareAnswer($id, $data)
     {
-        $stmt = $this->pdo->prepare('UPDATE care_answer SET answer_id = ?, pres_id = ?, cover_id = ?, date = ?, name = ?, drug_name = ?, drug_type = ?, drug_qty = ?, morning_qty = ?, afternoon_qty = ?, evening_qty = ?, night_qty = ?, meal_type = ?, using_type = ?, at_a_time = ?, hour_qty = ?, additional_description = ?, created_at = ?, created_by = ? WHERE id = ?');
-        $stmt->execute([
-            $data['answer_id'],
-            $data['pres_id'],
-            $data['cover_id'],
-            $data['date'],
-            $data['name'],
-            $data['drug_name'],
-            $data['drug_type'],
-            $data['drug_qty'],
-            $data['morning_qty'],
-            $data['afternoon_qty'],
-            $data['evening_qty'],
-            $data['night_qty'],
-            $data['meal_type'],
-            $data['using_type'],
-            $data['at_a_time'],
-            $data['hour_qty'],
-            $data['additional_description'],
-            $data['created_at'],
-            $data['created_by'],
-            $id
-        ]);
-        return $stmt->rowCount();
+        $setPart = [];
+        foreach ($data as $key => $value) {
+            $setPart[] = "`$key` = :$key";
+        }
+        $sql = "UPDATE care_answer SET " . implode(', ', $setPart) . " WHERE id = :id";
+        $data['id'] = $id;
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($data);
     }
 
     public function deleteCareAnswer($id)
     {
         $stmt = $this->pdo->prepare('DELETE FROM care_answer WHERE id = ?');
-        $stmt->execute([$id]);
-        return $stmt->rowCount();
+        return $stmt->execute([$id]);
     }
 }
