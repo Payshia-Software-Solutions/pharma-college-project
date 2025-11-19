@@ -62,4 +62,15 @@ class CareInsAnswerController
         $this->careInsAnswerModel->delete($id);
         echo json_encode(['message' => 'Answer deleted successfully']);
     }
+
+    public function findCorrectSubmission($studentNumber, $presCode, $coverCode)
+    {
+        $submission = $this->careInsAnswerModel->findCorrectSubmission($studentNumber, $presCode, $coverCode);
+        if ($submission) {
+            echo json_encode($submission);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No correct submission found']);
+        }
+    }
 }

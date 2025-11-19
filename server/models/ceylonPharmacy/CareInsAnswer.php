@@ -56,4 +56,11 @@ class CareInsAnswer
         $stmt->execute([$id]);
         return $stmt->rowCount();
     }
+
+    public function findCorrectSubmission($studentNumber, $presCode, $coverCode)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM care_ins_answer WHERE LoggedUser = ? AND PresCode = ? AND CoverCode = ? AND ans_status = 'Correct'");
+        $stmt->execute([$studentNumber, $presCode, $coverCode]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
