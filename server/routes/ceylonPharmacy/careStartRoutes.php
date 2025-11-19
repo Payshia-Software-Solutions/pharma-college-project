@@ -33,4 +33,8 @@ return [
     'DELETE /care-starts/(\d+)/$' => function ($id) use ($careStartController) {
         $careStartController->delete($id);
     },
+    // Update patient status
+    'POST /care-starts/(\d+)/patient-status/$' => function ($id) use ($careStartController) {
+        $careStartController->updatePatientStatus($id);
+    },
 ];

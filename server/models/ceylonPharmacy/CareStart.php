@@ -63,4 +63,11 @@ class CareStart
         $stmt->execute([$id]);
         return $stmt->rowCount();
     }
+
+    public function updatePatientStatus($id, $patientStatus)
+    {
+        $stmt = $this->pdo->prepare('UPDATE care_start SET patient_status = ? WHERE id = ?');
+        $stmt->execute([$patientStatus, $id]);
+        return $stmt->rowCount();
+    }
 }

@@ -73,4 +73,16 @@ class CareStartController
         $this->careStartModel->deleteCareStart($id);
         echo json_encode(['message' => 'Start deleted successfully']);
     }
+
+    public function updatePatientStatus($id)
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        if ($data && isset($data['patient_status'])) {
+            $this->careStartModel->updatePatientStatus($id, $data['patient_status']);
+            echo json_encode(['message' => 'Patient status updated successfully']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid input. patient_status is required.']);
+        }
+    }
 }
