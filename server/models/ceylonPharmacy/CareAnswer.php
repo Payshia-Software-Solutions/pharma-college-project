@@ -85,4 +85,17 @@ class CareAnswer
         $stmt = $this->pdo->prepare('DELETE FROM care_answer WHERE id = ?');
         return $stmt->execute([$id]);
     }
+    
+    public function validateAnswers($fields, $prescriptionID, $coverID)
+    {
+        $incorrectFields = [];
+        foreach ($fields as $field => $value) {
+            $stmt = $this->pdo->prepare("SELECT * FROM care_answer WHERE `$field` = ? AND `pres_id` = ? AND `cover_id` = ?");
+            $stmt->execute([$value, $prescriptionID, $coverID]);
+            if ($stmt->rowCount() === 0) {
+                $incorrectFields[] = $field;
+            }
+        }
+        return $incorrectFields;
+    }
 }

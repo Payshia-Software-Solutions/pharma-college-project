@@ -9,9 +9,28 @@ $careAnswerSubmitController = new CareAnswerSubmitController($pdo);
 
 // Define routes
 return [
-    'GET /care-answer-submits' => [$careAnswerSubmitController, 'getAll'],
-    'GET /care-answer-submits/{id}' => [$careAnswerSubmitController, 'getById'],
-    'POST /care-answer-submits' => [$careAnswerSubmitController, 'create'],
-    'PUT /care-answer-submits/{id}' => [$careAnswerSubmitController, 'update'],
-    'DELETE /care-answer-submits/{id}' => [$careAnswerSubmitController, 'delete']
+    // Get all care answer submissions
+    'GET /care-answer-submits/$' => function () use ($careAnswerSubmitController) {
+        $careAnswerSubmitController->getAll();
+    },
+    // Get care answer submission by ID
+    'GET /care-answer-submits/(\d+)/$' => function ($id) use ($careAnswerSubmitController) {
+        $careAnswerSubmitController->getById($id);
+    },
+    // Create new care answer submission
+    'POST /care-answer-submits/$' => function () use ($careAnswerSubmitController) {
+        $careAnswerSubmitController->create();
+    },
+    // Update care answer submission
+    'PUT /care-answer-submits/(\d+)/$' => function ($id) use ($careAnswerSubmitController) {
+        $careAnswerSubmitController->update($id);
+    },
+    // Delete care answer submission
+    'DELETE /care-answer-submits/(\d+)/$' => function ($id) use ($careAnswerSubmitController) {
+        $careAnswerSubmitController->delete($id);
+    },
+    // Submit an answer
+    'POST /care-answer-submits/submit-answer/$' => function () use ($careAnswerSubmitController) {
+        $careAnswerSubmitController->submitAnswer();
+    },
 ];
