@@ -37,8 +37,7 @@ class CareInstruction
         $stmt->execute([$coverId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
-
-
+    
     public function createCareInstruction($data)
     {
         $stmt = $this->pdo->prepare('INSERT INTO care_instruction (pres_code, cover_id, content, created_at) VALUES (?, ?, ?, ?)');

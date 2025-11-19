@@ -14,13 +14,13 @@ class CareInstructionPreController
 
     public function getAll()
     {
-        $instructions = $this->careInstructionPreModel->getAllCareInstructionPres();
+        $instructions = $this->careInstructionPreModel->getAll();
         echo json_encode($instructions);
     }
 
     public function getById($id)
     {
-        $instruction = $this->careInstructionPreModel->getCareInstructionPreById($id);
+        $instruction = $this->careInstructionPreModel->getById($id);
         if ($instruction) {
             echo json_encode($instruction);
         } else {
@@ -33,7 +33,7 @@ class CareInstructionPreController
     {
         $data = json_decode(file_get_contents("php://input"), true);
         if ($data) {
-            $lastId = $this->careInstructionPreModel->createCareInstructionPre($data);
+            $lastId = $this->careInstructionPreModel->create($data);
             http_response_code(201);
             echo json_encode([
                 'message' => 'Instruction created successfully',
@@ -49,7 +49,7 @@ class CareInstructionPreController
     {
         $data = json_decode(file_get_contents("php://input"), true);
         if ($data) {
-            $this->careInstructionPreModel->updateCareInstructionPre($id, $data);
+            $this->careInstructionPreModel->update($id, $data);
             echo json_encode(['message' => 'Instruction updated successfully']);
         } else {
             http_response_code(400);
@@ -59,7 +59,7 @@ class CareInstructionPreController
 
     public function delete($id)
     {
-        $this->careInstructionPreModel->deleteCareInstructionPre($id);
+        $this->careInstructionPreModel->delete($id);
         echo json_encode(['message' => 'Instruction deleted successfully']);
     }
 }

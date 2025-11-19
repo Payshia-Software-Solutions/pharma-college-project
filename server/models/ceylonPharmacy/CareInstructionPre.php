@@ -10,43 +10,41 @@ class CareInstructionPre
         $this->pdo = $pdo;
     }
 
-    public function getAllCareInstructionPres()
+    public function getAll()
     {
         $stmt = $this->pdo->query('SELECT * FROM care_instruction_pre');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getCareInstructionPreById($id)
+    public function getById($id)
     {
         $stmt = $this->pdo->prepare('SELECT * FROM care_instruction_pre WHERE id = ?');
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function createCareInstructionPre($data)
+    public function create($data)
     {
-        $stmt = $this->pdo->prepare('INSERT INTO care_instruction_pre (created_by, instruction, created_at) VALUES (?, ?, ?)');
+        $stmt = $this->pdo->prepare('INSERT INTO care_instruction_pre (instruction, created_by) VALUES (?, ?)');
         $stmt->execute([
-            $data['created_by'],
             $data['instruction'],
-            $data['created_at']
+            $data['created_by']
         ]);
         return $this->pdo->lastInsertId();
     }
 
-    public function updateCareInstructionPre($id, $data)
+    public function update($id, $data)
     {
-        $stmt = $this->pdo->prepare('UPDATE care_instruction_pre SET created_by = ?, instruction = ?, created_at = ? WHERE id = ?');
+        $stmt = $this->pdo->prepare('UPDATE care_instruction_pre SET instruction = ?, created_by = ? WHERE id = ?');
         $stmt->execute([
-            $data['created_by'],
             $data['instruction'],
-            $data['created_at'],
+            $data['created_by'],
             $id
         ]);
         return $stmt->rowCount();
     }
 
-    public function deleteCareInstructionPre($id)
+    public function delete($id)
     {
         $stmt = $this->pdo->prepare('DELETE FROM care_instruction_pre WHERE id = ?');
         $stmt->execute([$id]);
