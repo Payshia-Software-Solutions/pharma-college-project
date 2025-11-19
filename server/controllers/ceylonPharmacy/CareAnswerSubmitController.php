@@ -16,7 +16,7 @@ class CareAnswerSubmitController
 
     public function findCorrectSubmission($studentNumber, $presId, $coverId)
     {
-        $submission = $this->careAnswerSubmitModel->checkCorrectAnswerExists($studentNumber, $presId, $coverId);
+        $submission = $this->careAnswerSubmitModel->findCorrectSubmission($studentNumber, $presId, $coverId);
         if ($submission) {
             echo json_encode($submission);
         } else {
