@@ -14,6 +14,17 @@ class CareAnswerSubmitController
         $this->careAnswerModel = new CareAnswer($pdo);
     }
 
+    public function findCorrectSubmission($studentNumber, $presId, $coverId)
+    {
+        $submission = $this->careAnswerSubmitModel->checkCorrectAnswerExists($studentNumber, $presId, $coverId);
+        if ($submission) {
+            echo json_encode($submission);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No correct submission found']);
+        }
+    }
+
     public function getAll()
     {
         $submits = $this->careAnswerSubmitModel->getAllCareAnswerSubmits();
