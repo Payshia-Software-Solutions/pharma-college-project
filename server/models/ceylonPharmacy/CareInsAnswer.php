@@ -61,6 +61,6 @@ class CareInsAnswer
     {
         $stmt = $this->pdo->prepare("SELECT * FROM care_ins_answer WHERE LoggedUser = ? AND PresCode = ? AND CoverCode = ? AND ans_status = 'Correct'");
         $stmt->execute([$studentNumber, $presCode, $coverCode]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
