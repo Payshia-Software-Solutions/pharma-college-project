@@ -1,6 +1,4 @@
 <?php
-// controllers/ceylonPharmacy/CareAnswerSubmitController.php
-
 require_once __DIR__ . '/../../models/ceylonPharmacy/CareAnswerSubmit.php';
 require_once __DIR__ . '/../../models/ceylonPharmacy/CareAnswer.php';
 
@@ -8,6 +6,7 @@ use Carbon\Carbon;
 
 class CareAnswerSubmitController
 {
+    private $pdo;
     private $careAnswerSubmitModel;
     private $careAnswerModel;
 

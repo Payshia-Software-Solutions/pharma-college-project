@@ -1,5 +1,5 @@
 <?php
-// models/ceylonPharmacy/CareAnswerSubmit.php
+// server/models/ceylonPharmacy/CareAnswerSubmit.php
 
 class CareAnswerSubmit
 {
@@ -10,20 +10,20 @@ class CareAnswerSubmit
         $this->pdo = $pdo;
     }
 
-    public function getAllCareAnswerSubmits()
+    public function getAll()
     {
         $stmt = $this->pdo->query('SELECT * FROM care_answer_submit ORDER BY created_at DESC');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getCareAnswerSubmitById($id)
+    public function getById($id)
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM care_answer_submit WHERE id = ?');
+        $stmt = $this->pdo->prepare('SELECT * FROM care_answer_submit WHERE answer_id = ?');
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function createCareAnswerSubmit($data)
+    public function create($data)
     {
         $columns = '`' . implode('`, `', array_keys($data)) . '`';
         $placeholders = ':' . implode(', :', array_keys($data));
@@ -42,8 +42,8 @@ class CareAnswerSubmit
         $count = $row ? (int)$row['count'] : 0;
         return "UA" . ($count + 1);
     }
-
-    public function updateCareAnswerSubmit($id, $data)
+    
+    public function update($id, $data)
     {
         $setPart = [];
         foreach ($data as $key => $value) {

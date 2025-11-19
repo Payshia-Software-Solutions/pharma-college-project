@@ -30,7 +30,41 @@ class CareAnswer
     {
         $stmt = $this->pdo->prepare('SELECT * FROM care_answer WHERE pres_id = ? AND cover_id = ?');
         $stmt->execute([$presId, $coverId]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAnswersByPrescriptionAndCover($presId, $coverId) 
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM care_answer WHERE pres_id = ? AND cover_id = ?');
+        $stmt->execute([$presId, $coverId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
+    public function getDistinctNames()
+    {
+        $stmt = $this->pdo->query('SELECT DISTINCT name FROM care_answer');
+        return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+    }
+
+    public function getFormSelectionData()
+    {
+        $columns = [
+            'name', 'drug_name', 'drug_type', 'drug_qty', 'morning_qty', 'afternoon_qty',
+            'evening_qty', 'night_qty', 'meal_type', 'using_type', 'at_a_time', 'hour_qty',
+            'additional_description'
+        ];
+
+        $selectionData = [];
+
+        foreach ($columns as $column) {
+            $stmt = $this->pdo->query("SELECT DISTINCT `$column` FROM care_answer WHERE `$column` IS NOT NULL AND `$column` != '' ORDER BY `$column` ASC");
+            $selectionData[$column] = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+        }
+
+        return $selectionData;
+
     }
 
     // Create a new record
