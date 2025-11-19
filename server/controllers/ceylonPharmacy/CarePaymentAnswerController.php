@@ -62,4 +62,10 @@ class CarePaymentAnswerController
         $this->carePaymentAnswerModel->deleteCarePaymentAnswer($id);
         echo json_encode(['message' => 'Answer deleted successfully']);
     }
+
+    public function getCorrectAnswers($presCode, $studentId)
+    {
+        $answers = $this->carePaymentAnswerModel->getCorrectAnswers($presCode, $studentId);
+        echo json_encode($answers);
+    }
 }

@@ -56,4 +56,11 @@ class CarePaymentAnswer
         $stmt->execute([$id]);
         return $stmt->rowCount();
     }
+
+    public function getCorrectAnswers($presCode, $studentId)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM `care_payment_answer` WHERE `PresCode` = ? AND `student_id` = ? AND `ans_status` = 'Answer Correct'");
+        $stmt->execute([$presCode, $studentId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

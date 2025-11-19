@@ -24,4 +24,7 @@ return [
     'DELETE /care-payment-answers/(\d+)/$' => function ($id) use ($carePaymentAnswerController) {
         $carePaymentAnswerController->delete($id);
     },
+    'GET /care-payment-answers/correct/([a-zA-Z0-9_\\-]+)/([a-zA-Z0-9_\\-]+)/$' => function ($presCode, $studentId) use ($carePaymentAnswerController) {
+        $carePaymentAnswerController->getCorrectAnswers($presCode, $studentId);
+    },
 ];
