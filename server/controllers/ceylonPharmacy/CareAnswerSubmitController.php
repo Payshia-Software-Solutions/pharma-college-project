@@ -104,6 +104,10 @@ class CareAnswerSubmitController
 
         $data['created_at'] = date('Y-m-d H:i:s');
         $data['answer_id'] = $this->careAnswerSubmitModel->generateNewAnswerId();
+
+        // Remove user_level before inserting into the database to prevent the error
+        unset($data['user_level']);
+
         $newId = $this->careAnswerSubmitModel->createCareAnswerSubmit($data);
 
         if ($newId) {

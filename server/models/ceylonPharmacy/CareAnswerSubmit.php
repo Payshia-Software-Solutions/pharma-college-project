@@ -17,7 +17,7 @@ class CareAnswerSubmit
     }
 
     public function getCareAnswerSubmitById($id)
-    {
+    {0
         $stmt = $this->pdo->prepare('SELECT * FROM care_answer_submit WHERE answer_id = ?');
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
