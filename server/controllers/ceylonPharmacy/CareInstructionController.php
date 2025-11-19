@@ -28,6 +28,17 @@ class CareInstructionController
             echo json_encode(['error' => 'Instruction not found']);
         }
     }
+    public function getInstructionsByPrescriptionAndCover($presCode, $coverId)
+    {
+        $instructions = $this->careInstructionModel->getInstructionsByPrescriptionAndCover($presCode, $coverId);
+        if ($instructions) {
+            echo json_encode($instructions);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Instructions not found']);
+        }
+    }
+
 
     public function create()
     {

@@ -22,6 +22,13 @@ class CareInstruction
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    public function getInstructionsByPrescriptionAndCover($presCode, $coverId)
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM care_instruction WHERE pres_code LIKE ? AND cover_id = ?');
+        $stmt->execute(["%$presCode%", $coverId]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
     public function createCareInstruction($data)
     {
