@@ -62,4 +62,15 @@ class CarePaymentController
         $this->carePaymentModel->deleteCarePayment($id);
         echo json_encode(['message' => 'Payment deleted successfully']);
     }
+
+    public function getLastByPresCode($presCode)
+    {
+        $payment = $this->carePaymentModel->getLastRecordByPresCode($presCode);
+        if ($payment) {
+            echo json_encode($payment);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'No payment found for the given PresCode']);
+        }
+    }
 }

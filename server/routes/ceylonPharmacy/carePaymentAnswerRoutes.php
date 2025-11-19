@@ -9,9 +9,19 @@ $carePaymentAnswerController = new CarePaymentAnswerController($pdo);
 
 // Define routes
 return [
-    'GET /care-payment-answers' => [$carePaymentAnswerController, 'getAll'],
-    'GET /care-payment-answers/{id}' => [$carePaymentAnswerController, 'getById'],
-    'POST /care-payment-answers' => [$carePaymentAnswerController, 'create'],
-    'PUT /care-payment-answers/{id}' => [$carePaymentAnswerController, 'update'],
-    'DELETE /care-payment-answers/{id}' => [$carePaymentAnswerController, 'delete']
+    'GET /care-payment-answers/$' => function () use ($carePaymentAnswerController) {
+        $carePaymentAnswerController->getAll();
+    },
+    'GET /care-payment-answers/(\d+)/$' => function ($id) use ($carePaymentAnswerController) {
+        $carePaymentAnswerController->getById($id);
+    },
+    'POST /care-payment-answers/$' => function () use ($carePaymentAnswerController) {
+        $carePaymentAnswerController->create();
+    },
+    'PUT /care-payment-answers/(\d+)/$' => function ($id) use ($carePaymentAnswerController) {
+        $carePaymentAnswerController->update($id);
+    },
+    'DELETE /care-payment-answers/(\d+)/$' => function ($id) use ($carePaymentAnswerController) {
+        $carePaymentAnswerController->delete($id);
+    },
 ];

@@ -52,4 +52,11 @@ class CarePayment
         $stmt->execute([$id]);
         return $stmt->rowCount();
     }
+
+    public function getLastRecordByPresCode($presCode)
+    {
+        $stmt = $this->pdo->prepare("SELECT `id`, `PresCode`, `value`, `created_at` FROM `care_payment` WHERE `PresCode` = ? ORDER BY `id` DESC LIMIT 1");
+        $stmt->execute([$presCode]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 }
