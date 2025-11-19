@@ -3,7 +3,8 @@
 
 require_once __DIR__ . '/../../controllers/ceylonPharmacy/CareAnswerSubmitController.php';
 
-// Assuming $pdo is available in the scope where this file is included.
+
+$pdo = $GLOBALS['pdo'];
 $careAnswerSubmitController = new CareAnswerSubmitController($pdo);
 
 return [
