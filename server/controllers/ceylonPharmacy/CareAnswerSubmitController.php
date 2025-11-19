@@ -74,8 +74,15 @@ class CareAnswerSubmitController
 
         $incorrectFields = [];
         if ($correctAnswer) {
-            foreach ($data as $field => $value) {
-                if (isset($correctAnswer[$field]) && $correctAnswer[$field] != $value) {
+            // Iterate over the correct answer fields to ensure all are checked
+            foreach ($correctAnswer as $field => $correctValue) {
+                // Skip fields that should not be compared from the submission
+                if ($field === 'id' || $field === 'answer_id' || $field === 'created_at' || $field === 'created_by') {
+                    continue;
+                }
+
+                // Check if the field is missing in the submission or if the value doesn't match
+                if (!isset($data[$field]) || $data[$field] != $correctValue) {
                     $incorrectFields[] = $field;
                 }
             }
