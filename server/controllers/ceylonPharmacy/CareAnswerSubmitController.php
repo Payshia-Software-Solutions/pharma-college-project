@@ -2,8 +2,6 @@
 require_once __DIR__ . '/../../models/ceylonPharmacy/CareAnswerSubmit.php';
 require_once __DIR__ . '/../../models/ceylonPharmacy/CareAnswer.php';
 
-use Carbon\Carbon;
-
 class CareAnswerSubmitController
 {
     private $pdo;
@@ -37,7 +35,7 @@ class CareAnswerSubmitController
     {
         $data = json_decode(file_get_contents("php://input"), true);
         if ($data) {
-            $data['created_at'] = Carbon::now()->toDateTimeString();
+            $data['created_at'] = date('Y-m-d H:i:s');
             $data['answer_id'] = $this->careAnswerSubmitModel->generateNewAnswerId();
             $lastId = $this->careAnswerSubmitModel->createCareAnswerSubmit($data);
             http_response_code(201);
@@ -95,22 +93,22 @@ class CareAnswerSubmitController
             $data['answer_status'] = "In-Correct";
             $data['score'] = -1;
         }
-        
+
         $existingCorrect = $this->careAnswerSubmitModel->findCorrectSubmission($coverID, $prescriptionID, $loggedUser);
 
-        if($existingCorrect){
-             http_response_code(409); // Conflict
-             echo json_encode(['status' => 'error', 'message' => 'Already Saved Correct Attempt']);
-             return;
+        if ($existingCorrect) {
+            http_response_code(409); // Conflict
+            echo json_encode(['status' => 'error', 'message' => 'Already Saved Correct Attempt']);
+            return;
         }
-        
-        $data['created_at'] = Carbon::now()->toDateTimeString();
+
+        $data['created_at'] = date('Y-m-d H:i:s');
         $data['answer_id'] = $this->careAnswerSubmitModel->generateNewAnswerId();
         $newId = $this->careAnswerSubmitModel->createCareAnswerSubmit($data);
 
-        if($newId){
-             http_response_code(201);
-             echo json_encode([
+        if ($newId) {
+            http_response_code(201);
+            echo json_encode([
                 'status' => 'success',
                 'message' => 'Answer Saved',
                 'id' => $newId,

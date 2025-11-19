@@ -3,10 +3,12 @@
 
 require_once __DIR__ . '/../../controllers/ceylonPharmacy/CareAnswerSubmitController.php';
 
-
+// Instantiate the controller
 $pdo = $GLOBALS['pdo'];
 $careAnswerSubmitController = new CareAnswerSubmitController($pdo);
 
+
+// Define routes
 return [
     // Get all care answer submits
     'GET /care-answer-submits$' => function () use ($careAnswerSubmitController) {
