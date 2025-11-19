@@ -12,27 +12,27 @@ class CareInstruction
 
     public function getAllCareInstructions()
     {
-        $stmt = $this->pdo->query('SELECT * FROM care_instruction');
+        $stmt = $this->pdo->query('SELECT ci.*, cip.instruction FROM care_instruction ci JOIN care_instruction_pre cip ON ci.content = cip.id');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     public function getCareInstructionById($id)
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM care_instruction WHERE id = ?');
+        $stmt = $this->pdo->prepare('SELECT ci.*, cip.instruction FROM care_instruction ci JOIN care_instruction_pre cip ON ci.content = cip.id WHERE ci.id = ?');
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     public function getInstructionsByPrescriptionAndCover($presCode, $coverId)
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM care_instruction WHERE pres_code LIKE ? AND cover_id = ?');
+        $stmt = $this->pdo->prepare('SELECT ci.*, cip.instruction FROM care_instruction ci JOIN care_instruction_pre cip ON ci.content = cip.id WHERE ci.pres_code LIKE ? AND ci.cover_id = ?');
         $stmt->execute(["%$presCode%", $coverId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
     public function getWrongInstructions($coverId, $limit = 5)
     {
-        $query = 'SELECT * FROM care_instruction WHERE cover_id != ? ORDER BY RAND() LIMIT ' . (int)$limit;
+        $query = 'SELECT ci.*, cip.instruction FROM care_instruction ci JOIN care_instruction_pre cip ON ci.content = cip.id WHERE ci.cover_id != ? ORDER BY RAND() LIMIT ' . (int)$limit;
         $stmt = $this->pdo->prepare($query);
         $stmt->execute([$coverId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
