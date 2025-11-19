@@ -2,121 +2,148 @@
 require_once __DIR__ . '/../../models/ceylonPharmacy/CareAnswerSubmit.php';
 require_once __DIR__ . '/../../models/ceylonPharmacy/CareAnswer.php';
 
+use Carbon\Carbon;
+
 class CareAnswerSubmitController
 {
     private $pdo;
     private $careAnswerSubmitModel;
+    private $careAnswerModel;
 
     public function __construct($pdo)
     {
-        $this->pdo = $pdo;
-        $this->careAnswerSubmitModel = new CareAnswerSubmit($this->pdo);
+        $this->careAnswerSubmitModel = new CareAnswerSubmit($pdo);
+        $this->careAnswerModel = new CareAnswer($pdo);
     }
 
     public function getAll()
     {
-        $careAnswerSubmits = $this->careAnswerSubmitModel->getAll();
-        echo json_encode($careAnswerSubmits);
+        $submits = $this->careAnswerSubmitModel->getAllCareAnswerSubmits();
+        echo json_encode($submits);
     }
 
     public function getById($id)
     {
-        $careAnswerSubmit = $this->careAnswerSubmitModel->getById($id);
-        echo json_encode($careAnswerSubmit);
+        $submit = $this->careAnswerSubmitModel->getCareAnswerSubmitById($id);
+        if ($submit) {
+            echo json_encode($submit);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Submit not found']);
+        }
     }
 
     public function create()
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        $result = $this->careAnswerSubmitModel->create($data);
-        echo json_encode($result);
+        if ($data) {
+            $data['created_at'] = Carbon::now()->toDateTimeString();
+            $data['answer_id'] = $this->careAnswerSubmitModel->generateNewAnswerId();
+            $lastId = $this->careAnswerSubmitModel->createCareAnswerSubmit($data);
+            http_response_code(201);
+            echo json_encode([
+                'message' => 'Submit created successfully',
+                'id' => $lastId
+            ]);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid input']);
+        }
     }
+
+    public function validateAndCreate()
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        if (!$data) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Invalid input']);
+            return;
+        }
+
+        $loggedUser = $data['created_by'];
+        $userLevel = $data['user_level'];
+        $prescriptionID = $data['pres_id'];
+        $coverID = $data['cover_id'];
+
+        if ($userLevel !== "Student") {
+            http_response_code(403);
+            echo json_encode(['status' => 'error', 'message' => 'Access Denied']);
+            return;
+        }
+
+        $correctAnswer = $this->careAnswerModel->getAnswerByPrescriptionAndCover($prescriptionID, $coverID);
+
+        $incorrectFields = [];
+        if ($correctAnswer) {
+            foreach ($data as $field => $value) {
+                if (isset($correctAnswer[$field]) && $correctAnswer[$field] != $value) {
+                    $incorrectFields[] = $field;
+                }
+            }
+        } else {
+            http_response_code(404);
+            echo json_encode(['status' => 'error', 'message' => 'No correct answer found to validate against.']);
+            return;
+        }
+
+
+        if (empty($incorrectFields)) {
+            $data['answer_status'] = "Correct";
+            $data['score'] = 10;
+        } else {
+            $data['answer_status'] = "In-Correct";
+            $data['score'] = -1;
+        }
+        
+        $existingCorrect = $this->careAnswerSubmitModel->findCorrectSubmission($coverID, $prescriptionID, $loggedUser);
+
+        if($existingCorrect){
+             http_response_code(409); // Conflict
+             echo json_encode(['status' => 'error', 'message' => 'Already Saved Correct Attempt']);
+             return;
+        }
+        
+        $data['created_at'] = Carbon::now()->toDateTimeString();
+        $data['answer_id'] = $this->careAnswerSubmitModel->generateNewAnswerId();
+        $newId = $this->careAnswerSubmitModel->createCareAnswerSubmit($data);
+
+        if($newId){
+             http_response_code(201);
+             echo json_encode([
+                'status' => 'success',
+                'message' => 'Answer Saved',
+                'id' => $newId,
+                'incorrect_values' => $incorrectFields,
+                'answer_status' => $data['answer_status']
+            ]);
+        } else {
+            http_response_code(500);
+            echo json_encode([
+                'status' => 'error',
+                'message' => 'Something went wrong. Please try again later.',
+                'incorrect_values' => $incorrectFields,
+                'answer_status' => $data['answer_status']
+            ]);
+        }
+    }
+
 
     public function update($id)
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        $result = $this->careAnswerSubmitModel->update($id, $data);
-        echo json_encode($result);
+        if ($data) {
+            $this->careAnswerSubmitModel->updateCareAnswerSubmit($id, $data);
+            echo json_encode(['message' => 'Submit updated successfully']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid input']);
+        }
     }
 
     public function delete($id)
     {
-        $result = $this->careAnswerSubmitModel->delete($id);
-        echo json_encode($result);
-    }
-
-    public function submitAnswer()
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $data = json_decode(file_get_contents("php://input"), true);
-            if (!$data) {
-                $data = $_POST;
-            }
-
-            $LoggedUser = $data['LoggedUser'];
-            $UserLevel = $data['UserLevel'];
-
-            if ($UserLevel !== 'Student') {
-                http_response_code(403);
-                echo json_encode(['status' => 'error', 'message' => 'Access Denied']);
-                return;
-            }
-
-            $prescriptionID = $data['prescriptionID'];
-            $coverID = $data['coverID'];
-
-            $fields = [
-                'date' => $data['envelope-date'],
-                'name' => $data['envelope-name'],
-                'drug_name' => $data['envelope-drug-name'],
-                'drug_type' => $data['envelope-dosage-form'],
-                'drug_qty' => $data['envelope-drug-quantity'],
-                'morning_qty' => $data['envelope-morning-quantity'],
-                'afternoon_qty' => $data['envelope-afternoon-quantity'],
-                'evening_qty' => $data['envelope-evening-quantity'],
-                'night_qty' => $data['envelope-night-quantity'],
-                'meal_type' => $data['envelope-meal-type'],
-                'using_type' => $data['envelope-using-frequency'],
-                'at_a_time' => $data['envelope-at-a-time'],
-                'hour_qty' => $data['envelope-using-frequency-hour'],
-                'additional_description' => $data['envelope-additional-instruction']
-            ];
-
-            $careAnswerModel = new CareAnswer($this->pdo);
-            $incorrectFields = $careAnswerModel->validateAnswers($fields, $prescriptionID, $coverID);
-
-            $answer_status = empty($incorrectFields) ? "Correct" : "In-Correct";
-            $score = empty($incorrectFields) ? 10 : -1;
-
-            $alreadySubmitted = $this->careAnswerSubmitModel->checkExistingCorrectSubmission($coverID, $prescriptionID, $LoggedUser);
-
-            if ($alreadySubmitted) {
-                echo json_encode(['status' => 'error', 'message' => 'Already Saved Correct Attempt']);
-                return;
-            }
-            
-            $submissionData = array_merge(
-                [
-                    'pres_id' => $prescriptionID,
-                    'cover_id' => $coverID,
-                    'created_by' => $LoggedUser,
-                    'answer_status' => $answer_status,
-                    'score' => $score,
-                ],
-                $fields
-            );
-
-
-            $result = $this->careAnswerSubmitModel->createSubmission($submissionData);
-
-            if ($result) {
-                echo json_encode(['status' => 'success', 'message' => 'Answer Saved', 'incorrect_values' => $incorrectFields, 'answer_status' => $answer_status]);
-            } else {
-                echo json_encode(['status' => 'error', 'message' => 'Something went wrong. Please try again later.', 'incorrect_values' => $incorrectFields, 'answer_status' => $answer_status]);
-            }
-        } else {
-            http_response_code(405);
-            echo json_encode(['status' => 'error', 'message' => 'Invalid Method']);
-        }
+        $this->careAnswerSubmitModel->deleteCareAnswerSubmit($id);
+        echo json_encode(['message' => 'Submit deleted successfully']);
     }
 }

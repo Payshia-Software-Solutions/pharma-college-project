@@ -12,8 +12,7 @@ class CareAnswerSubmit
 
     public function getAll()
     {
-        $stmt = $this->pdo->prepare('SELECT * FROM care_answer_submit');
-        $stmt->execute();
+        $stmt = $this->pdo->query('SELECT * FROM care_answer_submit ORDER BY created_at DESC');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -26,41 +25,46 @@ class CareAnswerSubmit
 
     public function create($data)
     {
-        $stmt = $this->pdo->prepare('INSERT INTO care_answer_submit (pres_id, cover_id, date, name, drug_name, drug_type, drug_qty, morning_qty, afternoon_qty, evening_qty, night_qty, meal_type, using_type, at_a_time, hour_qty, additional_description, created_by, answer_status, score) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        $stmt->execute([$data['pres_id'], $data['cover_id'], $data['date'], $data['name'], $data['drug_name'], $data['drug_type'], $data['drug_qty'], $data['morning_qty'], $data['afternoon_qty'], $data['evening_qty'], $data['night_qty'], $data['meal_type'], $data['using_type'], $data['at_a_time'], $data['hour_qty'], $data['additional_description'], $data['created_by'], $data['answer_status'], $data['score']]);
-        return $this->pdo->lastInsertId();
+        $columns = '`' . implode('`, `', array_keys($data)) . '`';
+        $placeholders = ':' . implode(', :', array_keys($data));
+        $sql = "INSERT INTO `care_answer_submit` ($columns) VALUES ($placeholders)";
+        $stmt = $this->pdo->prepare($sql);
+        if ($stmt->execute($data)) {
+            return $this->pdo->lastInsertId();
+        }
+        return false;
+    }
+    
+    public function generateNewAnswerId()
+    {
+        $stmt = $this->pdo->query("SELECT COUNT(id) as count FROM care_answer_submit");
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $count = $row ? (int)$row['count'] : 0;
+        return "UA" . ($count + 1);
     }
     
     public function update($id, $data)
     {
-        $stmt = $this->pdo->prepare('UPDATE care_answer_submit SET pres_id = ?, cover_id = ?, date = ?, name = ?, drug_name = ?, drug_type = ?, drug_qty = ?, morning_qty = ?, afternoon_qty = ?, evening_qty = ?, night_qty = ?, meal_type = ?, using_type = ?, at_a_time = ?, hour_qty = ?, additional_description = ?, created_by = ?, answer_status = ?, score = ? WHERE answer_id = ?');
-        return $stmt->execute([$data['pres_id'], $data['cover_id'], $data['date'], $data['name'], $data['drug_name'], $data['drug_type'], $data['drug_qty'], $data['morning_qty'], $data['afternoon_qty'], $data['evening_qty'], $data['night_qty'], $data['meal_type'], $data['using_type'], $data['at_a_time'], $data['hour_qty'], $data['additional_description'], $data['created_by'], $data['answer_status'], $data['score'], $id]);
+        $setPart = [];
+        foreach ($data as $key => $value) {
+            $setPart[] = "`$key` = :$key";
+        }
+        $sql = "UPDATE care_answer_submit SET " . implode(', ', $setPart) . " WHERE id = :id";
+        $data['id'] = $id;
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($data);
     }
 
-
-    public function delete($id)
+    public function deleteCareAnswerSubmit($id)
     {
-        $stmt = $this->pdo->prepare('DELETE FROM care_answer_submit WHERE answer_id = ?');
+        $stmt = $this->pdo->prepare('DELETE FROM care_answer_submit WHERE id = ?');
         return $stmt->execute([$id]);
     }
-    
-    public function checkExistingCorrectSubmission($coverID, $prescriptionID, $LoggedUser)
+
+    public function findCorrectSubmission($coverId, $presId, $studentId)
     {
-        $stmt = $this->pdo->prepare('SELECT answer_id FROM care_answer_submit WHERE cover_id = ? AND pres_id = ? AND answer_status = "Correct" AND created_by = ?');
-        $stmt->execute([$coverID, $prescriptionID, $LoggedUser]);
+        $stmt = $this->pdo->prepare('SELECT `answer_id` FROM `care_answer_submit` WHERE `cover_id` = ? AND `pres_id` = ? AND `answer_status` = \'Correct\' AND `created_by` = ?');
+        $stmt->execute([$coverId, $presId, $studentId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-
-    public function createSubmission($data)
-    {
-        // Generate new answer submit code
-        $stmt = $this->pdo->prepare('SELECT COUNT(answer_id) as count FROM care_answer_submit');
-        $stmt->execute();
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $previous_code = $row['count'];
-        $NewAnswerSubmitCode = "UA" . ($previous_code + 1);
-
-        $stmt = $this->pdo->prepare('INSERT INTO `care_answer_submit`(`answer_id`, `pres_id`, `cover_id`, `date`, `name`, `drug_name`, `drug_type`, `drug_qty`, `morning_qty`, `afternoon_qty`, `evening_qty`, `night_qty`, `meal_type`, `using_type`, `at_a_time`, `hour_qty`, `additional_description`, `created_by`, `answer_status`, `score`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        return $stmt->execute([$NewAnswerSubmitCode, $data['pres_id'], $data['cover_id'], $data['date'], $data['name'], $data['drug_name'], $data['drug_type'], $data['drug_qty'], $data['morning_qty'], $data['afternoon_qty'], $data['evening_qty'], $data['night_qty'], $data['meal_type'], $data['using_type'], $data['at_a_time'], $data['hour_qty'], $data['additional_description'], $data['created_by'], $data['answer_status'], $data['score']]);
     }
 }

@@ -10,12 +10,14 @@ class CareAnswer
         $this->pdo = $pdo;
     }
 
+    // Get all records from the care_answer table
     public function getAllCareAnswers()
     {
         $stmt = $this->pdo->query('SELECT * FROM care_answer');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Get a single record by its primary key
     public function getCareAnswerById($id)
     {
         $stmt = $this->pdo->prepare('SELECT * FROM care_answer WHERE id = ?');
@@ -23,39 +25,15 @@ class CareAnswer
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
     
-
-    public function getAnswersByPrescriptionAndCover($presId, $coverId) 
+    // Get the correct answer record for validation purposes
+    public function getAnswerByPrescriptionAndCover($presId, $coverId)
     {
         $stmt = $this->pdo->prepare('SELECT * FROM care_answer WHERE pres_id = ? AND cover_id = ?');
         $stmt->execute([$presId, $coverId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-
-    public function getDistinctNames()
-    {
-        $stmt = $this->pdo->query('SELECT DISTINCT name FROM care_answer');
-        return $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-    }
-
-    public function getFormSelectionData()
-    {
-        $columns = [
-            'name', 'drug_name', 'drug_type', 'drug_qty', 'morning_qty', 'afternoon_qty',
-            'evening_qty', 'night_qty', 'meal_type', 'using_type', 'at_a_time', 'hour_qty',
-            'additional_description'
-        ];
-
-        $selectionData = [];
-
-        foreach ($columns as $column) {
-            $stmt = $this->pdo->query("SELECT DISTINCT `$column` FROM care_answer WHERE `$column` IS NOT NULL AND `$column` != '' ORDER BY `$column` ASC");
-            $selectionData[$column] = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
-        }
-
-        return $selectionData;
-    }
-
+    // Create a new record
     public function createCareAnswer($data)
     {
         $columns = '`' . implode('`, `', array_keys($data)) . '`';
@@ -68,6 +46,7 @@ class CareAnswer
         return false;
     }
 
+    // Update an existing record
     public function updateCareAnswer($id, $data)
     {
         $setPart = [];
@@ -80,22 +59,10 @@ class CareAnswer
         return $stmt->execute($data);
     }
 
+    // Delete a record
     public function deleteCareAnswer($id)
     {
         $stmt = $this->pdo->prepare('DELETE FROM care_answer WHERE id = ?');
         return $stmt->execute([$id]);
-    }
-    
-    public function validateAnswers($fields, $prescriptionID, $coverID)
-    {
-        $incorrectFields = [];
-        foreach ($fields as $field => $value) {
-            $stmt = $this->pdo->prepare("SELECT * FROM care_answer WHERE `$field` = ? AND `pres_id` = ? AND `cover_id` = ?");
-            $stmt->execute([$value, $prescriptionID, $coverID]);
-            if ($stmt->rowCount() === 0) {
-                $incorrectFields[] = $field;
-            }
-        }
-        return $incorrectFields;
     }
 }
