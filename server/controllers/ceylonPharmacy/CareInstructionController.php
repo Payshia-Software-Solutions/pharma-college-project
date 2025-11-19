@@ -39,6 +39,17 @@ class CareInstructionController
         }
     }
 
+    public function getShuffledInstructions($presCode, $coverId)
+    {
+        $correctInstructions = $this->careInstructionModel->getInstructionsByPrescriptionAndCover($presCode, $coverId);
+        $wrongInstructions = $this->careInstructionModel->getWrongInstructions($coverId);
+
+        $allInstructions = array_merge($correctInstructions, $wrongInstructions);
+        shuffle($allInstructions);
+
+        echo json_encode($allInstructions);
+    }
+
 
     public function create()
     {
