@@ -26,7 +26,7 @@ class CareInstruction
     public function getInstructionsByPrescriptionAndCover($presCode, $coverId)
     {
         $stmt = $this->pdo->prepare('SELECT ci.*, cip.instruction FROM care_instruction ci JOIN care_instruction_pre cip ON ci.content = cip.id WHERE ci.pres_code LIKE ? AND ci.cover_id = ?');
-        $stmt->execute(["%$presCode%", $coverId]);
+        $stmt->execute([$presCode, $coverId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     
