@@ -136,6 +136,7 @@ $careSavedAnswersRoutes = require './routes/ceylonPharmacy/careSavedAnswersRoute
 $careStartRoutes = require './routes/ceylonPharmacy/careStartRoutes.php';
 $CareInstructionRoutesUpdated = require './routes/ceylonPharmacy/CareInstructionRoutes.php';
 $careInsAnswerRoutes = require './routes/ceylonPharmacy/careInsAnswerRoutes.php';
+$masterProductRoutes = require './routes/ceylonPharmacy/MasterProductRoutes.php';
 
 
 
@@ -255,7 +256,8 @@ $routes = array_merge(
     $carePaymentAnswerRoutes,
     $careSavedAnswersRoutes,
     $careStartRoutes,
-    $careInsAnswerRoutes
+    $careInsAnswerRoutes,
+    $masterProductRoutes
 );
 
 
