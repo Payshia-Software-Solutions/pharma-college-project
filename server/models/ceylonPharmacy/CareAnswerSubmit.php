@@ -10,20 +10,20 @@ class CareAnswerSubmit
         $this->pdo = $pdo;
     }
 
-    public function getAll()
+    public function getAllCareAnswerSubmits()
     {
         $stmt = $this->pdo->query('SELECT * FROM care_answer_submit ORDER BY created_at DESC');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getById($id)
+    public function getCareAnswerSubmitById($id)
     {
         $stmt = $this->pdo->prepare('SELECT * FROM care_answer_submit WHERE answer_id = ?');
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function create($data)
+    public function createCareAnswerSubmit($data)
     {
         $columns = '`' . implode('`, `', array_keys($data)) . '`';
         $placeholders = ':' . implode(', :', array_keys($data));
@@ -43,7 +43,7 @@ class CareAnswerSubmit
         return "UA" . ($count + 1);
     }
     
-    public function update($id, $data)
+    public function updateCareAnswerSubmit($id, $data)
     {
         $setPart = [];
         foreach ($data as $key => $value) {
