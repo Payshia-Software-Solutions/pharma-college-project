@@ -38,7 +38,17 @@ class CareCenterRecovery
             $data['patient_id'],
             date('Y-m-d H:i:s')
         ]);
-        return $this->pdo->lastInsertId();
+        $lastId = $this->pdo->lastInsertId();
+
+        if ($lastId) {
+            $stmt = $this->pdo->prepare('DELETE FROM care_start WHERE student_id = ? AND PresCode = ?');
+            $stmt->execute([
+                $data['student_number'],
+                $data['patient_id']
+            ]);
+        }
+
+        return $lastId;
     }
 
     public function updateCareCenterRecovery($id, $data)
