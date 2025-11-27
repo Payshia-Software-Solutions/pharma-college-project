@@ -23,24 +23,30 @@ class CareCenterRecovery
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getCareCenterRecoveriesByStudentNumber($studentNumber)
+    {
+        $stmt = $this->pdo->prepare('SELECT * FROM care_center_recovery WHERE student_number = ?');
+        $stmt->execute([$studentNumber]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function createCareCenterRecovery($data)
     {
         $stmt = $this->pdo->prepare('INSERT INTO care_center_recovery (student_number, patient_id, created_at) VALUES (?, ?, ?)');
         $stmt->execute([
             $data['student_number'],
             $data['patient_id'],
-            $data['created_at']
+            date('Y-m-d H:i:s')
         ]);
         return $this->pdo->lastInsertId();
     }
 
     public function updateCareCenterRecovery($id, $data)
     {
-        $stmt = $this->pdo->prepare('UPDATE care_center_recovery SET student_number = ?, patient_id = ?, created_at = ? WHERE id = ?');
+        $stmt = $this->pdo->prepare('UPDATE care_center_recovery SET student_number = ?, patient_id = ? WHERE id = ?');
         $stmt->execute([
             $data['student_number'],
             $data['patient_id'],
-            $data['created_at'],
             $id
         ]);
         return $stmt->rowCount();
