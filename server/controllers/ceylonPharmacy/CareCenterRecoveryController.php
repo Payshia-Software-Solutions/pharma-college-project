@@ -28,6 +28,17 @@ class CareCenterRecoveryController
             echo json_encode(['error' => 'Recovery not found']);
         }
     }
+    public function getByStudentNumber($studentNumber)
+    {
+        $recoveries = $this->careCenterRecoveryModel->getCareCenterRecoveriesByStudentNumber($studentNumber);
+        if ($recoveries) {
+            echo json_encode($recoveries);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Recoveries not found for this student']);
+        }
+    }
+
 
     public function create()
     {

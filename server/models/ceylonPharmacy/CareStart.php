@@ -33,12 +33,12 @@ class CareStart
     public function createCareStart($data)
     {
         $createdAt = date('Y-m-d H:i:s');
-        $time = date('Y-m-d H:i:s');
+        $currentTime = date('Y-m-d H:i:s');
         $stmt = $this->pdo->prepare('INSERT INTO care_start (student_id, PresCode, time, created_at, patient_status) VALUES (?, ?, ?, ?, ?)');
         $stmt->execute([
             $data['student_id'],
             $data['PresCode'],
-            $time,
+            $currentTime,
             $createdAt,
             $data['patient_status']
         ]);
