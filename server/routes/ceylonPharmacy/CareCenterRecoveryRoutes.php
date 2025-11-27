@@ -9,7 +9,7 @@ $careCenterRecoveryController = new CareCenterRecoveryController($pdo);
 
 // Define routes
 return [
-    'GET /care-center-recoveries$' => function () use ($careCenterRecoveryController) {
+    'GET /care-center-recoveries/$' => function () use ($careCenterRecoveryController) {
         $careCenterRecoveryController->getAll();
     },
     'GET /care-center-recoveries/(\d+)$' => function ($id) use ($careCenterRecoveryController) {
@@ -18,7 +18,7 @@ return [
     'GET /care-center-recoveries/student/([^/]+)$' => function ($studentNumber) use ($careCenterRecoveryController) {
         $careCenterRecoveryController->getByStudentNumber($studentNumber);
     },
-    'POST /care-center-recoveries$' => function () use ($careCenterRecoveryController) {
+    'POST /care-center-recoveries/$' => function () use ($careCenterRecoveryController) {
         $careCenterRecoveryController->create();
     },
     'PUT /care-center-recoveries/(\d+)$' => function ($id) use ($careCenterRecoveryController) {
