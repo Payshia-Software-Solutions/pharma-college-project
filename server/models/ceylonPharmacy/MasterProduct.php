@@ -49,6 +49,13 @@ class MasterProduct
         return $stmt->rowCount();
     }
 
+    public function updateMasterProductNameAndPrice($id, $name, $price)
+    {
+        $stmt = $this->pdo->prepare('UPDATE master_product SET ProductName = ?, DisplayName = ?, PrintName = ?, SellingPrice = ? WHERE product_id = ?');
+        $stmt->execute([$name, $name, $name, $price, $id]);
+        return $stmt->rowCount();
+    }
+
     public function deleteMasterProduct($id)
     {
         $stmt = $this->pdo->prepare('DELETE FROM master_product WHERE product_id = ?');

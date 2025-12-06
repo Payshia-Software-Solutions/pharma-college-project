@@ -67,6 +67,18 @@ class MasterProductController
         }
     }
 
+    public function updateNameAndPrice($id)
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        if ($data && isset($data['name']) && isset($data['price'])) {
+            $this->masterProductModel->updateMasterProductNameAndPrice($id, $data['name'], $data['price']);
+            echo json_encode(['message' => 'Product name and price updated successfully']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid input']);
+        }
+    }
+
     public function delete($id)
     {
         $rowCount = $this->masterProductModel->deleteMasterProduct($id);
