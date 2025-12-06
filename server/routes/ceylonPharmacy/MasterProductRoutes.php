@@ -19,6 +19,9 @@ return [
     'PUT /master-products/(\d+)/$' => function ($id) use ($masterProductController) {
         $masterProductController->update($id);
     },
+    'POST /master-products/(\d+)/update-name-and-price/$' => function ($id) use ($masterProductController) {
+        $masterProductController->updateNameAndPrice($id);
+    },
     'DELETE /master-products/(\d+)/$' => function ($id) use ($masterProductController) {
         $masterProductController->delete($id);
     },
