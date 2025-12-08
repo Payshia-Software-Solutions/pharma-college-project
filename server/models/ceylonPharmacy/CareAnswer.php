@@ -77,16 +77,13 @@ class CareAnswer
             'Name' => 'name',
             'DrugName' => 'drug_name',
             'DosageForm' => 'drug_type',
-            'Quantity' => 'drug_qty',
-            'Quantity' => 'morning_qty',
-            'Quantity' => 'afternoon_qty',
-            'Quantity' => 'evening_qty',
-            'Quantity' => 'night_qty',
             'MealType' => 'meal_type',
             'UsingType' => 'using_type',
-            'Quantity' => 'at_a_time',
-            'Quantity' => 'hour_qty',
             'Additional' => 'additional_description',
+        ];
+
+        $quantityKeys = [
+            'drug_qty', 'morning_qty', 'afternoon_qty', 'evening_qty', 'night_qty', 'at_a_time', 'hour_qty'
         ];
 
         // Process the fetched answers and populate the selectionData
@@ -94,7 +91,13 @@ class CareAnswer
             $answerType = str_replace(' ', '', $row['answer_type']); // Remove spaces
             $answer = $row['answer'];
 
-            if (isset($mapping[$answerType])) {
+            if ($answerType === 'Quantity') {
+                foreach ($quantityKeys as $key) {
+                    if (!in_array($answer, $selectionData[$key])) {
+                        $selectionData[$key][] = $answer;
+                    }
+                }
+            } else if (isset($mapping[$answerType])) {
                 $key = $mapping[$answerType];
                 // Add the answer if it's not already in the list
                 if (!in_array($answer, $selectionData[$key])) {
