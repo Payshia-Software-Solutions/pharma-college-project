@@ -55,7 +55,7 @@ class CareCenterCourse
 
     public function getPrescriptionIdsByCourseCode($courseCode)
     {
-        $stmt = $this->pdo->prepare('SELECT prescription_id FROM care_center_course WHERE CourseCode = ?');
+        $stmt = $this->pdo->prepare('SELECT prescription_id FROM care_center_course WHERE CourseCode = ? AND status = \'Active\'');
         $stmt->execute([$courseCode]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
