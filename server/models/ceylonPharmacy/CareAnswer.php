@@ -51,21 +51,64 @@ class CareAnswer
 
     public function getFormSelectionData()
     {
-        $columns = [
-            'name', 'drug_name', 'drug_type', 'drug_qty', 'morning_qty', 'afternoon_qty',
-            'evening_qty', 'night_qty', 'meal_type', 'using_type', 'at_a_time', 'hour_qty',
-            'additional_description'
+        // Initialize the structure for the selection data
+        $selectionData = [
+            'name' => [],
+            'drug_name' => [],
+            'drug_type' => [],
+            'drug_qty' => [],
+            'morning_qty' => [],
+            'afternoon_qty' => [],
+            'evening_qty' => [],
+            'night_qty' => [],
+            'meal_type' => [],
+            'using_type' => [],
+            'at_a_time' => [],
+            'hour_qty' => [],
+            'additional_description' => [],
         ];
 
-        $selectionData = [];
+        // Fetch all saved answers
+        $stmt = $this->pdo->query("SELECT answer_type, answer FROM care_saved_answers WHERE answer IS NOT NULL AND answer != ''");
+        $savedAnswers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        foreach ($columns as $column) {
-            $stmt = $this->pdo->query("SELECT DISTINCT `$column` FROM care_answer WHERE `$column` IS NOT NULL AND `$column` != '' ORDER BY `$column` ASC");
-            $selectionData[$column] = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
+        // Define the mapping from answer_type to the selectionData key
+        $mapping = [
+            'Name' => 'name',
+            'DrugName' => 'drug_name',
+            'DosageForm' => 'drug_type',
+            'Quantity' => 'drug_qty',
+            'Morning' => 'morning_qty',
+            'Afternoon' => 'afternoon_qty',
+            'Evening' => 'evening_qty',
+            'Night' => 'night_qty',
+            'MealType' => 'meal_type',
+            'UsingType' => 'using_type',
+            'AtATime' => 'at_a_time',
+            'Hour' => 'hour_qty',
+            'Additional' => 'additional_description',
+        ];
+
+        // Process the fetched answers and populate the selectionData
+        foreach ($savedAnswers as $row) {
+            $answerType = str_replace(' ', '', $row['answer_type']); // Remove spaces
+            $answer = $row['answer'];
+
+            if (isset($mapping[$answerType])) {
+                $key = $mapping[$answerType];
+                // Add the answer if it's not already in the list
+                if (!in_array($answer, $selectionData[$key])) {
+                    $selectionData[$key][] = $answer;
+                }
+            }
+        }
+
+        // Sort the arrays for consistent ordering
+        foreach ($selectionData as &$values) {
+            sort($values);
         }
 
         return $selectionData;
-
     }
 
     // Create a new record
