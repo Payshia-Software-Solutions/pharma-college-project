@@ -37,4 +37,9 @@ return [
     'POST /care-starts/(\d+)/patient-status/$' => function ($id) use ($careStartController) {
         $careStartController->updatePatientStatus($id);
     },
+
+    // Update patient status by student and patient
+    'POST /care-starts/student/([^/]+)/patient/([^/]+)/patient-status/$' => function ($student_id, $patient_id) use ($careStartController) {
+        $careStartController->updatePatientStatusByStudentAndPatient($student_id, $patient_id);
+    }
 ];
