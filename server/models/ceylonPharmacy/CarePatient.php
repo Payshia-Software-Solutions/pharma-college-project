@@ -59,9 +59,8 @@ class CarePatient
 
     public function updateCarePatient($id, $data)
     {
-        $stmt = $this->pdo->prepare('UPDATE care_patient SET prescription_id = ?, prescription_name = ?, prescription_status = ?, created_at = ?, created_by = ?, Pres_Name = ?, pres_date = ?, Pres_Age = ?, Pres_Method = ?, doctor_name = ?, notes = ?, patient_description = ?, address = ? WHERE prescription_id = ?');
+        $stmt = $this->pdo->prepare('UPDATE care_patient SET prescription_name = ?, prescription_status = ?, created_at = ?, created_by = ?, Pres_Name = ?, pres_date = ?, Pres_Age = ?, Pres_Method = ?, doctor_name = ?, notes = ?, patient_description = ?, address = ? WHERE prescription_id = ?');
         $stmt->execute([
-            $data['prescription_id'],
             $data['prescription_name'],
             $data['prescription_status'],
             $data['created_at'],
