@@ -30,6 +30,12 @@ class CarePatient
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getTotalPatientCount()
+    {
+        $stmt = $this->pdo->query('SELECT COUNT(*) FROM care_patient');
+        return $stmt->fetchColumn();
+    }
+
     public function createCarePatient($data)
     {
         $stmt = $this->pdo->prepare('INSERT INTO care_patient (prescription_id, prescription_name, prescription_status, created_at, created_by, Pres_Name, pres_date, Pres_Age, Pres_Method, doctor_name, notes, patient_description, address) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
