@@ -35,7 +35,7 @@ class CarePatientController
         if ($data) {
             // Generate the new prescription_id
             $totalPatients = $this->carePatientModel->getTotalPatientCount();
-            $newId = $totalPatients + 1;
+            $newId = $totalPatients + 2;
             $prescriptionId = 'PRE' . $newId;
 
             // Add the new prescription_id to the data
