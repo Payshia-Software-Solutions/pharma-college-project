@@ -12,6 +12,6 @@ return [
     'GET /care-patients' => [$carePatientController, 'getAll'],
     'GET /care-patients/{id}' => [$carePatientController, 'getById'],
     'POST /care-patients' => [$carePatientController, 'create'],
-    'PUT /care-patients/{id}' => [$carePatientController, 'update'],
+    'POST /care-patients/{id}' => [$carePatientController, 'update'],
     'DELETE /care-patients/{id}' => [$carePatientController, 'delete']
 ];
