@@ -12,7 +12,7 @@ class CarePatient
 
     public function getAllCarePatients()
     {
-        $stmt = $this->pdo->query('SELECT * FROM care_patient');
+        $stmt = $this->pdo->query('SELECT * FROM care_patient ORDER BY id');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
