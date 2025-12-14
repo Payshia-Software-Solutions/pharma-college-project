@@ -56,12 +56,17 @@ class CareAnswerController
     {
         $data = json_decode(file_get_contents("php://input"), true);
         if ($data) {
-            $lastId = $this->careAnswerModel->createCareAnswer($data);
-            http_response_code(201);
-            echo json_encode([
-                'message' => 'Answer created successfully',
-                'id' => $lastId
-            ]);
+            $answerId = $this->careAnswerModel->createCareAnswer($data);
+            if ($answerId) {
+                http_response_code(201);
+                echo json_encode([
+                    'message' => 'Answer created successfully',
+                    'answer_id' => $answerId
+                ]);
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => 'Failed to create answer']);
+            }
         } else {
             http_response_code(400);
             echo json_encode(['error' => 'Invalid input']);
