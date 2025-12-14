@@ -33,11 +33,20 @@ class CarePatientController
     {
         $data = json_decode(file_get_contents("php://input"), true);
         if ($data) {
+            // Generate the new prescription_id
+            $totalPatients = $this->carePatientModel->getTotalPatientCount();
+            $newId = $totalPatients + 1;
+            $prescriptionId = 'PRE' . $newId;
+
+            // Add the new prescription_id to the data
+            $data['prescription_id'] = $prescriptionId;
+
             $lastId = $this->carePatientModel->createCarePatient($data);
             http_response_code(201);
             echo json_encode([
                 'message' => 'Patient created successfully',
-                'id' => $lastId
+                'id' => $lastId,
+                'prescription_id' => $prescriptionId
             ]);
         } else {
             http_response_code(400);
