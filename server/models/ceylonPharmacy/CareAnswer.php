@@ -117,13 +117,25 @@ class CareAnswer
     // Create a new record
     public function createCareAnswer($data)
     {
+        // 1. Get the total count of existing answers
+        $stmt = $this->pdo->query('SELECT COUNT(*) FROM care_answer');
+        $count = $stmt->fetchColumn();
+
+        // 2. Generate a new answer_id
+        $newAnswerId = 'ANS' . ($count + 1);
+        $data['answer_id'] = $newAnswerId;
+
+        // 3. Insert the new record
         $columns = '`' . implode('`, `', array_keys($data)) . '`';
         $placeholders = ':' . implode(', :', array_keys($data));
         $sql = "INSERT INTO `care_answer` ($columns) VALUES ($placeholders)";
         $stmt = $this->pdo->prepare($sql);
+
+        // 4. Return the new answer_id on success
         if ($stmt->execute($data)) {
-            return $this->pdo->lastInsertId();
+            return $newAnswerId;
         }
+
         return false;
     }
 
