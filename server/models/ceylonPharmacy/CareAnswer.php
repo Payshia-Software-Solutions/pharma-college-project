@@ -114,26 +114,40 @@ class CareAnswer
         return $selectionData;
     }
 
-    // Create a new record
+    // Create a new record or update if it exists
     public function createCareAnswer($data)
     {
-        // 1. Get the total count of existing answers
-        $stmt = $this->pdo->query('SELECT COUNT(*) FROM care_answer');
-        $count = $stmt->fetchColumn();
+        // 1. Check if a record with the same pres_id and cover_id already exists
+        $stmt = $this->pdo->prepare('SELECT id FROM care_answer WHERE pres_id = :pres_id AND cover_id = :cover_id');
+        $stmt->execute([
+            'pres_id' => $data['pres_id'],
+            'cover_id' => $data['cover_id']
+        ]);
+        $existingId = $stmt->fetchColumn();
 
-        // 2. Generate a new answer_id
-        $newAnswerId = 'ANS' . ($count + 1);
-        $data['answer_id'] = $newAnswerId;
+        if ($existingId) {
+            // 2a. If it exists, update the existing record
+            $this->updateCareAnswer($existingId, $data);
+            return ['status' => 'updated', 'id' => $existingId];
+        } else {
+            // 2b. If it does not exist, create a new record
 
-        // 3. Insert the new record
-        $columns = '`' . implode('`, `', array_keys($data)) . '`';
-        $placeholders = ':' . implode(', :', array_keys($data));
-        $sql = "INSERT INTO `care_answer` ($columns) VALUES ($placeholders)";
-        $stmt = $this->pdo->prepare($sql);
+            // Get the total count of existing answers to generate a new answer_id
+            $stmt = $this->pdo->query('SELECT COUNT(*) FROM care_answer');
+            $count = $stmt->fetchColumn();
+            $newAnswerId = 'ANS' . ($count + 1);
+            $data['answer_id'] = $newAnswerId;
 
-        // 4. Return the new answer_id on success
-        if ($stmt->execute($data)) {
-            return $newAnswerId;
+            // Insert the new record
+            $columns = '`' . implode('`, `', array_keys($data)) . '`';
+            $placeholders = ':' . implode(', :', array_keys($data));
+            $sql = "INSERT INTO `care_answer` ($columns) VALUES ($placeholders)";
+            $stmt = $this->pdo->prepare($sql);
+
+            // Return the new answer_id on success
+            if ($stmt->execute($data)) {
+                return ['status' => 'created', 'answer_id' => $newAnswerId];
+            }
         }
 
         return false;
@@ -142,12 +156,24 @@ class CareAnswer
     // Update an existing record
     public function updateCareAnswer($id, $data)
     {
+        // Prevent updating key identifiers
+        unset($data['id']);
+        unset($data['answer_id']);
+        unset($data['pres_id']);
+        unset($data['cover_id']);
+
+        if (empty($data)) {
+            return true; // Nothing to update
+        }
+        
         $setPart = [];
         foreach ($data as $key => $value) {
             $setPart[] = "`$key` = :$key";
         }
         $sql = "UPDATE care_answer SET " . implode(', ', $setPart) . " WHERE id = :id";
-        $data['id'] = $id;
+        
+        $data['id'] = $id; // Add id back for the WHERE clause
+        
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute($data);
     }
