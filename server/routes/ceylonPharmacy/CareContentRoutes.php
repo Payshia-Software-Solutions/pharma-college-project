@@ -21,9 +21,9 @@ return [
     'POST /care-content/$' => function () use ($careContentController) {
         $careContentController->create();
     },
-    // Update care content
-    'PUT /care-content/(\d+)/$' => function ($id) use ($careContentController) {
-        $careContentController->update($id);
+    // Update care content by prescription code and cover ID
+    'POST /care-content/([^/]+)/([^/]+)/$' => function ($presCode, $coverId) use ($careContentController) {
+        $careContentController->updateByPresCodeAndCoverId($presCode, $coverId);
     },
     // Delete care content
     'DELETE /care-content/(\d+)/$' => function ($id) use ($careContentController) {
