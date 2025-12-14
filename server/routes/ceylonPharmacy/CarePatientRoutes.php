@@ -1,7 +1,7 @@
 <?php
 // routes/ceylonPharmacy/CarePatientRoutes.php
 
-require_once './controllers/ceylonPharmacy/CarePatientController.php';
+require_once __DIR__ . '/../../controllers/ceylonPharmacy/CarePatientController.php';
 
 // Instantiate the controller
 $pdo = $GLOBALS['pdo'];
@@ -9,9 +9,19 @@ $carePatientController = new CarePatientController($pdo);
 
 // Define routes
 return [
-    'GET /care-patients' => [$carePatientController, 'getAll'],
-    'GET /care-patients/{id}' => [$carePatientController, 'getById'],
-    'POST /care-patients' => [$carePatientController, 'create'],
-    'POST /care-patients/{id}' => [$carePatientController, 'update'],
-    'DELETE /care-patients/{id}' => [$carePatientController, 'delete']
+    'GET /care-patients/$' => function () use ($carePatientController) {
+        $carePatientController->getAll();
+    },
+    'GET /care-patients/([a-zA-Z0-9_\\-]+)/$' => function ($id) use ($carePatientController) {
+        $carePatientController->getById($id);
+    },
+    'POST /care-patients/$' => function () use ($carePatientController) {
+        $carePatientController->create();
+    },
+    'POST /care-patients/([a-zA-Z0-9_\\-]+)/$' => function ($id) use ($carePatientController) {
+        $carePatientController->update($id);
+    },
+    'DELETE /care-patients/([a-zA-Z0-9_\\-]+)/$' => function ($id) use ($carePatientController) {
+        $carePatientController->delete($id);
+    },
 ];
