@@ -32,16 +32,31 @@ class CarePaymentController
     public function create()
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        if ($data) {
-            $lastId = $this->carePaymentModel->createCarePayment($data);
-            http_response_code(201);
-            echo json_encode([
-                'message' => 'Payment created successfully',
-                'id' => $lastId
-            ]);
+        if ($data && isset($data['PresCode'])) {
+            $result = $this->carePaymentModel->createOrUpdatePayment($data);
+
+            if ($result['status'] === 'created') {
+                http_response_code(201); // Created
+                echo json_encode([
+                    'message' => 'Payment created successfully',
+                    'id' => $result['id']
+                ]);
+            } elseif ($result['status'] === 'updated') {
+                http_response_code(200); // OK
+                echo json_encode([
+                    'message' => 'Payment updated successfully',
+                    'id' => $result['id']
+                ]);
+            } elseif ($result['status'] === 'unchanged') {
+                http_response_code(200); // OK
+                echo json_encode([
+                    'message' => 'Payment value is already up to date.',
+                    'id' => $result['id']
+                ]);
+            }
         } else {
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid input']);
+            echo json_encode(['error' => 'Invalid input. PresCode is required.']);
         }
     }
 
