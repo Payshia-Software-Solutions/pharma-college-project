@@ -40,33 +40,56 @@ class CareInstruction
     
     public function createCareInstruction($data)
     {
-        $stmt = $this->pdo->prepare('INSERT INTO care_instruction (pres_code, cover_id, content, created_at) VALUES (?, ?, ?, ?)');
-        $stmt->execute([
-            $data['pres_code'],
-            $data['cover_id'],
-            $data['content'],
-            $data['created_at']
-        ]);
-        return $this->pdo->lastInsertId();
+        $presCode = $data['pres_code'];
+        $coverId = $data['cover_id'];
+        $instructions = $data['instructions']; // Expects an array of instruction content IDs
+
+        $this->pdo->beginTransaction();
+
+        try {
+            // Step 1: Delete existing instructions for the pres_code and cover_id
+            $deleteStmt = $this->pdo->prepare(
+                'DELETE FROM care_instruction WHERE pres_code = ? AND cover_id = ?'
+            );
+            $deleteStmt->execute([$presCode, $coverId]);
+
+            // Step 2: Insert the new instructions
+            $insertStmt = $this->pdo->prepare(
+                'INSERT INTO care_instruction (pres_code, cover_id, content) VALUES (?, ?, ?)'
+            );
+
+            $insertedIds = [];
+            if (is_array($instructions) && !empty($instructions)) {
+                foreach ($instructions as $contentId) {
+                    // Ensure contentId is not null or empty
+                    if (!empty($contentId)) {
+                        $insertStmt->execute([$presCode, $coverId, $contentId]);
+                        $insertedIds[] = $this->pdo->lastInsertId();
+                    }
+                }
+            }
+
+            $this->pdo->commit();
+
+            return $insertedIds;
+
+        } catch (Exception $e) {
+            $this->pdo->rollBack();
+            // In a real app, you would log the error
+            error_log($e->getMessage());
+            return false;
+        }
     }
 
-    public function updateCareInstruction($id, $data)
+    public function getShuffledInstructions($presCode, $coverId)
     {
-        $stmt = $this->pdo->prepare('UPDATE care_instruction SET pres_code = ?, cover_id = ?, content = ?, created_at = ? WHERE id = ?');
-        $stmt->execute([
-            $data['pres_code'],
-            $data['cover_id'],
-            $data['content'],
-            $data['created_at'],
-            $id
-        ]);
-        return $stmt->rowCount();
+        $correctInstructions = $this->getInstructionsByPrescriptionAndCover($presCode, $coverId);
+        $wrongInstructions = $this->getWrongInstructions($coverId);
+
+        $allInstructions = array_merge($correctInstructions, $wrongInstructions);
+        shuffle($allInstructions);
+
+        return $allInstructions;
     }
 
-    public function deleteCareInstruction($id)
-    {
-        $stmt = $this->pdo->prepare('DELETE FROM care_instruction WHERE id = ?');
-        $stmt->execute([$id]);
-        return $stmt->rowCount();
-    }
 }
