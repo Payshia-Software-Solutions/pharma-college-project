@@ -35,7 +35,7 @@ class CareInstructionPre
 
     public function update($id, $data)
     {
-        $stmt = $this->pdo->prepare('UPDATE care_instruction_pre SET instruction = ?, created_by = ? WHERE id = ?');
+        $stmt = $this->pdo->prepare('UPDATE care_instruction_pre SET instruction = ? WHERE id = ?');
         $stmt->execute([
             $data['instruction'],
             $id
