@@ -54,16 +54,21 @@ class CareInstructionController
     public function create()
     {
         $data = json_decode(file_get_contents("php://input"), true);
-        if ($data) {
-            $lastId = $this->careInstructionModel->createCareInstruction($data);
-            http_response_code(201);
-            echo json_encode([
-                'message' => 'Instruction created successfully',
-                'id' => $lastId
-            ]);
+        if (isset($data['pres_code'], $data['cover_id'], $data['instructions']) && is_array($data['instructions'])) {
+            $newInstructionIds = $this->careInstructionModel->createCareInstruction($data);
+            if ($newInstructionIds !== false) {
+                http_response_code(201);
+                echo json_encode([
+                    'message' => 'Instructions created/updated successfully',
+                    'inserted_ids' => $newInstructionIds
+                ]);
+            } else {
+                http_response_code(500);
+                echo json_encode(['error' => 'Failed to create instructions']);
+            }
         } else {
             http_response_code(400);
-            echo json_encode(['error' => 'Invalid input']);
+            echo json_encode(['error' => 'Invalid input. pres_code, cover_id, and an array of instructions are required.']);
         }
     }
 
