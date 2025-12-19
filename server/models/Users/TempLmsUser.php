@@ -36,55 +36,28 @@ class TempLmsUser
     
 
     // Create a new user
-    // public function createUser($data)
-    // {
-    //     $sql = "INSERT INTO temp_lms_user (
-    //                 email_address, civil_status, first_name, last_name, password, nic_number, phone_number, 
-    //                 whatsapp_number, address_l1, address_l2, city, district, postal_code, paid_amount, 
-    //                 aprroved_status, created_at, full_name, name_with_initials, gender, index_number, 
-    //                 name_on_certificate, selected_course
-    //             ) VALUES (
-    //                 :email_address, :civil_status, :first_name, :last_name, :password, :nic_number, :phone_number, 
-    //                 :whatsapp_number, :address_l1, :address_l2, :city, :district, :postal_code, :paid_amount, 
-    //                 :aprroved_status, :created_at, :full_name, :name_with_initials, :gender, :index_number, 
-    //                 :name_on_certificate, :selected_course
-    //             )";
-    //     $stmt = $this->pdo->prepare($sql);
-    //     $stmt->execute($data);
+    public function createUser($data)
+    {
+        $sql = "INSERT INTO temp_lms_user (
+                    email_address, civil_status, first_name, last_name, password, nic_number, phone_number, 
+                    whatsapp_number, address_l1, address_l2, city, district, postal_code, paid_amount, 
+                    aprroved_status, created_at, full_name, name_with_initials, gender, index_number, 
+                    name_on_certificate, selected_course
+                ) VALUES (
+                    :email_address, :civil_status, :first_name, :last_name, :password, :nic_number, :phone_number, 
+                    :whatsapp_number, :address_l1, :address_l2, :city, :district, :postal_code, :paid_amount, 
+                    :aprroved_status, :created_at, :full_name, :name_with_initials, :gender, :index_number, 
+                    :name_on_certificate, :selected_course
+                )";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($data);
 
-    //     // Return the auto-generated ID
-    //     return $this->pdo->lastInsertId();
-    // }
-
-
-
-    // Create a new user
-public function createUser($data)
-{
-    $sql = "INSERT INTO temp_lms_user (
-                email_address, civil_status, first_name, last_name, password, nic_number, phone_number, 
-                whatsapp_number, address_l1, address_l2, city, district, postal_code, paid_amount, 
-                aprroved_status, created_at, full_name, name_with_initials, gender, index_number, 
-                name_on_certificate, selected_course
-            ) VALUES (
-                :email_address, :civil_status, :first_name, :last_name, :password, :nic_number, :phone_number, 
-                :whatsapp_number, :address_l1, :address_l2, :city, :district, :postal_code, :paid_amount, 
-                :aprroved_status, :created_at, :full_name, :name_with_initials, :gender, :index_number, 
-                :name_on_certificate, :selected_course
-            )";
-    
-    // Add colons to array keys for PDO binding
-    $params = [];
-    foreach ($data as $key => $value) {
-        $params[':' . $key] = $value;
+        // Return the auto-generated ID
+        return $this->pdo->lastInsertId();
     }
-    
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->execute($params);
 
-    // Return the auto-generated ID
-    return $this->pdo->lastInsertId();
-}
+
+
 
     // Update a user by ID
     public function updateUser($id, $data)
