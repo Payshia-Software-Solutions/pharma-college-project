@@ -78,10 +78,10 @@ class CarePatient
         return $stmt->rowCount();
     }
 
-    public function deleteCarePatient($id)
+    public function deleteCarePatientByPrescriptionId($prescriptionId)
     {
-        $stmt = $this->pdo->prepare('DELETE FROM care_patient WHERE id = ?');
-        $stmt->execute([$id]);
+        $stmt = $this->pdo->prepare('DELETE FROM care_patient WHERE prescription_id = ?');
+        $stmt->execute([$prescriptionId]);
         return $stmt->rowCount();
     }
 }
