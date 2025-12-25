@@ -68,7 +68,7 @@ class CarePatientController
 
     public function delete($id)
     {
-        $this->carePatientModel->deleteCarePatient($id);
+        $this->carePatientModel->deleteCarePatientByPrescriptionId($id);
         echo json_encode(['message' => 'Patient deleted successfully']);
     }
 }
