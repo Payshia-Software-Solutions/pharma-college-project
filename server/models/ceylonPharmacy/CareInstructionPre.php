@@ -12,7 +12,7 @@ class CareInstructionPre
 
     public function getAll()
     {
-        $stmt = $this->pdo->query('SELECT * FROM care_instruction_pre');
+        $stmt = $this->pdo->query('SELECT * FROM care_instruction_pre ORDER BY id');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
