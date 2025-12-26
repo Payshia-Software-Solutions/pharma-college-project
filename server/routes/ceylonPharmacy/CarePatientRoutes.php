@@ -18,7 +18,7 @@ return [
     'POST /care-patients/$' => function () use ($carePatientController) {
         $carePatientController->create();
     },
-    'POST /care-patients/([a-zA-Z0-9_\\-]+)/$' => function ($id) use ($carePatientController) {
+    'PUT /care-patients/([a-zA-Z0-9_\\-]+)/$' => function ($id) use ($carePatientController) {
         $carePatientController->update($id);
     },
     'DELETE /care-patients/([a-zA-Z0-9_\\-]+)/$' => function ($id) use ($carePatientController) {
