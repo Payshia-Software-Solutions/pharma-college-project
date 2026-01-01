@@ -36,7 +36,8 @@ class CarePatientController
             // Generate the new prescription_id
             $totalPatients = $this->carePatientModel->getTotalPatientCount();
             $newId = $totalPatients + 2;
-            $prescriptionId = 'PRE' . $newId;
+            $randomNumber = rand(10000, 99999);
+            $prescriptionId = $newId . '-' . $randomNumber;
 
             // Add the new prescription_id to the data
             $data['prescription_id'] = $prescriptionId;
