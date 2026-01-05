@@ -64,6 +64,13 @@ class CareContent
         return $stmt->rowCount();
     }
 
+    public function deleteCareContentByPresCodeAndCoverId($presCode, $coverId)
+    {
+        $stmt = $this->pdo->prepare('DELETE FROM care_content WHERE pres_code = ? AND cover_id = ?');
+        $stmt->execute([$presCode, $coverId]);
+        return $stmt->rowCount();
+    }
+
     public function getCareContentByPresCode($presCode)
     {
         $stmt = $this->pdo->prepare('SELECT cover_id, content FROM care_content WHERE pres_code = ?');
