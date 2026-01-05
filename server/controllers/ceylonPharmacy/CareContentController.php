@@ -75,6 +75,12 @@ class CareContentController
         echo json_encode(['message' => 'Content deleted successfully']);
     }
 
+    public function deleteByPresCodeAndCoverId($presCode, $coverId)
+    {
+        $this->careContentModel->deleteCareContentByPresCodeAndCoverId($presCode, $coverId);
+        echo json_encode(['message' => 'Content deleted successfully']);
+    }
+
     public function getByPresCode($presCode)
     {
         $content = $this->careContentModel->getCareContentByPresCode($presCode);

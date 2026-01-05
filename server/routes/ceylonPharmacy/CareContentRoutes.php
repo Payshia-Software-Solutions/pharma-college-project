@@ -33,4 +33,8 @@ return [
     'GET /care-content/pres-code/([^/]+)/$' => function ($presCode) use ($careContentController) {
         $careContentController->getByPresCode($presCode);
     },
+    // Delete care content by prescription code and cover ID
+    'DELETE /care-content/([^/]+)/([^/]+)/$' => function ($presCode, $coverId) use ($careContentController) {
+        $careContentController->deleteByPresCodeAndCoverId($presCode, $coverId);
+    },
 ];
