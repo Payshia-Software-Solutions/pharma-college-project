@@ -23,6 +23,12 @@ class SentenceBuilderSentenceController
         echo json_encode($sentence);
     }
 
+    public function getByLevelId($level_id)
+    {
+        $sentences = $this->model->getByLevelId($level_id);
+        echo json_encode($sentences);
+    }
+
     public function create()
     {
         $data = json_decode(file_get_contents("php://input"), true);

@@ -19,6 +19,11 @@ return [
         return $sentenceBuilderSentenceController->getById($id);
     },
 
+    // Get sentences by level ID
+    'GET /sentence-builder-sentences/level/(\d+)/$' => function ($level_id) use ($sentenceBuilderSentenceController) {
+        return $sentenceBuilderSentenceController->getByLevelId($level_id);
+    },
+
     // Create a new sentence
     'POST /sentence-builder-sentences/$' => function () use ($sentenceBuilderSentenceController) {
         return $sentenceBuilderSentenceController->create();
