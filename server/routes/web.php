@@ -138,6 +138,9 @@ $CareInstructionRoutesUpdated = require './routes/ceylonPharmacy/CareInstruction
 $careInstructionPreRoutes = require './routes/ceylonPharmacy/careInstructionPreRoutes.php';
 $careInsAnswerRoutes = require './routes/ceylonPharmacy/careInsAnswerRoutes.php';
 $masterProductRoutes = require './routes/ceylonPharmacy/MasterProductRoutes.php';
+$sentenceBuilderLevelRoutes = require './routes/sentenceBuilderLevelRoutes.php';
+$sentenceBuilderSentenceRoutes = require './routes/sentenceBuilderSentenceRoutes.php';
+$sentenceBuilderStudentAnswerRoutes = require './routes/sentenceBuilderStudentAnswerRoutes.php';
 
 
 
@@ -259,7 +262,10 @@ $routes = array_merge(
     $careSavedAnswersRoutes,
     $careStartRoutes,
     $careInsAnswerRoutes,
-    $masterProductRoutes
+    $masterProductRoutes,
+    $sentenceBuilderLevelRoutes,
+    $sentenceBuilderSentenceRoutes,
+    $sentenceBuilderStudentAnswerRoutes
 );
 
 
