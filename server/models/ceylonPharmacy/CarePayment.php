@@ -26,24 +26,24 @@ class CarePayment
     public function createOrUpdatePayment($data)
     {
         // Check if a record with the same PresCode already exists
-        $stmt = $this->pdo->prepare('SELECT id, value FROM care_payment WHERE PresCode = :PresCode');
+        $stmt = $this->pdo->prepare('SELECT id FROM care_payment WHERE PresCode = :PresCode LIMIT 1');
         $stmt->execute(['PresCode' => $data['PresCode']]);
-        $existingPayment = $stmt->fetch(PDO::FETCH_ASSOC);
+        $existing = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($existingPayment) {
-            // Record exists, check if the value is different before updating
-            if ($existingPayment['value'] != $data['value']) {
-                $stmt = $this->pdo->prepare(
-                    'UPDATE care_payment SET value = :value WHERE id = :id'
-                );
-                $stmt->execute([
-                    ':value' => $data['value'],
-                    ':id' => $existingPayment['id']
-                ]);
-                return ['status' => 'updated', 'id' => $existingPayment['id']];
+        if ($existing) {
+            // Record exists, update all records with the matching PresCode
+            $stmt = $this->pdo->prepare(
+                'UPDATE care_payment SET value = :value WHERE PresCode = :PresCode'
+            );
+            $stmt->execute([
+                ':value' => $data['value'],
+                ':PresCode' => $data['PresCode']
+            ]);
+
+            if ($stmt->rowCount() > 0) {
+                return ['status' => 'updated', 'PresCode' => $data['PresCode']];
             } else {
-                // Value is the same, no changes needed
-                return ['status' => 'unchanged', 'id' => $existingPayment['id']];
+                return ['status' => 'unchanged', 'PresCode' => $data['PresCode']];
             }
         } else {
             // Record does not exist, create a new one
