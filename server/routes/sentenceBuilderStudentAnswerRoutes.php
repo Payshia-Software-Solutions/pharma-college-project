@@ -19,6 +19,11 @@ return [
         return $sentenceBuilderStudentAnswerController->getById($id);
     },
 
+    // Get answers by student number
+    'GET /sentence-builder-student-answers/student/([\w-]+)/$' => function ($student_number) use ($sentenceBuilderStudentAnswerController) {
+        return $sentenceBuilderStudentAnswerController->getByStudentNumber($student_number);
+    },
+
     // Create a new answer
     'POST /sentence-builder-student-answers/$' => function () use ($sentenceBuilderStudentAnswerController) {
         return $sentenceBuilderStudentAnswerController->create();
