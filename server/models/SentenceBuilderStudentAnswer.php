@@ -23,6 +23,13 @@ class SentenceBuilderStudentAnswer
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function getByStudentNumber($student_number)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM {$this->table} WHERE student_number = :student_number");
+        $stmt->execute(['student_number' => $student_number]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function create($data)
     {
         $stmt = $this->pdo->prepare("INSERT INTO {$this->table} (student_number, sentence_id, submitted_answer, is_correct, score_awarded) VALUES (:student_number, :sentence_id, :submitted_answer, :is_correct, :score_awarded)");

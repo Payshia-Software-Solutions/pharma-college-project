@@ -23,6 +23,17 @@ class SentenceBuilderStudentAnswerController
         echo json_encode($answer);
     }
 
+    public function getByStudentNumber($student_number)
+    {
+        $answers = $this->model->getByStudentNumber($student_number);
+        if ($answers) {
+            echo json_encode($answers);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Answers not found for this student']);
+        }
+    }
+
     public function create()
     {
         $data = json_decode(file_get_contents("php://input"), true);
