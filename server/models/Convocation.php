@@ -59,4 +59,11 @@ class Convocation
         $stmt = $this->pdo->prepare("DELETE FROM `convocations` WHERE `id` = ?");
         $stmt->execute([$id]);
     }
+
+    public function updateAcceptBooking($id, $status)
+    {
+        $stmt = $this->pdo->prepare("UPDATE `convocations` SET `accept_booking` = ? WHERE `id` = ?");
+        $stmt->execute([$status, $id]);
+        return $stmt->rowCount();
+    }
 }
