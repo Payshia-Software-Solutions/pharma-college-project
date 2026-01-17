@@ -10,16 +10,16 @@ class Package
         $this->pdo = $pdo;
     }
 
-    public function createPackage($package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $courses, $is_active = true, $cover_image = null)
+    public function createPackage($package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $courses, $is_active = true, $cover_image = null, $convocation_id = null)
     {
         // Prepare the SQL statement to insert the package data
         $stmt = $this->pdo->prepare("
-        INSERT INTO packages (package_name, price, parent_seat_count, garland, graduation_cloth, photo_package, is_active, courses, cover_image)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO packages (package_name, price, parent_seat_count, garland, graduation_cloth, photo_package, is_active, courses, cover_image, convocation_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
         // Execute the query with the provided values, including the cover image path
-        $stmt->execute([$package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active, $courses, $cover_image]);
+        $stmt->execute([$package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active, $courses, $cover_image, $convocation_id]);
 
         // Return the ID of the last inserted row
         return $this->pdo->lastInsertId();
@@ -64,12 +64,12 @@ class Package
 
 
     // Update a package
-    public function updatePackage($package_id, $package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $courses, $is_active, $cover_image = null)
+    public function updatePackage($package_id, $package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $courses, $is_active, $cover_image = null, $convocation_id = null)
     {
         if ($cover_image) {
             $stmt = $this->pdo->prepare("
             UPDATE packages 
-            SET package_name = ?, price = ?, parent_seat_count = ?, garland = ?, graduation_cloth = ?, photo_package = ?, is_active = ?, courses = ?, cover_image = ?
+            SET package_name = ?, price = ?, parent_seat_count = ?, garland = ?, graduation_cloth = ?, photo_package = ?, is_active = ?, courses = ?, cover_image = ?, convocation_id = ?
             WHERE package_id = ?
         ");
             return $stmt->execute([
@@ -82,12 +82,13 @@ class Package
                 $is_active,
                 $courses,
                 $cover_image,
+                $convocation_id,
                 $package_id
             ]);
         } else {
             $stmt = $this->pdo->prepare("
             UPDATE packages 
-            SET package_name = ?, price = ?, parent_seat_count = ?, garland = ?, graduation_cloth = ?, photo_package = ?, is_active = ?, courses = ?
+            SET package_name = ?, price = ?, parent_seat_count = ?, garland = ?, graduation_cloth = ?, photo_package = ?, is_active = ?, courses = ?, convocation_id = ?
             WHERE package_id = ?
         ");
             return $stmt->execute([
@@ -99,6 +100,7 @@ class Package
                 $photo_package,
                 $is_active,
                 $courses,
+                $convocation_id,
                 $package_id
             ]);
         }

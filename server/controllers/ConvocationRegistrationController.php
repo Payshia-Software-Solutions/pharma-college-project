@@ -259,7 +259,8 @@ class ConvocationRegistrationController
                 $data['hash_value'] ?? null,
                 $paymentSlipPath,
                 $data['additional_seats'] ?? 0,
-                $data['session'] ?? 1
+                $data['session'] ?? 1,
+                $data['convocation_id'] ?? null // ADDED
             );
             http_response_code(201);
             echo json_encode([
@@ -301,7 +302,8 @@ class ConvocationRegistrationController
                 $data['hash_value'] ?? null,
                 $paymentSlipPath,
                 $data['additional_seats'] ?? 0,
-                $data['session'] ?? 1
+                $data['session'] ?? 1,
+                $data['convocation_id'] ?? null // ADDED
             );
             http_response_code(201);
             echo json_encode([
@@ -333,7 +335,8 @@ class ConvocationRegistrationController
             $data['event_id'] ?? null,
             $data['payment_status'] ?? 'pending',
             $data['payment_amount'] ?? null,
-            $data['registration_status'] ?? 'pending'
+            $data['registration_status'] ?? 'pending',
+            $data['convocation_id'] ?? null // ADDED
         );
         if ($success) {
             echo json_encode(['message' => 'Registration updated successfully']);
