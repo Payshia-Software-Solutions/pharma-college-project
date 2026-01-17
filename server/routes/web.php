@@ -115,6 +115,7 @@ $ConvocationRegistrationRoutes  = require './routes/ConvocationRegistrationRoute
 $PackageRoutes  = require './routes/PackageRoutes.php';
 $CertificateOrderRoutes = require './routes/CertificateOrderRoutes.php';
 $convocationRoutes = require './routes/convocationRoutes.php';
+$convocationStatusRoutes = require './routes/convocationStatusRoutes.php';
 $transactionPaymentRoutes = require './routes/transactionPaymentRoutes.php';
 $WordListRoutes = require './routes/WordListRoutes.php';
 $EnWordSubmissionRoutes = require './routes/EnWordSubmissionRoutes.php';
@@ -242,6 +243,7 @@ $routes = array_merge(
     $PackageRoutes,
     $CertificateOrderRoutes,
     $convocationRoutes,
+    $convocationStatusRoutes,
     $WordListRoutes,
     $EnWordSubmissionRoutes,
     $UserCertificatePrintStatusRoutesNew,
