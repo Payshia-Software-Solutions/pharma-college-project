@@ -109,9 +109,10 @@ $ECertificateRoutes = require './routes/ecertificates/ECertificateRoutes.php';
 $paymentRequestRoutes = require './routes/PaymentRequests/paymentRequestRoutes.php';
 $DeliverySettingRoutes = require './routes/DeliverySettingRoutes.php';
 $DpadRoutes = require './routes/Dpad/DpadRoutes.php';
-$SMSRoutes = require './routes/SMSRoutes.php';
+$SMSRoutes = require './routes/SMSRoutes..php';
 $bankRoutes = require './routes/bankRoutes.php';
 $ConvocationRegistrationRoutes  = require './routes/ConvocationRegistrationRoutes.php';
+$convocationRegistrationByConvocationRoutes = require './routes/convocationRegistrationByConvocationRoutes.php';
 $PackageRoutes  = require './routes/PackageRoutes.php';
 $CertificateOrderRoutes = require './routes/CertificateOrderRoutes.php';
 $convocationRoutes = require './routes/convocationRoutes.php';
@@ -240,6 +241,7 @@ $routes = array_merge(
     $TestimonialRoutes,
     $EventsPageRoutes,
     $ConvocationRegistrationRoutes,
+    $convocationRegistrationByConvocationRoutes,
     $PackageRoutes,
     $CertificateOrderRoutes,
     $convocationRoutes,
