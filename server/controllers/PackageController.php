@@ -170,7 +170,7 @@ class PackageController
     public function createPackage()
     {
         // Validate required POST fields
-        $requiredFields = ['package_name', 'price', 'parent_seat_count', 'garland', 'graduation_cloth', 'photo_package'];
+        $requiredFields = ['package_name', 'price', 'parent_seat_count', 'garland', 'graduation_cloth', 'photo_package', 'convocation_id'];
         foreach ($requiredFields as $field) {
             if (!isset($_POST[$field])) {
                 http_response_code(400);
@@ -210,7 +210,8 @@ class PackageController
             intval($_POST['photo_package']),
             $courses,
             $isActive,
-            $coverImagePath // Include the FTP image path in the DB if supported
+            $coverImagePath, // Include the FTP image path in the DB if supported            
+            intval($_POST['convocation_id']),
         );
 
         http_response_code(201);
@@ -279,7 +280,8 @@ class PackageController
             intval($_POST['photo_package']),
             $_POST['courses'] ?? '',
             isset($_POST['is_active']) ? filter_var($_POST['is_active'], FILTER_VALIDATE_BOOLEAN) : true,
-            $coverImagePath // new image path if updated
+            $coverImagePath, // new image path if updated
+            intval($_POST['convocation_id'])
         );
 
         echo json_encode(
