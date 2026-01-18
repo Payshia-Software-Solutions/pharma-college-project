@@ -14,11 +14,11 @@ return [
         return $convocationRegistrationController->getRegistrations();
     },
 
-    'GET /convocation-registrations/get-counts-by-sessions/$' => function () use ($convocationRegistrationController) {
-        return $convocationRegistrationController->getCountsBySessions();
+    'GET /convocation-registrations/get-counts-by-sessions/(\d+)/$' => function ($ceremonyId) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->getCountsBySessions($ceremonyId);
     },
-    'GET /convocation-registrations/get-additional-seats-by-sessions/(\d+)/$' => function ($sessionId) use ($convocationRegistrationController) {
-        return $convocationRegistrationController->getAdditionalSeatsCountsBySessions($sessionId);
+    'GET /convocation-registrations/get-additional-seats-by-sessions/(\d+)/ceremony/(\d+)/$' => function ($sessionId, $ceremonyId) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->getAdditionalSeatsCountsBySessions($sessionId, $ceremonyId);
     },
 
     // GET a single registration by ID
