@@ -189,7 +189,16 @@ class ConvocationRegistrationController
             // var_dump($data);
 
             // Extract course_ids directly from $_POST['course_id']
-            $courseIds = isset($data['course_id']) && is_array($data['course_id']) ? $data['course_id'] : [];
+            // $courseIds = isset($data['course_id']) && is_array($data['course_id']) ? $data['course_id'] : [];
+            $courseIds = [];
+            if (isset($data['course_id'])) {
+                if (is_array($data['course_id'])) {
+                    $courseIds = $data['course_id']; // Use as is if it's an array
+                } else {
+                    // If it's a string (like "0,1"), split it into an array
+                    $courseIds = explode(',', $data['course_id']);
+                }
+            }            
 
             // Debugging: Log or output the incoming data
             error_log("Received data: " . print_r($data, true)); // Log to PHP error log
