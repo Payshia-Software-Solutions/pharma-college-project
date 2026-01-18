@@ -36,17 +36,17 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getCountsBySessions()
+    public function getCountsBySessions($ceremonyId)
     {
-        $stmt = $this->pdo->prepare("SELECT `session`, COUNT(registration_id) AS `sessionCounts` FROM convocation_registrations GROUP BY `session`");
-        $stmt->execute([]);
+        $stmt = $this->pdo->prepare("SELECT `session`, COUNT(registration_id) AS `sessionCounts` FROM convocation_registrations WHERE `convocation_id` = ? GROUP BY `session`");
+        $stmt->execute([$ceremonyId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getAdditionalSeatsCountsBySessions($sessionId)
+    public function getAdditionalSeatsCountsBySessions($sessionId, $ceremonyId)
     {
-        $stmt = $this->pdo->prepare("SELECT SUM(additional_seats) AS `total_additional_seats` FROM convocation_registrations WHERE `session` = ?");
-        $stmt->execute([$sessionId]);
+        $stmt = $this->pdo->prepare("SELECT SUM(additional_seats) AS `total_additional_seats` FROM convocation_registrations WHERE `session` = ? AND `convocation_id` = ?");
+        $stmt->execute([$sessionId, $ceremonyId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
