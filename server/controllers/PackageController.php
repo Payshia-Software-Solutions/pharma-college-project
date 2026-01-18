@@ -140,33 +140,6 @@ class PackageController
 
 
     // POST create a new package
-    // public function createPackage()
-    // {
-    //     $data = json_decode(file_get_contents('php://input'), true);
-    //     if (
-    //         !isset($data['package_name']) || !isset($data['price']) ||
-    //         !isset($data['parent_seat_count']) || !isset($data['garland']) ||
-    //         !isset($data['graduation_cloth']) || !isset($data['photo_package'])
-    //     ) {
-    //         http_response_code(400);
-    //         echo json_encode(['error' => 'Missing required fields']);
-    //         return;
-    //     }
-
-    //     $package_id = $this->model->createPackage(
-    //         $data['package_name'],
-    //         $data['price'],
-    //         $data['parent_seat_count'],
-    //         $data['garland'],
-    //         $data['graduation_cloth'],
-    //         $data['photo_package'],
-    //         $data['courses'],
-    //         $data['is_active'] ?? true,
-    //     );
-    //     http_response_code(201);
-    //     echo json_encode(['package_id' => $package_id, 'message' => 'Package created successfully']);
-    // }
-
     public function createPackage()
     {
         // Validate required POST fields
@@ -198,6 +171,7 @@ class PackageController
 
         // Parse optional fields
         $courses = isset($_POST['courses']) ? $_POST['courses'] : '';
+        $course_list = isset($_POST['course_list']) ? $_POST['course_list'] : '';
         $isActive = isset($_POST['is_active']) ? filter_var($_POST['is_active'], FILTER_VALIDATE_BOOLEAN) : true;
 
         // Call model to insert data
@@ -209,6 +183,7 @@ class PackageController
             intval($_POST['graduation_cloth']),
             intval($_POST['photo_package']),
             $courses,
+            $course_list,
             $isActive,
             $coverImagePath, // Include the FTP image path in the DB if supported            
             intval($_POST['convocation_id']),
@@ -279,6 +254,7 @@ class PackageController
             intval($_POST['graduation_cloth']),
             intval($_POST['photo_package']),
             $_POST['courses'] ?? '',
+            $_POST['course_list'] ?? '',
             isset($_POST['is_active']) ? filter_var($_POST['is_active'], FILTER_VALIDATE_BOOLEAN) : true,
             $coverImagePath, // new image path if updated
             intval($_POST['convocation_id'])
