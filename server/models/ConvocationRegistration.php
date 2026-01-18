@@ -55,7 +55,7 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     {
         $stmt = $this->pdo->prepare("SELECT * FROM convocation_registrations WHERE student_number = ?");
         $stmt->execute([$student_number]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Get all registrations for a specific course and session
