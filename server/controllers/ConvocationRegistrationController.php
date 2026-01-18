@@ -184,7 +184,7 @@ class ConvocationRegistrationController
         // Check if the request is multipart/form-data
         if ($_SERVER['CONTENT_TYPE'] && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
             $data = $_POST; // Form fields
-            $file = $_FILES['payment_slip'] ?? null; // Uploaded file (matches frontend FormData key)
+            $file = $_FILES['image'] ?? null; // Uploaded file (matches frontend FormData key)
 
             // var_dump($data);
 
