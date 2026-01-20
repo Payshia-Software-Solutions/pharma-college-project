@@ -10,16 +10,57 @@ class Package
         $this->pdo = $pdo;
     }
 
-    public function createPackage($package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $courses, $course_list, $is_active = true, $cover_image = null, $convocation_id = null)
-    {
+    public function createPackage(
+        $package_name,
+        $price,
+        $parent_seat_count,
+        $garland,
+        $graduation_cloth,
+        $photo_package,
+        $courses,
+        $course_list,
+        $scroll,
+        $student_seat,
+        $certificate_file,
+        $video_360,
+        $refreshments,
+        $vip_seat,
+        $description,
+        $is_active = true,
+        $cover_image = null,
+        $convocation_id = null
+    ) {
         // Prepare the SQL statement to insert the package data
         $stmt = $this->pdo->prepare("
-        INSERT INTO packages (package_name, price, parent_seat_count, garland, graduation_cloth, photo_package, is_active, courses, course_list, cover_image, convocation_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO packages (
+            package_name, price, parent_seat_count, garland, graduation_cloth, photo_package, is_active, courses, course_list, 
+            scroll, student_seat, certificate_file, video_360, refreshments, vip_seat, description,
+            cover_image, convocation_id
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ");
 
-        // Execute the query with the provided values, including the cover image path
-        $stmt->execute([$package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $is_active, $courses, $course_list, $cover_image, $convocation_id]);
+        // Execute the query with the provided values
+        $stmt->execute([
+            $package_name,
+            $price,
+            $parent_seat_count,
+            $garland,
+            $graduation_cloth,
+            $photo_package,
+            $is_active,
+            $courses,
+            $course_list,
+            $scroll,
+            $student_seat,
+            $certificate_file,
+            $video_360,
+            $refreshments,
+            $vip_seat,
+            $description,
+            $cover_image,
+            $convocation_id
+        ]);
 
         // Return the ID of the last inserted row
         return $this->pdo->lastInsertId();
@@ -64,12 +105,33 @@ class Package
 
 
     // Update a package
-    public function updatePackage($package_id, $package_name, $price, $parent_seat_count, $garland, $graduation_cloth, $photo_package, $courses, $course_list, $is_active, $cover_image = null, $convocation_id = null)
-    {
+    public function updatePackage(
+        $package_id,
+        $package_name,
+        $price,
+        $parent_seat_count,
+        $garland,
+        $graduation_cloth,
+        $photo_package,
+        $courses,
+        $course_list,
+        $scroll,
+        $student_seat,
+        $certificate_file,
+        $video_360,
+        $refreshments,
+        $vip_seat,
+        $description,
+        $is_active,
+        $cover_image = null,
+        $convocation_id = null
+    ) {
         if ($cover_image) {
             $stmt = $this->pdo->prepare("
             UPDATE packages 
-            SET package_name = ?, price = ?, parent_seat_count = ?, garland = ?, graduation_cloth = ?, photo_package = ?, is_active = ?, courses = ?, course_list = ?, cover_image = ?, convocation_id = ?
+            SET package_name = ?, price = ?, parent_seat_count = ?, garland = ?, graduation_cloth = ?, photo_package = ?, 
+                is_active = ?, courses = ?, course_list = ?, scroll = ?, student_seat = ?, certificate_file = ?, 
+                video_360 = ?, refreshments = ?, vip_seat = ?, description = ?, cover_image = ?, convocation_id = ?
             WHERE package_id = ?
         ");
             return $stmt->execute([
@@ -82,6 +144,13 @@ class Package
                 $is_active,
                 $courses,
                 $course_list,
+                $scroll,
+                $student_seat,
+                $certificate_file,
+                $video_360,
+                $refreshments,
+                $vip_seat,
+                $description,
                 $cover_image,
                 $convocation_id,
                 $package_id
@@ -89,7 +158,9 @@ class Package
         } else {
             $stmt = $this->pdo->prepare("
             UPDATE packages 
-            SET package_name = ?, price = ?, parent_seat_count = ?, garland = ?, graduation_cloth = ?, photo_package = ?, is_active = ?, courses = ?, course_list = ?, convocation_id = ?
+            SET package_name = ?, price = ?, parent_seat_count = ?, garland = ?, graduation_cloth = ?, photo_package = ?, 
+                is_active = ?, courses = ?, course_list = ?, scroll = ?, student_seat = ?, certificate_file = ?, 
+                video_360 = ?, refreshments = ?, vip_seat = ?, description = ?, convocation_id = ?
             WHERE package_id = ?
         ");
             return $stmt->execute([
@@ -102,6 +173,13 @@ class Package
                 $is_active,
                 $courses,
                 $course_list,
+                $scroll,
+                $student_seat,
+                $certificate_file,
+                $video_360,
+                $refreshments,
+                $vip_seat,
+                $description,
                 $convocation_id,
                 $package_id
             ]);
