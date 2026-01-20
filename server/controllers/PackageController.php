@@ -172,6 +172,7 @@ class PackageController
         // Parse optional fields
         $courses = isset($_POST['courses']) ? $_POST['courses'] : '';
         $course_list = isset($_POST['course_list']) ? $_POST['course_list'] : '';
+        $description = isset($_POST['description']) ? $_POST['description'] : '';
         $isActive = isset($_POST['is_active']) ? filter_var($_POST['is_active'], FILTER_VALIDATE_BOOLEAN) : true;
 
         // Call model to insert data
@@ -184,6 +185,13 @@ class PackageController
             intval($_POST['photo_package']),
             $courses,
             $course_list,
+            intval($_POST['scroll'] ?? 0),
+            intval($_POST['student_seat'] ?? 0),
+            intval($_POST['certificate_file'] ?? 0),
+            intval($_POST['video_360'] ?? 0),
+            intval($_POST['refreshments'] ?? 0),
+            intval($_POST['vip_seat'] ?? 0),
+            $description,
             $isActive,
             $coverImagePath, // Include the FTP image path in the DB if supported            
             intval($_POST['convocation_id']),
@@ -255,6 +263,13 @@ class PackageController
             intval($_POST['photo_package']),
             $_POST['courses'] ?? '',
             $_POST['course_list'] ?? '',
+            intval($_POST['scroll'] ?? 0),
+            intval($_POST['student_seat'] ?? 0),
+            intval($_POST['certificate_file'] ?? 0),
+            intval($_POST['video_360'] ?? 0),
+            intval($_POST['refreshments'] ?? 0),
+            intval($_POST['vip_seat'] ?? 0),
+            $_POST['description'] ?? '',
             isset($_POST['is_active']) ? filter_var($_POST['is_active'], FILTER_VALIDATE_BOOLEAN) : true,
             $coverImagePath, // new image path if updated
             intval($_POST['convocation_id'])
