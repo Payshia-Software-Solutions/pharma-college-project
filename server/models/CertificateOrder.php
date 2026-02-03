@@ -14,134 +14,139 @@ class CertificateOrder
     public function getAllOrders()
     {
         $sql = "SELECT 
-    o.`id`, 
-    o.`created_by`, 
-    o.`created_at`, 
-    o.`updated_at`, 
-    o.`course_code`, 
-    o.`mobile`, 
-    o.`address_line1`, 
-    o.`address_line2`, 
-    o.`city_id`, 
-    o.`district`, 
-    o.`type`, 
-    o.`payment`, 
-    o.`package_id`, 
-    o.`certificate_id`, 
-    o.`certificate_status`, 
-    o.`advanced_id`, 
-    o.`advanced_id_status`, 
-    o.`cod_amount`, 
-    o.`is_active`,
-    u.`name_on_certificate`,
-    u.`telephone_1`,
-    o.`print_status`
-FROM 
-    `cc_certificate_order` o
-LEFT JOIN 
-    `user_full_details` u ON o.`created_by` = u.`username`
-ORDER BY 
-    o.`id`;
-";
+            o.`id`, 
+            o.`created_by`, 
+            o.`created_at`, 
+            o.`updated_at`, 
+            o.`course_code`, 
+            o.`mobile`, 
+            o.`address_line1`, 
+            o.`address_line2`, 
+            o.`city_id`, 
+            o.`district`, 
+            o.`type`, 
+            o.`payment`, 
+            o.`package_id`, 
+            o.`certificate_id`, 
+            o.`certificate_status`, 
+            o.`advanced_id`, 
+            o.`advanced_id_status`, 
+            o.`cod_amount`, 
+            o.`is_active`,
+            o.`garlent`,
+            o.`scroll`,
+            o.`certificate_file`,
+            o.`payment_slip`,
+            u.`name_on_certificate`,
+            u.`telephone_1`,
+            o.`print_status`
+        FROM 
+            `cc_certificate_order` o
+        LEFT JOIN 
+            `user_full_details` u ON o.`created_by` = u.`username`
+        ORDER BY 
+            o.`id`;
+        ";
         $stmt = $this->pdo->query($sql);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
-
     public function getOrdersWithCourseCode($courseCode)
     {
         $sql = "SELECT 
-        o.`id`, 
-        o.`created_by`, 
-        o.`created_at`, 
-        o.`updated_at`, 
-        o.`course_code`, 
-        o.`mobile`, 
-        o.`address_line1`, 
-        o.`address_line2`, 
-        o.`city_id`, 
-        o.`district`, 
-        o.`type`, 
-        o.`payment`, 
-        o.`package_id`, 
-        o.`certificate_id`, 
-        o.`certificate_status`, 
-        o.`advanced_id`, 
-        o.`advanced_id_status`, 
-        o.`cod_amount`, 
-        o.`is_active`,
-        u.`name_on_certificate`,
-        u.`telephone_1`
-    FROM 
-        `cc_certificate_order` o
-    LEFT JOIN 
-        `user_full_details` u ON o.`created_by` = u.`username`
-    WHERE 
-        FIND_IN_SET(?, o.`course_code`)
-    ORDER BY 
-        o.`id`";
-
+            o.`id`, 
+            o.`created_by`, 
+            o.`created_at`, 
+            o.`updated_at`, 
+            o.`course_code`, 
+            o.`mobile`, 
+            o.`address_line1`, 
+            o.`address_line2`, 
+            o.`city_id`, 
+            o.`district`, 
+            o.`type`, 
+            o.`payment`, 
+            o.`package_id`, 
+            o.`certificate_id`, 
+            o.`certificate_status`, 
+            o.`advanced_id`, 
+            o.`advanced_id_status`, 
+            o.`cod_amount`, 
+            o.`is_active`,
+            o.`garlent`,
+            o.`scroll`,
+            o.`certificate_file`,
+            o.`payment_slip`,
+            u.`name_on_certificate`,
+            u.`telephone_1`
+        FROM 
+            `cc_certificate_order` o
+        LEFT JOIN 
+            `user_full_details` u ON o.`created_by` = u.`username`
+        WHERE 
+            FIND_IN_SET(?, o.`course_code`)
+        ORDER BY 
+            o.`id`";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$courseCode]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
     public function getOrdersByStudentNumber($studentNumber)
     {
         $sql = "SELECT 
-        o.`id`, 
-        o.`created_by`, 
-        o.`created_at`, 
-        o.`updated_at`, 
-        o.`course_code`, 
-        o.`mobile`, 
-        o.`address_line1`, 
-        o.`address_line2`, 
-        o.`city_id`, 
-        o.`district`, 
-        o.`type`, 
-        o.`payment`, 
-        o.`package_id`, 
-        o.`certificate_id`, 
-        o.`certificate_status`, 
-        o.`advanced_id`, 
-        o.`advanced_id_status`, 
-        o.`cod_amount`, 
-        o.`is_active`,
-        u.`name_on_certificate`,
-        u.`telephone_1`
-    FROM
-        `cc_certificate_order` o
-    LEFT JOIN
-        `user_full_details` u ON o.`created_by` = u.`username`
-    WHERE
-        u.`username` = ?
-    ORDER BY
-        o.`id`";
+            o.`id`, 
+            o.`created_by`, 
+            o.`created_at`, 
+            o.`updated_at`, 
+            o.`course_code`, 
+            o.`mobile`, 
+            o.`address_line1`, 
+            o.`address_line2`, 
+            o.`city_id`, 
+            o.`district`, 
+            o.`type`, 
+            o.`payment`, 
+            o.`package_id`, 
+            o.`certificate_id`, 
+            o.`certificate_status`, 
+            o.`advanced_id`, 
+            o.`advanced_id_status`, 
+            o.`cod_amount`, 
+            o.`is_active`,
+            o.`garlent`,
+            o.`scroll`,
+            o.`certificate_file`,
+            o.`payment_slip`,
+            u.`name_on_certificate`,
+            u.`telephone_1`
+        FROM
+            `cc_certificate_order` o
+        LEFT JOIN
+            `user_full_details` u ON o.`created_by` = u.`username`
+        WHERE
+            u.`username` = ?
+        ORDER BY
+            o.`id`";
 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$studentNumber]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-
     // Create a new certificate order
-    public function createOrder($created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active)
+    public function createOrder($created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active, $garlent, $scroll, $certificate_file, $payment_slip)
     {
         $stmt = $this->pdo->prepare("
-            INSERT INTO cc_certificate_order (created_by, course_code, mobile, address_line1, address_line2, city_id,district, type, payment, package_id, certificate_id, certificate_status, cod_amount, is_active)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+            INSERT INTO cc_certificate_order (created_by, course_code, mobile, address_line1, address_line2, city_id,district, type, payment, package_id, certificate_id, certificate_status, cod_amount, is_active, garlent, scroll, certificate_file, payment_slip)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
-        $stmt->execute([$created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active]);
+        $stmt->execute([$created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active, $garlent, $scroll, $certificate_file, $payment_slip]);
 
         $order_id = $this->pdo->lastInsertId();
         return $order_id;
     }
-
-
 
     // Read a single certificate order by ID
     public function getOrderById($order_id)
@@ -160,14 +165,23 @@ ORDER BY
     }
 
     // Update a certificate order
-    public function updateOrder($order_id, $created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active)
+    public function updateOrder($order_id, $created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active, $garlent, $scroll, $certificate_file, $payment_slip)
     {
-        $stmt = $this->pdo->prepare("
-            UPDATE cc_certificate_order 
-            SET created_by = ?, course_code = ?, mobile = ?, address_line1 = ?, address_line2 = ?, city_id = ?,district=?, type = ?, payment = ?, package_id = ?, certificate_id = ?, certificate_status = ?, cod_amount = ?, is_active = ?
-            WHERE id = ?
-        ");
-        return $stmt->execute([$created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active, $order_id]);
+        if ($payment_slip) {
+            $stmt = $this->pdo->prepare("
+                UPDATE cc_certificate_order 
+                SET created_by = ?, course_code = ?, mobile = ?, address_line1 = ?, address_line2 = ?, city_id = ?,district=?, type = ?, payment = ?, package_id = ?, certificate_id = ?, certificate_status = ?, cod_amount = ?, is_active = ?, garlent = ?, scroll = ?, certificate_file = ?, payment_slip = ?
+                WHERE id = ?
+            ");
+            return $stmt->execute([$created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active, $garlent, $scroll, $certificate_file, $payment_slip, $order_id]);
+        } else {
+            $stmt = $this->pdo->prepare("
+                UPDATE cc_certificate_order 
+                SET created_by = ?, course_code = ?, mobile = ?, address_line1 = ?, address_line2 = ?, city_id = ?,district=?, type = ?, payment = ?, package_id = ?, certificate_id = ?, certificate_status = ?, cod_amount = ?, is_active = ?, garlent = ?, scroll = ?, certificate_file = ?
+                WHERE id = ?
+            ");
+            return $stmt->execute([$created_by, $course_code, $mobile, $address_line1, $address_line2, $city_id, $district, $type, $payment, $package_id, $certificate_id, $certificate_status, $cod_amount, $is_active, $garlent, $scroll, $certificate_file, $order_id]);
+        }
     }
 
     // Delete a certificate order
