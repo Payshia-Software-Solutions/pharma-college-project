@@ -14,6 +14,75 @@ class CertificateOrderController
         $this->ftpConfig = include('./config/ftp.php');
     }
 
+    private function ensureDirectoryExists($ftp_conn, $dir)
+    {
+        $parts = explode('/', $dir);
+        $path = '';
+        foreach ($parts as $part) {
+            if (empty($part)) {
+                continue;
+            }
+            $path .= '/' . $part;
+            if (!@ftp_chdir($ftp_conn, $path)) {
+                if (!ftp_mkdir($ftp_conn, $path)) {
+                    throw new Exception("Could not create directory: $path on FTP server.");
+                }
+            }
+        }
+    }
+
+    private function uploadPaymentSlipToFTP($file)
+    {
+        try {
+            ini_set('memory_limit', '256M');
+
+            $ftp_server = $this->ftpConfig['ftp_server'];
+            $ftp_username = $this->ftpConfig['ftp_username'];
+            $ftp_password = $this->ftpConfig['ftp_password'];
+            $ftp_target_dir = '/content-provider/uploads/certificate-payment-slips/';
+
+            if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+                throw new Exception("Invalid file upload.");
+            }
+
+            $tempDir = './tmp';
+            if (!is_dir($tempDir)) {
+                mkdir($tempDir, 0777, true);
+            }
+
+            $tempPath = $tempDir . '/' . basename($file['name']);
+            if (!move_uploaded_file($file['tmp_name'], $tempPath)) {
+                throw new Exception("Failed to move uploaded file to temporary directory.");
+            }
+
+            $ftp_conn = ftp_connect($ftp_server);
+            if (!$ftp_conn) {
+                throw new Exception("Could not connect to FTP server.");
+            }
+
+            if (!ftp_login($ftp_conn, $ftp_username, $ftp_password)) {
+                ftp_close($ftp_conn);
+                throw new Exception("Could not login to FTP server.");
+            }
+
+            ftp_pasv($ftp_conn, true);
+
+            $this->ensureDirectoryExists($ftp_conn, $ftp_target_dir);
+
+            $remoteFilePath = $ftp_target_dir . basename($file['name']);
+            if (!ftp_put($ftp_conn, $remoteFilePath, $tempPath, FTP_BINARY)) {
+                throw new Exception("Failed to upload image to FTP: $remoteFilePath");
+            }
+
+            unlink($tempPath);
+            ftp_close($ftp_conn);
+
+            return ['status' => 'success', 'message' => 'Image uploaded successfully.', 'path' => basename($file['name'])];
+        } catch (Exception $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
+    }
+
 
     // GET all certificate orders
     public function getOrders()
@@ -73,7 +142,7 @@ class CertificateOrderController
     // POST create a new certificate order (no id in input)
     public function createOrder()
     {
-        $data = $_POST; // Form fields
+        $data = $_POST;
 
         $requiredFields = [
             'created_by',
@@ -89,7 +158,6 @@ class CertificateOrderController
             'certificate_status'
         ];
 
-        // Check for missing fields
         $missingFields = [];
 
         foreach ($requiredFields as $field) {
@@ -104,13 +172,22 @@ class CertificateOrderController
             return;
         }
 
-        // Extract course_ids directly from $_POST['course_id']
+        $paymentSlipPath = null;
+        if (isset($_FILES['payment_slip']) && $_FILES['payment_slip']['error'] === UPLOAD_ERR_OK) {
+            $uploadResult = $this->uploadPaymentSlipToFTP($_FILES['payment_slip']);
+
+            if ($uploadResult['status'] === 'error') {
+                http_response_code(500);
+                echo json_encode(['error' => $uploadResult['message']]);
+                return;
+            }
+
+            $paymentSlipPath = $uploadResult['path'];
+        }
+
         $courseIds = isset($data['course_id']) && is_array($data['course_id']) ? $data['course_id'] : [];
-        // Convert course_ids array to a comma-separated string
         $courseIdsString = implode(',', $courseIds);
 
-
-        // Create certificate order in the database
         $order_id = $this->model->createOrder(
             $data['created_by'],
             $courseIdsString,
@@ -125,7 +202,11 @@ class CertificateOrderController
             $data['certificate_id'],
             $data['certificate_status'],
             $data['cod_amount'] ?? 0,
-            $data['is_active'] ?? 1
+            $data['is_active'] ?? 1,
+            $data['garlent'] ?? 0,
+            $data['scroll'] ?? 0,
+            $data['certificate_file'] ?? 0,
+            $paymentSlipPath
         );
 
         http_response_code(201);
@@ -138,14 +219,25 @@ class CertificateOrderController
     // PUT update a certificate order
     public function updateOrder($order_id)
     {
-        $data = json_decode(file_get_contents('php://input'), true);
-        if (
-            !isset($data['created_by']) || !isset($data['course_code']) ||
-            !isset($data['certificate_id'])
-        ) {
+        $data = $_POST;
+
+        if (!isset($data['created_by']) || !isset($data['course_code']) || !isset($data['certificate_id'])) {
             http_response_code(400);
             echo json_encode(['error' => 'Missing required fields']);
             return;
+        }
+
+        $paymentSlipPath = null;
+        if (isset($_FILES['payment_slip']) && $_FILES['payment_slip']['error'] === UPLOAD_ERR_OK) {
+            $uploadResult = $this->uploadPaymentSlipToFTP($_FILES['payment_slip']);
+
+            if ($uploadResult['status'] === 'error') {
+                http_response_code(500);
+                echo json_encode(['error' => $uploadResult['message']]);
+                return;
+            }
+
+            $paymentSlipPath = $uploadResult['path'];
         }
 
         $success = $this->model->updateOrder(
@@ -163,8 +255,13 @@ class CertificateOrderController
             $data['certificate_id'],
             $data['certificate_status'],
             $data['cod_amount'] ?? 0,
-            $data['is_active'] ?? 1
+            $data['is_active'] ?? 1,
+            $data['garlent'] ?? 0,
+            $data['scroll'] ?? 0,
+            $data['certificate_file'] ?? 0,
+            $paymentSlipPath
         );
+
         if ($success) {
             echo json_encode(['message' => 'Order updated successfully']);
         } else {
@@ -196,14 +293,12 @@ class CertificateOrderController
             return;
         }
 
-        // Handle both string "2,1" and array [2,1]
         if (is_array($data['course_code'])) {
             $courseIds = $data['course_code'];
         } else {
             $courseIds = array_map('trim', explode(',', $data['course_code']));
         }
 
-        // Filter out any empty values and re-implode
         $courseIdsString = implode(',', array_filter($courseIds));
 
         $success = $this->model->updateCourses($orderId, $courseIdsString);
