@@ -309,6 +309,7 @@ class CcEvaluation extends DeliveryOrder
         foreach ($assignments as $assignment) {
             $submissionInfo = $submissions[$assignment['assignment_id']] ?? [];
             $gradeValue = !empty($submissionInfo) ? $submissionInfo['grade'] : 0;
+            $gradeValue = (float) $gradeValue;
 
             $totalGrade += $gradeValue;
 
