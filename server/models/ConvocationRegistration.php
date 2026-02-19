@@ -183,7 +183,7 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     {
         $stmt = $this->pdo->prepare("
         UPDATE convocation_registrations 
-        SET registration_status = ?, payment_amount = ?
+        SET payment_status = ?, payment_amount = ?
         WHERE reference_number = ?
     ");
         return $stmt->execute([$payment_status, $payment_amount, $reference_number]);
