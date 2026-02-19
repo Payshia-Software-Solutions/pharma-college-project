@@ -151,14 +151,14 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
     }
 
     // Update a registration
-    public function updateRegistration($registration_id, $student_number, $course_id, $package_id, $event_id, $payment_status, $payment_amount, $registration_status, $convocation_id)
+    public function updateRegistration($registration_id, $student_number, $course_id, $package_id, $event_id, $payment_status, $payment_amount, $registration_status, $convocation_id, $session, $additional_seats)
     {
         $stmt = $this->pdo->prepare("
             UPDATE convocation_registrations 
-            SET student_number = ?, course_id = ?, package_id = ?, event_id = ?, payment_status = ?, payment_amount = ?, registration_status = ?, convocation_id = ?
+            SET student_number = ?, course_id = ?, package_id = ?, event_id = ?, payment_status = ?, payment_amount = ?, registration_status = ?, convocation_id = ?, session = ?, additional_seats = ?
             WHERE registration_id = ?
         ");
-        return $stmt->execute([$student_number, $course_id, $package_id, $event_id, $payment_status, $payment_amount, $registration_status, $convocation_id, $registration_id]);
+        return $stmt->execute([$student_number, $course_id, $package_id, $event_id, $payment_status, $payment_amount, $registration_status, $convocation_id, $session, $additional_seats, $registration_id]);
     }
 
     // Delete a registration
