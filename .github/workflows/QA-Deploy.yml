@@ -18,6 +18,6 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_QA_USERNAME }}
         password: ${{ secrets.FTP_QA_PASSWORD }}
-        # Add this line below:
-        passive: false
         port: 21
+        # Disables Passive mode to use Active mode
+        passive: false
