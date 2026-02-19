@@ -185,6 +185,7 @@ class ConvocationRegistrationController
         if ($_SERVER['CONTENT_TYPE'] && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
             $data = $_POST; // Form fields
             $file = $_FILES['image'] ?? null; // Uploaded file (matches frontend FormData key)
+            $data['payment_amount'] = 0;
 
             // var_dump($data);
 
@@ -326,32 +327,41 @@ class ConvocationRegistrationController
     // PUT update a registration
     public function updateRegistration($registration_id)
     {
+        // Get the new data from the request
         $data = json_decode(file_get_contents('php://input'), true);
-        if (
-            !isset($data['student_number']) || !isset($data['course_id']) ||
-            !isset($data['package_id'])
-        ) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Missing required fields']);
+
+        // Get the existing registration data
+        $existing_registration = $this->model->getRegistrationById($registration_id);
+
+        if (!$existing_registration) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Registration not found']);
             return;
         }
 
+        // Merge the new data with the existing data
+        $updated_data = array_merge($existing_registration, $data);
+
+        // Now call the model's update function with the full dataset
         $success = $this->model->updateRegistration(
             $registration_id,
-            $data['student_number'],
-            $data['course_id'],
-            $data['package_id'],
-            $data['event_id'] ?? null,
-            $data['payment_status'] ?? 'pending',
-            $data['payment_amount'] ?? null,
-            $data['registration_status'] ?? 'pending',
-            $data['convocation_id'] ?? null // ADDED
+            $updated_data['student_number'],
+            $updated_data['course_id'],
+            $updated_data['package_id'],
+            $updated_data['event_id'],
+            $updated_data['payment_status'],
+            $updated_data['payment_amount'],
+            $updated_data['registration_status'],
+            $updated_data['convocation_id'],
+            $updated_data['session'],
+            $updated_data['additional_seats']
         );
+
         if ($success) {
             echo json_encode(['message' => 'Registration updated successfully']);
         } else {
-            http_response_code(404);
-            echo json_encode(['error' => 'Registration not found or update failed']);
+            http_response_code(500);
+            echo json_encode(['error' => 'Registration update failed']);
         }
     }
 
