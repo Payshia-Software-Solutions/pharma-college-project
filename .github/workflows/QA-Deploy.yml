@@ -19,5 +19,5 @@ jobs:
         username: ${{ secrets.FTP_QA_USERNAME }}
         password: ${{ secrets.FTP_QA_PASSWORD }}
         # Add this line below:
-        protocol: ftp
+        passive: false
         port: 21
