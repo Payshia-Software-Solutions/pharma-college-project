@@ -465,13 +465,14 @@ class ConvocationRegistrationController
         $paymentAmount = $data['payment_amount'];
         $recInfo = $this->model->getRegistrationByReference($reference_number);
         $student_number = $recInfo['student_number'];
+        $convocation_id = $recInfo['convocation_id'];
         $recAmount = $recInfo['payment_amount'];
 
         $paybleAmount = $this->model->getPayableAmount($reference_number);
-        $paidAmount = $this->transactionPaymentController->model->getPaidAmount($student_number, 'covocation-payment');
+        $paidAmount = $this->transactionPaymentController->model->getPaidAmount($student_number, 'covocation-payment-'.$convocation_id,);
         $studentInfo = $this->userFullDetailsController->model->getUserByUserName($student_number);
         $txnNumber = $this->transactionPaymentController->generateTransactionId();
-        $convocation_id = $recInfo['convocation_id'];
+     
 
 
         $paymentData = [
