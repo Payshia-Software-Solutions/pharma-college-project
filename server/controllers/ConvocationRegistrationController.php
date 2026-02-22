@@ -525,8 +525,8 @@ class ConvocationRegistrationController
                 'status' => 'Success',
                 'message' => 'Payment record created and convocation updated',
                 'reference_number' => $reference_number,
-                'sms_status' => $smsResponse['status'],
-                'sms_message' => $smsResponse['message']
+                // 'sms_status' => $smsResponse['status'],
+                // 'sms_message' => $smsResponse['message']
             ]);
         } else {
             http_response_code(500);
