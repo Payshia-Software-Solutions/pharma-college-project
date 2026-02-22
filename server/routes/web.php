@@ -143,6 +143,7 @@ $masterProductRoutes = require './routes/ceylonPharmacy/MasterProductRoutes.php'
 $sentenceBuilderLevelRoutes = require './routes/sentenceBuilderLevelRoutes.php';
 $sentenceBuilderSentenceRoutes = require './routes/sentenceBuilderSentenceRoutes.php';
 $sentenceBuilderStudentAnswerRoutes = require './routes/sentenceBuilderStudentAnswerRoutes.php';
+$certificatePrintStatusRoutes = require './routes/CertificatePrintStatusRoutes.php';
 
 
 
@@ -269,7 +270,8 @@ $routes = array_merge(
     $masterProductRoutes,
     $sentenceBuilderLevelRoutes,
     $sentenceBuilderSentenceRoutes,
-    $sentenceBuilderStudentAnswerRoutes
+    $sentenceBuilderStudentAnswerRoutes,
+    $certificatePrintStatusRoutes
 );
 
 
