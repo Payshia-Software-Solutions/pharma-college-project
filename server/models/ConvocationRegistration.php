@@ -313,6 +313,15 @@ LEFT JOIN user_full_details u ON cr.student_number = u.username;
         $stmt->execute([$convocationId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    public function updateDeletedPayment($registration_id, $paymentStatus, $newPaymentAmount){
+        $stmt = $this->pdo->prepare("
+            UPDATE convocation_registrations 
+            SET payment_status = ?, payment_amount = ?
+            WHERE registration_id = ?
+        ");
+        return $stmt->execute([$paymentStatus, $newPaymentAmount, $registration_id]);
+    }
 }
 
 // End of ConvocationRegistration class
