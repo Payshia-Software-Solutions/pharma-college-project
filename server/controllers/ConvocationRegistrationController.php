@@ -917,4 +917,54 @@ class ConvocationRegistrationController
             echo json_encode(['error' => 'Failed to update convocation registration']);
         }
     }
+
+    public function deleteConvocationPayment($registration_id, $transaction_id)
+{
+    // 1. Get the payment to be deleted
+    $payment = $this->transactionPaymentController->model->getPaymentById($transaction_id);
+
+    if (!$payment) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Payment transaction not found']);
+        return;
+    }
+
+    // 2. Get the registration associated with the payment
+    $registration = $this->model->getRegistrationById($registration_id);
+
+    if (!$registration) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Convocation registration not found']);
+        return;
+    }
+    
+    // 4. Calculate the new payment amount for the convocation booking
+    $newPaymentAmount = $registration['payment_amount'] - $payment['payment_amount'];
+    if ($newPaymentAmount < 0) {
+        $newPaymentAmount = 0; // Ensure it never goes below zero
+    }
+
+    // 5. Set the payment status to 'pending' as requested
+    $paymentStatus = 'pending';
+
+    // 6. Update the convocation registration FIRST
+    $updated = $this->model->updateDeletedPayment($registration_id, $paymentStatus, $newPaymentAmount);
+
+    if ($updated) {
+        // 7. If the update was successful, THEN delete the transaction record
+        $deleted = $this->transactionPaymentController->model->deletePayment($transaction_id);
+        if ($deleted) {
+            http_response_code(200);
+            echo json_encode(['message' => 'Payment deleted and convocation registration updated successfully.']);
+        } else {
+            // This is a critical error state, as the booking was updated but the payment wasn't deleted.
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to delete payment transaction after updating registration. Manual check required.']);
+        }
+    } else {
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to update convocation registration.']);
+    }
+}
+
 }

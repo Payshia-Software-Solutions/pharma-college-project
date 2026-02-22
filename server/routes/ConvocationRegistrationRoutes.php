@@ -102,6 +102,11 @@ return [
         return $convocationRegistrationController->deleteRegistration($registration_id);
     },
 
+    // DELETE a payment entry from a convocation booking
+    'DELETE /convocation-registrations/(\d+)/payment/(\d+)/$' => function ($registration_id, $transaction_id) use ($convocationRegistrationController) {
+        return $convocationRegistrationController->deleteConvocationPayment($registration_id, $transaction_id);
+    },
+
     'GET /convocation-registrations-certificate\?courseCode=([A-Za-z0-9]+)&viewSession=([A-Za-z0-9]+)/$' => function ($courseCode, $viewSession) use ($convocationRegistrationController) {
         return $convocationRegistrationController->GetListbyCourseAndSession($courseCode, $viewSession);
     },
