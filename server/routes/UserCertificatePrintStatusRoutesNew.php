@@ -36,4 +36,8 @@ return [
     'DELETE /certificate-print-status/(\d+)/$' => function ($id) use ($ucpsController) {
         return $ucpsController->deleteStatus($id);
     },
+    
+    'GET /user-certificate-print-status/student/{studentNumber}/course/{courseCode}/type/{type}' => function($studentNumber, $courseCode, $type) use ($controller) {
+        $controller->getByStudentNumberCourseCodeAndType($studentNumber, $courseCode, $type);
+    },
 ];

@@ -98,4 +98,11 @@ class UserCertificatePrintStatusControllerNew
         $this->model->deleteStatus($id);
         echo json_encode(["message" => "Status deleted successfully"]);
     }
+
+    public function getByStudentNumberCourseCodeAndType($studentNumber, $courseCode, $type)
+    {
+        $result = $this->userCertificatePrintStatus->getByStudentNumberCourseCodeAndType($studentNumber, $courseCode, $type);
+        header('Content-Type: application/json');
+        echo json_encode($result);
+    }
 }
