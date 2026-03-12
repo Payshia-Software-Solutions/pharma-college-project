@@ -4,7 +4,7 @@
 require_once './models/ConvocationRegistration.php';
 require_once './models/UserCertificatePrintStatusNew.php';
 require_once './models/Course/Course.php';
-require_once './models/Student/StudentCourse.php';
+require_once './models/Student/StudentCourseModelNew.php';
 
 
 class BookingUpdatesController
@@ -23,7 +23,7 @@ class BookingUpdatesController
         $this->convocationRegistrationModel = new ConvocationRegistration($this->pdo);
         $this->userCertificatePrintStatusNewModel = new UserCertificatePrintStatusNew($this->pdo);
         $this->courseModel = new Course($this->pdo);
-        $this->studentCourseModel = new StudentCourse($this->pdo);
+        $this->studentCourseModel = new StudentCourseModelNew($this->pdo);
     }
 
     /**
