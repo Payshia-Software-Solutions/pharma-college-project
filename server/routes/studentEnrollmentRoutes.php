@@ -29,6 +29,10 @@ return [
         return $studentCourseController->getByStudentNumber($userName);
     },
 
+    'GET /student-courses-new/student-number/{userName}/parent-course/{parentCourseId}/' => function($userName, $parentCourseId) use ($studentCourseController) {
+        $studentCourseController->getByStudentNumberAndParentCourseId($userName, $parentCourseId);
+    },
+
     // POST create a new student course enrollment
     'POST /student-courses-new/$' => function () use ($studentCourseController) {
         return $studentCourseController->create();
@@ -42,8 +46,6 @@ return [
     // DELETE a student course enrollment
     'DELETE /student-courses-new/(\d+)/$' => function ($id) use ($studentCourseController) {
         return $studentCourseController->delete($id);
-    },
-    'GET /student-courses-new/student-number/{userName}/parent-course/{parentCourseId}/' => function($userName, $parentCourseId) use ($studentCourseController) {
-        $studentCourseController->getByStudentNumberAndParentCourseId($userName, $parentCourseId);
     }
+    
 ];
