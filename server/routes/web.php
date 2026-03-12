@@ -144,8 +144,7 @@ $sentenceBuilderLevelRoutes = require './routes/sentenceBuilderLevelRoutes.php';
 $sentenceBuilderSentenceRoutes = require './routes/sentenceBuilderSentenceRoutes.php';
 $sentenceBuilderStudentAnswerRoutes = require './routes/sentenceBuilderStudentAnswerRoutes.php';
 $certificatePrintStatusRoutes = require './routes/CertificatePrintStatusRoutes.php';
-
-
+$bookingUpdatesRoutes = require './routes/BookingUpdatesRoutes.php';
 
 
 
@@ -271,7 +270,8 @@ $routes = array_merge(
     $sentenceBuilderLevelRoutes,
     $sentenceBuilderSentenceRoutes,
     $sentenceBuilderStudentAnswerRoutes,
-    $certificatePrintStatusRoutes
+    $certificatePrintStatusRoutes,
+    $bookingUpdatesRoutes
 );
 
 
