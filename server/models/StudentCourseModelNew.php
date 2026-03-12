@@ -76,6 +76,7 @@ class StudentCourseModelNew
                 sc.student_id,
                 sc.enrollment_key,
                 sc.created_at,
+                c.parent_course_id,
 
                 ufd.id AS user_id,
                 ufd.username,
@@ -101,6 +102,7 @@ class StudentCourseModelNew
 
             FROM student_course sc
             INNER JOIN user_full_details ufd ON sc.student_id = ufd.student_id
+            LEFT JOIN course c ON sc.course_code = c.course_code
             WHERE ufd.username = ?
         ");
         $stmt->execute([$userName]);
