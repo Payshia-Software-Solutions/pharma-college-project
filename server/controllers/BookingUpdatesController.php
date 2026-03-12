@@ -51,7 +51,7 @@ class BookingUpdatesController
         }
 
         $studentNumber = $bookingInfo['student_number'];
-        $studentEnrollments = $this->studentCourseModel->getRecordsByStudentId($studentNumber);
+        $studentEnrollments = $this->studentCourseModel->getByStudentNumber($studentNumber);
 
         $courseIds = explode(',', $bookingInfo['course_id']);
         $generatedCertificates = [];
