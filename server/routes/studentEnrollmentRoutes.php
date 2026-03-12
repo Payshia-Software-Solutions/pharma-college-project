@@ -43,7 +43,7 @@ return [
     'DELETE /student-courses-new/(\d+)/$' => function ($id) use ($studentCourseController) {
         return $studentCourseController->delete($id);
     },
-    'GET /student-courses-new/user/{userName}/parent-course/{parentCourseId}/' => function($userName, $parentCourseId) use ($studentCourseController) {
+    'GET /student-courses-new/student-number/{userName}/parent-course/{parentCourseId}/' => function($userName, $parentCourseId) use ($studentCourseController) {
         $studentCourseController->getByStudentNumberAndParentCourseId($userName, $parentCourseId);
     }
 ];
