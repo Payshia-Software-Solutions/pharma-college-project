@@ -58,6 +58,7 @@ class BookingUpdatesController
 
         foreach ($courseIds as $courseCode) {
             $courseCode = trim($courseCode);
+            $batch
             if (empty($courseCode)) {
                 continue;
             }
