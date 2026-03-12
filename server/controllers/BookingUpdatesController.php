@@ -58,7 +58,8 @@ class BookingUpdatesController
 
         foreach ($courseIds as $courseCode) {
             $courseCode = trim($courseCode);
-            // $batch
+            $batchCode = $this->studentCourseModel->getByStudentNumberAndParentCourseId($studentNumber, $courseCode)['course_code'];
+            
             if (empty($courseCode)) {
                 continue;
             }
@@ -66,7 +67,7 @@ class BookingUpdatesController
             // Data for the new certificate status entry
             $certificateData = [
                 'student_number' => $studentNumber,
-                'course_code' => $courseCode,
+                'course_code' => $batchCode,
                 'type' => 'Certificate',
                 'print_status' => 'generated',
                 'print_by' => 'system' // Assuming 'system' as the default user for generation
@@ -76,13 +77,13 @@ class BookingUpdatesController
                 // Create a new certificate entry and get the generated ID
                 $certificateId = $this->userCertificatePrintStatusNewModel->createStatus($certificateData);
                 $generatedCertificates[] = [
-                    'course_code' => $courseCode,
+                    'course_code' => $batchCode,
                     'certificate_id' => $certificateId,
                     'status' => 'success'
                 ];
             } catch (Exception $e) {
                 $generatedCertificates[] = [
-                    'course_code' => $courseCode,
+                    'course_code' => $batchCode,
                     'certificate_id' => null,
                     'status' => 'failed',
                     'error' => $e->getMessage()
