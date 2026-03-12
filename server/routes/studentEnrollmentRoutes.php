@@ -29,7 +29,7 @@ return [
         return $studentCourseController->getByStudentNumber($userName);
     },
 
-    'GET /student-courses-new/student-number/{userName}/parent-course/{parentCourseId}/' => function($userName, $parentCourseId) use ($studentCourseController) {
+    'GET /student-courses-new/student-number/([A-Za-z0-9]+)/parent-course/([A-Za-z0-9]+)/$' => function($userName, $parentCourseId) use ($studentCourseController) {
         $studentCourseController->getByStudentNumberAndParentCourseId($userName, $parentCourseId);
     },
 
