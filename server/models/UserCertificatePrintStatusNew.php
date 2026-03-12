@@ -75,7 +75,7 @@ class UserCertificatePrintStatusNew
 
 
     // Generates a certificate ID with prefix and incrementing number
-    private function generateCertificateId($type, $prefix)
+    public function generateCertificateId($type, $prefix)
     {
         $stmt = $this->pdo->prepare("SELECT COUNT(id) AS total FROM user_certificate_print_status WHERE `type` = ?");
         $stmt->execute([$type]);
