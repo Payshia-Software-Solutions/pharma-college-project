@@ -4,7 +4,7 @@
 require_once './models/ConvocationRegistration.php';
 require_once './models/UserCertificatePrintStatusNew.php';
 require_once './models/Course/Course.php';
-require_once './models/Student/StudentCourseModelNew.php';
+require_once './models/StudentCourseModelNew.php';
 
 
 class BookingUpdatesController
