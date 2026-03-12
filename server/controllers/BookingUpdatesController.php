@@ -63,7 +63,16 @@ class BookingUpdatesController
             if (empty($courseCode)) {
                 continue;
             }
-
+            $existingCertificate = $this->userCertificatePrintStatusNewModel->getByStudentNumberCourseCodeAndType($studentNumber, $batchCode, 'Certificate');
+            if ($existingCertificate) {
+                $generatedCertificates[] = [
+                    'course_code' => $batchCode,
+                    'certificate_id' => $existingCertificate['id'],
+                    'status' => 'already_exists'
+                ];
+                continue;
+            }
+            
             // Data for the new certificate status entry
             $certificateData = [
                 'student_number' => $studentNumber,
