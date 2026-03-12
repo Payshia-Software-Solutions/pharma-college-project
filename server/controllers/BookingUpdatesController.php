@@ -52,13 +52,12 @@ class BookingUpdatesController
 
         $studentNumber = $bookingInfo['student_number'];
         $studentEnrollments = $this->studentCourseModel->getRecordsByStudentId($studentNumber);
-        
+
         $courseIds = explode(',', $bookingInfo['course_id']);
         $generatedCertificates = [];
 
         foreach ($courseIds as $courseCode) {
             $courseCode = trim($courseCode);
-            $batchCode = 
             if (empty($courseCode)) {
                 continue;
             }
