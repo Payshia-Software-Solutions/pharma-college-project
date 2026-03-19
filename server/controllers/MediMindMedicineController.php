@@ -4,10 +4,12 @@ require_once __DIR__ . '/../models/MediMindMedicine.php';
 class MediMindMedicineController
 {
     private $model;
+    rivate $ftpConfig;
 
     public function __construct($pdo)
     {
         $this->model = new MediMindMedicine($pdo);
+        $this->ftpConfig = include('./config/ftp.php');
     }
 
     public function getAll()
@@ -27,37 +29,71 @@ class MediMindMedicineController
         }
     }
 
+    
+    private function ensureDirectoryExists($ftp_conn, $dir)
+    {
+        $parts = explode('/', $dir);
+        $path = '';
+        foreach ($parts as $part) {
+            if (empty($part)) {
+                continue;
+            }
+            $path .= '/' . $part;
+            if (!@ftp_chdir($ftp_conn, $path)) {
+                if (!ftp_mkdir($ftp_conn, $path)) {
+                    throw new Exception("Could not create directory: $path on FTP server.");
+                }
+            }
+        }
+    }
+
     public function create()
     {
         $data = $_POST; // Use $_POST to access form data
         $file = $_FILES['medicine_image']; // Access uploaded file
 
-        // FTP configuration
-        $ftp_server = "your_ftp_server";
-        $ftp_user_name = "your_ftp_username";
-        $ftp_user_pass = "your_ftp_password";
-        $remote_file = "/public_html/your_project_folder/server/uploads/" . basename($file["name"]);
 
-        // Set up basic connection
-        $conn_id = ftp_connect($ftp_server);
+         // Handle file upload
+         if (!empty($_FILES['medicine_image']['tmp_name'])) {
+            $fileTmpPath = $_FILES['medicine_image']['tmp_name'];
 
-        // Login with username and password
-        $login_result = ftp_login($conn_id, $ftp_user_name, $ftp_user_pass);
+            // File details
+            $fileExtension = pathinfo($_FILES['medicine_image']['name'], PATHINFO_EXTENSION);
+            $fileName = $_POST['studentNumber'] . "-" . $_POST['paymentReason'] . "-" . uniqid() . '.' . $fileExtension;
+            $localUploadPath = './uploads/' . $fileName; // Temporary local storage
+            $ftpFilePath = "/medi_mind_images/" . $fileName; // Path on FTP
 
-        // Upload the file
-        if (ftp_put($conn_id, $remote_file, $file["tmp_name"], FTP_BINARY)) {
-            // File uploaded successfully, now create the DB record
-            $data['medicine_image_url'] = "/uploads/" . basename($file["name"]);
-            $id = $this->model->create($data);
-            http_response_code(201);
-            echo json_encode(['id' => $id, 'message' => 'Record created successfully']);
-        } else {
-            http_response_code(500);
-            echo json_encode(['error' => 'FTP upload failed']);
+            // Ensure the local upload directory exists
+            if (!is_dir('./uploads/')) {
+                mkdir('./uploads/', 0777, true);
+            }
+
+            // Move the file locally first
+            if (!move_uploaded_file($fileTmpPath, $localUploadPath)) {
+                http_response_code(400);
+                echo json_encode(['success' => false, 'error' => 'File upload failed']);
+                return;
+            }
+
+            // Upload to FTP server
+            if ($this->uploadToFTP($localUploadPath, $ftpFilePath)) {
+                unlink($localUploadPath); // Remove local file after successful FTP upload
+
+                // File uploaded successfully, now create the DB record
+                $data['medicine_image_url'] = $ftpFilePath;
+                $id = $this->model->create($data);
+                http_response_code(201);
+                echo json_encode(['id' => $id, 'message' => 'Record created successfully']);
+
+
+            } else {
+                http_response_code(500);
+                echo json_encode(['success' => false, 'error' => 'FTP upload failed']);
+                return;
+            }
         }
 
-        // Close the connection
-        ftp_close($conn_id);
+      
     }
 
     public function update($id)
