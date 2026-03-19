@@ -21,21 +21,46 @@ include '../../../../../include/function-update.php';
 include '../../../../../include/lms-functions.php';
 require_once('../../../../../vendor/phpqrcode/qrlib.php');
 
+$courseCode = isset($_GET['courseCode']) ? $_GET['courseCode'] : null;
+$showSession = isset($_GET['showSession']) ? $_GET['showSession'] : null;
 $tableMode = isset($_GET['tableMode']) ? $_GET['tableMode'] : 1;
+$fixedStudentNumber = isset($_GET['fixedStudentNumber']) ? $_GET['fixedStudentNumber'] : null;
 // echo $tableMode;
 
-$selectedCourse = $batchCode = "CPCC27";
-$userEnrollments = getAllUserEnrollmentsByCourse($selectedCourse);
-$batchStudents =  GetLmsStudentsByUserId();
-$batchStudentsUsername =  GetLmsStudents();
+if ($courseCode == 1) {
+    $courseName = "Certificate Course in Pharmacy Practice";
+} else {
+    $courseName = "Advanced Course in Pharmacy Practice";
+}
 
+if (isset($courseCode) && isset($showSession)) {
+    $packageBookings = $client->request(
+        'GET',
+        $_ENV['SERVER_URL'] . '/convocation-registrations-certificate?courseCode=' . $courseCode . '&viewSession=' . $showSession
+    )->toArray();
 
-$courseName = "Basic to Brilliance - Certificate Course in English";
+    if ($courseCode == 1) {
+        // Sort by certificate_id (ascending)
+        usort($packageBookings, function ($a, $b) {
+            return strcmp($a['certificate_id'], $b['certificate_id']);
+        });
+    } else {
+        // Sort by advanced_id (ascending)
+        usort($packageBookings, function ($a, $b) {
+            return strcmp($a['advanced_id'], $b['advanced_id']);
+        });
+    }
+
+    usort($packageBookings, function ($a, $b) {
+        // Fallback to empty string if ceremony_number is null
+        $numA = (int) preg_replace('/[^0-9]/', '', $a['ceremony_number'] ?? '');
+        $numB = (int) preg_replace('/[^0-9]/', '', $b['ceremony_number'] ?? '');
+        
+        return $numA - $numB;
+    });
+}
 ?>
 <title><?= $courseName ?> Print Session <?= $showSession ?></title>
-<link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap"
-    rel="stylesheet">
 
 <style>
     @import url('https://fonts.cdnfonts.com/css/chaparral-pro?styles=15266');
@@ -258,6 +283,7 @@ $courseName = "Basic to Brilliance - Certificate Course in English";
         }
     }
 </style>
+
 <style>
     .sign2 {
         left: 160mm !important;
@@ -293,39 +319,25 @@ $courseName = "Basic to Brilliance - Certificate Course in English";
     <?php } ?>
     <?php
     $count = 1;
-    foreach ($userEnrollments as $booking) {
-        // var_dump($booking);
+    foreach ($packageBookings as $booking) {
+        
+        if($booking['convocation_id'] == 1){
+            continue;
+        }
         // break;
-        $studentId = $booking['student_id'];
-
-        $studentDetailsArray = $batchStudents[$studentId];
-        $studentNumber = $studentDetailsArray['username'];
+        $s_user_name = $booking['student_number'];
+        // 2. THE FILTER: 
+        // If a fixed number is requested and doesn't match this student, skip them.
+        if (!empty($fixedStudentNumber) && $fixedStudentNumber !== $s_user_name) {
+            continue;
+        }
         // $CourseCode = 1;
 
-        $s_user_name = $studentNumber;
+        $batchStudents =  GetLmsStudents();
+        $studentDetailsArray = $batchStudents[$s_user_name];
 
-        // $batchStudents =  GetLmsStudents();
-        $studentDetailsArray = $batchStudentsUsername[$s_user_name];
-
-        try {
-            $convocationRegistationStatus = $client->request(
-                'GET',
-                $_ENV['SERVER_URL'] . '/convocation-registrations/get-records-student-number/' . $s_user_name
-            )->toArray();
-        } catch (\Symfony\Contracts\HttpClient\Exception\HttpExceptionInterface $e) {
-            $convocationRegistationStatus = [];
-        }
-
-        if (!empty($convocationRegistationStatus)) {
-            $ceromonyNumber = $convocationRegistationStatus['ceremony_number'];
-        } else {
-            $ceromonyNumber = "No Ceremony Number";
-        }
-
-
-
-        // $certificateId = ($courseCode == 1) ? $booking['certificate_id'] : $booking['advanced_id'];
-        // $certificateInfo = CertificatePrintStatusByCertificateId($certificateId);
+        $certificateId = ($courseCode == 1) ? $booking['certificate_id'] : $booking['advanced_id'];
+        $certificateInfo = CertificatePrintStatusByCertificateId($certificateId);
         // var_dump($certificateInfo);
 
         $PrintDate = date("Y-m-d H:i:s");
@@ -333,10 +345,14 @@ $courseName = "Basic to Brilliance - Certificate Course in English";
         // var_dump($certificateEntryResult);
 
         // Include the qrlib file 
-        $certificateInfo = CertificatePrintStatusByCourseStudent($batchCode, $s_user_name);
-        // var_dump($certificateInfo);
-        // var_dump($certificateInfo);
-        $certificateId = $certificateInfo['Certificate']['certificate_id'];
+        if (empty($certificateId)) {
+            $certificateInfo = CertificatePrintStatusByParentCourse($courseCode, 'Certificate', $s_user_name);
+            // var_dump($certificateInfo);
+            $certificateId = $certificateInfo[$s_user_name]['certificate_id'];
+            $batchCode = $certificateInfo[$s_user_name]['course_code'];
+        } else {
+            $batchCode = $certificateInfo[0]['course_code'];
+        }
 
         $text = "https://pharmacollege.lk/result-view.php?CourseCode=" . $batchCode . "&LoggedUser=" . $s_user_name;
         $ecc = 'L';
@@ -354,7 +370,7 @@ $courseName = "Basic to Brilliance - Certificate Course in English";
 
             <tr>
                 <td><?= $count++ ?></td>
-                <td style="padding: 10px;"><?= $ceromonyNumber ?></td>
+                <td style="padding: 10px;"><?= $booking['ceremony_number'] ?></td>
                 <td style="padding: 10px;"><?= $studentDetailsArray['name_on_certificate'] ?></td>
                 <td style="padding: 10px;"><?= $certificateId ?></td>
                 <td style="padding: 10px;"><?= $s_user_name ?></td>
@@ -382,23 +398,20 @@ $courseName = "Basic to Brilliance - Certificate Course in English";
                 </div>
 
                 <img class="qr-code" src="data:image/png;base64,<?= base64_encode($image_data) ?>">
+                <?php
+                if ($courseCode != 1) { ?>
+                    <div>
+                        <img class="sign2" src="hansi-sign-1.png" alt="">
+                        <p class="sign2-dot">...................................................</p>
+                        <p class="director2">Academic Instructor</p>
+                    </div>
 
-                <div>
-                    <img class="sign2" src="hansi-sign-1.png" alt="">
-                    <p class="sign2-dot">...................................................</p>
-                    <p class="director2">Academic Instructor</p>
-                </div>
-
-
-
-                <div class="" style="display:none">
                     <img class="sign" src="sign.png" alt="">
+                    <div>
+                    </div>
                     <p class="sign-dot">...................................................</p>
                     <p class="director">Director</p>
-                </div>
-
-
-
+                <?php } ?>
                 <p class="print-date">Date: <?= date("F j, Y", strtotime("2025-06-30")) ?></p>
                 <p class="print-number">Index Number:<?= $s_user_name ?></p>
                 <p class="certificate-number">Certificate
@@ -408,11 +421,11 @@ $courseName = "Basic to Brilliance - Certificate Course in English";
         <?php } ?>
 
         <?php
-        if ($count == 2) {
+        if ($count == 10) {
             // break;
         }
         // Add a page break after each certificate except the last one
-        if ($userEnrollments !== end($userEnrollments)) {
+        if ($packageBookings !== end($packageBookings)) {
             echo '<div style="page-break-after: always;"></div>';
         }
     }
