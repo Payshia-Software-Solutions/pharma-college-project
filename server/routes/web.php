@@ -151,6 +151,8 @@ $mediMindQuestAnswerRoutes = require './routes/MediMind/MediMindQuestAnswerRoute
 $mediMindLevelQuestionRoutes = require './routes/MediMind/MediMindLevelQuestionRoutes.php';
 $mediMindMedicineRoutes = require './routes/MediMind/MediMindMedicineRoutes.php';
 $mediMindAnswerRoutes = require './routes/MediMind/MediMindAnswerRoutes.php';
+$mediMindStudentAnswerRoutes = require './routes/MediMind/MediMindStudentAnswerRoutes.php';
+
 
 
 
@@ -285,7 +287,8 @@ $routes = array_merge(
     $mediMindQuestAnswerRoutes,
     $mediMindLevelQuestionRoutes,
     $mediMindMedicineRoutes,
-    $mediMindAnswerRoutes
+    $mediMindAnswerRoutes,
+    $mediMindStudentAnswerRoutes
 );
 
 
