@@ -4,7 +4,7 @@ require_once __DIR__ . '/../models/MediMindMedicine.php';
 class MediMindMedicineController
 {
     private $model;
-    rivate $ftpConfig;
+    private $ftpConfig;
 
     public function __construct($pdo)
     {
