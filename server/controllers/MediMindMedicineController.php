@@ -59,7 +59,7 @@ class MediMindMedicineController
 
             // File details
             $fileExtension = pathinfo($_FILES['medicine_image']['name'], PATHINFO_EXTENSION);
-            $fileName = $_POST['studentNumber'] . "-" . $_POST['paymentReason'] . "-" . uniqid() . '.' . $fileExtension;
+            $fileName = uniqid() . '.' . $fileExtension;
             $localUploadPath = './uploads/' . $fileName; // Temporary local storage
             $ftpFilePath = "/medi_mind_images/" . $fileName; // Path on FTP
 
