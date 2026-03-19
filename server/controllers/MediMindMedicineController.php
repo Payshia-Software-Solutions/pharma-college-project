@@ -108,4 +108,51 @@ class MediMindMedicineController
         $this->model->delete($id);
         echo json_encode(['message' => 'Record deleted successfully']);
     }
+
+    private function uploadToFTP($localFile, $ftpFilePath)
+    {
+        ini_set('memory_limit', '256M'); // Increase to 256 MB or higher if needed
+        // FTP credentials from config
+        $ftp_server   = $this->ftpConfig['ftp_server'];
+        $ftp_username = $this->ftpConfig['ftp_username'];
+        $ftp_password = $this->ftpConfig['ftp_password'];
+
+        // Connect to FTP server
+        $ftp_conn = ftp_connect($ftp_server);
+        if (!$ftp_conn) {
+            error_log("FTP connection failed: $ftp_server");
+            return false;
+        }
+
+        // Login to FTP
+        if (!ftp_login($ftp_conn, $ftp_username, $ftp_password)) {
+            ftp_close($ftp_conn);
+            error_log("FTP login failed for user: $ftp_username");
+            return false;
+        }
+
+        // Enable passive mode
+        ftp_pasv($ftp_conn, true);
+
+
+        // Ensure that the target directory exists
+        try {
+            $this->ensureDirectoryExists($ftp_conn, dirname($ftpFilePath));
+        } catch (Exception $e) {
+            echo json_encode(['status' => 'error', 'message' => $e->getMessage()]);
+            ftp_close($ftp_conn);
+            return;
+        }
+
+        // Upload file
+        if (!ftp_put($ftp_conn, $ftpFilePath, $localFile, FTP_BINARY)) {
+            ftp_close($ftp_conn);
+            error_log("Failed to upload: $localFile to $ftpFilePath");
+            return false;
+        }
+
+        // Close FTP connection
+        ftp_close($ftp_conn);
+        return true;
+    }
 }
