@@ -140,37 +140,10 @@ class PackageController
 
 
     // POST create a new package
-    // public function createPackage()
-    // {
-    //     $data = json_decode(file_get_contents('php://input'), true);
-    //     if (
-    //         !isset($data['package_name']) || !isset($data['price']) ||
-    //         !isset($data['parent_seat_count']) || !isset($data['garland']) ||
-    //         !isset($data['graduation_cloth']) || !isset($data['photo_package'])
-    //     ) {
-    //         http_response_code(400);
-    //         echo json_encode(['error' => 'Missing required fields']);
-    //         return;
-    //     }
-
-    //     $package_id = $this->model->createPackage(
-    //         $data['package_name'],
-    //         $data['price'],
-    //         $data['parent_seat_count'],
-    //         $data['garland'],
-    //         $data['graduation_cloth'],
-    //         $data['photo_package'],
-    //         $data['courses'],
-    //         $data['is_active'] ?? true,
-    //     );
-    //     http_response_code(201);
-    //     echo json_encode(['package_id' => $package_id, 'message' => 'Package created successfully']);
-    // }
-
     public function createPackage()
     {
         // Validate required POST fields
-        $requiredFields = ['package_name', 'price', 'parent_seat_count', 'garland', 'graduation_cloth', 'photo_package'];
+        $requiredFields = ['package_name', 'price', 'parent_seat_count', 'garland', 'graduation_cloth', 'photo_package', 'convocation_id'];
         foreach ($requiredFields as $field) {
             if (!isset($_POST[$field])) {
                 http_response_code(400);
@@ -198,6 +171,8 @@ class PackageController
 
         // Parse optional fields
         $courses = isset($_POST['courses']) ? $_POST['courses'] : '';
+        $course_list = isset($_POST['course_list']) ? $_POST['course_list'] : '';
+        $description = isset($_POST['description']) ? $_POST['description'] : '';
         $isActive = isset($_POST['is_active']) ? filter_var($_POST['is_active'], FILTER_VALIDATE_BOOLEAN) : true;
 
         // Call model to insert data
@@ -209,8 +184,17 @@ class PackageController
             intval($_POST['graduation_cloth']),
             intval($_POST['photo_package']),
             $courses,
+            $course_list,
+            intval($_POST['scroll'] ?? 0),
+            intval($_POST['student_seat'] ?? 0),
+            intval($_POST['certificate_file'] ?? 0),
+            intval($_POST['video_360'] ?? 0),
+            intval($_POST['refreshments'] ?? 0),
+            intval($_POST['vip_seat'] ?? 0),
+            $description,
             $isActive,
-            $coverImagePath // Include the FTP image path in the DB if supported
+            $coverImagePath, // Include the FTP image path in the DB if supported            
+            intval($_POST['convocation_id']),
         );
 
         http_response_code(201);
@@ -278,8 +262,17 @@ class PackageController
             intval($_POST['graduation_cloth']),
             intval($_POST['photo_package']),
             $_POST['courses'] ?? '',
+            $_POST['course_list'] ?? '',
+            intval($_POST['scroll'] ?? 0),
+            intval($_POST['student_seat'] ?? 0),
+            intval($_POST['certificate_file'] ?? 0),
+            intval($_POST['video_360'] ?? 0),
+            intval($_POST['refreshments'] ?? 0),
+            intval($_POST['vip_seat'] ?? 0),
+            $_POST['description'] ?? '',
             isset($_POST['is_active']) ? filter_var($_POST['is_active'], FILTER_VALIDATE_BOOLEAN) : true,
-            $coverImagePath // new image path if updated
+            $coverImagePath, // new image path if updated
+            intval($_POST['convocation_id'])
         );
 
         echo json_encode(

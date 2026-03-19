@@ -12,7 +12,7 @@ class CareInstructionPre
 
     public function getAll()
     {
-        $stmt = $this->pdo->query('SELECT * FROM care_instruction_pre');
+        $stmt = $this->pdo->query('SELECT * FROM care_instruction_pre ORDER BY id');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -35,10 +35,9 @@ class CareInstructionPre
 
     public function update($id, $data)
     {
-        $stmt = $this->pdo->prepare('UPDATE care_instruction_pre SET instruction = ?, created_by = ? WHERE id = ?');
+        $stmt = $this->pdo->prepare('UPDATE care_instruction_pre SET instruction = ? WHERE id = ?');
         $stmt->execute([
             $data['instruction'],
-            $data['created_by'],
             $id
         ]);
         return $stmt->rowCount();

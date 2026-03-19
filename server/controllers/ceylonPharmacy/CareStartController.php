@@ -85,4 +85,16 @@ class CareStartController
             echo json_encode(['error' => 'Invalid input. patient_status is required.']);
         }
     }
+
+    public function updatePatientStatusByStudentAndPatient($student_id, $patient_id)
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        if ($data && isset($data['patient_status'])) {
+            $this->careStartModel->updatePatientStatusStudentAndPatient($student_id, $patient_id, $data['patient_status']);
+            echo json_encode(['message' => 'Patient status updated successfully']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid input. patient_status is required.']);
+        }
+    }
 }

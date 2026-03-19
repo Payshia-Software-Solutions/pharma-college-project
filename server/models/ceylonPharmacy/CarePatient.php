@@ -12,7 +12,7 @@ class CarePatient
 
     public function getAllCarePatients()
     {
-        $stmt = $this->pdo->query('SELECT * FROM care_patient');
+        $stmt = $this->pdo->query('SELECT * FROM care_patient ORDER BY id');
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -28,6 +28,12 @@ class CarePatient
         $stmt = $this->pdo->prepare('SELECT * FROM care_patient WHERE prescription_id = ?');
         $stmt->execute([$prescriptionId]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function getTotalPatientCount()
+    {
+        $stmt = $this->pdo->query('SELECT COUNT(*) FROM care_patient');
+        return $stmt->fetchColumn();
     }
 
     public function createCarePatient($data)
@@ -53,9 +59,8 @@ class CarePatient
 
     public function updateCarePatient($id, $data)
     {
-        $stmt = $this->pdo->prepare('UPDATE care_patient SET prescription_id = ?, prescription_name = ?, prescription_status = ?, created_at = ?, created_by = ?, Pres_Name = ?, pres_date = ?, Pres_Age = ?, Pres_Method = ?, doctor_name = ?, notes = ?, patient_description = ?, address = ? WHERE id = ?');
+        $stmt = $this->pdo->prepare('UPDATE care_patient SET prescription_name = ?, prescription_status = ?, created_at = ?, created_by = ?, Pres_Name = ?, pres_date = ?, Pres_Age = ?, Pres_Method = ?, doctor_name = ?, notes = ?, patient_description = ?, address = ? WHERE prescription_id = ?');
         $stmt->execute([
-            $data['prescription_id'],
             $data['prescription_name'],
             $data['prescription_status'],
             $data['created_at'],
@@ -73,10 +78,10 @@ class CarePatient
         return $stmt->rowCount();
     }
 
-    public function deleteCarePatient($id)
+    public function deleteCarePatientByPrescriptionId($prescriptionId)
     {
-        $stmt = $this->pdo->prepare('DELETE FROM care_patient WHERE id = ?');
-        $stmt->execute([$id]);
+        $stmt = $this->pdo->prepare('DELETE FROM care_patient WHERE prescription_id = ?');
+        $stmt->execute([$prescriptionId]);
         return $stmt->rowCount();
     }
 }

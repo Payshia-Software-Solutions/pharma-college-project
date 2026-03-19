@@ -112,9 +112,11 @@ $DpadRoutes = require './routes/Dpad/DpadRoutes.php';
 $SMSRoutes = require './routes/SMSRoutes.php';
 $bankRoutes = require './routes/bankRoutes.php';
 $ConvocationRegistrationRoutes  = require './routes/ConvocationRegistrationRoutes.php';
+$convocationRegistrationByConvocationRoutes = require './routes/convocationRegistrationByConvocationRoutes.php';
 $PackageRoutes  = require './routes/PackageRoutes.php';
 $CertificateOrderRoutes = require './routes/CertificateOrderRoutes.php';
 $convocationRoutes = require './routes/convocationRoutes.php';
+$convocationStatusRoutes = require './routes/convocationStatusRoutes.php';
 $transactionPaymentRoutes = require './routes/transactionPaymentRoutes.php';
 $WordListRoutes = require './routes/WordListRoutes.php';
 $EnWordSubmissionRoutes = require './routes/EnWordSubmissionRoutes.php';
@@ -135,9 +137,19 @@ $carePaymentAnswerRoutes = require './routes/ceylonPharmacy/carePaymentAnswerRou
 $careSavedAnswersRoutes = require './routes/ceylonPharmacy/careSavedAnswersRoutes.php';
 $careStartRoutes = require './routes/ceylonPharmacy/careStartRoutes.php';
 $CareInstructionRoutesUpdated = require './routes/ceylonPharmacy/CareInstructionRoutes.php';
+$careInstructionPreRoutes = require './routes/ceylonPharmacy/careInstructionPreRoutes.php';
 $careInsAnswerRoutes = require './routes/ceylonPharmacy/careInsAnswerRoutes.php';
 $masterProductRoutes = require './routes/ceylonPharmacy/MasterProductRoutes.php';
-
+$sentenceBuilderLevelRoutes = require './routes/sentenceBuilderLevelRoutes.php';
+$sentenceBuilderSentenceRoutes = require './routes/sentenceBuilderSentenceRoutes.php';
+$sentenceBuilderStudentAnswerRoutes = require './routes/sentenceBuilderStudentAnswerRoutes.php';
+$certificatePrintStatusRoutes = require './routes/CertificatePrintStatusRoutes.php';
+$bookingUpdatesRoutes = require './routes/BookingUpdatesRoutes.php';
+$mediMindLevelRoutes = require './routes/MediMind/MediMindLevelRoutes.php';
+$mediMindQuestionRoutes = require './routes/MediMind/MediMindQuestionRoutes.php';
+$mediMindQuestAnswerRoutes = require './routes/MediMind/MediMindQuestAnswerRoutes.php';
+$mediMindLevelQuestionRoutes = require './routes/MediMind/MediMindLevelQuestionRoutes.php';
+$mediMindMedicineRoutes = require './routes/MediMind/MediMindMedicineRoutes.php';
 
 
 
@@ -145,6 +157,7 @@ $masterProductRoutes = require './routes/ceylonPharmacy/MasterProductRoutes.php'
 // Combine all routes
 $routes = array_merge(
     $userRoutes,
+    $careInstructionPreRoutes,
     $transactionPaymentRoutes,
     $assignmentRoutes,
     $submissionRoutes,
@@ -234,9 +247,11 @@ $routes = array_merge(
     $TestimonialRoutes,
     $EventsPageRoutes,
     $ConvocationRegistrationRoutes,
+    $convocationRegistrationByConvocationRoutes,
     $PackageRoutes,
     $CertificateOrderRoutes,
     $convocationRoutes,
+    $convocationStatusRoutes,
     $WordListRoutes,
     $EnWordSubmissionRoutes,
     $UserCertificatePrintStatusRoutesNew,
@@ -257,7 +272,17 @@ $routes = array_merge(
     $careSavedAnswersRoutes,
     $careStartRoutes,
     $careInsAnswerRoutes,
-    $masterProductRoutes
+    $masterProductRoutes,
+    $sentenceBuilderLevelRoutes,
+    $sentenceBuilderSentenceRoutes,
+    $sentenceBuilderStudentAnswerRoutes,
+    $certificatePrintStatusRoutes,
+    $bookingUpdatesRoutes,
+    $mediMindLevelRoutes,
+    $mediMindQuestionRoutes,
+    $mediMindQuestAnswerRoutes,
+    $mediMindLevelQuestionRoutes,
+    $mediMindMedicineRoutes
 );
 
 
@@ -301,8 +326,8 @@ foreach ($routes as $route => $handler) {
 
     // Convert route URI to regex (without query parameters){trackingNumber} student_number
     $routeRegex = str_replace(
-        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{course_code}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}', '{value}', '{course_code}', '{studentId}', '{tracking_number}', '{index_number}', '{provinceId}', '{student_number}'],
-        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)',],
+        ['{id}', '{reply_id}', '{post_id}', '{created_by}', '{username}', '{role}', '{assignment_id}', '{course_code}', '{offset}', '{limit}', '{setting_name}', '{course_code}', '{loggedUser}', '{title_id}', '{slug}', '{module_code}', '{value}', '{course_code}', '{studentId}', '{tracking_number}', '{index_number}', '{provinceId}', '{student_number}', '{questionId}', '{levelId}'],
+        ['(\d+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '(\d+)', '(\d+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '([a-zA-Z0-9_\-\/]+)', '(\d+)', '(\d+)'],
         $routeUri
     );
 

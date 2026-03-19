@@ -57,9 +57,27 @@ class CareContentController
         }
     }
 
+    public function updateByPresCodeAndCoverId($presCode, $coverId)
+    {
+        $data = json_decode(file_get_contents("php://input"), true);
+        if ($data) {
+            $this->careContentModel->updateCareContentByPresCodeAndCoverId($presCode, $coverId, $data);
+            echo json_encode(['message' => 'Content updated successfully']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['error' => 'Invalid input']);
+        }
+    }
+
     public function delete($id)
     {
         $this->careContentModel->deleteCareContent($id);
+        echo json_encode(['message' => 'Content deleted successfully']);
+    }
+
+    public function deleteByPresCodeAndCoverId($presCode, $coverId)
+    {
+        $this->careContentModel->deleteCareContentByPresCodeAndCoverId($presCode, $coverId);
         echo json_encode(['message' => 'Content deleted successfully']);
     }
 

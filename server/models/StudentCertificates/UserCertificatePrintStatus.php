@@ -143,4 +143,36 @@ class UserCertificatePrintStatus
             return ['error' => $e->getMessage()];
         }
     }
+
+    public function getByStudentNumberCourseCodeAndType($studentNumber, $courseCode, $type)
+    {
+        try {
+            $stmt = $this->pdo->prepare("
+                SELECT 
+                    id, 
+                    student_number, 
+                    certificate_id, 
+                    print_date, 
+                    print_status, 
+                    print_by, 
+                    type, 
+                    course_code 
+                FROM 
+                    user_certificate_print_status 
+                WHERE 
+                    student_number = :student_number 
+                    AND course_code = :course_code 
+                    AND type = :type
+            ");
+            $stmt->execute([
+                'student_number' => $studentNumber,
+                'course_code' => $courseCode,
+                'type' => $type
+            ]);
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            return ['error' => $e->getMessage()];
+        }
+    }
+
 }

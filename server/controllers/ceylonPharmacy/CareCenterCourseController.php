@@ -80,10 +80,11 @@ class CareCenterCourseController
                 $prescriptionId = $row['prescription_id'];
                 $patient = $this->carePatientModel->getCarePatientByPrescriptionId($prescriptionId);
                 $careStartData = $this->careStartModel->getCareStartByStudentIdAndPresCode($student_number, $prescriptionId);
+                $patientData[$prescriptionId] = ["patient" => $patient, "start_data" => $careStartData];
 
-                if ($patient) {
-                    $patientData[$prescriptionId] = ["patient" => $patient, "start_data" => $careStartData];
-                }
+                // if ($patient) {
+                //     $patientData[$prescriptionId] = ["patient" => $patient, "start_data" => $careStartData];
+                // }
             }
             echo json_encode($patientData);
         } else {

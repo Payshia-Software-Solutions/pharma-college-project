@@ -74,6 +74,7 @@ require_once('../../../../../vendor/phpqrcode/qrlib.php');
 $courseCode = isset($_GET['courseCode']) ? $_GET['courseCode'] : null;
 $showSession = isset($_GET['showSession']) ? $_GET['showSession'] : null;
 $tableMode = isset($_GET['tableMode']) ? $_GET['tableMode'] : 1;
+$fixedStudentNumber = isset($_GET['fixedStudentNumber']) ? $_GET['fixedStudentNumber'] : null;
 // echo $tableMode;
 $courseCode = 2;
 
@@ -102,8 +103,10 @@ if (isset($courseCode) && isset($showSession)) {
     }
 
     usort($packageBookings, function ($a, $b) {
-        $numA = (int) preg_replace('/[^0-9]/', '', $a['ceremony_number']);
-        $numB = (int) preg_replace('/[^0-9]/', '', $b['ceremony_number']);
+        // Fallback to empty string if ceremony_number is null
+        $numA = (int) preg_replace('/[^0-9]/', '', $a['ceremony_number'] ?? '');
+        $numB = (int) preg_replace('/[^0-9]/', '', $b['ceremony_number'] ?? '');
+        
         return $numA - $numB;
     });
 }
@@ -298,7 +301,16 @@ if (isset($courseCode) && isset($showSession)) {
     $count = 1;
     foreach ($packageBookings as $booking) {
         // break;
+        if($booking['convocation_id'] == 1){
+            continue;
+        }
+        // break;
         $s_user_name = $booking['student_number'];
+        // 2. THE FILTER: 
+        // If a fixed number is requested and doesn't match this student, skip them.
+        if (!empty($fixedStudentNumber) && $fixedStudentNumber !== $s_user_name) {
+            continue;
+        }
         // $CourseCode = 1;
 
         $batchStudents =  GetLmsStudents();
@@ -415,7 +427,7 @@ if (isset($courseCode) && isset($showSession)) {
                     <div class="details">
                         <p><strong>Candidate Name:</strong> <?= $studentDetailsArray['name_on_certificate'] ?></p>
                         <p><strong>Duration:</strong> 6 Months</p>
-                        <p><strong>Completed Date:</strong> <?= date("F j, Y", strtotime("2025-06-30")) ?></p>
+                        <p><strong>Completed Date:</strong> <?= date("F j, Y", strtotime("2026-03-29")) ?></p>
                         <p><strong>Student Number:</strong> <?= $s_user_name ?></p>
                         <p><strong>Certificate Number:</strong> <?= $certificateId ?></p>
                     </div>

@@ -23,15 +23,40 @@ class CarePayment
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function createCarePayment($data)
+    public function createOrUpdatePayment($data)
     {
-        $stmt = $this->pdo->prepare('INSERT INTO care_payment (PresCode, value, created_at) VALUES (?, ?, ?)');
-        $stmt->execute([
-            $data['PresCode'],
-            $data['value'],
-            $data['created_at']
-        ]);
-        return $this->pdo->lastInsertId();
+        // Check if a record with the same PresCode already exists
+        $stmt = $this->pdo->prepare('SELECT id FROM care_payment WHERE PresCode = :PresCode LIMIT 1');
+        $stmt->execute(['PresCode' => $data['PresCode']]);
+        $existing = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($existing) {
+            // Record exists, update all records with the matching PresCode
+            $stmt = $this->pdo->prepare(
+                'UPDATE care_payment SET value = :value WHERE PresCode = :PresCode'
+            );
+            $stmt->execute([
+                ':value' => $data['value'],
+                ':PresCode' => $data['PresCode']
+            ]);
+
+            if ($stmt->rowCount() > 0) {
+                return ['status' => 'updated', 'PresCode' => $data['PresCode']];
+            } else {
+                return ['status' => 'unchanged', 'PresCode' => $data['PresCode']];
+            }
+        } else {
+            // Record does not exist, create a new one
+            $stmt = $this->pdo->prepare(
+                'INSERT INTO care_payment (PresCode, value, created_at) VALUES (:PresCode, :value, NOW())'
+            );
+            $stmt->execute([
+                ':PresCode' => $data['PresCode'],
+                ':value' => $data['value']
+            ]);
+            $newId = $this->pdo->lastInsertId();
+            return ['status' => 'created', 'id' => $newId];
+        }
     }
 
     public function updateCarePayment($id, $data)

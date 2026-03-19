@@ -124,4 +124,15 @@ class StudentCourseControllerNew
             echo json_encode(['error' => 'Failed to delete enrollment', 'details' => $e->getMessage()]);
         }
     }
+
+    public function getByStudentNumberAndParentCourseId($userName, $parentCourseId)
+    {
+        $record = $this->model->getByStudentNumberAndParentCourseId($userName, $parentCourseId);
+        if ($record) {
+            echo json_encode($record);
+        } else {
+            http_response_code(404);
+            echo json_encode(['error' => 'Enrollment not found']);
+        }
+    }
 }

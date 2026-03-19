@@ -56,6 +56,9 @@ class TempLmsUser
         return $this->pdo->lastInsertId();
     }
 
+
+
+
     // Update a user by ID
     public function updateUser($id, $data)
     {

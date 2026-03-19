@@ -24,7 +24,7 @@ require_once('../../../../../vendor/phpqrcode/qrlib.php');
 $tableMode = isset($_GET['tableMode']) ? $_GET['tableMode'] : 1;
 // echo $tableMode;
 
-$selectedCourse = $batchCode = "CPCC21";
+$selectedCourse = $batchCode = "CPCC27";
 $userEnrollments = getAllUserEnrollmentsByCourse($selectedCourse);
 $batchStudents =  GetLmsStudentsByUserId();
 $batchStudentsUsername =  GetLmsStudents();

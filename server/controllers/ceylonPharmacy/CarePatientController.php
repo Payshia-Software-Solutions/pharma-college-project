@@ -33,11 +33,21 @@ class CarePatientController
     {
         $data = json_decode(file_get_contents("php://input"), true);
         if ($data) {
+            // Generate the new prescription_id
+            $totalPatients = $this->carePatientModel->getTotalPatientCount();
+            $newId = $totalPatients + 2;
+            $randomNumber = rand(10000, 99999);
+            $prescriptionId = $newId . '-' . $randomNumber;
+
+            // Add the new prescription_id to the data
+            $data['prescription_id'] = $prescriptionId;
+
             $lastId = $this->carePatientModel->createCarePatient($data);
             http_response_code(201);
             echo json_encode([
                 'message' => 'Patient created successfully',
-                'id' => $lastId
+                'id' => $lastId,
+                'prescription_id' => $prescriptionId
             ]);
         } else {
             http_response_code(400);
@@ -59,7 +69,7 @@ class CarePatientController
 
     public function delete($id)
     {
-        $this->carePatientModel->deleteCarePatient($id);
+        $this->carePatientModel->deleteCarePatientByPrescriptionId($id);
         echo json_encode(['message' => 'Patient deleted successfully']);
     }
 }

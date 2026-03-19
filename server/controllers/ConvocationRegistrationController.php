@@ -103,16 +103,16 @@ class ConvocationRegistrationController
         echo json_encode($registrations);
     }
 
-    public function getCountsBySessions()
+    public function getCountsBySessions($ceremonyId)
     {
-        $registrations = $this->model->getCountsBySessions();
+        $registrations = $this->model->getCountsBySessions($ceremonyId);
         echo json_encode($registrations);
     }
 
 
-    public function getAdditionalSeatsCountsBySessions($sessionId)
+    public function getAdditionalSeatsCountsBySessions($sessionId, $ceremonyId)
     {
-        $registrations = $this->model->getAdditionalSeatsCountsBySessions($sessionId);
+        $registrations = $this->model->getAdditionalSeatsCountsBySessions($sessionId, $ceremonyId);
         echo json_encode($registrations);
     }
     // GET a single registration by ID
@@ -184,12 +184,22 @@ class ConvocationRegistrationController
         // Check if the request is multipart/form-data
         if ($_SERVER['CONTENT_TYPE'] && strpos($_SERVER['CONTENT_TYPE'], 'multipart/form-data') !== false) {
             $data = $_POST; // Form fields
-            $file = $_FILES['payment_slip'] ?? null; // Uploaded file (matches frontend FormData key)
+            $file = $_FILES['image'] ?? null; // Uploaded file (matches frontend FormData key)
+            $data['payment_amount'] = 0;
 
             // var_dump($data);
 
             // Extract course_ids directly from $_POST['course_id']
-            $courseIds = isset($data['course_id']) && is_array($data['course_id']) ? $data['course_id'] : [];
+            // $courseIds = isset($data['course_id']) && is_array($data['course_id']) ? $data['course_id'] : [];
+            $courseIds = [];
+            if (isset($data['course_id'])) {
+                if (is_array($data['course_id'])) {
+                    $courseIds = $data['course_id']; // Use as is if it's an array
+                } else {
+                    // If it's a string (like "0,1"), split it into an array
+                    $courseIds = explode(',', $data['course_id']);
+                }
+            }            
 
             // Debugging: Log or output the incoming data
             error_log("Received data: " . print_r($data, true)); // Log to PHP error log
@@ -259,7 +269,8 @@ class ConvocationRegistrationController
                 $data['hash_value'] ?? null,
                 $paymentSlipPath,
                 $data['additional_seats'] ?? 0,
-                $data['session'] ?? 1
+                $data['session'] ?? 1,
+                $data['convocation_id'] ?? null // ADDED
             );
             http_response_code(201);
             echo json_encode([
@@ -301,7 +312,8 @@ class ConvocationRegistrationController
                 $data['hash_value'] ?? null,
                 $paymentSlipPath,
                 $data['additional_seats'] ?? 0,
-                $data['session'] ?? 1
+                $data['session'] ?? 1,
+                $data['convocation_id'] ?? null // ADDED
             );
             http_response_code(201);
             echo json_encode([
@@ -315,31 +327,41 @@ class ConvocationRegistrationController
     // PUT update a registration
     public function updateRegistration($registration_id)
     {
+        // Get the new data from the request
         $data = json_decode(file_get_contents('php://input'), true);
-        if (
-            !isset($data['student_number']) || !isset($data['course_id']) ||
-            !isset($data['package_id'])
-        ) {
-            http_response_code(400);
-            echo json_encode(['error' => 'Missing required fields']);
+
+        // Get the existing registration data
+        $existing_registration = $this->model->getRegistrationById($registration_id);
+
+        if (!$existing_registration) {
+            http_response_code(404);
+            echo json_encode(['error' => 'Registration not found']);
             return;
         }
 
+        // Merge the new data with the existing data
+        $updated_data = array_merge($existing_registration, $data);
+
+        // Now call the model's update function with the full dataset
         $success = $this->model->updateRegistration(
             $registration_id,
-            $data['student_number'],
-            $data['course_id'],
-            $data['package_id'],
-            $data['event_id'] ?? null,
-            $data['payment_status'] ?? 'pending',
-            $data['payment_amount'] ?? null,
-            $data['registration_status'] ?? 'pending'
+            $updated_data['student_number'],
+            $updated_data['course_id'],
+            $updated_data['package_id'],
+            $updated_data['event_id'],
+            $updated_data['payment_status'],
+            $updated_data['payment_amount'],
+            $updated_data['registration_status'],
+            $updated_data['convocation_id'],
+            $updated_data['session'],
+            $updated_data['additional_seats']
         );
+
         if ($success) {
             echo json_encode(['message' => 'Registration updated successfully']);
         } else {
-            http_response_code(404);
-            echo json_encode(['error' => 'Registration not found or update failed']);
+            http_response_code(500);
+            echo json_encode(['error' => 'Registration update failed']);
         }
     }
 
@@ -443,12 +465,15 @@ class ConvocationRegistrationController
         $paymentAmount = $data['payment_amount'];
         $recInfo = $this->model->getRegistrationByReference($reference_number);
         $student_number = $recInfo['student_number'];
+        $convocation_id = $recInfo['convocation_id'];
         $recAmount = $recInfo['payment_amount'];
 
         $paybleAmount = $this->model->getPayableAmount($reference_number);
-        $paidAmount = $this->transactionPaymentController->model->getPaidAmount($student_number, 'covocation-payment');
+        $paidAmount = $this->transactionPaymentController->model->getPaidAmount($student_number, 'covocation-payment-'.$convocation_id,);
         $studentInfo = $this->userFullDetailsController->model->getUserByUserName($student_number);
         $txnNumber = $this->transactionPaymentController->generateTransactionId();
+     
+
 
         $paymentData = [
             'transaction_id'    => $txnNumber,
@@ -459,7 +484,7 @@ class ConvocationRegistrationController
             'created_at'        => date('Y-m-d H:i:s'),
             'student_number'    => $student_number,
             'transaction_type'  => "CREDIT",
-            'reference_key'     => 'covocation-payment',
+            'reference_key'     => 'covocation-payment-'.$convocation_id,
             'payment_amount'    => $paymentAmount
         ];
 
@@ -486,13 +511,13 @@ class ConvocationRegistrationController
             $referenceNumber = $reference_number; // Use the user ID as the reference number
 
             // Send the welcome 
-            $smsResponse = $this->smsModel->sendConvocationPaymentApprovedSMS($mobile, $studentName, $referenceNumber, $txnNumber, $paymentAmount);
+            // $smsResponse = $this->smsModel->sendConvocationPaymentApprovedSMS($mobile, $studentName, $referenceNumber, $txnNumber, $paymentAmount);
             // var_dump($smsResponse);
 
             // Check if the SMS was sent successfully
-            if ($smsResponse['status'] === 'error') {
-                throw new Exception('Failed to send SMS: ' . $smsResponse['message']);
-            }
+            // if ($smsResponse['status'] === 'error') {
+            //     throw new Exception('Failed to send SMS: ' . $smsResponse['message']);
+            // }
 
             // Return success response with the new user's ID
             http_response_code(201); // Created successfully
@@ -500,8 +525,8 @@ class ConvocationRegistrationController
                 'status' => 'Success',
                 'message' => 'Payment record created and convocation updated',
                 'reference_number' => $reference_number,
-                'sms_status' => $smsResponse['status'],
-                'sms_message' => $smsResponse['message']
+                // 'sms_status' => $smsResponse['status'],
+                // 'sms_message' => $smsResponse['message']
             ]);
         } else {
             http_response_code(500);
@@ -892,4 +917,54 @@ class ConvocationRegistrationController
             echo json_encode(['error' => 'Failed to update convocation registration']);
         }
     }
+
+    public function deleteConvocationPayment($registration_id, $transaction_id)
+{
+    // 1. Get the payment to be deleted
+    $payment = $this->transactionPaymentController->model->getPaymentById($transaction_id);
+
+    if (!$payment) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Payment transaction not found']);
+        return;
+    }
+
+    // 2. Get the registration associated with the payment
+    $registration = $this->model->getRegistrationById($registration_id);
+
+    if (!$registration) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Convocation registration not found']);
+        return;
+    }
+    
+    // 4. Calculate the new payment amount for the convocation booking
+    $newPaymentAmount = $registration['payment_amount'] - $payment['payment_amount'];
+    if ($newPaymentAmount < 0) {
+        $newPaymentAmount = 0; // Ensure it never goes below zero
+    }
+
+    // 5. Set the payment status to 'pending' as requested
+    $paymentStatus = 'pending';
+
+    // 6. Update the convocation registration FIRST
+    $updated = $this->model->updateDeletedPayment($registration_id, $paymentStatus, $newPaymentAmount);
+
+    if ($updated) {
+        // 7. If the update was successful, THEN delete the transaction record
+        $deleted = $this->transactionPaymentController->model->deletePayment($transaction_id);
+        if ($deleted) {
+            http_response_code(200);
+            echo json_encode(['message' => 'Payment deleted and convocation registration updated successfully.']);
+        } else {
+            // This is a critical error state, as the booking was updated but the payment wasn't deleted.
+            http_response_code(500);
+            echo json_encode(['error' => 'Failed to delete payment transaction after updating registration. Manual check required.']);
+        }
+    } else {
+        http_response_code(500);
+        echo json_encode(['error' => 'Failed to update convocation registration.']);
+    }
+}
+
 }

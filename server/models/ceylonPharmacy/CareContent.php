@@ -46,10 +46,28 @@ class CareContent
         return $stmt->rowCount();
     }
 
+    public function updateCareContentByPresCodeAndCoverId($presCode, $coverId, $data)
+    {
+        $stmt = $this->pdo->prepare('UPDATE care_content SET content = ? WHERE pres_code = ? AND cover_id = ?');
+        $stmt->execute([
+            $data['content'],
+            $presCode,
+            $coverId
+        ]);
+        return $stmt->rowCount();
+    }
+
     public function deleteCareContent($id)
     {
         $stmt = $this->pdo->prepare('DELETE FROM care_content WHERE id = ?');
         $stmt->execute([$id]);
+        return $stmt->rowCount();
+    }
+
+    public function deleteCareContentByPresCodeAndCoverId($presCode, $coverId)
+    {
+        $stmt = $this->pdo->prepare('DELETE FROM care_content WHERE pres_code = ? AND cover_id = ?');
+        $stmt->execute([$presCode, $coverId]);
         return $stmt->rowCount();
     }
 

@@ -77,7 +77,12 @@ class StudentCourse
     {
 
         $studentId = $this->getLmsStudentByUsername($userName)['student_id'];
-        $stmt = $this->pdo->prepare("SELECT * FROM student_course WHERE student_id = :student_id");
+        $stmt = $this->pdo->prepare("
+            SELECT sc.*, pmc.id AS parent_course_id
+            FROM student_course sc
+            LEFT JOIN parent_main_course pmc ON sc.course_code = pmc.course_code
+            WHERE sc.student_id = :student_id
+        ");
         $stmt->execute(['student_id' => $studentId]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
