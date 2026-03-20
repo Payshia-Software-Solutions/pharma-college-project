@@ -3,7 +3,6 @@
 
 require_once './models/Winpharma/WinPharmaLevelResource.php';
 
-
 class WinPharmaLevelResourceController
 {
     private $model;
@@ -43,5 +42,11 @@ class WinPharmaLevelResourceController
     {
         $this->model->deleteWinPharmaLevelResource($id);
         echo json_encode(['status' => 'WinPharmaLevelResource deleted']);
+    }
+
+    public function getWinPharmaLevelResourcesByLevel($id)
+    {
+        $resources = $this->model->getWinPharmaLevelResourcesByLevel($id);
+        echo json_encode($resources);
     }
 }

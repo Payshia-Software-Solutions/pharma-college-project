@@ -15,6 +15,9 @@ return [
     'GET /win_pharma_level_resources/(\d+)/$' => function ($id) use ($WinPharmaLevelResourceController) {
         $WinPharmaLevelResourceController->getWinPharmaLevelResource($id);
     },
+    'GET /win_pharma_level_resources/level/(\d+)/$' => function ($id) use ($WinPharmaLevelResourceController) {
+        $WinPharmaLevelResourceController->getWinPharmaLevelResourcesByLevel($id);
+    },
     'POST /win_pharma_level_resources/$' => function () use ($WinPharmaLevelResourceController) {
         $WinPharmaLevelResourceController->createWinPharmaLevelResource();
     },
