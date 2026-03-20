@@ -8,10 +8,22 @@ $controller = new MediMindLevelMedicineController($pdo);
 
 // Define routes
 return [
-    'GET /medi-mind-level-medicines/' => [$controller, 'getAll'],
-    'GET /medi-mind-level-medicines/{id}/' => [$controller, 'getById'],
-    'GET /medi-mind-level-medicines/level/{levelId}/' => [$controller, 'getByLevel'],
-    'POST /medi-mind-level-medicines/' => [$controller, 'create'],
-    'PUT /medi-mind-level-medicines/{id}/' => [$controller, 'update'],
-    'DELETE /medi-mind-level-medicines/{id}/' => [$controller, 'delete'],
+    'GET /medi-mind-level-medicines/$' => function () use ($controller) {
+        $controller->getAll();
+    },
+    'GET /medi-mind-level-medicines/(\d+)/$' => function ($id) use ($controller) {
+        $controller->getById($id);
+    },
+    'GET /medi-mind-level-medicines/level/(\d+)/$' => function ($levelId) use ($controller) {
+        $controller->getByLevel($levelId);
+    },
+    'POST /medi-mind-level-medicines/$' => function () use ($controller) {
+        $controller->create();
+    },
+    'PUT /medi-mind-level-medicines/(\d+)/$' => function ($id) use ($controller) {
+        $controller->update($id);
+    },
+    'DELETE /medi-mind-level-medicines/(\d+)/$' => function ($id) use ($controller) {
+        $controller->delete($id);
+    },
 ];

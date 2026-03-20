@@ -8,11 +8,25 @@ $controller = new MediMindStudentAnswerController($pdo);
 
 // Define routes
 return [
-    'GET /medi-mind-student-answers/' => [$controller, 'getAll'],
-    'GET /medi-mind-student-answers/{id}/' => [$controller, 'getById'],
-    'GET /medi-mind-student-answers/student/{student_number}/' => [$controller, 'getByStudent'],
-    'GET /medi-mind-student-answers/stats/{student_number}/' => [$controller, 'getStatsByStudent'],
-    'POST /medi-mind-student-answers/' => [$controller, 'create'],
-    'PUT /medi-mind-student-answers/{id}/' => [$controller, 'update'],
-    'DELETE /medi-mind-student-answers/{id}/' => [$controller, 'delete'],
+    'GET /medi-mind-student-answers/$' => function () use ($controller) {
+        $controller->getAll();
+    },
+    'GET /medi-mind-student-answers/(\d+)/$' => function ($id) use ($controller) {
+        $controller->getById($id);
+    },
+    'GET /medi-mind-student-answers/student/(\d+)/$' => function ($studentId) use ($controller) {
+        $controller->getByStudent($studentId);
+    },
+    'GET /medi-mind-student-answers/stats/(\d+)/$' => function ($studentId) use ($controller) {
+        $controller->getStatsByStudent($studentId);
+    },
+    'POST /medi-mind-student-answers/$' => function () use ($controller) {
+        $controller->create();
+    },
+    'PUT /medi-mind-student-answers/(\d+)/$' => function ($id) use ($controller) {
+        $controller->update($id);
+    },
+    'DELETE /medi-mind-student-answers/(\d+)/$' => function ($id) use ($controller) {
+        $controller->delete($id);
+    },
 ];
