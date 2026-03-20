@@ -64,9 +64,7 @@ class MediMindLevelMedicine
                 lm.id, 
                 lm.level_id, 
                 lm.medicine_id, 
-                m.medicine_name,
-                m.medicine_category_id,
-                m.dosage_form_id
+                m.medicine_name
             FROM 
                 medi_mind_level_mediciens lm
             JOIN 
