@@ -64,7 +64,7 @@ class MediMindAnswer
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    // Get records by medicine ID
+    // Get records by medicine ID with all possible answers
     public function getByMedicineId($medicineId)
     {
         $stmt = $this->pdo->prepare("
@@ -76,7 +76,7 @@ class MediMindAnswer
                 a.created_at, 
                 a.created_by,
                 q.question,
-                qa.answer
+                qa.answer as correct_answer
             FROM 
                 medi_mind_answers a
             LEFT JOIN 
@@ -87,7 +87,19 @@ class MediMindAnswer
                 a.medicine_id = ?
         ");
         $stmt->execute([$medicineId]);
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $questions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        foreach ($questions as &$question) {
+            $stmtOptions = $this->pdo->prepare("
+                SELECT id, answer 
+                FROM medi_mind_quest_answers 
+                WHERE question_id = ?
+            ");
+            $stmtOptions->execute([$question['question_id']]);
+            $question['options'] = $stmtOptions->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        return $questions;
     }
 
     // Create a new record
