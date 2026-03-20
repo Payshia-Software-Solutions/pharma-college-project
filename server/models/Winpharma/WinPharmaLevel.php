@@ -25,24 +25,21 @@ class WinPharmaLevel
     }
 
     public function createWinPharmaLevel($data)
-{
-    $stmt = $this->pdo->prepare("INSERT INTO `win_pharma_level` (`course_code`, `level_name`, `is_active`, `created_at`, `created_by`) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([
-        $data['course_code'],
-        $data['level_name'],
-        $data['is_active'],
-        $data['created_at'],
-        $data['created_by']
-        
-    ]);
-}
-
+    {
+        $stmt = $this->pdo->prepare("INSERT INTO `win_pharma_level` (`course_code`, `level_name`, `is_active`, `created_at`, `created_by`) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([
+            $data['course_code'],
+            $data['level_name'],
+            $data['is_active'],
+            $data['created_at'],
+            $data['created_by']
+        ]);
+    }
 
     public function updateWinPharmaLevel($id, $data)
     {
-        $stmt = $this->pdo->prepare("UPDATE `win_pharma_level` SET `level_id` = ?, `course_code` = ?, `level_name` = ?, `is_active` = ?, `created_at` = ?, `created_by` = ? WHERE `level_id` = ?");
+        $stmt = $this->pdo->prepare("UPDATE `win_pharma_level` SET `course_code` = ?, `level_name` = ?, `is_active` = ?, `created_at` = ?, `created_by` = ? WHERE `level_id` = ?");
         $stmt->execute([
-            $data['level_id'],
             $data['course_code'],
             $data['level_name'],
             $data['is_active'],
@@ -56,5 +53,12 @@ class WinPharmaLevel
     {
         $stmt = $this->pdo->prepare("DELETE FROM `win_pharma_level` WHERE `level_id` = ?");
         $stmt->execute([$id]);
+    }
+
+    public function getWinPharmaLevelsByCourse($courseCode)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM `win_pharma_level` WHERE `course_code` = ?");
+        $stmt->execute([$courseCode]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

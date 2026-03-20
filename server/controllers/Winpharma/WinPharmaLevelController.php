@@ -3,7 +3,6 @@
 
 require_once './models/Winpharma/WinPharmaLevel.php';
 
-
 class WinPharmaLevelController
 {
     private $model;
@@ -43,5 +42,11 @@ class WinPharmaLevelController
     {
         $this->model->deleteWinPharmaLevel($id);
         echo json_encode(['status' => 'WinPharmaLevel deleted']);
+    }
+
+    public function getWinPharmaLevelsByCourse($courseCode)
+    {
+        $levels = $this->model->getWinPharmaLevelsByCourse($courseCode);
+        echo json_encode($levels);
     }
 }

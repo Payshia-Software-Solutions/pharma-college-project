@@ -7,14 +7,21 @@ require_once './controllers/Winpharma/WinPharmaLevelResourceController.php';
 $pdo = $GLOBALS['pdo'];
 $WinPharmaLevelResourceController = new WinPharmaLevelResourceController($pdo);
 
-// Define appointment routes
+// Define Winpharma Level Resource routes
 return [
-    'GET /win_pharma_level_resources/' => [$WinPharmaLevelResourceController, 'getWinPharmaLevelResources'],
-    'GET /win_pharma_level_resources/{id}/' => [$WinPharmaLevelResourceController, 'getWinPharmaLevelResource'],
-    'POST /win_pharma_level_resources/' => [$WinPharmaLevelResourceController, 'createWinPharmaLevelResource'],
-    'PUT /win_pharma_level_resources/{id}/' => [$WinPharmaLevelResourceController, 'updateWinPharmaLevelResource'],
-    'DELETE /win_pharma_level_resources/{id}/' => [$WinPharmaLevelResourceController, 'deleteWinPharmaLevelResource']
+    'GET /win_pharma_level_resources/$' => function () use ($WinPharmaLevelResourceController) {
+        $WinPharmaLevelResourceController->getWinPharmaLevelResources();
+    },
+    'GET /win_pharma_level_resources/(\d+)/$' => function ($id) use ($WinPharmaLevelResourceController) {
+        $WinPharmaLevelResourceController->getWinPharmaLevelResource($id);
+    },
+    'POST /win_pharma_level_resources/$' => function () use ($WinPharmaLevelResourceController) {
+        $WinPharmaLevelResourceController->createWinPharmaLevelResource();
+    },
+    'PUT /win_pharma_level_resources/(\d+)/$' => function ($id) use ($WinPharmaLevelResourceController) {
+        $WinPharmaLevelResourceController->updateWinPharmaLevelResource($id);
+    },
+    'DELETE /win_pharma_level_resources/(\d+)/$' => function ($id) use ($WinPharmaLevelResourceController) {
+        $WinPharmaLevelResourceController->deleteWinPharmaLevelResource($id);
+    }
 ];
-
-
-?>
