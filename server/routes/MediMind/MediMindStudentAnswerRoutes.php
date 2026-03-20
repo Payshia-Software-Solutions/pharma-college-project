@@ -14,10 +14,10 @@ return [
     'GET /medi-mind-student-answers/(\d+)/$' => function ($id) use ($controller) {
         $controller->getById($id);
     },
-    'GET /medi-mind-student-answers/student/(\d+)/$' => function ($studentId) use ($controller) {
+    'GET /medi-mind-student-answers/student/([a-zA-Z0-9_\-]+)/$' => function ($studentId) use ($controller) {
         $controller->getByStudent($studentId);
     },
-    'GET /medi-mind-student-answers/stats/(\d+)/$' => function ($studentId) use ($controller) {
+    'GET /medi-mind-student-answers/stats/([a-zA-Z0-9_\-]+)/$' => function ($studentId) use ($controller) {
         $controller->getStatsByStudent($studentId);
     },
     'POST /medi-mind-student-answers/$' => function () use ($controller) {
