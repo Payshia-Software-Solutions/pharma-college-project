@@ -24,6 +24,11 @@ return [
         return $controller->getStudentInfoByConvocationId($convocationId);
     },
 
+    // GET student info by student number and convocation ID
+    'GET /convocation-student-info/student/([A-Za-z0-9]+)/convocation/(\d+)/$' => function ($studentNumber, $convocationId) use ($controller) {
+        return $controller->getStudentInfoByNumber($studentNumber, $convocationId);
+    },
+
     // POST upload CSV
     'POST /convocation-student-info/upload-csv/$' => function () use ($controller) {
         return $controller->uploadCsv();

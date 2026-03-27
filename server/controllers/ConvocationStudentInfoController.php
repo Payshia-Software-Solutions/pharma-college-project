@@ -35,6 +35,17 @@ class ConvocationStudentInfoController
         echo json_encode($data);
     }
 
+    public function getStudentInfoByNumber($studentNumber, $convocationId)
+    {
+        $data = $this->model->getStudentInfoByNumber($studentNumber, $convocationId);
+        if ($data) {
+            echo json_encode($data);
+        } else {
+            http_response_code(404);
+            echo json_encode(["error" => "Student info not found"]);
+        }
+    }
+
     public function createStudentInfo()
     {
         $data = json_decode(file_get_contents("php://input"), true);
