@@ -39,4 +39,9 @@ return [
     'GET /win_pharma_submission/get-results\?UserName=([a-zA-Z0-9_\-]+)&batchCode=([a-zA-Z0-9_\-]+)/$' => function ($UserName, $batchCode) use ($WinPharmaSubmissionController) {
         return $WinPharmaSubmissionController->getWinPharmaResults($UserName, $batchCode);
     },
+
+    // Get Submissions by filter
+    'GET /win_pharma_submission/get-submissions-by-filter\?UserName=([a-zA-Z0-9_\-]+)&batchCode=([a-zA-Z0-9_\-]+)/$' => function ($UserName, $batchCode) use ($WinPharmaSubmissionController) {
+        return $WinPharmaSubmissionController->getWinPharmaSubmissionsByFilters($UserName, $batchCode);
+    },
 ];

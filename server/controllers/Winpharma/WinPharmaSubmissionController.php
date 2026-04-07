@@ -212,4 +212,20 @@ class WinPharmaSubmissionController
             'data' => $results
         ]);
     }
+
+    public function getWinPharmaSubmissionsByFilters($UserName = null, $batchCode = null)
+    {
+        // Support both direct parameter passing from routes and $_GET fallback
+        $UserName = $UserName ?? ($_GET['UserName'] ?? null);
+        $batchCode = $batchCode ?? ($_GET['batchCode'] ?? null);
+
+        if (!$UserName || !$batchCode) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required parameters: UserName & batchCode']);
+            return;
+        }
+
+        $submissions = $this->model->getSubmissionsByFilters($UserName, $batchCode);
+        echo json_encode($submissions);
+    }
 }
