@@ -110,9 +110,21 @@ class WinPharmaSubmissionController
 
     public function createWinPharmaSubmission()
     {
-        $data = $_POST;
+        // 1. Try reading JSON input first
+        $data = json_decode(file_get_contents('php://input'), true);
 
-        $submissionPath = null;
+        // 2. If no JSON data, fallback to $_POST (FormData)
+        if (empty($data)) {
+            $data = $_POST;
+        }
+
+        // Ensure $data is an array
+        if (!is_array($data)) {
+            $data = [];
+        }
+
+        // 3. Handle File Upload (FormData pattern)
+        $submissionPath = $data['submission'] ?? null;
         if (isset($_FILES['submission']) && $_FILES['submission']['error'] === UPLOAD_ERR_OK) {
             $uploadResult = $this->uploadSubmissionToFTP($_FILES['submission']);
 
@@ -125,9 +137,32 @@ class WinPharmaSubmissionController
             $submissionPath = $uploadResult['path'];
         }
 
-        $data['submission'] = $submissionPath;
+        // 4. Set Defaults for mandatory fields to prevent SQL errors
+        $processedData = [
+            'index_number'      => $data['index_number'] ?? null,
+            'level_id'          => $data['level_id'] ?? 0,
+            'resource_id'       => $data['resource_id'] ?? 0,
+            'submission'        => $submissionPath,
+            'grade'             => $data['grade'] ?? '',
+            'grade_status'      => $data['grade_status'] ?? 'Pending',
+            'date_time'         => $data['date_time'] ?? date('Y-m-d H:i:s'),
+            'attempt'           => $data['attempt'] ?? 1,
+            'course_code'       => $data['course_code'] ?? '',
+            'reason'            => $data['reason'] ?? '',
+            'update_by'         => $data['update_by'] ?? ($data['index_number'] ?? 'System'),
+            'update_at'         => $data['update_at'] ?? date('Y-m-d H:i:s'),
+            'recorrection_count'=> $data['recorrection_count'] ?? 0,
+            'payment_status'    => $data['payment_status'] ?? 'Pending'
+        ];
 
-        $this->model->createWinPharmaSubmission($data);
+        // 5. Basic Validation
+        if (!$processedData['index_number']) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required field: index_number']);
+            return;
+        }
+
+        $this->model->createWinPharmaSubmission($processedData);
         echo json_encode(['status' => 'WinPharmaSubmission created', 'path' => $submissionPath]);
     }
 
