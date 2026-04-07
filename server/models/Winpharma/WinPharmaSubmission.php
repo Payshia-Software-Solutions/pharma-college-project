@@ -283,4 +283,11 @@ class WinPharmaSubmission
         $stmt = $this->pdo->prepare("DELETE FROM `win_pharma_submission` WHERE `submission_id` = ?");
         $stmt->execute([$id]);
     }
+
+    public function getSubmissionsByFilters($UserName, $batchCode)
+    {
+        $stmt = $this->pdo->prepare("SELECT * FROM `win_pharma_submission` WHERE `index_number` LIKE ? AND `course_code` LIKE ?");
+        $stmt->execute([$UserName, $batchCode]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }
