@@ -7,10 +7,81 @@ require_once './models/Winpharma/WinPharmaSubmission.php';
 class WinPharmaSubmissionController
 {
     private $model;
+    private $ftpConfig;
 
     public function __construct($pdo)
     {
         $this->model = new WinPharmaSubmission($pdo);
+        $this->ftpConfig = include('./config/ftp.php');
+    }
+
+    private function ensureDirectoryExists($ftp_conn, $dir)
+    {
+        $parts = explode('/', $dir);
+        $path = '';
+        foreach ($parts as $part) {
+            if (empty($part)) {
+                continue;
+            }
+            $path .= '/' . $part;
+            if (!@ftp_chdir($ftp_conn, $path)) {
+                if (!ftp_mkdir($ftp_conn, $path)) {
+                    throw new Exception("Could not create directory: $path on FTP server.");
+                }
+            }
+        }
+    }
+
+    private function uploadSubmissionToFTP($file)
+    {
+        try {
+            ini_set('memory_limit', '256M');
+
+            $ftp_server = $this->ftpConfig['ftp_server'];
+            $ftp_username = $this->ftpConfig['ftp_username'];
+            $ftp_password = $this->ftpConfig['ftp_password'];
+            $ftp_target_dir = '/content-provider/uploads/winpharma-submissions/';
+
+            if (!isset($file) || $file['error'] !== UPLOAD_ERR_OK) {
+                throw new Exception("Invalid file upload.");
+            }
+
+            $tempDir = './tmp';
+            if (!is_dir($tempDir)) {
+                mkdir($tempDir, 0777, true);
+            }
+
+            $tempPath = $tempDir . '/' . basename($file['name']);
+            if (!move_uploaded_file($file['tmp_name'], $tempPath)) {
+                throw new Exception("Failed to move uploaded file to temporary directory.");
+            }
+
+            $ftp_conn = ftp_connect($ftp_server);
+            if (!$ftp_conn) {
+                throw new Exception("Could not connect to FTP server.");
+            }
+
+            if (!ftp_login($ftp_conn, $ftp_username, $ftp_password)) {
+                ftp_close($ftp_conn);
+                throw new Exception("Could not login to FTP server.");
+            }
+
+            ftp_pasv($ftp_conn, true);
+
+            $this->ensureDirectoryExists($ftp_conn, $ftp_target_dir);
+
+            $remoteFilePath = $ftp_target_dir . basename($file['name']);
+            if (!ftp_put($ftp_conn, $remoteFilePath, $tempPath, FTP_BINARY)) {
+                throw new Exception("Failed to upload file to FTP: $remoteFilePath");
+            }
+
+            unlink($tempPath);
+            ftp_close($ftp_conn);
+
+            return ['status' => 'success', 'message' => 'File uploaded successfully.', 'path' => basename($file['name'])];
+        } catch (Exception $e) {
+            return ['status' => 'error', 'message' => $e->getMessage()];
+        }
     }
 
     public function getWinPharmaSubmissions()
@@ -19,7 +90,7 @@ class WinPharmaSubmissionController
         echo json_encode($WinPharmaSubmissions);
     }
 
-    public function getWinPharmaSubmissionById($resource_id)
+    public function getWinPharmaSubmission($resource_id)
     {
         $WinPharmaSubmission = $this->model->getWinPharmaSubmissionById($resource_id);
         echo json_encode($WinPharmaSubmission);
@@ -39,14 +110,43 @@ class WinPharmaSubmissionController
 
     public function createWinPharmaSubmission()
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = $_POST;
+
+        $submissionPath = null;
+        if (isset($_FILES['submission']) && $_FILES['submission']['error'] === UPLOAD_ERR_OK) {
+            $uploadResult = $this->uploadSubmissionToFTP($_FILES['submission']);
+
+            if ($uploadResult['status'] === 'error') {
+                http_response_code(500);
+                echo json_encode(['error' => $uploadResult['message']]);
+                return;
+            }
+
+            $submissionPath = $uploadResult['path'];
+        }
+
+        $data['submission'] = $submissionPath;
+
         $this->model->createWinPharmaSubmission($data);
-        echo json_encode(['status' => 'WinPharmaSubmission created']);
+        echo json_encode(['status' => 'WinPharmaSubmission created', 'path' => $submissionPath]);
     }
 
     public function updateWinPharmaSubmission($id)
     {
-        $data = json_decode(file_get_contents('php://input'), true);
+        $data = $_POST;
+
+        if (isset($_FILES['submission']) && $_FILES['submission']['error'] === UPLOAD_ERR_OK) {
+            $uploadResult = $this->uploadSubmissionToFTP($_FILES['submission']);
+
+            if ($uploadResult['status'] === 'error') {
+                http_response_code(500);
+                echo json_encode(['error' => $uploadResult['message']]);
+                return;
+            }
+
+            $data['submission'] = $uploadResult['path'];
+        }
+
         $this->model->updateWinPharmaSubmission($id, $data);
         echo json_encode(['status' => 'WinPharmaSubmission updated']);
     }
@@ -58,10 +158,11 @@ class WinPharmaSubmissionController
     }
 
     // Get WinPharma Results
-    public function getWinPharmaResults()
+    public function getWinPharmaResults($UserName = null, $batchCode = null)
     {
-        $UserName = isset($_GET['UserName']) ? $_GET['UserName'] : null;
-        $batchCode = isset($_GET['batchCode']) ? $_GET['batchCode'] : null;
+        // Support both direct parameter passing from routes and $_GET fallback
+        $UserName = $UserName ?? ($_GET['UserName'] ?? null);
+        $batchCode = $batchCode ?? ($_GET['batchCode'] ?? null);
 
         if (!$UserName || !$batchCode) {
             http_response_code(400);
