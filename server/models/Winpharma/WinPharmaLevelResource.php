@@ -26,28 +26,32 @@ class WinPharmaLevelResource
 
     public function createWinPharmaLevelResource($data)
     {
+        $data = is_array($data) ? $data : [];
         $stmt = $this->pdo->prepare("INSERT INTO `win_pharma_level_resources` 
-        (`level_id`, `resource_title`, `resource_data`, `created_by`, `task_cover`, `is_active`) VALUES (?, ?, ?, ?, ?, ?)");
+        (`level_id`, `resource_title`, `resource_data`, `created_by`, `task_cover`, `video_url`, `is_active`) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $stmt->execute([
-            $data['level_id'],
-            $data['resource_title'],
-            $data['resource_data'],
-            $data['created_by'],
-            $data['task_cover'],
-            $data['is_active']
+            $data['level_id'] ?? null,
+            $data['resource_title'] ?? null,
+            $data['resource_data'] ?? '',
+            $data['created_by'] ?? 'System',
+            $data['task_cover'] ?? null,
+            $data['video_url'] ?? null,
+            $data['is_active'] ?? 1
         ]);
     }
 
     public function updateWinPharmaLevelResource($id, $data)
     {
-        $stmt = $this->pdo->prepare("UPDATE `win_pharma_level_resources` SET `level_id` = ?, `resource_title` = ?, `resource_data` = ?, `created_by` = ?, `task_cover` = ?, `is_active` = ? WHERE `resource_id` = ?");
+        $data = is_array($data) ? $data : [];
+        $stmt = $this->pdo->prepare("UPDATE `win_pharma_level_resources` SET `level_id` = ?, `resource_title` = ?, `resource_data` = ?, `created_by` = ?, `task_cover` = ?, `video_url` = ?, `is_active` = ? WHERE `resource_id` = ?");
         $stmt->execute([
-            $data['level_id'],
-            $data['resource_title'],
-            $data['resource_data'],
-            $data['created_by'],
-            $data['task_cover'],
-            $data['is_active'],
+            $data['level_id'] ?? null,
+            $data['resource_title'] ?? null,
+            $data['resource_data'] ?? '',
+            $data['created_by'] ?? 'System',
+            $data['task_cover'] ?? null,
+            $data['video_url'] ?? null,
+            $data['is_active'] ?? 1,
             $id
         ]);
     }
